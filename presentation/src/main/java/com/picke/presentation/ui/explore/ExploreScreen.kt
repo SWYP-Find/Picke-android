@@ -231,54 +231,41 @@ fun ExploreList(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
             ) {
-                val topCount = minOf(3, pagingItems.itemCount)
+                val adCount = pagingItems.itemCount / 3
+                val totalCount = pagingItems.itemCount + adCount
 
-                items(count = topCount) { index ->
-                    pagingItems[index]?.let { item ->
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = PickeTheme.colors.borderDefault,
-                        )
-                        ExploreCard(
-                            item = item,
-                            onClick = { id -> onNavigateToVote(id) }
-                        )
-                        if (index == pagingItems.itemCount - 1) {
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = PickeTheme.colors.borderDefault,
-                            )
+                items(count = totalCount) { displayIndex ->
+                    val cycleIndex = displayIndex % 4
+                    val cycleNumber = displayIndex / 4
+
+                    if (cycleIndex < 3) {
+                        val battleIndex = cycleNumber * 3 + cycleIndex
+                        if (battleIndex < pagingItems.itemCount) {
+                            pagingItems[battleIndex]?.let { item ->
+                                HorizontalDivider(
+                                    thickness = 1.dp,
+                                    color = PickeTheme.colors.borderDefault,
+                                )
+                                ExploreCard(
+                                    item = item,
+                                    onClick = { id -> onNavigateToVote(id) }
+                                )
+                                if (battleIndex == pagingItems.itemCount - 1) {
+                                    HorizontalDivider(
+                                        thickness = 1.dp,
+                                        color = PickeTheme.colors.borderDefault,
+                                    )
+                                }
+                            }
                         }
-                    }
-                }
-
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
-                    }
-                }
-
-                items(count = pagingItems.itemCount - topCount) { offset ->
-                    val index = topCount + offset
-                    pagingItems[index]?.let { item ->
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = PickeTheme.colors.borderDefault,
-                        )
-                        ExploreCard(
-                            item = item,
-                            onClick = { id -> onNavigateToVote(id) }
-                        )
-                        if (index == pagingItems.itemCount - 1) {
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = PickeTheme.colors.borderDefault,
-                            )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
                         }
                     }
                 }

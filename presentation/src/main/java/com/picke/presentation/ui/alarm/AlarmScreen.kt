@@ -48,6 +48,7 @@ fun AlarmScreen(
     onNavigateToComment: (perspectiveId: String, commentId: String) -> Unit,
     onNavigateToPoint: () -> Unit,
     onNavigateToNotice: (Long) -> Unit,
+    onNavigateToTodayBattle: () -> Unit,
     viewModel: AlarmViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -87,6 +88,7 @@ fun AlarmScreen(
 
                 "CREDIT_EARNED" -> onNavigateToPoint()
                 "POLICY_CHANGE" -> onNavigateToNotice(item.referenceId)
+                "DAILY_MESSAGE" -> onNavigateToTodayBattle()
             }
         }
     )

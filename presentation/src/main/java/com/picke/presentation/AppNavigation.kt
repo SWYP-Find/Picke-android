@@ -154,11 +154,9 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                         )
                     )
 
-                    is DeepLinkEvent.GoToTodayBattle -> rootNavController.navigate(
-                        AppRoute.TodayBattle.createRoute(
-                            event.battleId
-                        )
-                    )
+                    is DeepLinkEvent.GoToTodayBattle -> {
+                        rootNavController.navigate(AppRoute.TodayBattle.createRoute(event.battleId))
+                    }
 
                     is DeepLinkEvent.GoToReport -> rootNavController.navigate(
                         AppRoute.OtherPhilosopher.createRoute(
@@ -324,6 +322,9 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     },
                     onNavigateToNotice = { noticeId ->
                         rootNavController.navigate(AppRoute.NoticeEvent.createRoute(noticeId))
+                    },
+                    onNavigateToTodayBattle = {
+                        rootNavController.navigate(AppRoute.TodayBattle.createRoute(""))
                     }
                 )
             }

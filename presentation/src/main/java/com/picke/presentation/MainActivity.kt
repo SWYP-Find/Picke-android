@@ -82,6 +82,10 @@ class MainActivity : FragmentActivity() {
             FCMService.TYPE_ALARM -> {
                 DeepLinkManager.deepLinkEvent.tryEmit(DeepLinkEvent.GoToAlarm)
             }
+
+            FCMService.TYPE_DAILY_MESSAGE -> {
+                DeepLinkManager.deepLinkEvent.tryEmit(DeepLinkEvent.GoToTodayBattle(""))
+            }
         }
 
         intent.removeExtra(FCMService.EXTRA_FCM_TYPE)

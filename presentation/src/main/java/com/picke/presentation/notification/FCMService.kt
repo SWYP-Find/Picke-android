@@ -3,11 +3,12 @@ package com.picke.presentation.notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.picke.domain.feature.device.usecase.DeviceUseCases
 import com.picke.domain.common.local.LocalPreferencesUseCases
+import com.picke.domain.feature.device.usecase.DeviceUseCases
 import com.picke.presentation.MainActivity
 import com.picke.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,8 +82,11 @@ class FCMService : FirebaseMessagingService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_bell)
+            .setLargeIcon(largeIcon)
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
@@ -105,5 +109,6 @@ class FCMService : FirebaseMessagingService() {
         const val TYPE_BATTLE = "BATTLE"
         const val TYPE_COMMENT = "COMMENT"
         const val TYPE_ALARM = "ALARM"
+        const val TYPE_DAILY_MESSAGE = "DAILY_MESSAGE"
     }
 }

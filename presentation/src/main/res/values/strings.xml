@@ -48,6 +48,20 @@
     <string name="prevote">사전 투표하기</string>
     <string name="postvote">최종 투표하기</string>
 
+    <!-- 시나리오   -->
+    <string name="scenario_go_to_final_vote">최종투표 하러가기</string>
+    <string name="scenario_final_vote_dialog_message">최종투표하고 투표 결과를 확인하시겠습니까?</string>
+    <string name="scenario_final_vote_dialog_dismiss">최종투표하기</string>
+    <string name="scenario_final_vote_dialog_confirm">다시 들어볼래요</string>
+    <string name="scenario_option_guide_select">이제 당신의 입장을 선택해주세요</string>
+    <string name="scenario_option_guide_selected">아래가 당신의 선택입니다.</string>
+    <string name="scenario_option_confirm">입장 선택하기</string>
+    <string name="scenario_audio_skip_15_seconds">15초</string>
+    <string name="scenario_audio_play">재생</string>
+    <string name="scenario_audio_pause">일시정지</string>
+    <string name="scenario_audio_replay">다시듣기</string>
+    <string name="scenario_audio_playback_speed">배속</string>
+
     <!-- 설정   -->
     <string name="setting_alarm_category_function">기능별 알림 설정</string>
     <string name="setting_alarm_new_battle_title">새 배틀 알림</string>

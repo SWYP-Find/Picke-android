@@ -180,7 +180,7 @@ fun ScenarioScreen(
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
                     OptionConfirmButton(
-                        text = "최종투표 하러가기",
+                        text = stringResource(R.string.scenario_go_to_final_vote),
                         isEnabled = true,
                         onClick = onNextClick
                     )
@@ -191,9 +191,9 @@ fun ScenarioScreen(
 
         if (uiState.showFinalVoteDialog) {
             CustomConfirmDialog(
-                message = "최종투표하고 투표 결과를 확인하시겠습니까?",
-                dismissText = "최종투표하기",
-                confirmText = "다시 들어볼래요",
+                message = stringResource(R.string.scenario_final_vote_dialog_message),
+                dismissText = stringResource(R.string.scenario_final_vote_dialog_dismiss),
+                confirmText = stringResource(R.string.scenario_final_vote_dialog_confirm),
                 onDismiss = {
                     onDismissFinalDialog()
                     onNextClick()

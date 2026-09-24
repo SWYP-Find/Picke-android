@@ -184,9 +184,11 @@ class ScenarioViewModel @Inject constructor(
         _uiState.update { it.copy(isPlaying = true) }
         audioPlayerManager.play()
 
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (isActive) {
                 updateSync(audioPlayerManager.currentPosition)
+                delay(SYNC_INTERVAL_MS.milliseconds)
             }
         }
     }

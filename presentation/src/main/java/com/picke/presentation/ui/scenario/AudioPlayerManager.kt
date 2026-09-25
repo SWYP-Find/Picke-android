@@ -66,6 +66,10 @@ class AudioPlayerManager @Inject constructor(
         player.seekTo(positionMs)
     }
 
+    fun setPlaybackSpeed(speed: Float) {
+        player.setPlaybackSpeed(speed)
+    }
+
     fun release() {
         player.release()
     }

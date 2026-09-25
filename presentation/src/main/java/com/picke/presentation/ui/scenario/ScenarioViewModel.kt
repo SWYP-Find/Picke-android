@@ -226,6 +226,20 @@ class ScenarioViewModel @Inject constructor(
         if (!_uiState.value.isPlaying) playAudio()
     }
 
+    fun cyclePlaybackSpeed() {
+        val nextIndex =
+            (PLAYBACK_SPEEDS.indexOf(_uiState.value.playbackSpeed) + 1).mod(PLAYBACK_SPEEDS.size)
+        val nextSpeed = PLAYBACK_SPEEDS[nextIndex]
+        _uiState.update { it.copy(playbackSpeed = nextSpeed) }
+        audioPlayerManager.setPlaybackSpeed(nextSpeed)
+    }
+
+    fun replayFromStart() {
+        audioPlayerManager.seekTo(0)
+        updateSync(0)
+        if (!_uiState.value.isPlaying) playAudio()
+    }
+
     fun selectOption(nextNodeId: String) {
         val currentOptions = _uiState.value.interactiveOptions
         val totalScriptsSize = _uiState.value.pastScripts.size + _uiState.value.scripts.size
@@ -247,6 +261,7 @@ class ScenarioViewModel @Inject constructor(
     }
 
     companion object {
+        private val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
         private const val SYNC_INTERVAL_MS = 100L
     }
 }

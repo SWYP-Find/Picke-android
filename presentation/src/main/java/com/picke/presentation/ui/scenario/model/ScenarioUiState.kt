@@ -12,6 +12,7 @@ data class ScenarioUiState(
     val currentPositionMs: Long = 0L,
     val maxListenedPositionMs: Long = 0L,
     val totalDurationMs: Long = 0L,
+    val playbackSpeed: Float = 1.0f,
     val interactiveOptions: List<ScenarioOptionUiModel> = emptyList(),
     val currentNodeId: String = "",
     val showOptions: Boolean = false,

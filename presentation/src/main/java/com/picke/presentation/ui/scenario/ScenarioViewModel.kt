@@ -14,6 +14,7 @@ import com.picke.presentation.util.ScenarioAudioKey
 import com.picke.presentation.util.splitScriptsBySentence
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ScenarioViewModel @Inject constructor(
@@ -242,5 +244,9 @@ class ScenarioViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         audioPlayerManager.release()
+    }
+
+    companion object {
+        private const val SYNC_INTERVAL_MS = 100L
     }
 }

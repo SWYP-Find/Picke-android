@@ -9,6 +9,9 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -17,6 +20,9 @@ class AudioPlayerManager @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val okHttpClient: OkHttpClient
 ) {
+
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
     private val player: ExoPlayer = createPlayer()
 
@@ -35,6 +41,13 @@ class AudioPlayerManager @Inject constructor(
             .build()
             .apply {
                 addListener(object : Player.Listener {
+                    override fun onEvents(player: Player, events: Player.Events) {
+                        _isPlaying.value = player.playWhenReady &&
+                                player.playbackState != Player.STATE_IDLE &&
+                                player.playbackState != Player.STATE_ENDED &&
+                                player.playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE
+                    }
+
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         if (playbackState == Player.STATE_ENDED) {
                             onPlaybackEnded?.invoke()
@@ -55,6 +68,7 @@ class AudioPlayerManager @Inject constructor(
     }
 
     fun play() {
+        if (player.playbackState == Player.STATE_IDLE) player.prepare()
         player.play()
     }
 

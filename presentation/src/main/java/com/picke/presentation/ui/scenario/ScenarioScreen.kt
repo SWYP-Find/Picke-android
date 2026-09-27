@@ -21,6 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
@@ -45,6 +47,10 @@ fun ScenarioScreen(
 
     LaunchedEffect(battleId) {
         viewModel.loadScenario(battleId)
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        viewModel.onScreenStopped()
     }
 
     ScenarioScreen(

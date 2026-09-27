@@ -188,6 +188,10 @@ class ScenarioViewModel @Inject constructor(
         if (audioPlayerManager.isPlaying.value) pauseAudio() else playAudio()
     }
 
+    fun onScreenStopped() {
+        pauseAudio()
+    }
+
     private fun playAudio() {
         audioPlayerManager.play()
     }

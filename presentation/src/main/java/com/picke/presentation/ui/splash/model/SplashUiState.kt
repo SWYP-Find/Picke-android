@@ -4,6 +4,8 @@ sealed class SplashUiState {
 
     object Loading : SplashUiState()
 
+    object NavigationHandled : SplashUiState()
+
     object NavigateToLogin : SplashUiState()
 
     object NavigateToOnboarding : SplashUiState()

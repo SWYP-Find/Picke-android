@@ -124,9 +124,12 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                 if (state.needsTermsAgreement) showTermsSheet = true
             }
 
-            is SplashUiState.Loading -> { /* 가만히 스플래시 유지 */
-            }
+            is SplashUiState.Loading -> return@LaunchedEffect
+
+            is SplashUiState.NavigationHandled -> return@LaunchedEffect
         }
+
+        splashViewModel.onNavigationHandled()
     }
 
     Surface(

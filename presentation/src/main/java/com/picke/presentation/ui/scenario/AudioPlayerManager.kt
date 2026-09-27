@@ -1,6 +1,8 @@
 package com.picke.presentation.ui.scenario
 
 import android.content.Context
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -35,9 +37,15 @@ class AudioPlayerManager @Inject constructor(
         val dataSourceFactory = OkHttpDataSource.Factory(okHttpClient)
         val mediaSourceFactory =
             DefaultMediaSourceFactory(context).setDataSourceFactory(dataSourceFactory)
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(C.USAGE_MEDIA)
+            .setContentType(C.AUDIO_CONTENT_TYPE_SPEECH)
+            .build()
 
         return ExoPlayer.Builder(context)
             .setMediaSourceFactory(mediaSourceFactory)
+            .setAudioAttributes(audioAttributes, true)
+            .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
                 addListener(object : Player.Listener {

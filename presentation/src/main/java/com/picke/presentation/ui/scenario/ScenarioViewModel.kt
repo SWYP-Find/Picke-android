@@ -110,6 +110,7 @@ class ScenarioViewModel @Inject constructor(
                 scripts = splitScripts,
                 nodeEndTimeMs = endMs,
                 activeIndex = -1,
+                activePastIndex = -1,
                 maxRevealedIndex = -1,
                 showOptions = false,
                 interactiveOptions = emptyList()
@@ -122,6 +123,11 @@ class ScenarioViewModel @Inject constructor(
     private fun updateSync(positionMs: Long) {
         val scripts = _uiState.value.scripts
         val newActiveIndex = scripts.indexOfLast { it.startTimeMs <= positionMs }
+        val newActivePastIndex = if (newActiveIndex < 0) {
+            _uiState.value.pastScripts.indexOfLast { it.startTimeMs <= positionMs }
+        } else {
+            -1
+        }
         val newMaxRevealed = maxOf(_uiState.value.maxRevealedIndex, newActiveIndex)
         val newMaxListened = maxOf(_uiState.value.maxListenedPositionMs, positionMs)
         val isNodeEnded = positionMs >= _uiState.value.nodeEndTimeMs
@@ -132,6 +138,7 @@ class ScenarioViewModel @Inject constructor(
                 maxListenedPositionMs = newMaxListened,
                 totalDurationMs = audioPlayerManager.duration,
                 activeIndex = newActiveIndex,
+                activePastIndex = newActivePastIndex,
                 maxRevealedIndex = newMaxRevealed,
                 showOptions = isNodeEnded
             )

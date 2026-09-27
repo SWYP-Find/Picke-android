@@ -89,7 +89,9 @@ fun ScenarioScreen(
     val visibleScripts = if (uiState.maxRevealedIndex >= 0) {
         val safeIndex = minOf(uiState.maxRevealedIndex + 1, uiState.scripts.size)
         uiState.scripts.subList(0, safeIndex)
-    } else emptyList()
+    } else {
+        emptyList()
+    }
 
     val allDisplayScripts = uiState.pastScripts + visibleScripts
 
@@ -100,10 +102,20 @@ fun ScenarioScreen(
         }
     }
 
-    LaunchedEffect(uiState.activeIndex, uiState.pastScripts.size, uiState.showOptions) {
+    LaunchedEffect(
+        uiState.activeIndex,
+        uiState.activePastIndex,
+        uiState.pastScripts.size,
+        uiState.showOptions
+    ) {
         if (uiState.showOptions) return@LaunchedEffect
 
-        val targetIndex = uiState.pastScripts.size + uiState.activeIndex
+        val targetIndex = if (uiState.activeIndex >= 0) {
+            uiState.pastScripts.size + uiState.activeIndex
+        } else {
+            uiState.activePastIndex
+        }
+
         if (targetIndex >= 0 && targetIndex < allDisplayScripts.size) {
             listState.animateScrollToItem(index = targetIndex)
         }
@@ -161,7 +173,11 @@ fun ScenarioScreen(
 
                 ChatBubble(
                     script = script,
-                    isActive = !isPastScript && currentAudioScriptIndex == uiState.activeIndex && uiState.isPlaying,
+                    isActive = uiState.isPlaying && if (isPastScript) {
+                        index == uiState.activePastIndex
+                    } else {
+                        currentAudioScriptIndex == uiState.activeIndex
+                    },
                     showAvatarAndName = showAvatarAndName,
                     onClick = {
                         if (!isPastScript && uiState.totalDurationMs > 0) {

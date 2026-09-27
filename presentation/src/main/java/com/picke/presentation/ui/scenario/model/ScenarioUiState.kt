@@ -6,6 +6,7 @@ data class ScenarioUiState(
     val pastChoices: List<PastChoice> = emptyList(),
     val scripts: List<ScenarioScriptUiModel> = emptyList(),
     val activeIndex: Int = -1,
+    val activePastIndex: Int = -1,
     val maxRevealedIndex: Int = -1,
     val nodeEndTimeMs: Long = 0L,
     val isPlaying: Boolean = false,

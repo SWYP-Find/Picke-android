@@ -150,7 +150,6 @@ class ScenarioViewModel @Inject constructor(
 
         if (currentNode.autoNextNodeId != null) {
             loadNode(currentNode.autoNextNodeId)
-            playAudio()
         } else if (currentNode.interactiveOptions.isNotEmpty()) {
             _uiState.update { it.copy(interactiveOptions = currentNode.interactiveOptions) }
         } else {
@@ -179,9 +178,7 @@ class ScenarioViewModel @Inject constructor(
             )
         }
 
-        audioPlayerManager.seekTo(0)
-        updateSync(0)
-        playAudio()
+        seekAndPlay(0)
     }
 
     fun togglePlayPause() {
@@ -215,29 +212,30 @@ class ScenarioViewModel @Inject constructor(
         timerJob = null
     }
 
+    private fun seekAndPlay(positionMs: Long) {
+        audioPlayerManager.seekTo(positionMs)
+        updateSync(positionMs)
+        playAudio()
+    }
+
     fun seekRewind() {
-        val newPos = maxOf(0, audioPlayerManager.currentPosition - 15000)
-        audioPlayerManager.seekTo(newPos)
-        updateSync(newPos)
-        if (!audioPlayerManager.isPlaying.value) playAudio()
+        seekAndPlay(maxOf(0, audioPlayerManager.currentPosition - SKIP_INTERVAL_MS))
     }
 
     fun seekToPosition(ratio: Float) {
         val newPos = (_uiState.value.totalDurationMs * ratio).toLong()
         val safePos =
             minOf(newPos, _uiState.value.nodeEndTimeMs, _uiState.value.maxListenedPositionMs)
-        audioPlayerManager.seekTo(safePos)
-        updateSync(safePos)
-        if (!audioPlayerManager.isPlaying.value) playAudio()
+        seekAndPlay(safePos)
     }
 
     fun seekForward() {
         if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
-        val safePos =
-            minOf(audioPlayerManager.currentPosition + 15000, _uiState.value.nodeEndTimeMs)
-        audioPlayerManager.seekTo(safePos)
-        updateSync(safePos)
-        if (!audioPlayerManager.isPlaying.value) playAudio()
+        val safePos = minOf(
+            audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
+            _uiState.value.nodeEndTimeMs
+        )
+        seekAndPlay(safePos)
     }
 
     fun cyclePlaybackSpeed() {
@@ -249,9 +247,7 @@ class ScenarioViewModel @Inject constructor(
     }
 
     fun replayFromStart() {
-        audioPlayerManager.seekTo(0)
-        updateSync(0)
-        if (!audioPlayerManager.isPlaying.value) playAudio()
+        seekAndPlay(0)
     }
 
     fun selectOption(nextNodeId: String) {
@@ -266,7 +262,6 @@ class ScenarioViewModel @Inject constructor(
 
         _uiState.update { it.copy(pastChoices = it.pastChoices + newChoice) }
         loadNode(nextNodeId)
-        playAudio()
     }
 
     override fun onCleared() {
@@ -277,5 +272,6 @@ class ScenarioViewModel @Inject constructor(
     companion object {
         private val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
         private const val SYNC_INTERVAL_MS = 100L
+        private const val SKIP_INTERVAL_MS = 15_000L
     }
 }

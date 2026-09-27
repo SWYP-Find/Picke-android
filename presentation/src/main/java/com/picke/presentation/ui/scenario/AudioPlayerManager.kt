@@ -26,6 +26,25 @@ class AudioPlayerManager @Inject constructor(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
+    private val playerListener = object : Player.Listener {
+        override fun onEvents(player: Player, events: Player.Events) {
+            _isPlaying.value = player.playWhenReady &&
+                    player.playbackState != Player.STATE_IDLE &&
+                    player.playbackState != Player.STATE_ENDED &&
+                    player.playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE
+        }
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            if (playbackState == Player.STATE_ENDED) {
+                onPlaybackEnded?.invoke()
+            }
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            //
+        }
+    }
+
     private val player: ExoPlayer = createPlayer()
 
     val currentPosition get() = player.currentPosition
@@ -47,26 +66,7 @@ class AudioPlayerManager @Inject constructor(
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .build()
-            .apply {
-                addListener(object : Player.Listener {
-                    override fun onEvents(player: Player, events: Player.Events) {
-                        _isPlaying.value = player.playWhenReady &&
-                                player.playbackState != Player.STATE_IDLE &&
-                                player.playbackState != Player.STATE_ENDED &&
-                                player.playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE
-                    }
-
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        if (playbackState == Player.STATE_ENDED) {
-                            onPlaybackEnded?.invoke()
-                        }
-                    }
-
-                    override fun onPlayerError(error: PlaybackException) {
-                        //
-                    }
-                })
-            }
+            .apply { addListener(playerListener) }
     }
 
     fun loadAudio(url: String, seekToMs: Long = 0) {
@@ -93,6 +93,8 @@ class AudioPlayerManager @Inject constructor(
     }
 
     fun release() {
+        onPlaybackEnded = null
+        player.removeListener(playerListener)
         player.release()
     }
 }

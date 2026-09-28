@@ -14,6 +14,7 @@ import com.picke.presentation.util.ScenarioAudioKey
 import com.picke.presentation.util.splitScriptsBySentence
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ScenarioViewModel @Inject constructor(
@@ -40,6 +42,12 @@ class ScenarioViewModel @Inject constructor(
 
     init {
         audioPlayerManager.onPlaybackEnded = { handleNodeEnd() }
+        viewModelScope.launch {
+            audioPlayerManager.isPlaying.collect { isPlaying ->
+                _uiState.update { it.copy(isPlaying = isPlaying) }
+                if (isPlaying) startSync() else stopSync()
+            }
+        }
     }
 
     fun loadScenario(battleId: String) {
@@ -102,6 +110,7 @@ class ScenarioViewModel @Inject constructor(
                 scripts = splitScripts,
                 nodeEndTimeMs = endMs,
                 activeIndex = -1,
+                activePastIndex = -1,
                 maxRevealedIndex = -1,
                 showOptions = false,
                 interactiveOptions = emptyList()
@@ -114,6 +123,11 @@ class ScenarioViewModel @Inject constructor(
     private fun updateSync(positionMs: Long) {
         val scripts = _uiState.value.scripts
         val newActiveIndex = scripts.indexOfLast { it.startTimeMs <= positionMs }
+        val newActivePastIndex = if (newActiveIndex < 0) {
+            _uiState.value.pastScripts.indexOfLast { it.startTimeMs <= positionMs }
+        } else {
+            -1
+        }
         val newMaxRevealed = maxOf(_uiState.value.maxRevealedIndex, newActiveIndex)
         val newMaxListened = maxOf(_uiState.value.maxListenedPositionMs, positionMs)
         val isNodeEnded = positionMs >= _uiState.value.nodeEndTimeMs
@@ -124,12 +138,13 @@ class ScenarioViewModel @Inject constructor(
                 maxListenedPositionMs = newMaxListened,
                 totalDurationMs = audioPlayerManager.duration,
                 activeIndex = newActiveIndex,
+                activePastIndex = newActivePastIndex,
                 maxRevealedIndex = newMaxRevealed,
                 showOptions = isNodeEnded
             )
         }
 
-        if (isNodeEnded && _uiState.value.isPlaying) {
+        if (isNodeEnded && audioPlayerManager.isPlaying.value) {
             handleNodeEnd()
         }
     }
@@ -142,7 +157,6 @@ class ScenarioViewModel @Inject constructor(
 
         if (currentNode.autoNextNodeId != null) {
             loadNode(currentNode.autoNextNodeId)
-            playAudio()
         } else if (currentNode.interactiveOptions.isNotEmpty()) {
             _uiState.update { it.copy(interactiveOptions = currentNode.interactiveOptions) }
         } else {
@@ -171,55 +185,76 @@ class ScenarioViewModel @Inject constructor(
             )
         }
 
-        audioPlayerManager.seekTo(0)
-        updateSync(0)
-        playAudio()
+        seekAndPlay(0)
     }
 
     fun togglePlayPause() {
-        if (_uiState.value.isPlaying) pauseAudio() else playAudio()
+        if (audioPlayerManager.isPlaying.value) pauseAudio() else playAudio()
+    }
+
+    fun onScreenStopped() {
+        pauseAudio()
     }
 
     private fun playAudio() {
-        _uiState.update { it.copy(isPlaying = true) }
         audioPlayerManager.play()
+    }
 
+    private fun pauseAudio() {
+        audioPlayerManager.pause()
+    }
+
+    private fun startSync() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (isActive) {
                 updateSync(audioPlayerManager.currentPosition)
+                delay(SYNC_INTERVAL_MS.milliseconds)
             }
         }
     }
 
-    private fun pauseAudio() {
-        _uiState.update { it.copy(isPlaying = false) }
-        audioPlayerManager.pause()
+    private fun stopSync() {
         timerJob?.cancel()
+        timerJob = null
+    }
+
+    private fun seekAndPlay(positionMs: Long) {
+        audioPlayerManager.seekTo(positionMs)
+        updateSync(positionMs)
+        playAudio()
     }
 
     fun seekRewind() {
-        val newPos = maxOf(0, audioPlayerManager.currentPosition - 15000)
-        audioPlayerManager.seekTo(newPos)
-        updateSync(newPos)
-        if (!_uiState.value.isPlaying) playAudio()
+        seekAndPlay(maxOf(0, audioPlayerManager.currentPosition - SKIP_INTERVAL_MS))
     }
 
     fun seekToPosition(ratio: Float) {
         val newPos = (_uiState.value.totalDurationMs * ratio).toLong()
         val safePos =
             minOf(newPos, _uiState.value.nodeEndTimeMs, _uiState.value.maxListenedPositionMs)
-        audioPlayerManager.seekTo(safePos)
-        updateSync(safePos)
-        if (!_uiState.value.isPlaying) playAudio()
+        seekAndPlay(safePos)
     }
 
     fun seekForward() {
         if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
-        val safePos =
-            minOf(audioPlayerManager.currentPosition + 15000, _uiState.value.nodeEndTimeMs)
-        audioPlayerManager.seekTo(safePos)
-        updateSync(safePos)
-        if (!_uiState.value.isPlaying) playAudio()
+        val safePos = minOf(
+            audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
+            _uiState.value.nodeEndTimeMs
+        )
+        seekAndPlay(safePos)
+    }
+
+    fun cyclePlaybackSpeed() {
+        val nextIndex =
+            (PLAYBACK_SPEEDS.indexOf(_uiState.value.playbackSpeed) + 1).mod(PLAYBACK_SPEEDS.size)
+        val nextSpeed = PLAYBACK_SPEEDS[nextIndex]
+        _uiState.update { it.copy(playbackSpeed = nextSpeed) }
+        audioPlayerManager.setPlaybackSpeed(nextSpeed)
+    }
+
+    fun replayFromStart() {
+        seekAndPlay(0)
     }
 
     fun selectOption(nextNodeId: String) {
@@ -234,11 +269,16 @@ class ScenarioViewModel @Inject constructor(
 
         _uiState.update { it.copy(pastChoices = it.pastChoices + newChoice) }
         loadNode(nextNodeId)
-        playAudio()
     }
 
     override fun onCleared() {
         super.onCleared()
         audioPlayerManager.release()
+    }
+
+    companion object {
+        private val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
+        private const val SYNC_INTERVAL_MS = 100L
+        private const val SKIP_INTERVAL_MS = 15_000L
     }
 }

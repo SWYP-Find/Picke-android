@@ -21,10 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.picke.presentation.R
 import com.picke.presentation.ui.scenario.model.ScenarioOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -37,9 +39,9 @@ fun InteractiveOptionsUI(
 ) {
     var pendingSelectedId by remember(options) { mutableStateOf<String?>(null) }
     val selectGuideText = if (selectedNodeId == null) {
-        "이제 당신의 입장을 선택해주세요"
+        stringResource(R.string.scenario_option_guide_select)
     } else {
-        "아래가 당신의 선택입니다."
+        stringResource(R.string.scenario_option_guide_selected)
     }
 
     Column(
@@ -86,7 +88,7 @@ fun InteractiveOptionsUI(
 
         if (selectedNodeId == null) {
             OptionConfirmButton(
-                text = "입장 선택하기",
+                text = stringResource(R.string.scenario_option_confirm),
                 isEnabled = pendingSelectedId != null,
                 onClick = {
                     pendingSelectedId?.let { onOptionClick(it) }

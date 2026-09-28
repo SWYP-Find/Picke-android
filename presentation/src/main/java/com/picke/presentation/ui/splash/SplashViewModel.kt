@@ -36,6 +36,10 @@ class SplashViewModel @Inject constructor(
         checkAutoLogin()
     }
 
+    fun onNavigationHandled() {
+        _uiState.value = SplashUiState.NavigationHandled
+    }
+
     fun markTermsAgreed() {
         localPreferencesUseCases.saveTermsAgreed()
     }

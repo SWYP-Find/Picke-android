@@ -66,7 +66,7 @@ fun SplashScreen(
             is SplashUiState.NavigateToMain -> onNavigateToMain()
             is SplashUiState.NavigateToOtherPhilosopher -> onNavigateToOtherPhilosopher(state.reportId)
             is SplashUiState.NavigateToBattle -> onNavigateToBattle(state.battleId)
-            is SplashUiState.Loading -> {}
+            is SplashUiState.Loading, SplashUiState.NavigationHandled -> {}
         }
     }
 

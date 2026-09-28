@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,13 +60,11 @@ import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.util.DeepLinkEvent
 import com.picke.presentation.util.DeepLinkManager
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigation(splashViewModel: SplashViewModel) {
     val rootNavController = rememberNavController()
     val uiState by splashViewModel.uiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val analyticsTracker = rememberAnalyticsTracker()
 
     // §2 화면 enum에 등재된 화면의 screen_view 자동 전송
@@ -138,10 +135,9 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
     ) {
         LaunchedEffect(Unit) {
             DeepLinkManager.deepLinkEvent.collect { event ->
-                // 스플래시 로딩이 끝날 때까지 대기 (NavigateToMain이 popUpTo(0)으로 백스택을 지우기 전에
-                // DeepLink 화면으로 이동하면 스플래시 완료 시 덮어씌워지므로, 로딩 완료 후 이동)
-                splashViewModel.uiState.first { it !is SplashUiState.Loading }
-                kotlinx.coroutines.delay(150)
+                // 스플래시 네비게이션이 끝날 때까지 대기 (NavigateToMain이 popUpTo(0)으로 백스택을 지우기 전에
+                // DeepLink 화면으로 이동하면 덮어씌워지므로, onNavigationHandled() 호출 후 이동)
+                splashViewModel.uiState.first { it is SplashUiState.NavigationHandled }
 
                 rootNavController.navigate(AppRoute.Main.route) {
                     popUpTo(AppRoute.Main.route) {
@@ -149,7 +145,6 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     }
                     launchSingleTop = true
                 }
-                kotlinx.coroutines.delay(100)
                 when (event) {
                     is DeepLinkEvent.GoToBattle -> rootNavController.navigate(
                         AppRoute.BattleRouting.createRoute(
@@ -229,25 +224,20 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                         }
                         checkAndShowNotificationSheet(isNewUser)
 
-                        if (pendingReport != null || pendingBattle != null) {
-                            coroutineScope.launch {
-                                kotlinx.coroutines.delay(100)
-                                if (pendingReport != null) {
-                                    rootNavController.navigate(
-                                        AppRoute.OtherPhilosopher.createRoute(
-                                            pendingReport
-                                        )
-                                    )
-                                    DeepLinkManager.pendingReportId = null
-                                } else if (pendingBattle != null) {
-                                    rootNavController.navigate(
-                                        AppRoute.BattleRouting.createRoute(
-                                            pendingBattle
-                                        )
-                                    )
-                                    DeepLinkManager.pendingBattleId = null
-                                }
-                            }
+                        if (pendingReport != null) {
+                            rootNavController.navigate(
+                                AppRoute.OtherPhilosopher.createRoute(
+                                    pendingReport
+                                )
+                            )
+                            DeepLinkManager.pendingReportId = null
+                        } else if (pendingBattle != null) {
+                            rootNavController.navigate(
+                                AppRoute.BattleRouting.createRoute(
+                                    pendingBattle
+                                )
+                            )
+                            DeepLinkManager.pendingBattleId = null
                         }
                     },
                 )

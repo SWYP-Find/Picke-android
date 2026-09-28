@@ -287,7 +287,6 @@ fun PerspectiveScreenContent(
 
                 LaunchedEffect(scrollToTopTrigger) {
                     if (scrollToTopTrigger > 0) {
-                        kotlinx.coroutines.delay(50)
                         listState.scrollToItem(0)
                     }
                 }

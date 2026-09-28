@@ -73,9 +73,7 @@ import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TodayBattleScreen(
@@ -188,8 +186,6 @@ fun TodayBattleScreen(
         isSharing = true
         coroutineScope.launch {
             try {
-                delay(100.milliseconds)
-
                 val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
                 shareBattleToInstagramStoryDarkMode(
                     context = context,

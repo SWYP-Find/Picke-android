@@ -72,9 +72,7 @@ import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun VoteRoute(
@@ -201,8 +199,6 @@ fun VoteScreen(
         isSharing = true
         coroutineScope.launch {
             try {
-                delay(100.milliseconds)
-
                 val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
 
                 if (isPreVote) {

@@ -33,8 +33,6 @@ import com.picke.presentation.ui.scenario.component.OptionConfirmButton
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun ScenarioScreen(
@@ -97,7 +95,6 @@ fun ScenarioScreen(
 
     LaunchedEffect(uiState.showOptions) {
         if (uiState.showOptions) {
-            delay(100.milliseconds)
             listState.animateScrollToItem(allDisplayScripts.size)
         }
     }

@@ -38,7 +38,7 @@ fun TopIndicatorBar(currentPage: Int, totalPages: Int) {
 
         Text(
             text = "${currentPage + 1}/$totalPages",
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = Color.White.copy(alpha = 0.3f)
         )
     }

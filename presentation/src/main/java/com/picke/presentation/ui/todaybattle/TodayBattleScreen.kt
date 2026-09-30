@@ -268,7 +268,7 @@ fun TodayBattleScreen(
                 )
                 Text(
                     text = "아직 빠른 배틀이 선정되지 않았어요\n조금만 기다려주세요!",
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.surfaceTertiary,
                     textAlign = TextAlign.Center
                 )
@@ -470,7 +470,7 @@ fun BattleContent(
                             Text(
                                 text = "#$tag",
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                style = PickeTheme.typography.label,
+                                style = PickeTheme.typography.captionLgMedium,
                                 color = PickeTheme.colors.primary
                             )
                         }
@@ -480,7 +480,7 @@ fun BattleContent(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = item.title,
-                    style = PickeTheme.typography.h1SemiBold,
+                    style = PickeTheme.typography.displayMd,
                     color = PickeTheme.colors.surface,
                     textAlign = TextAlign.Center
                 )
@@ -488,7 +488,7 @@ fun BattleContent(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = item.description,
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.neutral400,
                     textAlign = TextAlign.Center
                 )
@@ -512,7 +512,7 @@ fun BattleContent(
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             item.timeLeft,
-                            style = PickeTheme.typography.labelXSmall,
+                            style = PickeTheme.typography.captionSmSemiBold,
                             color = Color.LightGray
                         )
                     }
@@ -558,7 +558,7 @@ fun BattleContent(
                 color = PickeTheme.colors.secondaryLight
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text("VS", style = PickeTheme.typography.b3SemiBold, color = Color.Black)
+                    Text("VS", style = PickeTheme.typography.bodySmSemiBold, color = Color.Black)
                 }
             }
         }

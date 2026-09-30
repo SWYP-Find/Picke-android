@@ -52,14 +52,14 @@ fun AttendanceRewardFooter(
             )
             Text(
                 text = title,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = Primary900
             )
         }
 
         Text(
             text = caption,
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = SemanticColorTokens.textMuted
         )
     }

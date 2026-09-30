@@ -65,7 +65,7 @@ fun CustomBottomNavigationBar(
                 label = {
                     Text(
                         text = item.title,
-                        style = PickeTheme.typography.label
+                        style = PickeTheme.typography.captionLgMedium
                     )
                 },
 

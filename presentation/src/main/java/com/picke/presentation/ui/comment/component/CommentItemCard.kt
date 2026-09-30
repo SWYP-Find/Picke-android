@@ -68,12 +68,12 @@ fun CommentItemCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = if (item.isMine) "나" else item.nickname,
-                    style = PickeTheme.typography.labelMedium,
+                    style = PickeTheme.typography.bodySmMedium,
                     color = PickeTheme.colors.textSecondary
                 )
                 Text(
                     text = item.timeAgo,
-                    style = PickeTheme.typography.labelXSmall,
+                    style = PickeTheme.typography.captionSmSemiBold,
                     color = PickeTheme.colors.outline
                 )
             }
@@ -125,7 +125,7 @@ fun CommentItemCard(
         ) {
             Text(
                 text = item.stance,
-                style = PickeTheme.typography.b5Medium,
+                style = PickeTheme.typography.bodyXxsMedium,
                 color = PickeTheme.colors.badgeText,
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
             )
@@ -135,7 +135,7 @@ fun CommentItemCard(
 
         Text(
             text = item.content,
-            style = PickeTheme.typography.b4Regular,
+            style = PickeTheme.typography.bodyXsRegular,
             color = PickeTheme.colors.neutral600
         )
 
@@ -172,7 +172,7 @@ fun CommentItemCard(
 
                 Text(
                     text = "${item.likeCount}",
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted,
                     modifier = Modifier.padding(start = 2.dp)
                 )
@@ -201,7 +201,7 @@ fun CommentMenuItem(
             modifier = Modifier.size(16.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, style = PickeTheme.typography.labelMedium, color = Color.White)
+        Text(text = text, style = PickeTheme.typography.bodySmMedium, color = Color.White)
     }
 }
 

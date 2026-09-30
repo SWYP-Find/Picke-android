@@ -159,7 +159,7 @@ fun SettingMenuItem(
         ){
             Text(
                 text = title,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textSecondary
             )
             Icon(

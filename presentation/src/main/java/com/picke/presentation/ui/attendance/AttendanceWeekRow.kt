@@ -54,7 +54,7 @@ fun AttendanceWeekRow(
             ) {
                 Text(
                     text = day.label,
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = Gray600
                 )
                 AttendanceDayCell(status = day.status, points = day.points)
@@ -82,7 +82,7 @@ fun AttendanceDayCell(
         ) {
             Text(
                 text = "+${points}P",
-                style = PickeTheme.typography.caption2SemiBold,
+                style = PickeTheme.typography.captionMdSemiBold,
                 color = White
             )
         }

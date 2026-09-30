@@ -118,7 +118,7 @@ fun FirstOnboardingChatBubble(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = name,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.neutral400,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,7 +135,7 @@ fun FirstOnboardingChatBubble(
             ) {
                 Text(
                     text = message,
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = PickeTheme.colors.textSecondary,
                     textAlign = TextAlign.Start
                 )

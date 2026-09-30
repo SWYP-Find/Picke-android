@@ -41,7 +41,7 @@ fun BattleOpinionBox(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = opinion ?: "의견",
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.textSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -49,7 +49,7 @@ fun BattleOpinionBox(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = name ?: "이름",
-                style = PickeTheme.typography.labelXSmall,
+                style = PickeTheme.typography.captionSmSemiBold,
                 color = PickeTheme.colors.textMuted,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

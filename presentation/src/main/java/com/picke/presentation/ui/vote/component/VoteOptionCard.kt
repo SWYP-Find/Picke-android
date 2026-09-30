@@ -58,7 +58,7 @@ fun VoteOptionCard(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = option.title,
-            style = PickeTheme.typography.h4SemiBold,
+            style = PickeTheme.typography.headingSm,
             color = PickeTheme.colors.textPrimary,
             textAlign = TextAlign.Center
         )
@@ -66,7 +66,7 @@ fun VoteOptionCard(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = option.representative,
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = PickeTheme.colors.textTertiary
         )
     }

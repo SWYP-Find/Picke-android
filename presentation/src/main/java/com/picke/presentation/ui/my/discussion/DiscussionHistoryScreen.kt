@@ -100,7 +100,7 @@ fun DiscussionHistoryList(
             )
             Text(
                 text = emptyMessage,
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = PickeTheme.colors.beige800
             )
         }
@@ -151,13 +151,13 @@ fun DiscussionHistoryCard(
                 Text(
                     text = "#${item.category ?: "이슈"}",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.primary
                 )
             }
             Text(
                 text = item.title,
-                style = PickeTheme.typography.labelMedium,
+                style = PickeTheme.typography.bodySmMedium,
                 color = PickeTheme.colors.textTertiary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -169,7 +169,7 @@ fun DiscussionHistoryCard(
         // [중단] 내가 남긴 요약 내용
         Text(
             text = item.summary,
-            style = PickeTheme.typography.b4Regular,
+            style = PickeTheme.typography.bodyXsRegular,
             color = PickeTheme.colors.neutral400,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
@@ -180,7 +180,7 @@ fun DiscussionHistoryCard(
         // [하단] 작성 날짜
         Text(
             text = item.createdAt,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.neutral200
         )
     }

@@ -141,7 +141,7 @@ fun ContentActivityList(
             )
             Text(
                 text = emptyMessage,
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = PickeTheme.colors.beige800
             )
         }
@@ -195,7 +195,7 @@ fun ContentActivityCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = item.author.nickname,
-                        style = PickeTheme.typography.labelMedium,
+                        style = PickeTheme.typography.bodySmMedium,
                         color = PickeTheme.colors.textTertiary
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -209,7 +209,7 @@ fun ContentActivityCard(
                         ) {
                             Text(
                                 text = item.optionTitle ?: "",
-                                style = PickeTheme.typography.b5Medium,
+                                style = PickeTheme.typography.bodyXxsMedium,
                                 color = PickeTheme.colors.primary
                             )
                         }
@@ -218,7 +218,7 @@ fun ContentActivityCard(
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = item.createdAt.toRelativeTimeText(),
-                    style = PickeTheme.typography.b4Regular,
+                    style = PickeTheme.typography.bodyXsRegular,
                     color = PickeTheme.colors.textMuted
                 )
             }
@@ -229,7 +229,7 @@ fun ContentActivityCard(
         // [중단] 본문
         Text(
             text = item.content,
-            style = PickeTheme.typography.b3Regular,
+            style = PickeTheme.typography.bodySmRegular,
             color = PickeTheme.colors.neutral600,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
@@ -252,7 +252,7 @@ fun ContentActivityCard(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = item.likeCount.toString(),
-                style = PickeTheme.typography.labelMedium,
+                style = PickeTheme.typography.bodySmMedium,
                 color = PickeTheme.colors.textMuted
             )
         }

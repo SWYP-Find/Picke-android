@@ -547,14 +547,14 @@ fun PerspectiveHeader(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = leftOption?.title ?: "",
-                style = PickeTheme.typography.labelXSmall,
+                style = PickeTheme.typography.captionSmSemiBold,
                 color = PickeTheme.colors.textSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "${proRatio.toInt()}%",
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.neutral600
             )
         }
@@ -581,7 +581,7 @@ fun PerspectiveHeader(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = if (opinionChanged) "생각이 바뀌었어요" else "생각이 동일해요",
-                        style = PickeTheme.typography.caption2SemiBold,
+                        style = PickeTheme.typography.captionMdSemiBold,
                         color = PickeTheme.colors.primary
                     )
                 }
@@ -621,14 +621,14 @@ fun PerspectiveHeader(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = rightOption?.title ?: "",
-                style = PickeTheme.typography.labelXSmall,
+                style = PickeTheme.typography.captionSmSemiBold,
                 color = PickeTheme.colors.textSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "${conRatio.toInt()}%",
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.neutral600
             )
         }

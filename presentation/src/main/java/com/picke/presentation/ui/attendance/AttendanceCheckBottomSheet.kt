@@ -71,7 +71,7 @@ fun AttendanceCheckBottomSheet(
         ) {
             Text(
                 text = uiState.title,
-                style = PickeTheme.typography.h2SemiBold,
+                style = PickeTheme.typography.headingLg,
                 color = Gray900,
                 textAlign = TextAlign.Center
             )
@@ -80,7 +80,7 @@ fun AttendanceCheckBottomSheet(
 
             Text(
                 text = uiState.subtitle,
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = SemanticColorTokens.textMuted,
                 textAlign = TextAlign.Center
             )

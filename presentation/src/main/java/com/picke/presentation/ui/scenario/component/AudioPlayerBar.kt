@@ -110,12 +110,12 @@ fun AudioPlayerBar(
         ) {
             Text(
                 text = formatTime(currentPositionMs),
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.textMuted
             )
             Text(
                 text = formatTime(totalDurationMs),
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.textMuted
             )
         }
@@ -187,7 +187,7 @@ fun AudioPlayerBar(
                 )
                 Text(
                     text = stringResource(R.string.scenario_audio_replay),
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = PickeTheme.colors.textMuted,
                     textAlign = TextAlign.Center
                 )
@@ -211,13 +211,13 @@ private fun PlaybackSpeedButton(
     ) {
         Text(
             text = formatSpeed(speed),
-            style = PickeTheme.typography.b1Medium,
+            style = PickeTheme.typography.bodyLgMedium,
             color = PickeTheme.colors.textPrimary,
             textAlign = TextAlign.Center
         )
         Text(
             text = stringResource(R.string.scenario_audio_playback_speed),
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = PickeTheme.colors.textMuted,
             textAlign = TextAlign.Center
         )
@@ -248,7 +248,7 @@ private fun ControlSkipButton(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = PickeTheme.colors.textMuted,
         )
     }

@@ -222,7 +222,7 @@ fun ExploreList(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "아직 준비된 배틀이 없어요!",
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.beige800
                 )
             }

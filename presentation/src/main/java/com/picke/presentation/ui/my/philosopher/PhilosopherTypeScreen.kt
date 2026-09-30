@@ -309,14 +309,14 @@ fun LockedPhilosopherHeaderSection() {
         ) {
             Text(
                 text = "나의 철학자 유형",
-                style = PickeTheme.typography.labelMedium,
+                style = PickeTheme.typography.bodySmMedium,
                 color = Color(0xFF8C3E26)
             )
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "??형",
-                style = PickeTheme.typography.h2SemiBold,
+                style = PickeTheme.typography.headingLg,
                 color = PickeTheme.colors.textPrimary
             )
 
@@ -340,7 +340,7 @@ fun LockedPhilosopherHeaderSection() {
 
             Text(
                 text = "아직 분석할 기록이 부족해요.\n배틀에 참여하면 성향을 확인할 수 있어요!",
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textTertiary,
                 textAlign = TextAlign.Center,
             )
@@ -355,7 +355,7 @@ fun LockedTraitAnalysisSection() {
     Column {
         Text(
             text = "성향 분석",
-            style = PickeTheme.typography.h4SemiBold,
+            style = PickeTheme.typography.headingSm,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -380,7 +380,7 @@ fun LockedTraitAnalysisSection() {
             // 중앙 텍스트
             Text(
                 text = "배틀 5개에 참여하시면\n잠금을 풀 수 있어요!",
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textPrimary,
                 textAlign = TextAlign.Center,
                 lineHeight = 24.sp
@@ -422,7 +422,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
         ) {
             Text(
                 text = "나의 철학자 유형",
-                style = PickeTheme.typography.labelMedium,
+                style = PickeTheme.typography.bodySmMedium,
                 color = Color(0xFF8C3E26)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -433,7 +433,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
             ) {
                 Text(
                     text = "${philosopher.philosopherLabel}형",
-                    style = PickeTheme.typography.h2SemiBold,
+                    style = PickeTheme.typography.headingLg,
                     color = PickeTheme.colors.textPrimary
                 )
             }
@@ -450,7 +450,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
 
             Text(
                 text = philosopher.description,
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = PickeTheme.colors.neutral600,
                 textAlign = TextAlign.Center
             )
@@ -472,7 +472,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
                         ) {
                             Text(
                                 text = "$tag",
-                                style = PickeTheme.typography.labelXSmall,
+                                style = PickeTheme.typography.captionSmSemiBold,
                                 color = Color(0xFF8C3E26)
                             )
                         }
@@ -489,7 +489,7 @@ fun TraitAnalysisSection(analysis: RecapScores) {
     Column {
         Text(
             text = "성향 분석",
-            style = PickeTheme.typography.h4SemiBold,
+            style = PickeTheme.typography.headingSm,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -558,7 +558,7 @@ fun ScoreBar(modifier: Modifier = Modifier, label: String, score: Int) {
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = label, style = PickeTheme.typography.label, color = PickeTheme.colors.neutral600)
+        Text(text = label, style = PickeTheme.typography.captionLgMedium, color = PickeTheme.colors.neutral600)
         Spacer(modifier = Modifier.width(8.dp))
 
         // 막대 바
@@ -579,7 +579,7 @@ fun ScoreBar(modifier: Modifier = Modifier, label: String, score: Int) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = score.toString(),
-            style = PickeTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+            style = PickeTheme.typography.bodySmMedium.copy(fontWeight = FontWeight.Bold),
             color = PickeTheme.colors.textPrimary
         )
     }
@@ -591,7 +591,7 @@ fun TasteReportSection(report: PreferenceReport) {
     Column {
         Text(
             text = "내 취향 리포트",
-            style = PickeTheme.typography.h4SemiBold,
+            style = PickeTheme.typography.headingSm,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -639,19 +639,19 @@ fun TasteReportSection(report: PreferenceReport) {
                     Row {
                         Text(
                             text = "0${index + 1}",
-                            style = PickeTheme.typography.labelMedium,
+                            style = PickeTheme.typography.bodySmMedium,
                             color = Color(0xFFCBA572)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = "#${item.tagName}",
-                            style = PickeTheme.typography.labelMedium,
+                            style = PickeTheme.typography.bodySmMedium,
                             color = PickeTheme.colors.textPrimary
                         )
                     }
                     Text(
                         text = "${item.participationCount}회",
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.textTertiary
                     )
                 }
@@ -666,13 +666,13 @@ fun ReportStatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            style = PickeTheme.typography.h2SemiBold,
+            style = PickeTheme.typography.headingLg,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = PickeTheme.colors.textTertiary
         )
     }
@@ -683,7 +683,7 @@ fun ChemistrySection(best: MyPhilosopher, worst: MyPhilosopher) {
     Column {
         Text(
             text = "궁합 유형",
-            style = PickeTheme.typography.h4SemiBold,
+            style = PickeTheme.typography.headingSm,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -747,7 +747,7 @@ fun ChemistryCard(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = titleText,
-                style = PickeTheme.typography.label.copy(fontWeight = FontWeight.Bold),
+                style = PickeTheme.typography.captionLgBold,
                 color = titleColor
             )
         }
@@ -761,13 +761,13 @@ fun ChemistryCard(
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "${name}형",
-            style = PickeTheme.typography.b2Medium,
+            style = PickeTheme.typography.bodyMdMedium,
             color = PickeTheme.colors.textPrimary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = desc,
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = PickeTheme.colors.textTertiary,
             textAlign = TextAlign.Center
         )

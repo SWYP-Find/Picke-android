@@ -88,12 +88,12 @@ fun PerspectiveItemCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = if (item.isMine) "나" else item.nickname,
-                        style = PickeTheme.typography.labelMedium,
+                        style = PickeTheme.typography.bodySmMedium,
                         color = PickeTheme.colors.textSecondary
                     )
                     Text(
                         text = item.timeAgo,
-                        style = PickeTheme.typography.labelXSmall,
+                        style = PickeTheme.typography.captionSmSemiBold,
                         color = PickeTheme.colors.outline
                     )
                 }
@@ -151,7 +151,7 @@ fun PerspectiveItemCard(
                 ) {
                     Text(
                         text = if (status == "PENDING") "검수중" else "거절됨",
-                        style = PickeTheme.typography.b5Medium,
+                        style = PickeTheme.typography.bodyXxsMedium,
                         color = Color.White,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
@@ -163,7 +163,7 @@ fun PerspectiveItemCard(
                 ) {
                     Text(
                         text = item.optionTitle,
-                        style = PickeTheme.typography.b5Medium,
+                        style = PickeTheme.typography.bodyXxsMedium,
                         color = PickeTheme.colors.badgeText,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -175,7 +175,7 @@ fun PerspectiveItemCard(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = item.content,
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.neutral600,
                 maxLines = if (isDetail) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis
@@ -190,7 +190,7 @@ fun PerspectiveItemCard(
                     if (!isDetail) {
                         Text(
                             text = "더보기",
-                            style = PickeTheme.typography.b5Medium,
+                            style = PickeTheme.typography.bodyXxsMedium,
                             color = PickeTheme.colors.textMuted,
                             modifier = Modifier.clickable(
                                 interactionSource = remember { MutableInteractionSource() },
@@ -229,7 +229,7 @@ fun PerspectiveItemCard(
                             Spacer(modifier = Modifier.width(2.dp))
                             Text(
                                 text = "${item.replyCount}",
-                                style = PickeTheme.typography.b5Medium,
+                                style = PickeTheme.typography.bodyXxsMedium,
                                 color = PickeTheme.colors.textMuted
                             )
                         }
@@ -261,7 +261,7 @@ fun PerspectiveItemCard(
                         }
                         Text(
                             text = "${item.likeCount}",
-                            style = PickeTheme.typography.b5Medium,
+                            style = PickeTheme.typography.bodyXxsMedium,
                             color = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted,
                             modifier = Modifier.padding(start = 2.dp)
                         )
@@ -294,7 +294,7 @@ private fun PerspectiveMenuItem(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            style = PickeTheme.typography.labelMedium,
+            style = PickeTheme.typography.bodySmMedium,
             color = Color.White
         )
     }

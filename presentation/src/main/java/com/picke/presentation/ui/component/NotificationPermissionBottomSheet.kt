@@ -100,7 +100,7 @@ fun NotificationPermissionBottomSheet(
 
             Text(
                 text = "푸시 알림 설정",
-                style = PickeTheme.typography.h3SemiBold,
+                style = PickeTheme.typography.headingMd,
                 color = Gray900
             )
 
@@ -108,7 +108,7 @@ fun NotificationPermissionBottomSheet(
 
             Text(
                 text = "픽케의 매일 새로운 배틀 소식을 알려드려요",
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = Gray300
             )
 
@@ -116,7 +116,7 @@ fun NotificationPermissionBottomSheet(
 
             Text(
                 text = "설정 > 앱 > 픽케에서\n알림설정 변경이 가능합니다.",
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = Gray300,
                 textAlign = TextAlign.Center
             )

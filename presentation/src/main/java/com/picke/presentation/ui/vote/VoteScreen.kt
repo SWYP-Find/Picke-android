@@ -349,7 +349,7 @@ fun VoteScreen(
                                             horizontal = 8.dp,
                                             vertical = 2.dp
                                         ),
-                                        style = PickeTheme.typography.label,
+                                        style = PickeTheme.typography.captionLgMedium,
                                         color = PickeTheme.colors.primary
                                     )
                                 }
@@ -359,14 +359,14 @@ fun VoteScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = battleInfo.title.replace(", ", ",\n"),
-                            style = PickeTheme.typography.h1SemiBold,
+                            style = PickeTheme.typography.displayMd,
                             color = titleColor
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = battleDetail.description,
-                            style = PickeTheme.typography.b3Regular,
+                            style = PickeTheme.typography.bodySmRegular,
                             color = descColor
                         )
                     }
@@ -413,7 +413,7 @@ fun VoteScreen(
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = "VS",
-                                style = PickeTheme.typography.labelMedium,
+                                style = PickeTheme.typography.bodySmMedium,
                                 color = PickeTheme.colors.textPrimary
                             )
                         }
@@ -513,7 +513,7 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
             )
             Text(
                 text = "해당 배틀은 존재하지 않습니다",
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = PickeTheme.colors.beige800
             )
         }

@@ -160,7 +160,7 @@ private fun LoginScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                style = PickeTheme.typography.h4SemiBold,
+                style = PickeTheme.typography.headingSm,
                 color = PickeTheme.colors.neutral200,
                 text = stringResource(R.string.login_your_think)
             )

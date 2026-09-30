@@ -1,4 +1,4 @@
-﻿package com.picke.presentation.ui.component
+package com.picke.presentation.ui.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.size
@@ -13,12 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.picke.presentation.analytics.UiActionName
-import com.picke.presentation.analytics.rememberAnalyticsTracker
+import androidx.navigation.compose.rememberNavController
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -27,6 +27,7 @@ import com.picke.presentation.ui.theme.PickeTheme
 fun CustomBottomNavigationBar(
     mainNavController: NavController,
     rootNavController: NavController,
+    onTabClick: (BottomNavItem) -> Unit = {},
     onHomeReselected: () -> Unit = {},
     onExploreReselected: () -> Unit = {}
 ) {
@@ -38,7 +39,6 @@ fun CustomBottomNavigationBar(
     )
 
     val bottomTabRoutes = items.map { it.route }
-    val analyticsTracker = rememberAnalyticsTracker()
 
     NavigationBar(
         containerColor = PickeTheme.colors.surface,
@@ -72,13 +72,7 @@ fun CustomBottomNavigationBar(
                 selected = isSelected,
 
                 onClick = {
-                    val tabAction = when (item.route) {
-                        BottomNavItem.Home.route -> UiActionName.TAB_HOME
-                        BottomNavItem.Explore.route -> UiActionName.TAB_EXPLORE
-                        BottomNavItem.TodayBattle.route -> UiActionName.TAB_QUICK_BATTLE
-                        else -> UiActionName.TAB_MYPAGE
-                    }
-                    analyticsTracker.trackUiAction(tabAction)
+                    onTabClick(item)
 
                     if (item.route == BottomNavItem.TodayBattle.route) {
                         rootNavController.navigate(BottomNavItem.TodayBattle.route)
@@ -113,5 +107,16 @@ fun CustomBottomNavigationBar(
                 )
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomBottomNavigationBarPreview() {
+    PickeTheme {
+        CustomBottomNavigationBar(
+            mainNavController = rememberNavController(),
+            rootNavController = rememberNavController()
+        )
     }
 }

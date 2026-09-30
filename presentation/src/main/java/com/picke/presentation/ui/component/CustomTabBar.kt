@@ -49,7 +49,7 @@ fun CustomTabBar(
             ) {
                 Text(
                     text = tab,
-                    style = PickeTheme.typography.labelMedium,
+                    style = PickeTheme.typography.bodySmMedium,
                     color = if(selectedTab == tab) PickeTheme.colors.primary else PickeTheme.colors.outline,
                     fontWeight = if(selectedTab == tab) FontWeight.Bold else FontWeight.Normal,
                     maxLines = 1

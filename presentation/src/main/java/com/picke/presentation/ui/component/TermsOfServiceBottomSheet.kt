@@ -116,7 +116,7 @@ fun TermsOfServiceBottomSheet(
 
             Text(
                 text = "픽케 약관 동의서",
-                style = PickeTheme.typography.h3SemiBold,
+                style = PickeTheme.typography.headingMd,
                 color = Gray900
             )
 
@@ -124,7 +124,7 @@ fun TermsOfServiceBottomSheet(
 
             Text(
                 text = "편리한 서비스 이용을 위해 약관에 동의해 주세요",
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = Gray300,
                 textAlign = TextAlign.Center
             )
@@ -206,7 +206,7 @@ private fun TermsItem(
 
         Text(
             text = text,
-            style = PickeTheme.typography.b3Regular,
+            style = PickeTheme.typography.bodySmRegular,
             color = Gray900,
             modifier = Modifier.weight(1f)
         )

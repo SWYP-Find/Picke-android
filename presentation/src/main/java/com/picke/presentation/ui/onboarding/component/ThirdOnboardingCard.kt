@@ -59,13 +59,13 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                         Text(
                             text = "#투표",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            style = PickeTheme.typography.b4Regular,
+                            style = PickeTheme.typography.bodyXsRegular,
                             color = PickeTheme.colors.primary
                         )
                     }
                     Text(
                         text = "985명 참여",
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.neutral400
                     )
                 }
@@ -81,7 +81,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                     ) {
                         Text(
                             text = "가상국가를 만든다면 대통령은 ",
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = PickeTheme.colors.textPrimary
                         )
                         Box(
@@ -97,7 +97,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                         )
                         Text(
                             text = "이다",
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = PickeTheme.colors.textPrimary
                         )
                     }
@@ -105,7 +105,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "빈칸에 들어갈 가장 적절한 답을 골라주세요",
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.textMuted,
                         textAlign = TextAlign.Center
                     )
@@ -181,12 +181,12 @@ fun ThirdOnboardingButton(
     ) {
         Text(
             text = "$index. ",
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = Color(0xFFCBA572)
         )
         Text(
             text = text,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.textPrimary
         )
     }

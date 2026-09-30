@@ -56,7 +56,7 @@ fun RecommendItemCard(
                 Text(
                     text = "#${item.tags.firstOrNull() ?: "이슈"}",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.primary
                 )
             }
@@ -72,7 +72,7 @@ fun RecommendItemCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "${item.audioDuration}분",
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.neutral400
                 )
 
@@ -87,7 +87,7 @@ fun RecommendItemCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "${item.viewCount}",
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.neutral400
                 )
             }
@@ -96,7 +96,7 @@ fun RecommendItemCard(
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = item.title,
-            style = PickeTheme.typography.b3SemiBold,
+            style = PickeTheme.typography.bodySmSemiBold,
             color = PickeTheme.colors.textPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -105,7 +105,7 @@ fun RecommendItemCard(
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = item.summary,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.neutral400,
             maxLines = 2,
             minLines = 1,
@@ -134,7 +134,7 @@ fun RecommendItemCard(
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = "VS",
-                        style = PickeTheme.typography.labelXSmall,
+                        style = PickeTheme.typography.captionSmSemiBold,
                         color = PickeTheme.colors.textPrimary
                     )
                 }

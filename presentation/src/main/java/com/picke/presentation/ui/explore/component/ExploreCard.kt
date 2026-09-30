@@ -84,7 +84,7 @@ fun ExploreCard(
                         Text(
                             text = "#$category",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            style = PickeTheme.typography.labelXSmall.copy(fontSize = 12.sp),
+                            style = PickeTheme.typography.captionSmSemiBold.copy(fontSize = 12.sp),
                             color = PickeTheme.colors.primary,
                             maxLines = 1
                         )
@@ -94,7 +94,7 @@ fun ExploreCard(
 
                 Text(
                     text = item.title,
-                    style = PickeTheme.typography.b3SemiBold.copy(
+                    style = PickeTheme.typography.bodySmSemiBold.copy(
                         lineBreak = LineBreak(
                             strategy = LineBreak.Strategy.HighQuality,
                             strictness = LineBreak.Strictness.Loose,
@@ -111,7 +111,7 @@ fun ExploreCard(
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = item.summary,
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.neutral400,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -134,7 +134,7 @@ fun ExploreCard(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = item.audioDurationText,
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.neutral400
                     )
 
@@ -149,7 +149,7 @@ fun ExploreCard(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = item.viewCountText,
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.neutral400
                     )
                 }

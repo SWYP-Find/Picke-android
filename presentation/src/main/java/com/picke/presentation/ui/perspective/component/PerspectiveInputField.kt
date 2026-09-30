@@ -80,7 +80,7 @@ fun PerspectiveInputField(
                 if (textFieldState.text.isEmpty()) {
                     Text(
                         text = hintText,
-                        style = PickeTheme.typography.b3Regular,
+                        style = PickeTheme.typography.bodySmRegular,
                         color = PickeTheme.colors.outline,
                         lineHeight = 20.sp
                     )
@@ -93,7 +93,7 @@ fun PerspectiveInputField(
                         minHeightInLines = 3,
                         maxHeightInLines = Int.MAX_VALUE
                     ),
-                    textStyle = PickeTheme.typography.b3Regular.copy(
+                    textStyle = PickeTheme.typography.bodySmRegular.copy(
                         color = PickeTheme.colors.textPrimary,
                         lineHeight = 20.sp
                     ),

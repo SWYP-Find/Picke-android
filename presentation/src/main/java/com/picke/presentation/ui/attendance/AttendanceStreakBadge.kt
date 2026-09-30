@@ -50,7 +50,7 @@ fun AttendanceStreakBadge(
             val stateLabel = if (isStreakAchieved) "달성" else "중"
             Text(
                 text = "${streakDays}일 연속 출석 $stateLabel",
-                style = PickeTheme.typography.b4Medium,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = BrandColorTokens.primary700
             )
         }
@@ -61,7 +61,7 @@ fun AttendanceStreakBadge(
         ) {
             Text(
                 text = "+${earnedPoints}P 획득",
-                style = PickeTheme.typography.b4Medium,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = Gray500
             )
             Image(

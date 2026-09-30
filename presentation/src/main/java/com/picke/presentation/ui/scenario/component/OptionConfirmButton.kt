@@ -40,7 +40,7 @@ fun OptionConfirmButton(
     ) {
         Text(
             text = text,
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = textColor,
             textAlign = TextAlign.Center
         )

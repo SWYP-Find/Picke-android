@@ -76,7 +76,7 @@ fun TrendingBattleCard(
             Text(
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 text = "#${item.tags.firstOrNull() ?: "이슈"}",
-                style = PickeTheme.typography.labelXSmall,
+                style = PickeTheme.typography.captionSmSemiBold,
                 color = PickeTheme.colors.primary
             )
         }
@@ -84,7 +84,7 @@ fun TrendingBattleCard(
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.title,
-            style = PickeTheme.typography.b3SemiBold,
+            style = PickeTheme.typography.bodySmSemiBold,
             color = PickeTheme.colors.textPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -102,7 +102,7 @@ fun TrendingBattleCard(
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = item.timeInfoText,
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.neutral400
             )
 
@@ -117,7 +117,7 @@ fun TrendingBattleCard(
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = item.viewCountText,
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.neutral400
             )
         }

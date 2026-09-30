@@ -43,8 +43,8 @@ fun PickeTheme(
     }
 
     CompositionLocalProvider(
-        LocalSwypTypography provides swypTypography,
-        LocalSwypColors provides SwypColors(),
+        LocalPickeTypography provides pickeTypography,
+        LocalPickeColors provides PickeColors(),
     ) {
         MaterialTheme(
             colorScheme = LightColorScheme,
@@ -55,11 +55,11 @@ fun PickeTheme(
 
 
 object PickeTheme {
-    val colors: SwypColors
+    val colors: PickeColors
         @Composable
-        get() = LocalSwypColors.current
+        get() = LocalPickeColors.current
 
-    val typography: SwypTypography
+    val typography: PickeTypography
         @Composable
-        get() = LocalSwypTypography.current
+        get() = LocalPickeTypography.current
 }

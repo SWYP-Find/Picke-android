@@ -59,14 +59,14 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = "나의 철학자 유형",
-                        style = PickeTheme.typography.labelMedium,
+                        style = PickeTheme.typography.bodySmMedium,
                         color = PickeTheme.colors.primary
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "칸트형",
-                        style = PickeTheme.typography.h3SemiBold,
+                        style = PickeTheme.typography.headingMd,
                         color = PickeTheme.colors.neutral600
                     )
 
@@ -83,7 +83,7 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "결과보다 과정을 중시하고, 보편적 도덕 법칙을 따르는 원칙주의자. 어떤 상황에서도 흔들리지 않는 기준을 가진 사람입니다.",
-                        style = PickeTheme.typography.b5Medium,
+                        style = PickeTheme.typography.bodyXxsMedium,
                         color = PickeTheme.colors.neutral600,
                         textAlign = TextAlign.Center
                     )
@@ -106,7 +106,7 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                             ) {
                                 Text(
                                     text = tag,
-                                    style = PickeTheme.typography.labelXSmall,
+                                    style = PickeTheme.typography.captionSmSemiBold,
                                     color = Color(0xFF8C3E26)
                                 )
                             }

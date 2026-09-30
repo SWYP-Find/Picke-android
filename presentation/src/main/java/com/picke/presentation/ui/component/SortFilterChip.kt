@@ -35,7 +35,7 @@ fun SortFilterChip(
     ) {
         Text(
             text = text,
-            style = PickeTheme.typography.b4Medium,
+            style = PickeTheme.typography.bodyXsMedium,
             color = contentColor
         )
     }

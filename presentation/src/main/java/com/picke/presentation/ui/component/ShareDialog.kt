@@ -54,7 +54,7 @@ fun ShareDialog(
                 // 왼쪽 '공유하기' 텍스트
                 Text(
                     text = "공유하기",
-                    style = PickeTheme.typography.h4SemiBold,
+                    style = PickeTheme.typography.headingSm,
                     color = PickeTheme.colors.textPrimary,
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
@@ -111,7 +111,7 @@ fun ShareItem(
         Text(
             text = title,
             color = PickeTheme.colors.primary,
-            style = PickeTheme.typography.b5Medium
+            style = PickeTheme.typography.bodyXxsMedium
         )
     }
 }

@@ -217,7 +217,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "아직 준비된 배틀이 없어요!",
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.beige800
                 )
             }
@@ -384,13 +384,13 @@ fun HomeSectionHeader(
 
         Text(
             text = annotatedTitle,
-            style = PickeTheme.typography.h3SemiBold,
+            style = PickeTheme.typography.headingMd,
             color = PickeTheme.colors.textPrimary
         )
         /*Text(
             text = stringResource(R.string.more),
-            style = SwypTheme.typography.b4Medium,
-            color = SwypTheme.colors.textTertiary,
+            style = PickeTheme.typography.bodyXsMedium,
+            color = PickeTheme.colors.textTertiary,
             modifier = Modifier.clickable { onMoreClick() }
         )*/
     }
@@ -433,7 +433,7 @@ fun EditorPickSection(
             Surface(color = PickeTheme.colors.primary, shape = RoundedCornerShape(2.dp)) {
                 Text(
                     text = "EDITOR PICK",
-                    style = PickeTheme.typography.caption2SemiBold,
+                    style = PickeTheme.typography.captionMdSemiBold,
                     color = PickeTheme.colors.secondaryLight,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                 )
@@ -463,7 +463,7 @@ fun EditorPickSection(
                             append("/${items.size}")
                         }
                     },
-                    style = PickeTheme.typography.labelXSmall,
+                    style = PickeTheme.typography.captionSmSemiBold,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                 )
             }
@@ -512,7 +512,7 @@ fun EditorPickSection(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        val textStyle = PickeTheme.typography.h4SemiBold.copy(
+                        val textStyle = PickeTheme.typography.headingSm.copy(
                             shadow = Shadow(
                                 color = Color.Black,
                                 offset = Offset(2f, 2f),
@@ -544,7 +544,7 @@ fun EditorPickSection(
                 ) {
                     Text(
                         text = pagerItem.title,
-                        style = PickeTheme.typography.h4SemiBold,
+                        style = PickeTheme.typography.headingSm,
                         color = Color.White,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -552,12 +552,12 @@ fun EditorPickSection(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = pagerItem.summary,
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.neutral400,
                         minLines = 2,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        lineHeight = PickeTheme.typography.label.fontSize * 1.4
+                        lineHeight = PickeTheme.typography.captionLgMedium.fontSize * 1.4
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -567,7 +567,7 @@ fun EditorPickSection(
                     ) {
                         Text(
                             text = pagerItem.tags.joinToString(" ") { "#$it" },
-                            style = PickeTheme.typography.label,
+                            style = PickeTheme.typography.captionLgMedium,
                             color = PickeTheme.colors.textMuted
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -580,7 +580,7 @@ fun EditorPickSection(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = pagerItem.viewCountText,
-                                style = PickeTheme.typography.label,
+                                style = PickeTheme.typography.captionLgMedium,
                                 color = PickeTheme.colors.textMuted
                             )
                         }

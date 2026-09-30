@@ -244,7 +244,7 @@ private fun fetchFcmToken() {
 fun AlarmCategoryHeader(title: String) {
     Text(
         text = title,
-        style = PickeTheme.typography.b5Medium,
+        style = PickeTheme.typography.bodyXxsMedium,
         color = PickeTheme.colors.textSecondary,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
     )
@@ -267,13 +267,13 @@ fun AlarmSettingItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = PickeTheme.typography.b4Medium,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = PickeTheme.colors.textPrimary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = subtitle,
-                style = PickeTheme.typography.caption2Medium,
+                style = PickeTheme.typography.captionMdMedium,
                 color = PickeTheme.colors.neutral400
             )
         }

@@ -52,7 +52,7 @@ fun BestBattleRankItem(
 
             Text(
                 text = rank.toString(),
-                style = PickeTheme.typography.h1SemiBold,
+                style = PickeTheme.typography.displayMd,
                 color = rankColor,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -67,7 +67,7 @@ fun BestBattleRankItem(
                     Text(
                         text = "${item.leftProfileName ?: "A"} VS ${item.rightProfileName ?: "B"}",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        style = PickeTheme.typography.labelXSmall,
+                        style = PickeTheme.typography.captionSmSemiBold,
                         color = PickeTheme.colors.primary
                     )
                 }
@@ -75,7 +75,7 @@ fun BestBattleRankItem(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = item.title,
-                    style = PickeTheme.typography.b3SemiBold,
+                    style = PickeTheme.typography.bodySmSemiBold,
                     color = PickeTheme.colors.textPrimary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -89,7 +89,7 @@ fun BestBattleRankItem(
                 ) {
                     Text(
                         text = item.tags.joinToString(" ") { "#$it" },
-                        style = PickeTheme.typography.label,
+                        style = PickeTheme.typography.captionLgMedium,
                         color = PickeTheme.colors.textMuted
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -103,7 +103,7 @@ fun BestBattleRankItem(
                         Spacer(modifier = Modifier.width(2.dp))
                         Text(
                             text = item.timeInfoText,
-                            style = PickeTheme.typography.label,
+                            style = PickeTheme.typography.captionLgMedium,
                             color = PickeTheme.colors.neutral400
                         )
 
@@ -118,7 +118,7 @@ fun BestBattleRankItem(
                         Spacer(modifier = Modifier.width(2.dp))
                         Text(
                             text = item.viewCountText,
-                            style = PickeTheme.typography.label,
+                            style = PickeTheme.typography.captionLgMedium,
                             color = PickeTheme.colors.neutral400
                         )
                     }

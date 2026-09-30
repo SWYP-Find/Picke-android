@@ -193,7 +193,7 @@ fun NoticeEventDetailContent(
             ) {
                 Text(
                     text = item.type,
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = PickeTheme.colors.primary
                 )
             }
@@ -203,7 +203,7 @@ fun NoticeEventDetailContent(
             // [제목]
             Text(
                 text = item.title,
-                style = PickeTheme.typography.labelMedium,
+                style = PickeTheme.typography.bodySmMedium,
                 color = PickeTheme.colors.textTertiary
             )
 
@@ -212,7 +212,7 @@ fun NoticeEventDetailContent(
             // [날짜]
             Text(
                 text = item.date,
-                style = PickeTheme.typography.b5Medium,
+                style = PickeTheme.typography.bodyXxsMedium,
                 color = PickeTheme.colors.textMuted
             )
 
@@ -221,7 +221,7 @@ fun NoticeEventDetailContent(
             // [본문] (Domain 모델에 content 필드를 꼭 추가해주세요!)
             Text(
                 text = item.content,
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.neutral400
             )
 
@@ -242,7 +242,7 @@ fun NoticeEventDetailContent(
                 ) {
                     Text(
                         text = "목록",
-                        style = PickeTheme.typography.b3SemiBold,
+                        style = PickeTheme.typography.bodySmSemiBold,
                         color = Color.White
                     )
                 }
@@ -271,7 +271,7 @@ fun NoticeEventList(
             )
             Text(
                 text = emptyMessage,
-                style = PickeTheme.typography.b3Regular,
+                style = PickeTheme.typography.bodySmRegular,
                 color = PickeTheme.colors.beige800
             )
         }
@@ -296,7 +296,7 @@ fun NoticeEventCard(
     item: NoticeEventItem,
     onClick: () -> Unit
 ) {
-    //val borderColor =  if (!item.isRead) SwypTheme.colors.primaryDisabled else SwypTheme.colors.surfaceTertiary
+    //val borderColor =  if (!item.isRead) PickeTheme.colors.primaryDisabled else PickeTheme.colors.surfaceTertiary
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -321,7 +321,7 @@ fun NoticeEventCard(
             ) {
                 Text(
                     text = item.type,
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = PickeTheme.colors.primary
                 )
             }
@@ -331,7 +331,7 @@ fun NoticeEventCard(
                 Box(
                     modifier = Modifier
                         .size(4.dp)
-                        .background(SwypTheme.colors.primary, CircleShape)
+                        .background(PickeTheme.colors.primary, CircleShape)
                 )
             }*/
         }
@@ -341,7 +341,7 @@ fun NoticeEventCard(
         // [중단] 제목
         Text(
             text = item.title,
-            style = PickeTheme.typography.labelMedium,
+            style = PickeTheme.typography.bodySmMedium,
             color = PickeTheme.colors.textTertiary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -352,7 +352,7 @@ fun NoticeEventCard(
         // [중단] 내용 미리보기
         Text(
             text = item.content,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.textMuted,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -363,7 +363,7 @@ fun NoticeEventCard(
         // [하단] 날짜
         Text(
             text = item.date,
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = PickeTheme.colors.textMuted
         )
     }

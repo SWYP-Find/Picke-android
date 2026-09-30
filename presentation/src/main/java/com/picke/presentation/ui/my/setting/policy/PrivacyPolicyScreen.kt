@@ -49,7 +49,7 @@ fun PrivacyPolicyScreen(
             // 시행 일자
             Text(
                 text = "시행일자: ${PolicyStrings.EFFECTIVE_DATE}",
-                style = PickeTheme.typography.b5Medium,
+                style = PickeTheme.typography.bodyXxsMedium,
                 color = PickeTheme.colors.textMuted,
                 modifier = Modifier.align(Alignment.End)
             )
@@ -58,9 +58,9 @@ fun PrivacyPolicyScreen(
 
             Text(
                 text = PolicyStrings.PRIVACY_POLICY,
-                style = PickeTheme.typography.b4Medium,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = PickeTheme.colors.neutral600,
-                lineHeight = PickeTheme.typography.b4Medium.fontSize * 1.5
+                lineHeight = PickeTheme.typography.bodyXsMedium.fontSize * 1.5
             )
 
             Spacer(modifier = Modifier.height(48.dp))

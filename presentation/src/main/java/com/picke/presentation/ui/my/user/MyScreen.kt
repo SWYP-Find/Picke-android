@@ -260,12 +260,12 @@ fun ProfileSection(
 
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(text = nickname, style = PickeTheme.typography.h4SemiBold)
+            Text(text = nickname, style = PickeTheme.typography.headingSm)
 
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = userHandle,
-                style = PickeTheme.typography.b4Regular,
+                style = PickeTheme.typography.bodyXsRegular,
                 color = PickeTheme.colors.textTertiary
             )
         }
@@ -300,14 +300,14 @@ fun PhilosopherTypeSection(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.my_menu_philosopher),
-                style = PickeTheme.typography.caption2Medium,
+                style = PickeTheme.typography.captionMdMedium,
                 color = PickeTheme.colors.textTertiary
             )
 
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (isLocked) displayName else "$displayName ",
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textSecondary
             )
         }

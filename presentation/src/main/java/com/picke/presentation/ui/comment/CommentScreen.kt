@@ -296,7 +296,7 @@ fun CommentHeaderSection(count: Int) {
     ) {
         Text(
             text = "답글 ${count}개",
-            style = PickeTheme.typography.b4Regular.copy(fontWeight = FontWeight.SemiBold),
+            style = PickeTheme.typography.bodyXsSemiBold,
             color = PickeTheme.colors.neutral600
         )
     }

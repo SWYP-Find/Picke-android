@@ -51,7 +51,7 @@ fun CustomButton(
                 Spacer(modifier = Modifier.width(2.dp))
             }
             Text(
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 text = text,
                 color = textColor,
             )

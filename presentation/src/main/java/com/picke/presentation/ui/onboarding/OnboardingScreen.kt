@@ -133,7 +133,7 @@ fun OnboardingPageContent(page: Int) {
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = subTitle,
-            style = PickeTheme.typography.b2Medium,
+            style = PickeTheme.typography.bodyMdMedium,
             color = PickeTheme.colors.textMuted,
             textAlign = TextAlign.Center
         )

@@ -82,7 +82,7 @@ fun WithdrawScreen(
                         Text(
                             text = "제출하기",
                             color = PickeTheme.colors.primaryDark,
-                            style = PickeTheme.typography.h4SemiBold
+                            style = PickeTheme.typography.headingSm
                         )
                     }
                     // 2. 돌아가기 버튼
@@ -97,7 +97,7 @@ fun WithdrawScreen(
                         Text(
                             text = "픽케로 다시 돌아가기",
                             color = Color.White,
-                            style = PickeTheme.typography.h4SemiBold
+                            style = PickeTheme.typography.headingSm
                         )
                     }
                 }
@@ -115,7 +115,7 @@ fun WithdrawScreen(
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 text = "정말 떠나시나요? 아쉬워요 😢",
-                style = PickeTheme.typography.h3SemiBold,
+                style = PickeTheme.typography.headingMd,
                 color = PickeTheme.colors.primaryDark
             )
 
@@ -126,7 +126,7 @@ fun WithdrawScreen(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 text = "지금까지 픽케를 이용해주셔서 감사합니다.\n더 나은 서비스를 만들기 위해, 탈퇴 이유를 알려주세요.",
                 color = PickeTheme.colors.neutral400,
-                style = PickeTheme.typography.labelMedium
+                style = PickeTheme.typography.bodySmMedium
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -208,7 +208,7 @@ fun WithdrawReasonItem(
         Text(
             text = text,
             color = PickeTheme.colors.textPrimary,
-            style = PickeTheme.typography.b3Regular
+            style = PickeTheme.typography.bodySmRegular
         )
     }
 }

@@ -65,13 +65,13 @@ fun TodayPickeCard(
                 Text(
                     text = "#$typeName",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.primary
                 )
             }
             Text(
                 text = "${item.participantsCount}명 참여",
-                style = PickeTheme.typography.label,
+                style = PickeTheme.typography.captionLgMedium,
                 color = PickeTheme.colors.neutral400
             )
         }
@@ -99,7 +99,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
         ) {
             Text(
                 text = item.titlePrefix,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textPrimary,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -120,7 +120,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
             ) {
                 Text(
                     text = if (isVoted) selectedOptionText else "",
-                    style = PickeTheme.typography.b3SemiBold,
+                    style = PickeTheme.typography.bodySmSemiBold,
                     color = PickeTheme.colors.primary,
                     textAlign = TextAlign.Center
                 )
@@ -128,7 +128,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
 
             Text(
                 text = item.titleSuffix,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textPrimary,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -137,7 +137,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.summary,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.neutral200,
             textAlign = TextAlign.Center
         )
@@ -193,7 +193,7 @@ private fun QuizPickeContent(item: TodayPickUiModel.QuizPick, onVoteClick: (Long
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = item.title,
-            style = PickeTheme.typography.b3SemiBold,
+            style = PickeTheme.typography.bodySmSemiBold,
             color = PickeTheme.colors.textPrimary,
             textAlign = TextAlign.Center
         )
@@ -201,7 +201,7 @@ private fun QuizPickeContent(item: TodayPickUiModel.QuizPick, onVoteClick: (Long
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.summary,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.neutral200,
             textAlign = TextAlign.Center
         )
@@ -251,12 +251,12 @@ private fun PickeGridButton(
     ) {
         Text(
             text = "$index. ",
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.beige900
         )
         Text(
             text = text,
-            style = PickeTheme.typography.chipSmall,
+            style = PickeTheme.typography.bodyXsMedium,
             color = PickeTheme.colors.textPrimary
         )
     }
@@ -271,7 +271,7 @@ private fun PollStatBar(modifier: Modifier, option: PollQuizOptionStatUiModel) {
     ) {
         Text(
             text = option.title,
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = PickeTheme.colors.neutral400,
             modifier = Modifier.width(44.dp)
         )
@@ -293,7 +293,7 @@ private fun PollStatBar(modifier: Modifier, option: PollQuizOptionStatUiModel) {
 
         Text(
             text = "${option.ratio.toInt()}%",
-            style = PickeTheme.typography.caption2SemiBold,
+            style = PickeTheme.typography.captionMdSemiBold,
             color = PickeTheme.colors.textPrimary,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.End,
@@ -332,11 +332,11 @@ private fun QuizOptionCard(
                 if (option.isCorrect) PickeTheme.colors.secondary else PickeTheme.colors.primary
             val resultText = if (option.isCorrect) "O 정답" else "X 오답"
 
-            Text(text = resultText, style = PickeTheme.typography.label, color = resultColor)
+            Text(text = resultText, style = PickeTheme.typography.captionLgMedium, color = resultColor)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = option.title,
-                style = PickeTheme.typography.chipSmall,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = PickeTheme.colors.textPrimary,
                 textAlign = TextAlign.Center
             )
@@ -344,7 +344,7 @@ private fun QuizOptionCard(
         } else {
             Text(
                 text = option.title,
-                style = PickeTheme.typography.chipSmall,
+                style = PickeTheme.typography.bodyXsMedium,
                 color = PickeTheme.colors.textPrimary,
                 textAlign = TextAlign.Center
             )
@@ -352,7 +352,7 @@ private fun QuizOptionCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = option.stance,
-                    style = PickeTheme.typography.labelXSmall,
+                    style = PickeTheme.typography.captionSmSemiBold,
                     color = PickeTheme.colors.neutral400,
                     textAlign = TextAlign.Center
                 )

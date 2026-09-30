@@ -36,7 +36,7 @@ fun PerspectiveEmptyState(
         )
         Text(
             text = message,
-            style = PickeTheme.typography.b3Regular,
+            style = PickeTheme.typography.bodySmRegular,
             color = PickeTheme.colors.beige800
         )
     }

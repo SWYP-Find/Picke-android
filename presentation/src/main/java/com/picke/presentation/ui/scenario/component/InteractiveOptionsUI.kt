@@ -57,7 +57,7 @@ fun InteractiveOptionsUI(
             )
             Text(
                 text = selectGuideText,
-                style = PickeTheme.typography.labelMedium.copy(fontStyle = FontStyle.Italic),
+                style = PickeTheme.typography.bodySmMedium.copy(fontStyle = FontStyle.Italic),
                 color = PickeTheme.colors.textTertiary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -128,7 +128,7 @@ fun OptionSelectionCard(
     ) {
         Text(
             text = text,
-            style = PickeTheme.typography.b5Medium,
+            style = PickeTheme.typography.bodyXxsMedium,
             color = textColor,
             textAlign = TextAlign.Center
         )

@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.picke.presentation.R
@@ -18,205 +19,125 @@ val Pretendard = FontFamily(
     Font(R.font.pretendard_regular, FontWeight.Normal)                  // 400
 )
 
-// 2. 피그마와 100% 동일한 이름의 데이터 클래스 생성
-data class SwypTypography(
-    // [ Headings ] - Letter Spacing -2.5% (-0.025 곱하기)
-    val h0SemiBold: TextStyle,
-    val h1SemiBold: TextStyle,
-    val h2SemiBold: TextStyle,
-    val h3SemiBold: TextStyle,
-    val h4SemiBold: TextStyle,
+data class PickeTypography(
+    // display
+    val displayLg: TextStyle,
+    val displayMd: TextStyle,
 
-    // [ Body ]
-    val b1Regular: TextStyle,
-    val b1Medium: TextStyle,
-    val b1SemiBold: TextStyle,
+    // heading
+    val headingXl: TextStyle,
+    val headingLg: TextStyle,
+    val headingMd: TextStyle,
+    val headingSm: TextStyle,
+    val headingXs: TextStyle,
 
-    val b2SemiBold: TextStyle,
-    val b2Medium: TextStyle,
-    val b2Bold: TextStyle,
+    // body/lg (16)
+    val bodyLgRegular: TextStyle,
+    val bodyLgMedium: TextStyle,
+    val bodyLgSemiBold: TextStyle,
+    val bodyLgBold: TextStyle,
 
-    val b3Regular: TextStyle,
-    val b3SemiBold: TextStyle,
+    // body/md (15)
+    val bodyMdMedium: TextStyle,
+    val bodyMdSemiBold: TextStyle,
+    val bodyMdBold: TextStyle,
 
-    val b4Regular: TextStyle,
-    val b4Medium: TextStyle,
+    // body/sm (14)
+    val bodySmRegular: TextStyle,
+    val bodySmMedium: TextStyle,
+    val bodySmSemiBold: TextStyle,
 
-    val b5Medium: TextStyle,
+    // body/xs (13)
+    val bodyXsRegular: TextStyle,
+    val bodyXsMedium: TextStyle,
+    val bodyXsSemiBold: TextStyle,
 
-    // [ Caption & Labels ]
-    val caption2SemiBold: TextStyle,
-    val caption2Medium: TextStyle,
+    // body/xxs (12)
+    val bodyXxsRegular: TextStyle,
+    val bodyXxsMedium: TextStyle,
+    val bodyXxsSemiBold: TextStyle,
 
-    val labelLarge: TextStyle,
-    val labelMedium: TextStyle,
-    val label: TextStyle,
-    val labelXSmall: TextStyle,
+    // caption/lg (12)
+    val captionLgRegular: TextStyle,
+    val captionLgMedium: TextStyle,
+    val captionLgSemiBold: TextStyle,
+    val captionLgBold: TextStyle,
 
-    val chipSmall: TextStyle
+    // caption/md (11)
+    val captionMdRegular: TextStyle,
+    val captionMdMedium: TextStyle,
+    val captionMdSemiBold: TextStyle,
+    val captionMdBold: TextStyle,
+
+    // caption/sm (10)
+    val captionSmRegular: TextStyle,
+    val captionSmMedium: TextStyle,
+    val captionSmSemiBold: TextStyle,
+    val captionSmBold: TextStyle,
 )
 
-// 3. 실제 수치 주입
-val swypTypography = SwypTypography(
-    // Headings
-    h0SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 30.sp,
-        lineHeight = 1.28.em,
-        letterSpacing = (-0.025).em
-    ),
-    h1SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 30.sp,
-        lineHeight = 1.28.em,
-        letterSpacing = (-0.025).em
-    ),
-    h2SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
-        lineHeight = 1.28.em,
-        letterSpacing = (-0.025).em
-    ),
-    h3SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 18.sp,
-        lineHeight = 1.28.em,
-        letterSpacing = (-0.025).em
-    ),
-    h4SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 1.28.em,
-        letterSpacing = (-0.025).em
-    ),
+private fun pretendard(
+    fontSize: TextUnit,
+    fontWeight: FontWeight,
+    lineHeight: TextUnit,
+) = TextStyle(
+    fontFamily = Pretendard,
+    fontWeight = fontWeight,
+    fontSize = fontSize,
+    lineHeight = lineHeight,
+    letterSpacing = 0.sp,
+)
 
-    // B1
-    b1Regular = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 1.50.em
-    ),
-    b1Medium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp
-    ),
-    b1SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 24.sp
-    ),
+private val LineHeightHeading = 1.3.em
+private val LineHeightBodyLarge = 1.5.em
+private val LineHeightBodySmall = 1.4.em
 
-    // B2 
-    b2SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 15.sp,
-        lineHeight = 22.5.sp
-    ),
-    b2Medium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 15.sp,
-        lineHeight = 22.5.sp
-    ),
-    b2Bold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Bold,
-        fontSize = 15.sp,
-        lineHeight = 22.5.sp
-    ),
+val pickeTypography = PickeTypography(
+    displayLg = pretendard(40.sp, FontWeight.ExtraBold, LineHeightHeading),
+    displayMd = pretendard(30.sp, FontWeight.SemiBold, LineHeightHeading),
 
-    // B3 
-    b3Regular = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 19.6.sp
-    ),
-    b3SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        lineHeight = 19.6.sp
-    ),
+    headingXl = pretendard(24.sp, FontWeight.SemiBold, LineHeightHeading),
+    headingLg = pretendard(20.sp, FontWeight.SemiBold, LineHeightHeading),
+    headingMd = pretendard(18.sp, FontWeight.SemiBold, LineHeightHeading),
+    headingSm = pretendard(16.sp, FontWeight.SemiBold, LineHeightHeading),
+    headingXs = pretendard(14.sp, FontWeight.SemiBold, LineHeightHeading),
 
-    // B4 
-    b4Regular = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
-        lineHeight = 18.2.sp
-    ),
-    b4Medium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 13.sp,
-        lineHeight = 18.2.sp
-    ),
+    bodyLgRegular = pretendard(16.sp, FontWeight.Normal, LineHeightBodyLarge),
+    bodyLgMedium = pretendard(16.sp, FontWeight.Medium, LineHeightBodyLarge),
+    bodyLgSemiBold = pretendard(16.sp, FontWeight.SemiBold, LineHeightBodyLarge),
+    bodyLgBold = pretendard(16.sp, FontWeight.Bold, LineHeightBodyLarge),
 
-    // B5 
-    b5Medium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.8.sp
-    ),
+    bodyMdMedium = pretendard(15.sp, FontWeight.Medium, LineHeightBodyLarge),
+    bodyMdSemiBold = pretendard(15.sp, FontWeight.SemiBold, LineHeightBodyLarge),
+    bodyMdBold = pretendard(15.sp, FontWeight.Bold, LineHeightBodyLarge),
 
-    // Caption2 
-    caption2SemiBold = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 11.sp,
-        lineHeight = 15.4.sp
-    ),
-    caption2Medium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 15.4.sp
-    ),
+    bodySmRegular = pretendard(14.sp, FontWeight.Normal, LineHeightBodySmall),
+    bodySmMedium = pretendard(14.sp, FontWeight.Medium, LineHeightBodySmall),
+    bodySmSemiBold = pretendard(14.sp, FontWeight.SemiBold, LineHeightBodySmall),
 
-    // Labels & Chip 
-    labelLarge = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        lineHeight = 22.4.sp
-    ),
-    labelMedium = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 19.6.sp
-    ),
-    label = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.8.sp
-    ),
-    labelXSmall = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 10.sp,
-        lineHeight = 14.sp
-    ),
-    chipSmall = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 13.sp,
-        lineHeight = 18.2.sp
-    ),
+    bodyXsRegular = pretendard(13.sp, FontWeight.Normal, LineHeightBodySmall),
+    bodyXsMedium = pretendard(13.sp, FontWeight.Medium, LineHeightBodySmall),
+    bodyXsSemiBold = pretendard(13.sp, FontWeight.SemiBold, LineHeightBodySmall),
+
+    bodyXxsRegular = pretendard(12.sp, FontWeight.Normal, LineHeightBodySmall),
+    bodyXxsMedium = pretendard(12.sp, FontWeight.Medium, LineHeightBodySmall),
+    bodyXxsSemiBold = pretendard(12.sp, FontWeight.SemiBold, LineHeightBodySmall),
+
+    captionLgRegular = pretendard(12.sp, FontWeight.Normal, LineHeightBodySmall),
+    captionLgMedium = pretendard(12.sp, FontWeight.Medium, LineHeightBodySmall),
+    captionLgSemiBold = pretendard(12.sp, FontWeight.SemiBold, LineHeightBodySmall),
+    captionLgBold = pretendard(12.sp, FontWeight.Bold, LineHeightBodySmall),
+
+    captionMdRegular = pretendard(11.sp, FontWeight.Normal, LineHeightBodySmall),
+    captionMdMedium = pretendard(11.sp, FontWeight.Medium, LineHeightBodySmall),
+    captionMdSemiBold = pretendard(11.sp, FontWeight.SemiBold, LineHeightBodySmall),
+    captionMdBold = pretendard(11.sp, FontWeight.Bold, LineHeightBodySmall),
+
+    captionSmRegular = pretendard(10.sp, FontWeight.Normal, LineHeightBodySmall),
+    captionSmMedium = pretendard(10.sp, FontWeight.Medium, LineHeightBodySmall),
+    captionSmSemiBold = pretendard(10.sp, FontWeight.SemiBold, LineHeightBodySmall),
+    captionSmBold = pretendard(10.sp, FontWeight.Bold, LineHeightBodySmall),
 )
 
 // 4. Compose 전역에서 쓸 수 있게 Local 객체 생성 (Theme.kt에서 사용)
-val LocalSwypTypography = staticCompositionLocalOf { swypTypography }
+val LocalPickeTypography = staticCompositionLocalOf { pickeTypography }

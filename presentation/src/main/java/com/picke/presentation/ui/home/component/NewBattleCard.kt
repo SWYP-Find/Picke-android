@@ -56,7 +56,7 @@ fun NewBattleCard(
                 Text(
                     text = "#${item.tags.firstOrNull() ?: "이슈"}",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.primary
                 )
             }
@@ -72,7 +72,7 @@ fun NewBattleCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = item.timeInfoText,
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.neutral400
                 )
 
@@ -87,7 +87,7 @@ fun NewBattleCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = item.viewCountText,
-                    style = PickeTheme.typography.label,
+                    style = PickeTheme.typography.captionLgMedium,
                     color = PickeTheme.colors.neutral400
                 )
             }
@@ -96,14 +96,14 @@ fun NewBattleCard(
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = item.title,
-            style = PickeTheme.typography.b3SemiBold,
+            style = PickeTheme.typography.bodySmSemiBold,
             color = PickeTheme.colors.textPrimary
         )
 
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = item.summary,
-            style = PickeTheme.typography.label,
+            style = PickeTheme.typography.captionLgMedium,
             color = PickeTheme.colors.neutral400,
             maxLines = 2,
             minLines = 1,
@@ -131,7 +131,7 @@ fun NewBattleCard(
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = "VS",
-                        style = PickeTheme.typography.labelXSmall,
+                        style = PickeTheme.typography.captionSmSemiBold,
                         color = PickeTheme.colors.textPrimary
                     )
                 }

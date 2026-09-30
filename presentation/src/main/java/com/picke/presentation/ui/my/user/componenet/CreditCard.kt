@@ -49,7 +49,7 @@ fun CreditCard(
             ) {
                 Text(
                     text = "P",
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = PickeTheme.colors.textSecondary
                 )
             }
@@ -57,12 +57,12 @@ fun CreditCard(
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = stringResource(R.string.my_point),
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.surfaceDefault
                 )
                 Text(
                     text = credit.toString(),
-                    style = PickeTheme.typography.b3Regular,
+                    style = PickeTheme.typography.bodySmRegular,
                     color = PickeTheme.colors.secondary700
                 )
             }
@@ -72,15 +72,15 @@ fun CreditCard(
         // Box(
         //     modifier = Modifier
         //         .clip(RoundedCornerShape(4.dp))
-        //         .background(SwypTheme.colors.secondary300)
+        //         .background(PickeTheme.colors.secondary300)
         //         .clickable { onChargeClick() }
         //         .padding(horizontal = 6.dp, vertical = 4.dp),
         //     contentAlignment = Alignment.Center
         // ) {
         //     Text(
         //         text = stringResource(R.string.my_charge_free),
-        //         style = SwypTheme.typography.label,
-        //         color = SwypTheme.colors.textPrimary
+        //         style = PickeTheme.typography.captionLgMedium,
+        //         color = PickeTheme.colors.textPrimary
         //     )
         // }
     }

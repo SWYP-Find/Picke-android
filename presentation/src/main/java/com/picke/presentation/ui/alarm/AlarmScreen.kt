@@ -124,7 +124,7 @@ fun AlarmScreen(
                 actions = {
                     Text(
                         text = "모두 읽음",
-                        style = PickeTheme.typography.b4Medium,
+                        style = PickeTheme.typography.bodyXsMedium,
                         color = PickeTheme.colors.textTertiary,
                         modifier = Modifier
                             .clickable { onReadAllClick() }
@@ -176,7 +176,7 @@ fun AlarmScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "아직 도착한 알림이 없습니다",
-                            style = PickeTheme.typography.b3Regular,
+                            style = PickeTheme.typography.bodySmRegular,
                             color = PickeTheme.colors.beige800
                         )
                     }

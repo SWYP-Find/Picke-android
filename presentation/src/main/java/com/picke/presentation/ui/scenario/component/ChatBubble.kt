@@ -58,7 +58,7 @@ fun ChatBubble(
             Text(
                 text = formattedText,
                 color = if (isActive) PickeTheme.colors.textSecondary else PickeTheme.colors.textMuted,
-                style = PickeTheme.typography.label.copy(
+                style = PickeTheme.typography.captionLgMedium.copy(
                     fontStyle = FontStyle.Italic
                 ),
                 textAlign = TextAlign.Center,
@@ -107,7 +107,7 @@ fun ChatBubble(
             if (showAvatarAndName) {
                 Text(
                     text = script.speakerName,
-                    style = PickeTheme.typography.b3SemiBold,
+                    style = PickeTheme.typography.bodySmSemiBold,
                     color = PickeTheme.colors.neutral400,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -133,7 +133,7 @@ fun ChatBubble(
             ) {
                 Text(
                     text = script.displayText,
-                    style = PickeTheme.typography.b5Medium,
+                    style = PickeTheme.typography.bodyXxsMedium,
                     color = textColor,
                     textAlign = TextAlign.Start
                 )

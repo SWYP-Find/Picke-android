@@ -57,7 +57,7 @@ fun CustomConfirmDialog(
                 ) {
                     Text(
                         text = message,
-                        style = PickeTheme.typography.b3SemiBold,
+                        style = PickeTheme.typography.bodySmSemiBold,
                         color = pointColor,
                         textAlign = TextAlign.Center,
                         lineHeight = 24.sp
@@ -82,7 +82,7 @@ fun CustomConfirmDialog(
                     ) {
                         Text(
                             text = confirmText,
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = pointColor
                         )
                     }
@@ -101,7 +101,7 @@ fun CustomConfirmDialog(
                     ) {
                         Text(
                             text = dismissText,
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = Color.White
                         )
                     }
@@ -144,7 +144,7 @@ fun CustomReverseConfirmDialog(
                     if (title != null) {
                         Text(
                             text = title,
-                            style = PickeTheme.typography.labelLarge,
+                            style = PickeTheme.typography.bodyLgBold,
                             color = pointColor,
                             textAlign = TextAlign.Center
                         )
@@ -153,7 +153,7 @@ fun CustomReverseConfirmDialog(
                     // 본문
                     Text(
                         text = message,
-                        style = if (title != null) PickeTheme.typography.b3Regular else PickeTheme.typography.b3SemiBold,
+                        style = if (title != null) PickeTheme.typography.bodySmRegular else PickeTheme.typography.bodySmSemiBold,
                         color = pointColor,
                         textAlign = TextAlign.Center,
                         lineHeight = 24.sp
@@ -179,7 +179,7 @@ fun CustomReverseConfirmDialog(
                     ) {
                         Text(
                             text = dismissText,
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = pointColor
                         )
                     }
@@ -198,7 +198,7 @@ fun CustomReverseConfirmDialog(
                     ) {
                         Text(
                             text = confirmText,
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = Color.White
                         )
                     }
@@ -241,7 +241,7 @@ fun CustomSingleActionDialog(
                     ) {
                         Text(
                             text = message,
-                            style = PickeTheme.typography.h4SemiBold,
+                            style = PickeTheme.typography.headingSm,
                             color = PickeTheme.colors.primary,
                             textAlign = TextAlign.Center,
                             lineHeight = 24.sp
@@ -251,7 +251,7 @@ fun CustomSingleActionDialog(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = subMessage,
-                                style = PickeTheme.typography.b4Regular,
+                                style = PickeTheme.typography.bodyXsRegular,
                                 color = PickeTheme.colors.primary,
                                 textAlign = TextAlign.Center
                             )
@@ -272,7 +272,7 @@ fun CustomSingleActionDialog(
                     ) {
                         Text(
                             text = buttonText,
-                            style = PickeTheme.typography.b3SemiBold,
+                            style = PickeTheme.typography.bodySmSemiBold,
                             color = Color.White
                         )
                     }

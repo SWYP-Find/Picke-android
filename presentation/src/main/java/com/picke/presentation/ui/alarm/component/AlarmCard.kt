@@ -90,7 +90,7 @@ fun AlarmCard(
             ) {
                 Text(
                     text = item.title,
-                    style = PickeTheme.typography.caption2Medium,
+                    style = PickeTheme.typography.captionMdMedium,
                     color = PickeTheme.colors.textMuted,
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
@@ -105,7 +105,7 @@ fun AlarmCard(
                 ) {
                     Text(
                         text = item.createdAt.toRelativeTimeText(),
-                        style = PickeTheme.typography.caption2Medium,
+                        style = PickeTheme.typography.captionMdMedium,
                         color = PickeTheme.colors.neutral200
                     )
 
@@ -124,7 +124,7 @@ fun AlarmCard(
 
             Text(
                 text = item.body,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 color = PickeTheme.colors.textPrimary,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

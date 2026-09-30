@@ -75,7 +75,7 @@ fun CustomTopAppBar(
             if (!centerTitle && title != null) {
                 Text(
                     text = title,
-                    style = PickeTheme.typography.h4SemiBold,
+                    style = PickeTheme.typography.headingSm,
                     color = PickeTheme.colors.textPrimary
                 )
             }
@@ -84,7 +84,7 @@ fun CustomTopAppBar(
         if (centerTitle && title != null) {
             Text(
                 text = title,
-                style = PickeTheme.typography.h4SemiBold,
+                style = PickeTheme.typography.headingSm,
                 color = PickeTheme.colors.textPrimary,
                 textAlign = TextAlign.Center,
                 maxLines = 1,

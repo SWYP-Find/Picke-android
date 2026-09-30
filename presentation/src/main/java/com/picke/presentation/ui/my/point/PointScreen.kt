@@ -132,7 +132,7 @@ fun PointScreen(
                     )
                     Text(
                         text = "아직 포인트 내역이 없습니다",
-                        style = PickeTheme.typography.b3Regular,
+                        style = PickeTheme.typography.bodySmRegular,
                         color = PickeTheme.colors.beige800
                     )
                 }
@@ -220,13 +220,13 @@ fun PointHistoryItem(
                 Text(
                     text = item.title,
                     color = PickeTheme.colors.textPrimary,
-                    style = PickeTheme.typography.b3SemiBold
+                    style = PickeTheme.typography.bodySmSemiBold
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = item.date,
                     color = PickeTheme.colors.textMuted,
-                    style = PickeTheme.typography.caption2Medium
+                    style = PickeTheme.typography.captionMdMedium
                 )
             }
 
@@ -235,13 +235,13 @@ fun PointHistoryItem(
                 Text(
                     text = pointText,
                     color = pointColor,
-                    style = PickeTheme.typography.b3SemiBold
+                    style = PickeTheme.typography.bodySmSemiBold
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = item.type,
                     color = PickeTheme.colors.textMuted,
-                    style = PickeTheme.typography.caption2Medium
+                    style = PickeTheme.typography.captionMdMedium
                 )
             }
         }

@@ -226,7 +226,7 @@ fun SectionTitle(title: String, isRequired: Boolean) {
         Text(
             text = title,
             color = PickeTheme.colors.neutral400,
-            style = PickeTheme.typography.labelMedium
+            style = PickeTheme.typography.bodySmMedium
         )
     }
 }
@@ -251,7 +251,7 @@ fun CategoryTab(
         Text(
             text = text,
             color = textColor,
-            style = if (isSelected) PickeTheme.typography.b3SemiBold else PickeTheme.typography.b3Regular
+            style = if (isSelected) PickeTheme.typography.bodySmSemiBold else PickeTheme.typography.bodySmRegular
         )
     }
 }
@@ -286,11 +286,11 @@ fun CustomFormTextField(
                     value = value,
                     onValueChange = onValueChange,
                     singleLine = singleLine,
-                    textStyle = PickeTheme.typography.b4Medium,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
                     modifier = Modifier.fillMaxWidth()
                 ) { innerTextField ->
                     if (value.isEmpty()) {
-                        Text(text = placeholder, color = PickeTheme.colors.neutral200, style = PickeTheme.typography.b4Medium)
+                        Text(text = placeholder, color = PickeTheme.colors.neutral200, style = PickeTheme.typography.bodyXsMedium)
                     }
                     innerTextField()
                 }
@@ -301,7 +301,7 @@ fun CustomFormTextField(
             Text(
                 text = bottomRightText,
                 color = PickeTheme.colors.neutral400,
-                style = PickeTheme.typography.labelXSmall,
+                style = PickeTheme.typography.captionSmSemiBold,
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
@@ -326,7 +326,7 @@ fun StanceInputField(
             Text(
                 text = label,
                 color = labelColor,
-                style = PickeTheme.typography.b3SemiBold,
+                style = PickeTheme.typography.bodySmSemiBold,
                 modifier = Modifier.width(28.dp)
             )
         }

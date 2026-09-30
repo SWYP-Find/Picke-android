@@ -45,7 +45,7 @@ fun OpinionCard(
     ) {
         Text(
             text = name,
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = PickeTheme.colors.secondary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -54,7 +54,7 @@ fun OpinionCard(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = opinion,
-            style = PickeTheme.typography.h3SemiBold,
+            style = PickeTheme.typography.headingMd,
             color = Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -63,7 +63,7 @@ fun OpinionCard(
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = "\"$quote\"",
-            style = PickeTheme.typography.labelXSmall,
+            style = PickeTheme.typography.captionSmSemiBold,
             color = Color.White.copy(0.3f),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()

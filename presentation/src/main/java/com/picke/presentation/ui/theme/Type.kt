@@ -19,7 +19,7 @@ val Pretendard = FontFamily(
     Font(R.font.pretendard_regular, FontWeight.Normal)                  // 400
 )
 
-data class SwypTypography(
+data class PickeTypography(
     // display
     val displayLg: TextStyle,
     val displayMd: TextStyle,
@@ -92,7 +92,7 @@ private val LineHeightHeading = 1.3.em
 private val LineHeightBodyLarge = 1.5.em
 private val LineHeightBodySmall = 1.4.em
 
-val swypTypography = SwypTypography(
+val pickeTypography = PickeTypography(
     displayLg = pretendard(40.sp, FontWeight.ExtraBold, LineHeightHeading),
     displayMd = pretendard(30.sp, FontWeight.SemiBold, LineHeightHeading),
 
@@ -140,4 +140,4 @@ val swypTypography = SwypTypography(
 )
 
 // 4. Compose 전역에서 쓸 수 있게 Local 객체 생성 (Theme.kt에서 사용)
-val LocalSwypTypography = staticCompositionLocalOf { swypTypography }
+val LocalPickeTypography = staticCompositionLocalOf { pickeTypography }

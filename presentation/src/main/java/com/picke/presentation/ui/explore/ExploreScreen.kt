@@ -119,7 +119,7 @@ fun ExploreScreen(
                         BadgedBox(
                             badge = {
                                 if (hasUnreadNotification) {
-                                    Badge(containerColor = SwypTheme.colors.primary)
+                                    Badge(containerColor = PickeTheme.colors.primary)
                                 }
                             }
                         ) {

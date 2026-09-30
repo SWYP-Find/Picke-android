@@ -261,9 +261,9 @@ fun VoteScreen(
                                     }
 
                                     if (isPreVote) {
-                                        SwypApplication.mixpanel.track("pre_vote", props) // 기획서 명칭 일치
+                                        PickeApplication.mixpanel.track("pre_vote", props) // 기획서 명칭 일치
                                     } else {
-                                        SwypApplication.mixpanel.track("post_vote", props) // 기획서 명칭 일치
+                                        PickeApplication.mixpanel.track("post_vote", props) // 기획서 명칭 일치
                                     }*/
                                     onVoteSubmit(battleInfo.battleId)
                                 }

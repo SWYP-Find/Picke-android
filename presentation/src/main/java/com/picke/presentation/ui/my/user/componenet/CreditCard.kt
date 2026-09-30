@@ -72,15 +72,15 @@ fun CreditCard(
         // Box(
         //     modifier = Modifier
         //         .clip(RoundedCornerShape(4.dp))
-        //         .background(SwypTheme.colors.secondary300)
+        //         .background(PickeTheme.colors.secondary300)
         //         .clickable { onChargeClick() }
         //         .padding(horizontal = 6.dp, vertical = 4.dp),
         //     contentAlignment = Alignment.Center
         // ) {
         //     Text(
         //         text = stringResource(R.string.my_charge_free),
-        //         style = SwypTheme.typography.captionLgMedium,
-        //         color = SwypTheme.colors.textPrimary
+        //         style = PickeTheme.typography.captionLgMedium,
+        //         color = PickeTheme.colors.textPrimary
         //     )
         // }
     }

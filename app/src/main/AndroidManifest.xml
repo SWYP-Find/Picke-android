@@ -9,14 +9,14 @@
         <package android:name="com.kakao.talk" />
     </queries>
     <application
-        android:name=".SwypApplication"
+        android:name=".PickeApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/Theme.SwypApp">
+        android:theme="@style/Theme.PickeApp">
         <!-- 앱의 첫 화면 -->
         <activity
             android:name="com.picke.presentation.MainActivity"

@@ -6,7 +6,7 @@ import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.ui.theme.tokens.ComponentColorTokens
 import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
-data class SwypColors(
+data class PickeColors(
     // Text
     val textPrimary: Color = SemanticColorTokens.textPrimary,
     val textSecondary: Color = SemanticColorTokens.textSecondary,
@@ -94,9 +94,9 @@ data class SwypColors(
     val beige800: Color = BrandColorTokens.beige800,
     val beige900: Color = BrandColorTokens.beige900,
 
-    // Backward-compat aliases for existing SwypTheme.colors usages
+    // Backward-compat aliases for existing PickeTheme.colors usages
     val surface: Color = SemanticColorTokens.surfaceDefault,
     val outline: Color = SemanticColorTokens.textMuted,
 )
 
-val LocalSwypColors = staticCompositionLocalOf { SwypColors() }
+val LocalPickeColors = staticCompositionLocalOf { PickeColors() }

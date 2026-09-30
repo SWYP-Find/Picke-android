@@ -4,7 +4,7 @@ Picke는 논쟁적인 주제에 대해 서로 다른 "관점"을 나누고, 유�
 내레이션이 있는 시나리오 콘텐츠, 성향 진단("철학자 유형") 결과 공유, 출석체크 스트릭·포인트 보상 등 게이미피케이션 요소로 리텐션을 유도합니다.
 
 - **패키지명**: `com.picke.app`
-- **Gradle 루트 프로젝트명**: `SwypApp` (구팀명 SWYP 시절의 이름이 남아있음, GitHub 조직도 `SWYP-Find`)
+- **Gradle 루트 프로젝트명**: `PickeApp` (GitHub 조직명은 구팀명인 `SWYP-Find` 유지)
 
 ## 주요 기능
 
@@ -28,7 +28,7 @@ Picke는 논쟁적인 주제에 대해 서로 다른 "관점"을 나누고, 유�
 
 ```
 app/src/main/java/com/picke/app/
-├── SwypApplication.kt        # Hilt 진입점, Kakao SDK 초기화, FCM 채널 설정
+├── PickeApplication.kt        # Hilt 진입점, Kakao SDK 초기화, FCM 채널 설정
 ├── MainActivity.kt
 ├── analytics/                 # Mixpanel 트래킹 헬퍼
 ├── di/                        # Hilt 모듈 (Network, Api, Repository, AdMob, Mixpanel)
@@ -51,7 +51,7 @@ app/src/main/java/com/picke/app/
 
 **참고 사항**
 - Room 의존성이 버전 카탈로그에는 있으나 실제 `app/build.gradle.kts`에서는 주석 처리되어 있습니다 — 현재 로컬 DB 미사용
-- AdMob 연동 코드는 존재하지만 `SwypApplication.kt` 등에서 비활성화(주석 처리)된 상태
+- AdMob 연동 코드는 존재하지만 `PickeApplication.kt` 등에서 비활성화(주석 처리)된 상태
 
 ## 기술 스택
 

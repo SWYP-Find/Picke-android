@@ -389,8 +389,8 @@ fun HomeSectionHeader(
         )
         /*Text(
             text = stringResource(R.string.more),
-            style = SwypTheme.typography.bodyXsMedium,
-            color = SwypTheme.colors.textTertiary,
+            style = PickeTheme.typography.bodyXsMedium,
+            color = PickeTheme.colors.textTertiary,
             modifier = Modifier.clickable { onMoreClick() }
         )*/
     }

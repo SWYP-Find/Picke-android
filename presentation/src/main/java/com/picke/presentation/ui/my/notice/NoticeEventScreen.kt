@@ -296,7 +296,7 @@ fun NoticeEventCard(
     item: NoticeEventItem,
     onClick: () -> Unit
 ) {
-    //val borderColor =  if (!item.isRead) SwypTheme.colors.primaryDisabled else SwypTheme.colors.surfaceTertiary
+    //val borderColor =  if (!item.isRead) PickeTheme.colors.primaryDisabled else PickeTheme.colors.surfaceTertiary
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -331,7 +331,7 @@ fun NoticeEventCard(
                 Box(
                     modifier = Modifier
                         .size(4.dp)
-                        .background(SwypTheme.colors.primary, CircleShape)
+                        .background(PickeTheme.colors.primary, CircleShape)
                 )
             }*/
         }

@@ -14,7 +14,7 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class SwypApplication : Application() {
+class PickeApplication : Application() {
 
     @Inject
     lateinit var adMobManager: AdMobManager

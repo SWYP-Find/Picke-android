@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SwypApp"
+rootProject.name = "PickeApp"
 include(":app")
 include(":presentation")
 include(":data")

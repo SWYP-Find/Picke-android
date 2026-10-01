@@ -24,8 +24,7 @@ import com.picke.presentation.ui.theme.PickeTheme
 @Composable
 fun CreditCard(
     credit: Int,
-    onClick: () -> Unit,
-    onChargeClick: () -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -67,22 +66,6 @@ fun CreditCard(
                 )
             }
         }
-
-        // [오른쪽] 무료 충전 버튼 (UI 비활성화)
-        // Box(
-        //     modifier = Modifier
-        //         .clip(RoundedCornerShape(4.dp))
-        //         .background(PickeTheme.colors.secondary300)
-        //         .clickable { onChargeClick() }
-        //         .padding(horizontal = 6.dp, vertical = 4.dp),
-        //     contentAlignment = Alignment.Center
-        // ) {
-        //     Text(
-        //         text = stringResource(R.string.my_charge_free),
-        //         style = PickeTheme.typography.captionLgMedium,
-        //         color = PickeTheme.colors.textPrimary
-        //     )
-        // }
     }
 }
 
@@ -92,8 +75,7 @@ fun CreditCardPreview() {
     PickeTheme {
         CreditCard(
             credit = 1,
-            onClick = { },
-            onChargeClick = { }
+            onClick = { }
         )
     }
 }

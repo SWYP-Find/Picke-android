@@ -265,7 +265,7 @@ fun ExploreList(
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
+                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_EXPLORE)
                         }
                     }
                 }

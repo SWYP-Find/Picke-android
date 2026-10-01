@@ -1,56 +1,71 @@
 package com.picke.presentation.ui.component
 
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.kakao.adfit.ads.AdListener
 import com.kakao.adfit.ads.ba.BannerAdView
+import com.picke.presentation.ui.theme.PickeTheme
 
-private const val TAG = "AdFitBannerFlow"
+private val AdFitBanner320x100Size = DpSize(320.dp, 100.dp)
 
-/**
- * 카카오 애드핏 배너 광고. adUnitId가 비어있으면(local.properties 미설정 등) 아무것도 그리지 않는다.
- * BannerAdView는 노출 크기에 따라 자동으로 wrap_content 되므로 modifier로 별도 크기를 강제하지 않는다.
- */
 @Composable
 fun AdFitBannerAd(
     adUnitId: String,
     modifier: Modifier = Modifier,
+    adSize: DpSize = AdFitBanner320x100Size,
 ) {
     if (adUnitId.isBlank()) return
+
+    var isAdFailed by remember(adUnitId) { mutableStateOf(false) }
+    if (isAdFailed) return
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val adViewHolder = remember { arrayOfNulls<BannerAdView>(1) }
 
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            BannerAdView(context).apply {
-                setAdUnitId(adUnitId)
-                setAdListener(object : AdListener {
-                    override fun onAdLoaded() {
-                        Log.d(TAG, "[광고 로드 성공] adUnitId=$adUnitId")
-                    }
+    Box(
+        modifier = modifier.size(adSize),
+        contentAlignment = Alignment.Center
+    ) {
+        AdFitBannerPlaceholder(modifier = Modifier.fillMaxSize())
 
-                    override fun onAdFailed(errorCode: Int) {
-                        Log.w(TAG, "[광고 로드 실패] adUnitId=$adUnitId, errorCode=$errorCode")
-                    }
+        AndroidView(
+            factory = { context ->
+                BannerAdView(context).apply {
+                    setAdUnitId(adUnitId)
+                    setAdListener(object : AdListener {
+                        override fun onAdLoaded() = Unit
 
-                    override fun onAdClicked() {
-                        Log.d(TAG, "[광고 클릭] adUnitId=$adUnitId")
-                    }
-                })
-                adViewHolder[0] = this
-                loadAd()
+                        override fun onAdFailed(errorCode: Int) {
+                            isAdFailed = true
+                        }
+
+                        override fun onAdClicked() = Unit
+                    })
+                    adViewHolder[0] = this
+                    loadAd()
+                }
             }
-        }
-    )
+        )
+    }
 
     DisposableEffect(lifecycleOwner, adUnitId) {
         val observer = LifecycleEventObserver { _, event ->
@@ -68,5 +83,22 @@ fun AdFitBannerAd(
             adViewHolder[0]?.destroy()
             adViewHolder[0] = null
         }
+    }
+}
+
+@Composable
+private fun AdFitBannerPlaceholder(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(PickeTheme.colors.surfaceSubtle)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AdFitBannerPlaceholderPreview() {
+    PickeTheme {
+        AdFitBannerPlaceholder(modifier = Modifier.size(AdFitBanner320x100Size))
     }
 }

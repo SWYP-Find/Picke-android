@@ -2,10 +2,8 @@ package com.picke.presentation.ui.my.user
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
-import com.picke.presentation.ads.AdMobManager
 import com.picke.presentation.ui.my.user.model.MyUiState
 import com.picke.presentation.ui.my.user.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,17 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MyViewModel @Inject constructor(
     private val myPageUseCases: MyPageUseCases,
-    private val alarmUseCases: AlarmUseCases,
-    localPreferencesUseCases: LocalPreferencesUseCases,
-    val adMobManager: AdMobManager
+    private val alarmUseCases: AlarmUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MyUiState(isLoading = true))
     val uiState: StateFlow<MyUiState> = _uiState.asStateFlow()
-
-    init {
-        localPreferencesUseCases.getUserTag()?.let { adMobManager.loadAd(it) }
-    }
 
     fun fetchMyInfo() {
         _uiState.update { it.copy(isLoading = true) }
@@ -50,20 +42,6 @@ class MyViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false) }
                 }
         }
-    }
-
-    fun refreshPointsAfterAd() {
-        _uiState.update { currentState ->
-            val currentTier = currentState.tier
-            if (currentTier != null) {
-                currentState.copy(
-                    tier = currentTier.copy(currentPoint = currentTier.currentPoint + 20)
-                )
-            } else {
-                currentState
-            }
-        }
-        fetchMyInfo()
     }
 
     fun fetchUnreadAlarmStatus() {

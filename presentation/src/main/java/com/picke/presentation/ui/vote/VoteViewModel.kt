@@ -3,12 +3,10 @@ package com.picke.presentation.ui.vote
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.share.usecase.ShareUseCases
 import com.picke.domain.feature.vote.usecase.SubmitVoteResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
-import com.picke.presentation.ads.AdMobManager
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
 import com.picke.presentation.analytics.ShareTarget
@@ -29,8 +27,6 @@ class VoteViewModel @Inject constructor(
     private val battleUseCases: BattleUseCases,
     private val voteUseCases: VoteUseCases,
     private val shareUseCases: ShareUseCases,
-    private val localPreferencesUseCases: LocalPreferencesUseCases,
-    private val adMobManager: AdMobManager,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
@@ -41,13 +37,6 @@ class VoteViewModel @Inject constructor(
 
     init {
         fetchVoteDetail()
-        reloadAd()
-    }
-
-    fun reloadAd() {
-        localPreferencesUseCases.getUserTag()?.let { tag ->
-            adMobManager.loadAd(tag)
-        }
     }
 
     private fun fetchVoteDetail() {

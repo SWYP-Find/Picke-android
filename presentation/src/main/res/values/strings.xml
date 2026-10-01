@@ -80,4 +80,15 @@
     <string name="setting_alarm_category_marketing">마케팅 알림 설정</string>
     <string name="setting_alarm_marketing_title">이벤트 및 소식 알림</string>
     <string name="setting_alarm_marketing_desc">내 의견에 답글이 달리면 알려드려요</string>
+
+    <!-- 약관 -->
+    <string name="policy_title_terms">서비스 이용약관</string>
+    <string name="policy_title_privacy">개인정보처리방침</string>
+    <string name="policy_load_error">문서를 불러오지 못했습니다.\n네트워크 연결을 확인해 주세요.</string>
+    <string name="terms_sheet_title">픽케 약관 동의서</string>
+    <string name="terms_sheet_description">편리한 서비스 이용을 위해 약관에 동의해 주세요</string>
+    <string name="terms_sheet_required_terms">(필수) 서비스 이용약관</string>
+    <string name="terms_sheet_required_privacy">(필수) 개인정보처리방침</string>
+    <string name="terms_sheet_view_detail">자세히 보기</string>
+    <string name="terms_sheet_agree">동의</string>
 </resources>

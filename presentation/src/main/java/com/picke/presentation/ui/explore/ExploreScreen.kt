@@ -42,7 +42,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.AdFitBannerAd
+import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
@@ -265,7 +265,7 @@ fun ExploreList(
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
+                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_EXPLORE)
                         }
                     }
                 }

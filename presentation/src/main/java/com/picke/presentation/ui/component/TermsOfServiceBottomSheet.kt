@@ -32,34 +32,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.picke.presentation.R
+import com.picke.presentation.ui.my.setting.policy.PolicyWebViewScreen
 import com.picke.presentation.ui.theme.Gray100
 import com.picke.presentation.ui.theme.Gray300
 import com.picke.presentation.ui.theme.Gray900
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.White
 import com.picke.presentation.ui.theme.tokens.BrandColorTokens
-
-private const val URL_SERVICE_TERMS = "https://picke.store/terms"
-private const val URL_PRIVACY_POLICY = "https://picke.store/privacy-policy"
+import com.picke.presentation.util.PolicyUrls
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TermsOfServiceBottomSheet(
     onConfirm: () -> Unit,
 ) {
-    val uriHandler = LocalUriHandler.current
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = { it != SheetValue.Hidden }
     )
     var isServiceTermsAgreed by remember { mutableStateOf(false) }
     var isPrivacyPolicyAgreed by remember { mutableStateOf(false) }
+    var openedPolicy by remember { mutableStateOf<Pair<Int, String>?>(null) }
 
     val isAllAgreed = isServiceTermsAgreed && isPrivacyPolicyAgreed
 
@@ -105,7 +106,7 @@ fun TermsOfServiceBottomSheet(
             ) {
                 Image(
                     painter = painterResource(R.drawable.logo_picke),
-                    contentDescription = "Picke Logo",
+                    contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .size(width = 58.dp, height = 58.dp),
                     colorFilter = ColorFilter.tint(BrandColorTokens.primary600)
@@ -115,7 +116,7 @@ fun TermsOfServiceBottomSheet(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "픽케 약관 동의서",
+                text = stringResource(R.string.terms_sheet_title),
                 style = PickeTheme.typography.headingMd,
                 color = Gray900
             )
@@ -123,7 +124,7 @@ fun TermsOfServiceBottomSheet(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "편리한 서비스 이용을 위해 약관에 동의해 주세요",
+                text = stringResource(R.string.terms_sheet_description),
                 style = PickeTheme.typography.bodySmRegular,
                 color = Gray300,
                 textAlign = TextAlign.Center
@@ -136,16 +137,16 @@ fun TermsOfServiceBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TermsItem(
-                    text = "(필수) 서비스 이용약관",
+                    text = stringResource(R.string.terms_sheet_required_terms),
                     isAgreed = isServiceTermsAgreed,
                     onToggle = { isServiceTermsAgreed = !isServiceTermsAgreed },
-                    onViewDetail = { uriHandler.openUri(URL_SERVICE_TERMS) }
+                    onViewDetail = { openedPolicy = R.string.policy_title_terms to PolicyUrls.TERMS_OF_SERVICE }
                 )
                 TermsItem(
-                    text = "(필수) 개인정보처리방침",
+                    text = stringResource(R.string.terms_sheet_required_privacy),
                     isAgreed = isPrivacyPolicyAgreed,
                     onToggle = { isPrivacyPolicyAgreed = !isPrivacyPolicyAgreed },
-                    onViewDetail = { uriHandler.openUri(URL_PRIVACY_POLICY) }
+                    onViewDetail = { openedPolicy = R.string.policy_title_privacy to PolicyUrls.PRIVACY_POLICY }
                 )
             }
 
@@ -153,11 +154,24 @@ fun TermsOfServiceBottomSheet(
 
             // Confirm Button
             CustomButton(
-                text = "동의",
+                text = stringResource(R.string.terms_sheet_agree),
                 onClick = { if (isAllAgreed) onConfirm() },
                 backgroundColor = if (isAllAgreed) PickeTheme.colors.buttonPrimaryBackground else PickeTheme.colors.buttonPrimaryBackgroundDisabled,
                 textColor = White,
                 modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+
+    openedPolicy?.let { (titleRes, url) ->
+        Dialog(
+            onDismissRequest = { openedPolicy = null },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            PolicyWebViewScreen(
+                titleRes = titleRes,
+                url = url,
+                onBackClick = { openedPolicy = null }
             )
         }
     }
@@ -213,7 +227,7 @@ private fun TermsItem(
 
         Icon(
             painter = painterResource(R.drawable.ic_arrow_right_a),
-            contentDescription = "View Detail",
+            contentDescription = stringResource(R.string.terms_sheet_view_detail),
             tint = Gray900,
             modifier = Modifier
                 .size(20.dp)

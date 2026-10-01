@@ -25,11 +25,10 @@ android {
     val kakaoDebugAppKey = properties.getProperty("KAKAO_DEBUG_APPKEY") ?: ""
     val admobRewardedAdUnitId = properties.getProperty("ADMOB_REWARDED_AD_UNIT_ID") ?: ""
     val mixpanelToken = properties.getProperty("MIXPANEL_PROJECT_TOKEN") ?: ""
-    val adfitBanner320x50 = properties.getProperty("ADFIT_BANNER_320X50") ?: ""
-    val adfitBanner320x100 = properties.getProperty("ADFIT_BANNER_320X100") ?: ""
-    val adfitBanner320x480 = properties.getProperty("ADFIT_BANNER_320X480") ?: ""
-    val adfitNative2x1 = properties.getProperty("ADFIT_NATIVE_2X1") ?: ""
-    val adfitNative1x1 = properties.getProperty("ADFIT_NATIVE_1X1") ?: ""
+    val adfitBannerHome = properties.getProperty("ADFIT_BANNER_HOME") ?: ""
+    val adfitBannerExplore = properties.getProperty("ADFIT_BANNER_EXPLORE") ?: ""
+    val adfitBannerRecommend = properties.getProperty("ADFIT_BANNER_RECOMMEND") ?: ""
+    val adfitBannerMy = properties.getProperty("ADFIT_BANNER_MY") ?: ""
     val adfitAppTransition = properties.getProperty("ADFIT_APP_TRANSITION") ?: ""
     val googleWebClientId = properties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
 
@@ -39,11 +38,10 @@ android {
         buildConfigField("String", "KAKAO_DEBUG_APPKEY", "\"$kakaoDebugAppKey\"")
         buildConfigField("String", "ADMOB_REWARDED_AD_UNIT_ID", "\"$admobRewardedAdUnitId\"")
         buildConfigField("String", "MIXPANEL_PROJECT_TOKEN", "\"$mixpanelToken\"")
-        buildConfigField("String", "ADFIT_BANNER_320X50", "\"$adfitBanner320x50\"")
-        buildConfigField("String", "ADFIT_BANNER_320X100", "\"$adfitBanner320x100\"")
-        buildConfigField("String", "ADFIT_BANNER_320X480", "\"$adfitBanner320x480\"")
-        buildConfigField("String", "ADFIT_NATIVE_2X1", "\"$adfitNative2x1\"")
-        buildConfigField("String", "ADFIT_NATIVE_1X1", "\"$adfitNative1x1\"")
+        buildConfigField("String", "ADFIT_BANNER_HOME", "\"$adfitBannerHome\"")
+        buildConfigField("String", "ADFIT_BANNER_EXPLORE", "\"$adfitBannerExplore\"")
+        buildConfigField("String", "ADFIT_BANNER_RECOMMEND", "\"$adfitBannerRecommend\"")
+        buildConfigField("String", "ADFIT_BANNER_MY", "\"$adfitBannerMy\"")
         buildConfigField("String", "ADFIT_APP_TRANSITION", "\"$adfitAppTransition\"")
         // 배포용 구글 클라이언트 ID 설정
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")

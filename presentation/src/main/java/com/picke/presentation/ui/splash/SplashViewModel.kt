@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.auth.usecase.AuthUseCases
 import com.picke.domain.common.local.LocalPreferencesUseCases
-import com.picke.presentation.ads.AdMobManager
 import com.picke.presentation.analytics.AnalyticsScreen
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.OnboardingStep
@@ -23,7 +22,6 @@ class SplashViewModel @Inject constructor(
     private val authUseCases: AuthUseCases,
     private val localPreferencesUseCases: LocalPreferencesUseCases,
     private val analyticsTracker: AnalyticsTracker,
-    private val adMobManager: AdMobManager,
     private val appLifecycleObserver: AppLifecycleObserver
 ) : ViewModel() {
 
@@ -68,11 +66,7 @@ class SplashViewModel @Inject constructor(
                             localPreferencesUseCases.getLoginProvider()
                         )
 
-                        // 4. 광고 미리 로드 (프리패치) - AdMob 미사용으로 비활성화 (추후 재사용 예정)
-                        // adMobManager.loadAd(userId = savedUserTag)
-                        // Log.d(TAG, "[AdMob] 광고 프리패치 시작")
-
-                        // 5. 출석 체크 (콜드 스타트 - 갱신된 토큰으로 호출)
+                        // 4. 출석 체크 (콜드 스타트 - 갱신된 토큰으로 호출)
                         appLifecycleObserver.checkAttendanceIfNeeded()
                     }
 

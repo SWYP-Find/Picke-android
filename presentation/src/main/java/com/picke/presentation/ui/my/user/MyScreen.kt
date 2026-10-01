@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.AdFitBannerAd
+import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.shimmer
@@ -183,31 +183,7 @@ fun MyScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 CreditCard(
                     credit = uiState.tier?.currentPoint ?: 0,
-                    onClick = onNavigateToPoint,
-                    onChargeClick = {
-                        // AdMob 광고 로직 비활성화 (추후 재사용 예정)
-                        // activity?.let {
-                        // val isAdReady = viewModel.adMobManager.showAd(
-                        //     activity = it,
-                        //     placement = "mypage_charge",
-                        //     onRewardEarned = {
-                        //         viewModel.refreshPointsAfterAd()
-                        //         uiState.profile?.userTag?.let { tag -> viewModel.adMobManager.loadAd(userId = tag) }
-                        //         Toast.makeText(context, "20포인트가 지급되었습니다.", Toast.LENGTH_SHORT).show()
-                        //     }
-                        // )
-                        //
-                        // if (!isAdReady) {
-                        //     Toast.makeText(
-                        //         context,
-                        //         "아직 광고가 준비되지 않았습니다.\n잠시 후 다시 시도해주세요.",
-                        //         Toast.LENGTH_SHORT
-                        //     ).show()
-                        // }
-                        // } ?: run {
-                        //     Toast.makeText(context, "광고를 실행할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        // }
-                    }
+                    onClick = onNavigateToPoint
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -235,7 +211,7 @@ fun MyScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
+                    AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_MY)
                 }
             }
         }

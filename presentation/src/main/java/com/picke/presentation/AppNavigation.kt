@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.picke.presentation.R
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.analytics.TrackScreenViews
@@ -43,8 +44,7 @@ import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
 import com.picke.presentation.ui.my.point.PointScreen
 import com.picke.presentation.ui.my.setting.alarm.SettingAlarmScreen
-import com.picke.presentation.ui.my.setting.policy.PrivacyPolicyScreen
-import com.picke.presentation.ui.my.setting.policy.TermsOfServiceScreen
+import com.picke.presentation.ui.my.setting.policy.PolicyWebViewScreen
 import com.picke.presentation.ui.my.setting.profile.SettingProfileScreen
 import com.picke.presentation.ui.my.setting.withdraw.WithdrawScreen
 import com.picke.presentation.ui.onboarding.OnboardingScreen
@@ -59,6 +59,7 @@ import com.picke.presentation.ui.vote.VoteRoute
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.util.DeepLinkEvent
 import com.picke.presentation.util.DeepLinkManager
+import com.picke.presentation.util.PolicyUrls
 import kotlinx.coroutines.flow.first
 
 @Composable
@@ -518,11 +519,19 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
             }
 
             composable(AppRoute.PrivacyPolicy.route) {
-                PrivacyPolicyScreen(onBackClick = { rootNavController.popBackStack() })
+                PolicyWebViewScreen(
+                    titleRes = R.string.policy_title_privacy,
+                    url = PolicyUrls.PRIVACY_POLICY,
+                    onBackClick = { rootNavController.popBackStack() }
+                )
             }
 
             composable(AppRoute.TermsOfService.route) {
-                TermsOfServiceScreen(onBackClick = { rootNavController.popBackStack() })
+                PolicyWebViewScreen(
+                    titleRes = R.string.policy_title_terms,
+                    url = PolicyUrls.TERMS_OF_SERVICE,
+                    onBackClick = { rootNavController.popBackStack() }
+                )
             }
 
             composable(

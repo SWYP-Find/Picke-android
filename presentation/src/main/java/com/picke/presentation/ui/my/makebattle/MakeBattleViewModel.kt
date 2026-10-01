@@ -4,10 +4,8 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.proposal.usecase.ProposalUseCases
 import com.picke.domain.feature.proposal.usecase.SubmitProposalResult
-import com.picke.presentation.ads.AdMobManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,19 +29,11 @@ sealed class MakeBattleEvent {
 
 @HiltViewModel
 class MakeBattleViewModel @Inject constructor(
-    private val proposalUseCases: ProposalUseCases,
-    val adMobManager: AdMobManager,
-    private val localPreferencesUseCases: LocalPreferencesUseCases
+    private val proposalUseCases: ProposalUseCases
 ) : ViewModel() {
 
     companion object {
         private const val TAG = "MakeBattleViewModel_Picke"
-    }
-
-    fun reloadAd() {
-        localPreferencesUseCases.getUserTag()?.let { tag ->
-            adMobManager.loadAd(tag)
-        }
     }
 
     private val _uiState = MutableStateFlow(MakeBattleUiState())

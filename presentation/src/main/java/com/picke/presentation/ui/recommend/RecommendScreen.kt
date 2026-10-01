@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.AdFitBannerAd
+import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.recommend.component.RecommendItemCard
 import com.picke.presentation.ui.recommend.component.RecommendListSkeleton
@@ -98,7 +98,7 @@ fun RecommendScreen(
             ) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_320X100)
+                        AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_RECOMMEND)
                     }
                 }
 

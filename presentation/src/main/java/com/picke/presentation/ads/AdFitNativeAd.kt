@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.component
+package com.picke.presentation.ads
 
 import android.content.Context
 import android.graphics.Outline

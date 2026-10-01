@@ -61,8 +61,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
+import com.picke.presentation.ads.AdFitBannerAd
+import com.picke.presentation.ads.showAdFitTransitionPopupAd
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
-import com.picke.presentation.ui.component.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
@@ -73,7 +74,6 @@ import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
-import com.picke.presentation.util.showAdFitTransitionPopupAd
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 

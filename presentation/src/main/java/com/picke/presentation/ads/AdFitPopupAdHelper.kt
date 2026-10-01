@@ -1,4 +1,4 @@
-package com.picke.presentation.util
+package com.picke.presentation.ads
 
 import android.util.Log
 import androidx.fragment.app.FragmentActivity

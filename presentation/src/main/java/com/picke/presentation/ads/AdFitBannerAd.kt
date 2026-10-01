@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.component
+package com.picke.presentation.ads
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

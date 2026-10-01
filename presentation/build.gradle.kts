@@ -28,8 +28,6 @@ android {
     val adfitBanner320x50 = properties.getProperty("ADFIT_BANNER_320X50") ?: ""
     val adfitBanner320x100 = properties.getProperty("ADFIT_BANNER_320X100") ?: ""
     val adfitBanner320x480 = properties.getProperty("ADFIT_BANNER_320X480") ?: ""
-    val adfitNative2x1 = properties.getProperty("ADFIT_NATIVE_2X1") ?: ""
-    val adfitNative1x1 = properties.getProperty("ADFIT_NATIVE_1X1") ?: ""
     val adfitAppTransition = properties.getProperty("ADFIT_APP_TRANSITION") ?: ""
     val googleWebClientId = properties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
 
@@ -42,8 +40,6 @@ android {
         buildConfigField("String", "ADFIT_BANNER_320X50", "\"$adfitBanner320x50\"")
         buildConfigField("String", "ADFIT_BANNER_320X100", "\"$adfitBanner320x100\"")
         buildConfigField("String", "ADFIT_BANNER_320X480", "\"$adfitBanner320x480\"")
-        buildConfigField("String", "ADFIT_NATIVE_2X1", "\"$adfitNative2x1\"")
-        buildConfigField("String", "ADFIT_NATIVE_1X1", "\"$adfitNative1x1\"")
         buildConfigField("String", "ADFIT_APP_TRANSITION", "\"$adfitAppTransition\"")
         // 배포용 구글 클라이언트 ID 설정
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")

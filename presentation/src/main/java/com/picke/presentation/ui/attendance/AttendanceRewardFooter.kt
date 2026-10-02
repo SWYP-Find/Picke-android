@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 /**
  * 바텀시트 하단의 보상 안내 알약 배지 + 캡션 문구
@@ -57,7 +56,7 @@ fun AttendanceRewardFooter(
         Text(
             text = caption,
             style = PickeTheme.typography.bodyXxsMedium,
-            color = SemanticColorTokens.textMuted
+            color = PickeTheme.colors.textMuted
         )
     }
 }

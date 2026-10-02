@@ -71,7 +71,6 @@ import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.util.shareCapturedImageToKakao
 import com.picke.presentation.util.shareToInstagramStory
 import kotlinx.coroutines.launch
@@ -467,7 +466,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
                     philosopher.keywordTags.forEach { tag ->
                         Box(
                             modifier = Modifier
-                                .border(1.dp, BrandColorTokens.primary100, RoundedCornerShape(2.dp))
+                                .border(1.dp, PickeTheme.colors.primary100, RoundedCornerShape(2.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(

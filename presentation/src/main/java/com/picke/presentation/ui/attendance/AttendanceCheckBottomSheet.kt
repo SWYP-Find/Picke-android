@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 /**
  * 당일 첫 진입 시 노출되는 출석체크 결과 바텀시트.
@@ -76,7 +75,7 @@ fun AttendanceCheckBottomSheet(
             Text(
                 text = uiState.subtitle,
                 style = PickeTheme.typography.bodyXsRegular,
-                color = SemanticColorTokens.textMuted,
+                color = PickeTheme.colors.textMuted,
                 textAlign = TextAlign.Center
             )
 

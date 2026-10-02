@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 private val DayCellSize = 36.dp
 
@@ -100,13 +99,13 @@ fun AttendanceDayCell(
         AttendanceDayStatus.EMPTY -> Box(
             modifier = modifier
                 .size(DayCellSize)
-                .dashedCircleBorder(SemanticColorTokens.borderSubtle)
+                .dashedCircleBorder(PickeTheme.colors.borderSubtle)
         )
 
         AttendanceDayStatus.EMPTY_GIFT -> Box(
             modifier = modifier
                 .size(DayCellSize)
-                .dashedCircleBorder(SemanticColorTokens.borderSubtle),
+                .dashedCircleBorder(PickeTheme.colors.borderSubtle),
             contentAlignment = Alignment.Center
         ) {
             Image(

@@ -37,6 +37,7 @@
     <string name="home_highlight_battle">배틀</string>
     <string name="home_highlight_picke">Pické</string>
     <string name="home_editor_pick">EDITOR PICK</string>
+    <string name="home_trending_empty">지금 뜨는 배틀이 아직 없어요</string>
 
     <!-- 탐색 -->
     <string name="explore_hot_rank">인기순</string>

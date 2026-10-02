@@ -67,6 +67,7 @@ import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
+import com.picke.presentation.ui.home.component.HomeSectionEmpty
 import com.picke.presentation.ui.home.component.HomeSkeleton
 import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
@@ -238,15 +239,15 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                if (uiState.trendingBattles.isNotEmpty()) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                            HomeSectionHeader(
-                                title = stringResource(R.string.home_section_trending),
-                                highlightText = stringResource(R.string.home_highlight_battle),
-                                onMoreClick = onNavigateToTrendingBattle
-                            )
-                        }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        HomeSectionHeader(
+                            title = stringResource(R.string.home_section_trending),
+                            highlightText = stringResource(R.string.home_highlight_battle),
+                            onMoreClick = onNavigateToTrendingBattle
+                        )
+                    }
+                    if (uiState.trendingBattles.isNotEmpty()) {
                         LazyRow(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -258,10 +259,15 @@ fun HomeScreen(
                                 )
                             }
                         }
+                    } else {
+                        HomeSectionEmpty(
+                            message = stringResource(R.string.home_trending_empty),
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
                     }
-                    Spacer(modifier = Modifier.height(40.dp))
                 }
 
+                Spacer(modifier = Modifier.height(40.dp))
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_HOME)
                 }

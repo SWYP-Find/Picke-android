@@ -35,8 +35,8 @@ fun AttendanceRewardFooter(
     ) {
         Row(
             modifier = Modifier
-                .border(1.dp, PickeTheme.colors.primaryLight, RoundedCornerShape(6.dp))
-                .background(PickeTheme.colors.backgroundBrand, RoundedCornerShape(6.dp))
+                .border(1.dp, PickeTheme.colors.primary50, RoundedCornerShape(6.dp))
+                .background(PickeTheme.colors.backgroundBeige, RoundedCornerShape(6.dp))
                 .padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -49,7 +49,7 @@ fun AttendanceRewardFooter(
             Text(
                 text = title,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.primaryDarkest
+                color = PickeTheme.colors.primary900
             )
         }
 

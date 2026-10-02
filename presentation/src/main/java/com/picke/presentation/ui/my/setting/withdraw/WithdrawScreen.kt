@@ -56,7 +56,7 @@ fun WithdrawScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         bottomBar = {
             Box(modifier = Modifier.navigationBarsPadding()) {
                 Row(
@@ -77,11 +77,11 @@ fun WithdrawScreen(
                             .weight(1f)
                             .fillMaxHeight(),
                         shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.backgroundBrand)
+                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.backgroundBeige)
                     ) {
                         Text(
                             text = "제출하기",
-                            color = PickeTheme.colors.primaryDark,
+                            color = PickeTheme.colors.primary800,
                             style = PickeTheme.typography.headingSm
                         )
                     }
@@ -92,7 +92,7 @@ fun WithdrawScreen(
                             .weight(1f)
                             .fillMaxHeight(),
                         shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.primary)
+                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.primary500)
                     ) {
                         Text(
                             text = "픽케로 다시 돌아가기",
@@ -116,7 +116,7 @@ fun WithdrawScreen(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 text = "정말 떠나시나요? 아쉬워요 😢",
                 style = PickeTheme.typography.headingMd,
-                color = PickeTheme.colors.primaryDark
+                color = PickeTheme.colors.primary800
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -125,7 +125,7 @@ fun WithdrawScreen(
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 text = "지금까지 픽케를 이용해주셔서 감사합니다.\n더 나은 서비스를 만들기 위해, 탈퇴 이유를 알려주세요.",
-                color = PickeTheme.colors.neutral400,
+                color = PickeTheme.colors.gray400,
                 style = PickeTheme.typography.bodySmMedium
             )
 
@@ -187,7 +187,7 @@ fun WithdrawReasonItem(
                 .clip(CircleShape)
                 .border(
                     width = 2.dp,
-                    color = if (isSelected) PickeTheme.colors.primary else PickeTheme.colors.neutral200,
+                    color = if (isSelected) PickeTheme.colors.primary500 else PickeTheme.colors.gray200,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -198,7 +198,7 @@ fun WithdrawReasonItem(
                     modifier = Modifier
                         .size(10.dp)
                         .clip(CircleShape)
-                        .background(PickeTheme.colors.primary)
+                        .background(PickeTheme.colors.primary500)
                 )
             }
         }
@@ -207,7 +207,7 @@ fun WithdrawReasonItem(
 
         Text(
             text = text,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             style = PickeTheme.typography.bodySmRegular
         )
     }

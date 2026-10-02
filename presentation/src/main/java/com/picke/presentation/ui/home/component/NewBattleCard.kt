@@ -42,8 +42,8 @@ fun NewBattleCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surface)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeDefault)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .clickable { onClick() }
             .padding(12.dp)
     ) {
@@ -52,12 +52,12 @@ fun NewBattleCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(color = PickeTheme.colors.borderDefault, shape = RoundedCornerShape(2.dp)) {
+            Surface(color = PickeTheme.colors.borderBeigeDefault, shape = RoundedCornerShape(2.dp)) {
                 Text(
                     text = "#${item.tags.firstOrNull() ?: "이슈"}",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     style = PickeTheme.typography.captionLgMedium,
-                    color = PickeTheme.colors.primary
+                    color = PickeTheme.colors.primary500
                 )
             }
 
@@ -66,14 +66,14 @@ fun NewBattleCard(
                     painterResource(R.drawable.ic_clock),
                     null,
                     Modifier.size(12.dp),
-                    tint = PickeTheme.colors.neutral400
+                    tint = PickeTheme.colors.gray400
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = item.timeInfoText,
                     style = PickeTheme.typography.captionLgMedium,
-                    color = PickeTheme.colors.neutral400
+                    color = PickeTheme.colors.gray400
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -81,14 +81,14 @@ fun NewBattleCard(
                     painterResource(R.drawable.ic_eye),
                     null,
                     Modifier.size(12.dp),
-                    tint = PickeTheme.colors.neutral400
+                    tint = PickeTheme.colors.gray400
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = item.viewCountText,
                     style = PickeTheme.typography.captionLgMedium,
-                    color = PickeTheme.colors.neutral400
+                    color = PickeTheme.colors.gray400
                 )
             }
         }
@@ -97,14 +97,14 @@ fun NewBattleCard(
         Text(
             text = item.title,
             style = PickeTheme.typography.bodySmSemiBold,
-            color = PickeTheme.colors.textPrimary
+            color = PickeTheme.colors.textDefault
         )
 
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = item.summary,
             style = PickeTheme.typography.captionLgMedium,
-            color = PickeTheme.colors.neutral400,
+            color = PickeTheme.colors.gray400,
             maxLines = 2,
             minLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -126,13 +126,13 @@ fun NewBattleCard(
             Surface(
                 modifier = Modifier
                     .size(40.dp)
-                    .padding(6.dp), shape = CircleShape, color = PickeTheme.colors.secondaryLight
+                    .padding(6.dp), shape = CircleShape, color = PickeTheme.colors.secondary200
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = "VS",
                         style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.textPrimary
+                        color = PickeTheme.colors.textDefault
                     )
                 }
             }

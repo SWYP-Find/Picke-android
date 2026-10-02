@@ -132,7 +132,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = PickeTheme.colors.backgroundBrand
+        color = PickeTheme.colors.backgroundBeige
     ) {
         LaunchedEffect(Unit) {
             DeepLinkManager.deepLinkEvent.collect { event ->
@@ -195,7 +195,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(PickeTheme.colors.primary),
+                        .background(PickeTheme.colors.primary500),
                     contentAlignment = Alignment.Center
                 ) { }
             }

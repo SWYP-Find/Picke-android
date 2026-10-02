@@ -96,7 +96,7 @@ private fun SettingAlarmContent(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         modifier = Modifier.systemBarsPadding(),
         topBar = {
             CustomTopAppBar(
@@ -105,7 +105,7 @@ private fun SettingAlarmContent(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBrand
+                backgroundColor = PickeTheme.colors.backgroundBeige
             )
         }
     ) { innerPadding ->
@@ -245,7 +245,7 @@ fun AlarmCategoryHeader(title: String) {
     Text(
         text = title,
         style = PickeTheme.typography.bodyXxsMedium,
-        color = PickeTheme.colors.textSecondary,
+        color = PickeTheme.colors.textSubtle,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
     )
 }
@@ -268,13 +268,13 @@ fun AlarmSettingItem(
             Text(
                 text = title,
                 style = PickeTheme.typography.bodyXsMedium,
-                color = PickeTheme.colors.textPrimary
+                color = PickeTheme.colors.textDefault
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = subtitle,
                 style = PickeTheme.typography.captionMdMedium,
-                color = PickeTheme.colors.neutral400
+                color = PickeTheme.colors.gray400
             )
         }
 
@@ -286,7 +286,7 @@ fun AlarmSettingItem(
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = PickeTheme.colors.primary,
+                checkedTrackColor = PickeTheme.colors.primary500,
                 uncheckedThumbColor = Color.White,
                 uncheckedTrackColor = PickeTheme.colors.textMuted,
                 uncheckedBorderColor = Color.Transparent
@@ -300,7 +300,7 @@ fun AlarmDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 16.dp),
         thickness = 1.dp,
-        color = PickeTheme.colors.borderDefault
+        color = PickeTheme.colors.borderBeigeDefault
     )
 }
 

@@ -103,12 +103,12 @@ fun ExploreScreen(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             CustomTopAppBar(
                 showLogo = true,
                 centerTitle = false,
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
                 /*actions = {
                     IconButton(
                         onClick = {
@@ -119,7 +119,7 @@ fun ExploreScreen(
                         BadgedBox(
                             badge = {
                                 if (hasUnreadNotification) {
-                                    Badge(containerColor = PickeTheme.colors.primary)
+                                    Badge(containerColor = PickeTheme.colors.primary500)
                                 }
                             }
                         ) {
@@ -217,7 +217,7 @@ fun ExploreList(
                     painter = painterResource(id = R.drawable.logo_picke),
                     contentDescription = "빈 화면 로고",
                     modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                    tint = PickeTheme.colors.borderDefault
+                    tint = PickeTheme.colors.borderBeigeDefault
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -244,7 +244,7 @@ fun ExploreList(
                             pagingItems[battleIndex]?.let { item ->
                                 HorizontalDivider(
                                     thickness = 1.dp,
-                                    color = PickeTheme.colors.borderDefault,
+                                    color = PickeTheme.colors.borderBeigeDefault,
                                 )
                                 ExploreCard(
                                     item = item,
@@ -253,7 +253,7 @@ fun ExploreList(
                                 if (battleIndex == pagingItems.itemCount - 1) {
                                     HorizontalDivider(
                                         thickness = 1.dp,
-                                        color = PickeTheme.colors.borderDefault,
+                                        color = PickeTheme.colors.borderBeigeDefault,
                                     )
                                 }
                             }
@@ -279,7 +279,7 @@ fun ExploreList(
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(
-                                color = PickeTheme.colors.primaryDarkest,
+                                color = PickeTheme.colors.primary900,
                                 modifier = Modifier.size(24.dp)
                             )
                         }

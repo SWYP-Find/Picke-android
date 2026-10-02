@@ -42,7 +42,7 @@ private fun AlarmCardSkeleton(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(4.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(4.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

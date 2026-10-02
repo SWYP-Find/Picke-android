@@ -46,7 +46,7 @@ fun NotificationPermissionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = { if (isDismissible) onDismiss() },
         sheetState = sheetState,
-        containerColor = PickeTheme.colors.surfaceDefault,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -58,7 +58,7 @@ fun NotificationPermissionBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(width = 40.dp, height = 4.dp)
-                        .background(PickeTheme.colors.neutral100, RoundedCornerShape(2.dp))
+                        .background(PickeTheme.colors.gray100, RoundedCornerShape(2.dp))
                 )
             }
         }
@@ -74,9 +74,9 @@ fun NotificationPermissionBottomSheet(
         ) {
             Box(
                 modifier = Modifier
-                    .border(1.dp, PickeTheme.colors.neutral50, RoundedCornerShape(50))
+                    .border(1.dp, PickeTheme.colors.gray50, RoundedCornerShape(50))
                     .background(
-                        color = PickeTheme.colors.backgroundBrand,
+                        color = PickeTheme.colors.backgroundBeige,
                         shape = RoundedCornerShape(50)
                     )
                     .padding(horizontal = 8.dp, vertical = 8.dp),
@@ -87,7 +87,7 @@ fun NotificationPermissionBottomSheet(
                     contentDescription = "Picke Logo",
                     modifier = Modifier
                         .size(width = 58.dp, height = 58.dp),
-                    colorFilter = ColorFilter.tint(PickeTheme.colors.primaryPressed)
+                    colorFilter = ColorFilter.tint(PickeTheme.colors.primary600)
                 )
             }
 
@@ -96,7 +96,7 @@ fun NotificationPermissionBottomSheet(
             Text(
                 text = "푸시 알림 설정",
                 style = PickeTheme.typography.headingMd,
-                color = PickeTheme.colors.textPrimary
+                color = PickeTheme.colors.textDefault
             )
 
             Spacer(modifier = Modifier.height(6.dp))

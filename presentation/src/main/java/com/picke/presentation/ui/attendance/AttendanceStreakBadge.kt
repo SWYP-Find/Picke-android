@@ -60,7 +60,7 @@ fun AttendanceStreakBadge(
             Text(
                 text = "+${earnedPoints}P 획득",
                 style = PickeTheme.typography.bodyXsMedium,
-                color = PickeTheme.colors.textTertiary
+                color = PickeTheme.colors.textSubtler
             )
             Image(
                 painter = painterResource(R.drawable.ic_point_coin),

@@ -87,7 +87,7 @@ fun PerspectiveTabBarSkeleton(modifier: Modifier = Modifier) {
         ) {
             SkeletonLine(width = 64.dp, height = 20.dp)
         }
-        HorizontalDivider(color = PickeTheme.colors.borderDefault, thickness = 2.dp)
+        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 2.dp)
     }
 }
 
@@ -111,7 +111,7 @@ private fun PerspectiveItemCardSkeleton() {
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(2.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(width = 1.dp, color = PickeTheme.colors.borderDefault)
+        border = BorderStroke(width = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {

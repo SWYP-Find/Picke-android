@@ -41,7 +41,7 @@ private fun DiscussionHistoryCardSkeleton() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(16.dp)
     ) {
         Row(

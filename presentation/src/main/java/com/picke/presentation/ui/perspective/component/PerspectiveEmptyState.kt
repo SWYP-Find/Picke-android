@@ -32,7 +32,7 @@ fun PerspectiveEmptyState(
             painter = painterResource(id = R.drawable.logo_picke),
             contentDescription = "빈 화면 로고",
             modifier = Modifier.size(width = 160.dp, height = 120.dp),
-            tint = PickeTheme.colors.borderDefault
+            tint = PickeTheme.colors.borderBeigeDefault
         )
         Text(
             text = message,

@@ -49,11 +49,11 @@ fun PolicyWebViewScreen(
                     showLogo = false,
                     showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBrand
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             }
         },
-        containerColor = PickeTheme.colors.backgroundBrand
+        containerColor = PickeTheme.colors.backgroundBeige
     ) { innerPadding ->
         PolicyWebViewContent(
             url = url,
@@ -73,7 +73,7 @@ private fun PolicyWebViewContent(
     var isError by remember(url) { mutableStateOf(false) }
 
     Box(
-        modifier = modifier.background(PickeTheme.colors.surfaceDefault),
+        modifier = modifier.background(PickeTheme.colors.surfaceBeigeDefault),
         contentAlignment = Alignment.Center
     ) {
         if (!LocalInspectionMode.current) {
@@ -119,7 +119,7 @@ private fun PolicyWebViewContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PickeTheme.colors.surfaceDefault),
+                    .background(PickeTheme.colors.surfaceBeigeDefault),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -131,7 +131,7 @@ private fun PolicyWebViewContent(
             }
         } else if (isLoading) {
             CircularProgressIndicator(
-                color = PickeTheme.colors.primaryDarkest,
+                color = PickeTheme.colors.primary900,
                 modifier = Modifier.size(24.dp)
             )
         }

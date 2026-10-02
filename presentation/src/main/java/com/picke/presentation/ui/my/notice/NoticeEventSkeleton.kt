@@ -39,7 +39,7 @@ private fun NoticeEventCardSkeleton() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(2.dp))
             .padding(16.dp)
     ) {
         SkeletonLine(width = 50.dp, height = 18.dp)

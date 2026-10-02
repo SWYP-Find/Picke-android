@@ -41,7 +41,7 @@ fun ShareDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PickeTheme.colors.borderDefault, RoundedCornerShape(4.dp))
+                .background(PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(4.dp))
                 .border(1.dp, PickeTheme.colors.beige900, RoundedCornerShape(4.dp))
         ) {
             // [상단 헤더 영역]
@@ -55,7 +55,7 @@ fun ShareDialog(
                 Text(
                     text = "공유하기",
                     style = PickeTheme.typography.headingSm,
-                    color = PickeTheme.colors.textPrimary,
+                    color = PickeTheme.colors.textDefault,
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
 
@@ -63,7 +63,7 @@ fun ShareDialog(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_x),
                     contentDescription = "닫기",
-                    tint = PickeTheme.colors.textPrimary,
+                    tint = PickeTheme.colors.textDefault,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .size(12.dp)
@@ -72,7 +72,7 @@ fun ShareDialog(
             }
 
             // 구분선
-            HorizontalDivider(color = PickeTheme.colors.textPrimary, thickness = 1.dp)
+            HorizontalDivider(color = PickeTheme.colors.textDefault, thickness = 1.dp)
 
             // [하단 SNS 버튼 영역]
             Row(
@@ -110,7 +110,7 @@ fun ShareItem(
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = title,
-            color = PickeTheme.colors.primary,
+            color = PickeTheme.colors.primary500,
             style = PickeTheme.typography.bodyXxsMedium
         )
     }

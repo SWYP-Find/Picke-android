@@ -91,7 +91,7 @@ private fun AdFitBannerPlaceholder(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(PickeTheme.colors.surfaceSubtle)
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
     )
 }
 

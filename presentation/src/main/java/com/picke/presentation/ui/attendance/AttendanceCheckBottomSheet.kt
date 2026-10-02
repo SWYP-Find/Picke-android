@@ -38,7 +38,7 @@ fun AttendanceCheckBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = PickeTheme.colors.surfaceDefault,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -50,7 +50,7 @@ fun AttendanceCheckBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(width = 40.dp, height = 4.dp)
-                        .background(PickeTheme.colors.neutral100, RoundedCornerShape(2.dp))
+                        .background(PickeTheme.colors.gray100, RoundedCornerShape(2.dp))
                 )
             }
         }
@@ -66,7 +66,7 @@ fun AttendanceCheckBottomSheet(
             Text(
                 text = uiState.title,
                 style = PickeTheme.typography.headingLg,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 textAlign = TextAlign.Center
             )
 
@@ -85,7 +85,7 @@ fun AttendanceCheckBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(PickeTheme.colors.beige100, RoundedCornerShape(6.dp))
-                    .border(1.dp, PickeTheme.colors.neutral50, RoundedCornerShape(6.dp))
+                    .border(1.dp, PickeTheme.colors.gray50, RoundedCornerShape(6.dp))
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

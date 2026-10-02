@@ -27,8 +27,8 @@ import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
 fun TodayBattleSkeleton(modifier: Modifier = Modifier) {
-    val darkShimmerBase = PickeTheme.colors.neutral600
-    val darkShimmerHighlight = PickeTheme.colors.neutral400
+    val darkShimmerBase = PickeTheme.colors.gray600
+    val darkShimmerHighlight = PickeTheme.colors.gray400
 
     Column(modifier = modifier.fillMaxSize()) {
         Spacer(
@@ -87,7 +87,7 @@ private fun OpinionCardSkeleton(
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
             .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(4.dp))
-            .background(PickeTheme.colors.neutral600)
+            .background(PickeTheme.colors.gray600)
             .padding(vertical = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

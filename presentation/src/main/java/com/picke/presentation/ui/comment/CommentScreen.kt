@@ -174,7 +174,7 @@ fun CommentScreenContent(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
@@ -184,7 +184,7 @@ fun CommentScreenContent(
                     showLogo = false,
                     showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBrand
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             }
         },
@@ -228,7 +228,7 @@ fun CommentScreenContent(
                             state = pullToRefreshState,
                             isRefreshing = isRefreshing,
                             containerColor = Color.White,
-                            color = PickeTheme.colors.primary,
+                            color = PickeTheme.colors.primary500,
                             modifier = Modifier.align(Alignment.TopCenter)
                         )
                     }
@@ -256,7 +256,7 @@ fun CommentScreenContent(
                             )
                             HorizontalDivider(
                                 thickness = 1.dp,
-                                color = PickeTheme.colors.borderDefault,
+                                color = PickeTheme.colors.borderBeigeDefault,
                             )
                         }
                     }
@@ -297,7 +297,7 @@ fun CommentHeaderSection(count: Int) {
         Text(
             text = "답글 ${count}개",
             style = PickeTheme.typography.bodyXsSemiBold,
-            color = PickeTheme.colors.neutral600
+            color = PickeTheme.colors.gray600
         )
     }
 }

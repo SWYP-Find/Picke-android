@@ -42,8 +42,8 @@ fun TodayPickeCard(
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = when (item) {
-        is TodayPickUiModel.VotePick -> PickeTheme.colors.surfaceDefault
-        is TodayPickUiModel.QuizPick -> PickeTheme.colors.surfaceTertiary
+        is TodayPickUiModel.VotePick -> PickeTheme.colors.surfaceBeigeDefault
+        is TodayPickUiModel.QuizPick -> PickeTheme.colors.surfaceBeigeStrong
     }
 
     Column(
@@ -51,7 +51,7 @@ fun TodayPickeCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
             .background(backgroundColor)
-            .border(1.dp, PickeTheme.colors.borderSubtle, RoundedCornerShape(1.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeSelected, RoundedCornerShape(1.dp))
             .padding(16.dp)
     ) {
         Row(
@@ -61,18 +61,18 @@ fun TodayPickeCard(
         ) {
             val typeName = if (item is TodayPickUiModel.VotePick) "투표" else "퀴즈"
 
-            Surface(color = PickeTheme.colors.borderDefault, shape = RoundedCornerShape(2.dp)) {
+            Surface(color = PickeTheme.colors.borderBeigeDefault, shape = RoundedCornerShape(2.dp)) {
                 Text(
                     text = "#$typeName",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     style = PickeTheme.typography.captionLgMedium,
-                    color = PickeTheme.colors.primary
+                    color = PickeTheme.colors.primary500
                 )
             }
             Text(
                 text = "${item.participantsCount}명 참여",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral400
+                color = PickeTheme.colors.gray400
             )
         }
 
@@ -100,7 +100,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
             Text(
                 text = item.titlePrefix,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
 
@@ -111,17 +111,17 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
                     .height(28.dp)
                     .border(
                         width = 1.dp,
-                        color = PickeTheme.colors.borderSubtle,
+                        color = PickeTheme.colors.borderBeigeSelected,
                         shape = RoundedCornerShape(2.dp)
                     )
-                    .background(PickeTheme.colors.backgroundBrand)
+                    .background(PickeTheme.colors.backgroundBeige)
                     .align(Alignment.CenterVertically),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (isVoted) selectedOptionText else "",
                     style = PickeTheme.typography.bodySmSemiBold,
-                    color = PickeTheme.colors.primary,
+                    color = PickeTheme.colors.primary500,
                     textAlign = TextAlign.Center
                 )
             }
@@ -129,7 +129,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
             Text(
                 text = item.titleSuffix,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
@@ -138,7 +138,7 @@ private fun VotePickeContent(item: TodayPickUiModel.VotePick, onVoteClick: (Long
         Text(
             text = item.summary,
             style = PickeTheme.typography.captionLgMedium,
-            color = PickeTheme.colors.neutral200,
+            color = PickeTheme.colors.gray200,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -194,7 +194,7 @@ private fun QuizPickeContent(item: TodayPickUiModel.QuizPick, onVoteClick: (Long
         Text(
             text = item.title,
             style = PickeTheme.typography.bodySmSemiBold,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             textAlign = TextAlign.Center
         )
 
@@ -202,7 +202,7 @@ private fun QuizPickeContent(item: TodayPickUiModel.QuizPick, onVoteClick: (Long
         Text(
             text = item.summary,
             style = PickeTheme.typography.captionLgMedium,
-            color = PickeTheme.colors.neutral200,
+            color = PickeTheme.colors.gray200,
             textAlign = TextAlign.Center
         )
 
@@ -237,12 +237,12 @@ private fun PickeGridButton(
     onClick: () -> Unit
 ) {
     val borderColor =
-        if (isSelected) PickeTheme.colors.secondary else PickeTheme.colors.borderDefault
+        if (isSelected) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeDefault
 
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceSubtle)
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
             .border(1.dp, borderColor, RoundedCornerShape(1.dp))
             .clickable(enabled = !isVoted) { onClick() }
             .padding(vertical = 16.dp),
@@ -257,7 +257,7 @@ private fun PickeGridButton(
         Text(
             text = text,
             style = PickeTheme.typography.bodyXsMedium,
-            color = PickeTheme.colors.textPrimary
+            color = PickeTheme.colors.textDefault
         )
     }
 }
@@ -272,7 +272,7 @@ private fun PollStatBar(modifier: Modifier, option: PollQuizOptionStatUiModel) {
         Text(
             text = option.title,
             style = PickeTheme.typography.captionSmSemiBold,
-            color = PickeTheme.colors.neutral400,
+            color = PickeTheme.colors.gray400,
             modifier = Modifier.width(44.dp)
         )
 
@@ -287,14 +287,14 @@ private fun PollStatBar(modifier: Modifier, option: PollQuizOptionStatUiModel) {
                 modifier = Modifier
                     .fillMaxWidth(option.ratio / 100f)
                     .height(4.dp)
-                    .background(PickeTheme.colors.secondary, CircleShape)
+                    .background(PickeTheme.colors.secondary500, CircleShape)
             )
         }
 
         Text(
             text = "${option.ratio.toInt()}%",
             style = PickeTheme.typography.captionMdSemiBold,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.End,
             modifier = Modifier.width(36.dp)
@@ -312,9 +312,9 @@ private fun QuizOptionCard(
 ) {
     val isMySelection = isVoted && option.optionId == selectedOptionId
     val borderColor = when {
-        !isVoted -> PickeTheme.colors.borderDisabled
-        isMySelection -> if (option.isCorrect) PickeTheme.colors.secondary else PickeTheme.colors.primary // 정답이면 초록, 오답이면 빨강
-        else -> PickeTheme.colors.borderDisabled
+        !isVoted -> PickeTheme.colors.borderBeigeDisabled
+        isMySelection -> if (option.isCorrect) PickeTheme.colors.secondary500 else PickeTheme.colors.primary500 // 정답이면 초록, 오답이면 빨강
+        else -> PickeTheme.colors.borderBeigeDisabled
     }
 
     Column(
@@ -329,7 +329,7 @@ private fun QuizOptionCard(
     ) {
         if (isVoted) {
             val resultColor =
-                if (option.isCorrect) PickeTheme.colors.secondary else PickeTheme.colors.primary
+                if (option.isCorrect) PickeTheme.colors.secondary500 else PickeTheme.colors.primary500
             val resultText = if (option.isCorrect) "O 정답" else "X 오답"
 
             Text(text = resultText, style = PickeTheme.typography.captionLgMedium, color = resultColor)
@@ -337,7 +337,7 @@ private fun QuizOptionCard(
             Text(
                 text = option.title,
                 style = PickeTheme.typography.bodyXsMedium,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -345,7 +345,7 @@ private fun QuizOptionCard(
             Text(
                 text = option.title,
                 style = PickeTheme.typography.bodyXsMedium,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 textAlign = TextAlign.Center
             )
             if (option.stance.isNotEmpty()) {
@@ -353,7 +353,7 @@ private fun QuizOptionCard(
                 Text(
                     text = option.stance,
                     style = PickeTheme.typography.captionSmSemiBold,
-                    color = PickeTheme.colors.neutral400,
+                    color = PickeTheme.colors.gray400,
                     textAlign = TextAlign.Center
                 )
             }

@@ -30,7 +30,7 @@ fun CreditCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.primaryDark)
+            .background(PickeTheme.colors.primary800)
             .clickable { onClick() }
             .padding(horizontal = 20.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -49,7 +49,7 @@ fun CreditCard(
                 Text(
                     text = "P",
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.textSecondary
+                    color = PickeTheme.colors.textSubtle
                 )
             }
 
@@ -57,7 +57,7 @@ fun CreditCard(
                 Text(
                     text = stringResource(R.string.my_point),
                     style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.surfaceDefault
+                    color = PickeTheme.colors.surfaceBeigeDefault
                 )
                 Text(
                     text = credit.toString(),

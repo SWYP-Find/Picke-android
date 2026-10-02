@@ -49,7 +49,7 @@ fun AttendanceWeekRow(
                 Text(
                     text = day.label,
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.neutral600
+                    color = PickeTheme.colors.gray600
                 )
                 AttendanceDayCell(status = day.status, points = day.points)
             }
@@ -71,7 +71,7 @@ fun AttendanceDayCell(
             modifier = modifier
                 .size(DayCellSize)
                 .clip(CircleShape)
-                .background(PickeTheme.colors.primary),
+                .background(PickeTheme.colors.primary500),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -99,13 +99,13 @@ fun AttendanceDayCell(
         AttendanceDayStatus.EMPTY -> Box(
             modifier = modifier
                 .size(DayCellSize)
-                .dashedCircleBorder(PickeTheme.colors.borderSubtle)
+                .dashedCircleBorder(PickeTheme.colors.borderBeigeSelected)
         )
 
         AttendanceDayStatus.EMPTY_GIFT -> Box(
             modifier = modifier
                 .size(DayCellSize)
-                .dashedCircleBorder(PickeTheme.colors.borderSubtle),
+                .dashedCircleBorder(PickeTheme.colors.borderBeigeSelected),
             contentAlignment = Alignment.Center
         ) {
             Image(

@@ -48,7 +48,7 @@ fun ExploreCard(
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surface)
+            .background(PickeTheme.colors.surfaceBeigeDefault)
             .clickable { onClick(item.battleId) }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -78,14 +78,14 @@ fun ExploreCard(
             Row(verticalAlignment = Alignment.Top) {
                 item.tags.firstOrNull()?.let { category ->
                     Surface(
-                        color = PickeTheme.colors.borderDefault,
+                        color = PickeTheme.colors.borderBeigeDefault,
                         shape = RoundedCornerShape(2.dp)
                     ) {
                         Text(
                             text = "#$category",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = PickeTheme.typography.captionSmSemiBold.copy(fontSize = 12.sp),
-                            color = PickeTheme.colors.primary,
+                            color = PickeTheme.colors.primary500,
                             maxLines = 1
                         )
                     }
@@ -101,7 +101,7 @@ fun ExploreCard(
                             wordBreak = LineBreak.WordBreak.Default
                         )
                     ),
-                    color = PickeTheme.colors.textTertiary,
+                    color = PickeTheme.colors.textSubtler,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -112,7 +112,7 @@ fun ExploreCard(
             Text(
                 text = item.summary,
                 style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.neutral400,
+                color = PickeTheme.colors.gray400,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -135,7 +135,7 @@ fun ExploreCard(
                     Text(
                         text = item.audioDurationText,
                         style = PickeTheme.typography.captionLgMedium,
-                        color = PickeTheme.colors.neutral400
+                        color = PickeTheme.colors.gray400
                     )
 
                     Spacer(modifier = Modifier.width(12.dp))
@@ -150,7 +150,7 @@ fun ExploreCard(
                     Text(
                         text = item.viewCountText,
                         style = PickeTheme.typography.captionLgMedium,
-                        color = PickeTheme.colors.neutral400
+                        color = PickeTheme.colors.gray400
                     )
                 }
             }

@@ -56,10 +56,10 @@ fun SettingScreen(
                     showLogo = false,
                     showBackButton = true,
                     onBackClick = { onBackClick() },
-                    backgroundColor = PickeTheme.colors.backgroundBrand
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             },
-            containerColor = PickeTheme.colors.backgroundBrand
+            containerColor = PickeTheme.colors.backgroundBeige
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -135,7 +135,7 @@ fun SettingScreen(
                     .clickable(enabled = false) { /* 클릭 방지 */ },
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
             }
         }
     }
@@ -160,15 +160,15 @@ fun SettingMenuItem(
             Text(
                 text = title,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textSecondary
+                color = PickeTheme.colors.textSubtle
             )
             Icon(
                 painterResource(R.drawable.ic_arrow_right_a),
                 contentDescription = null,
                 modifier = Modifier.size(12.dp),
-                tint = PickeTheme.colors.textPrimary
+                tint = PickeTheme.colors.textDefault
             )
         }
-        HorizontalDivider(color = PickeTheme.colors.borderDefault, thickness = 1.dp)
+        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
     }
 }

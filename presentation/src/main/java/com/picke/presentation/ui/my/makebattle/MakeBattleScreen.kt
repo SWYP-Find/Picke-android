@@ -76,7 +76,7 @@ fun MakeBattleScreen(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar={
             CustomTopAppBar(
@@ -85,13 +85,13 @@ fun MakeBattleScreen(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
             )
         },
         bottomBar = {
             Box(
                 modifier = Modifier
-                    .background(PickeTheme.colors.backgroundBrand)
+                    .background(PickeTheme.colors.backgroundBeige)
                     //.navigationBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
@@ -109,7 +109,7 @@ fun MakeBattleScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
-                    backgroundColor = if (isFormValid) PickeTheme.colors.primary else PickeTheme.colors.primaryDisabled,
+                    backgroundColor = if (isFormValid) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
                     textColor = Color.White
                 )
             }
@@ -120,7 +120,7 @@ fun MakeBattleScreen(
                 modifier = Modifier.fillMaxSize().padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
             }
         } else {
             Column(
@@ -166,7 +166,7 @@ fun MakeBattleScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 StanceInputField(
                     label = "A",
-                    labelColor = PickeTheme.colors.primary,
+                    labelColor = PickeTheme.colors.primary500,
                     value = stanceA,
                     onValueChange = { stanceA = it },
                     placeholder = "첫 번째 입장을 입력하세요",
@@ -174,7 +174,7 @@ fun MakeBattleScreen(
                 )
                 StanceInputField(
                     label = "B",
-                    labelColor = PickeTheme.colors.textPrimary,
+                    labelColor = PickeTheme.colors.textDefault,
                     value = stanceB,
                     onValueChange = { stanceB = it },
                     placeholder = "두 번째 입장을 입력하세요",
@@ -225,7 +225,7 @@ fun SectionTitle(title: String, isRequired: Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = title,
-            color = PickeTheme.colors.neutral400,
+            color = PickeTheme.colors.gray400,
             style = PickeTheme.typography.bodySmMedium
         )
     }
@@ -238,7 +238,7 @@ fun CategoryTab(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val bgColor = if (isSelected) PickeTheme.colors.primary else Color.White
+    val bgColor = if (isSelected) PickeTheme.colors.primary500 else Color.White
     val textColor = if (isSelected) Color.White else PickeTheme.colors.textMuted
 
     Box(
@@ -270,7 +270,7 @@ fun CustomFormTextField(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .border(1.dp, PickeTheme.colors.borderDefault)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault)
             .padding(16.dp)
     ) {
         Row(
@@ -290,7 +290,7 @@ fun CustomFormTextField(
                     modifier = Modifier.fillMaxWidth()
                 ) { innerTextField ->
                     if (value.isEmpty()) {
-                        Text(text = placeholder, color = PickeTheme.colors.neutral200, style = PickeTheme.typography.bodyXsMedium)
+                        Text(text = placeholder, color = PickeTheme.colors.gray200, style = PickeTheme.typography.bodyXsMedium)
                     }
                     innerTextField()
                 }
@@ -300,7 +300,7 @@ fun CustomFormTextField(
         if (bottomRightText != null) {
             Text(
                 text = bottomRightText,
-                color = PickeTheme.colors.neutral400,
+                color = PickeTheme.colors.gray400,
                 style = PickeTheme.typography.captionSmSemiBold,
                 modifier = Modifier.align(Alignment.BottomEnd)
             )

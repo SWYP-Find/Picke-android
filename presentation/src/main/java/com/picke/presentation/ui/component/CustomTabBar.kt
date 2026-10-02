@@ -50,7 +50,7 @@ fun CustomTabBar(
                 Text(
                     text = tab,
                     style = PickeTheme.typography.bodySmMedium,
-                    color = if(selectedTab == tab) PickeTheme.colors.primary else PickeTheme.colors.outline,
+                    color = if(selectedTab == tab) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
                     fontWeight = if(selectedTab == tab) FontWeight.Bold else FontWeight.Normal,
                     maxLines = 1
                 )
@@ -67,10 +67,10 @@ fun CustomTabBar(
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabs.indexOf(selectedTab)]),
-                    color = PickeTheme.colors.primary,
+                    color = PickeTheme.colors.primary500,
                 )
             },
-            divider = { HorizontalDivider(color = PickeTheme.colors.surfaceTertiary, thickness = 2.dp) }
+            divider = { HorizontalDivider(color = PickeTheme.colors.surfaceBeigeStrong, thickness = 2.dp) }
         ) {
             tabContent()
         }
@@ -82,10 +82,10 @@ fun CustomTabBar(
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabs.indexOf(selectedTab)]),
-                    color = PickeTheme.colors.primary,
+                    color = PickeTheme.colors.primary500,
                 )
             },
-            divider = { HorizontalDivider(color = PickeTheme.colors.borderDefault, thickness = 2.dp) }
+            divider = { HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 2.dp) }
         ) {
             tabContent()
         }

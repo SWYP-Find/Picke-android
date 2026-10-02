@@ -26,10 +26,10 @@ import com.picke.presentation.ui.theme.PickeTheme
 fun ExploreSkeleton(modifier: Modifier = Modifier, itemCount: Int = 6) {
     Column(modifier = modifier.fillMaxWidth()) {
         repeat(itemCount) {
-            HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderDefault)
+            HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
             ExploreCardSkeleton()
         }
-        HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderDefault)
+        HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
     }
 }
 

@@ -111,7 +111,7 @@ fun AlarmScreen(
     )
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         modifier = Modifier.systemBarsPadding(),
         topBar = {
             CustomTopAppBar(
@@ -120,12 +120,12 @@ fun AlarmScreen(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = onBackClick,
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
                     Text(
                         text = "모두 읽음",
                         style = PickeTheme.typography.bodyXsMedium,
-                        color = PickeTheme.colors.textTertiary,
+                        color = PickeTheme.colors.textSubtler,
                         modifier = Modifier
                             .clickable { onReadAllClick() }
                             .padding(end = 4.dp, top = 8.dp, bottom = 8.dp)
@@ -171,7 +171,7 @@ fun AlarmScreen(
                             painter = painterResource(id = R.drawable.logo_picke),
                             contentDescription = "빈 화면 로고",
                             modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                            tint = PickeTheme.colors.borderDefault
+                            tint = PickeTheme.colors.borderBeigeDefault
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(

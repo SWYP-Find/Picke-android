@@ -57,7 +57,7 @@ fun CommentInputField(
     }
 
     Surface(
-        color = PickeTheme.colors.surfaceTertiary,
+        color = PickeTheme.colors.surfaceBeigeStrong,
         shadowElevation = 16.dp,
         modifier = modifier
             .fillMaxWidth()
@@ -72,7 +72,7 @@ fun CommentInputField(
                 modifier = Modifier
                     .weight(1f)
                     .background(
-                        if (isEnabled) PickeTheme.colors.surface else PickeTheme.colors.beige100,
+                        if (isEnabled) PickeTheme.colors.surfaceBeigeDefault else PickeTheme.colors.beige100,
                         RoundedCornerShape(8.dp)
                     )
                     .padding(12.dp)
@@ -81,7 +81,7 @@ fun CommentInputField(
                     Text(
                         text = hintText,
                         style = PickeTheme.typography.bodySmRegular,
-                        color = PickeTheme.colors.outline,
+                        color = PickeTheme.colors.textMuted,
                         lineHeight = 20.sp
                     )
                 }
@@ -94,7 +94,7 @@ fun CommentInputField(
                         maxHeightInLines = Int.MAX_VALUE
                     ),
                     textStyle = PickeTheme.typography.bodySmRegular.copy(
-                        color = PickeTheme.colors.textPrimary,
+                        color = PickeTheme.colors.textDefault,
                         lineHeight = 20.sp
                     ),
                     modifier = Modifier
@@ -109,7 +109,7 @@ fun CommentInputField(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(if (isEnabled) PickeTheme.colors.buttonPrimaryBackground else PickeTheme.colors.buttonPrimaryBackgroundDisabled)
+                    .background(if (isEnabled) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled)
                     .clickable(enabled = isEnabled) { onSubmit() },
                 contentAlignment = Alignment.Center
             ) {

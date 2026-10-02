@@ -150,12 +150,12 @@ fun HomeScreen(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             CustomTopAppBar(
                 showLogo = true,
                 centerTitle = false,
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
                     if (uiState.isLoading || uiState.isAlarmStatusLoading) {
                         Box(
@@ -175,7 +175,7 @@ fun HomeScreen(
                                 badge = {
                                     if (uiState.hasNewNotice) {
                                         Badge(
-                                            containerColor = PickeTheme.colors.primary,
+                                            containerColor = PickeTheme.colors.primary500,
                                             modifier = Modifier.offset(x = 4.dp, y = (-4).dp)
                                         )
                                     }
@@ -212,7 +212,7 @@ fun HomeScreen(
                     painter = painterResource(id = R.drawable.logo_picke),
                     contentDescription = "빈 화면 로고",
                     modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                    tint = PickeTheme.colors.borderDefault
+                    tint = PickeTheme.colors.borderBeigeDefault
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -371,7 +371,7 @@ fun HomeSectionHeader(
                 val startIndex = title.indexOf(highlightText)
                 val endIndex = startIndex + highlightText.length
                 append(title.substring(0, startIndex))
-                withStyle(style = SpanStyle(color = PickeTheme.colors.primary)) {
+                withStyle(style = SpanStyle(color = PickeTheme.colors.primary500)) {
                     append(
                         highlightText
                     )
@@ -385,12 +385,12 @@ fun HomeSectionHeader(
         Text(
             text = annotatedTitle,
             style = PickeTheme.typography.headingMd,
-            color = PickeTheme.colors.textPrimary
+            color = PickeTheme.colors.textDefault
         )
         /*Text(
             text = stringResource(R.string.more),
             style = PickeTheme.typography.bodyXsMedium,
-            color = PickeTheme.colors.textTertiary,
+            color = PickeTheme.colors.textSubtler,
             modifier = Modifier.clickable { onMoreClick() }
         )*/
     }
@@ -430,17 +430,17 @@ fun EditorPickSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(color = PickeTheme.colors.primary, shape = RoundedCornerShape(2.dp)) {
+            Surface(color = PickeTheme.colors.primary500, shape = RoundedCornerShape(2.dp)) {
                 Text(
                     text = "EDITOR PICK",
                     style = PickeTheme.typography.captionMdSemiBold,
-                    color = PickeTheme.colors.secondaryLight,
+                    color = PickeTheme.colors.secondary200,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                 )
             }
 
             Surface(
-                color = PickeTheme.colors.textTertiary.copy(alpha = 0.8f),
+                color = PickeTheme.colors.textSubtler.copy(alpha = 0.8f),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
@@ -455,7 +455,7 @@ fun EditorPickSection(
                         }
                         withStyle(
                             style = SpanStyle(
-                                color = PickeTheme.colors.surfaceDefault.copy(
+                                color = PickeTheme.colors.surfaceBeigeDefault.copy(
                                     alpha = 0.6f
                                 )
                             )
@@ -495,8 +495,8 @@ fun EditorPickSection(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .shimmer(
-                                        PickeTheme.colors.neutral600,
-                                        PickeTheme.colors.neutral400
+                                        PickeTheme.colors.gray600,
+                                        PickeTheme.colors.gray400
                                     )
                             )
                         }
@@ -553,7 +553,7 @@ fun EditorPickSection(
                     Text(
                         text = pagerItem.summary,
                         style = PickeTheme.typography.captionLgMedium,
-                        color = PickeTheme.colors.neutral400,
+                        color = PickeTheme.colors.gray400,
                         minLines = 2,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -575,7 +575,7 @@ fun EditorPickSection(
                                 painter = painterResource(id = R.drawable.ic_eye),
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp),
-                                tint = PickeTheme.colors.neutral400
+                                tint = PickeTheme.colors.gray400
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(

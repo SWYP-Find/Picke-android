@@ -86,8 +86,8 @@ private fun PhilosopherTypeCardSkeleton() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceTertiary)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeStrong)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -118,7 +118,7 @@ private fun MyPageMenuItemSkeleton() {
         ) {
             SkeletonLine(width = 120.dp, height = 18.dp)
         }
-        HorizontalDivider(color = PickeTheme.colors.borderDefault, thickness = 1.dp)
+        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
     }
 }
 

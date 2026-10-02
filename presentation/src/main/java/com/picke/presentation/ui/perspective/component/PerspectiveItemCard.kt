@@ -62,8 +62,8 @@ fun PerspectiveItemCard(
     }
     val borderBadgeColor = when (status) {
         "REJECTED" -> Color(0xFFA64D47)
-        "PENDING" -> PickeTheme.colors.secondary
-        else -> PickeTheme.colors.borderDefault
+        "PENDING" -> PickeTheme.colors.secondary500
+        else -> PickeTheme.colors.borderBeigeDefault
     }
 
     Card(
@@ -89,12 +89,12 @@ fun PerspectiveItemCard(
                     Text(
                         text = if (item.isMine) "나" else item.nickname,
                         style = PickeTheme.typography.bodySmMedium,
-                        color = PickeTheme.colors.textSecondary
+                        color = PickeTheme.colors.textSubtle
                     )
                     Text(
                         text = item.timeAgo,
                         style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.outline
+                        color = PickeTheme.colors.textMuted
                     )
                 }
 
@@ -115,7 +115,7 @@ fun PerspectiveItemCard(
                             expanded = isMenuExpanded,
                             onDismissRequest = { isMenuExpanded = false },
                             modifier = Modifier
-                                .background(PickeTheme.colors.primaryPressed)
+                                .background(PickeTheme.colors.primary600)
                                 .clip(RoundedCornerShape(8.dp))
                         ) {
                             if (item.isMine) {
@@ -158,13 +158,13 @@ fun PerspectiveItemCard(
                 }
             } else {
                 Surface(
-                    color = PickeTheme.colors.badgeBackground,
+                    color = PickeTheme.colors.badgeFilledBackground,
                     shape = RoundedCornerShape(2.dp)
                 ) {
                     Text(
                         text = item.optionTitle,
                         style = PickeTheme.typography.bodyXxsMedium,
-                        color = PickeTheme.colors.badgeText,
+                        color = PickeTheme.colors.badgeFilledText,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -176,7 +176,7 @@ fun PerspectiveItemCard(
             Text(
                 text = item.content,
                 style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.neutral600,
+                color = PickeTheme.colors.gray600,
                 maxLines = if (isDetail) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis
             )
@@ -256,13 +256,13 @@ fun PerspectiveItemCard(
                                 painter = painterResource(id = R.drawable.ic_heart_plus),
                                 contentDescription = "좋아요",
                                 modifier = Modifier.size(12.dp),
-                                tint = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted
+                                tint = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted
                             )
                         }
                         Text(
                             text = "${item.likeCount}",
                             style = PickeTheme.typography.bodyXxsMedium,
-                            color = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted,
+                            color = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
                             modifier = Modifier.padding(start = 2.dp)
                         )
                     }

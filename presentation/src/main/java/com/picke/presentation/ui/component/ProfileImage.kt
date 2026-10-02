@@ -17,7 +17,7 @@ import com.picke.presentation.ui.theme.PickeTheme
 fun ProfileImage(
     model: Any?,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = PickeTheme.colors.borderDefault
+    backgroundColor: Color = PickeTheme.colors.borderBeigeDefault
 ) {
     Box(
         modifier = modifier

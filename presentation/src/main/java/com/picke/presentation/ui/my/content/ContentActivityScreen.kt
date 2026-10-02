@@ -58,7 +58,7 @@ fun ContentActivityScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             CustomTopAppBar(
                 title = stringResource(R.string.my_menu_content),
@@ -66,7 +66,7 @@ fun ContentActivityScreen(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBrand
+                backgroundColor = PickeTheme.colors.backgroundBeige
             )
         }
     ) { innerPadding ->
@@ -137,7 +137,7 @@ fun ContentActivityList(
                 painter = painterResource(id = R.drawable.logo_picke),
                 contentDescription = "빈 화면 로고",
                 modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                tint = PickeTheme.colors.borderDefault
+                tint = PickeTheme.colors.borderBeigeDefault
             )
             Text(
                 text = emptyMessage,
@@ -174,8 +174,8 @@ fun ContentActivityCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surface)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeDefault)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .clickable { onClick() }
             .padding(16.dp)
     ) {
@@ -196,7 +196,7 @@ fun ContentActivityCard(
                     Text(
                         text = item.author.nickname,
                         style = PickeTheme.typography.bodySmMedium,
-                        color = PickeTheme.colors.textTertiary
+                        color = PickeTheme.colors.textSubtler
                     )
                     Spacer(modifier = Modifier.width(6.dp))
 
@@ -204,13 +204,13 @@ fun ContentActivityCard(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(2.dp))
-                                .background(PickeTheme.colors.surfaceTertiary)
+                                .background(PickeTheme.colors.surfaceBeigeStrong)
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = item.optionTitle ?: "",
                                 style = PickeTheme.typography.bodyXxsMedium,
-                                color = PickeTheme.colors.primary
+                                color = PickeTheme.colors.primary500
                             )
                         }
                     }
@@ -230,7 +230,7 @@ fun ContentActivityCard(
         Text(
             text = item.content,
             style = PickeTheme.typography.bodySmRegular,
-            color = PickeTheme.colors.neutral600,
+            color = PickeTheme.colors.gray600,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )

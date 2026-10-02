@@ -161,7 +161,7 @@ private fun LoginScreenContent(
         ) {
             Text(
                 style = PickeTheme.typography.headingSm,
-                color = PickeTheme.colors.neutral200,
+                color = PickeTheme.colors.gray200,
                 text = stringResource(R.string.login_your_think)
             )
             Image(
@@ -182,14 +182,14 @@ private fun LoginScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
                 Spacer(modifier = Modifier.height(16.dp))
             } else {
                 CustomButton(
                     text = stringResource(R.string.login_with_kakao),
                     onClick = onKakaoClick,
                     backgroundColor = Color(0xFFFEE500),
-                    textColor = PickeTheme.colors.textPrimary,
+                    textColor = PickeTheme.colors.textDefault,
                     iconResId = R.drawable.logo_login_kakao
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -197,7 +197,7 @@ private fun LoginScreenContent(
                     text = stringResource(R.string.login_with_google),
                     onClick = onGoogleClick,
                     backgroundColor = Color.White,
-                    textColor = PickeTheme.colors.textPrimary,
+                    textColor = PickeTheme.colors.textDefault,
                     iconResId = R.drawable.logo_login_google
                 )
             }

@@ -41,7 +41,7 @@ fun CommentSkeleton(modifier: Modifier = Modifier) {
 
         repeat(4) {
             CommentItemCardSkeleton()
-            HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderDefault)
+            HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
         }
     }
 }

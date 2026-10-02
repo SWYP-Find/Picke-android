@@ -41,7 +41,7 @@ fun CustomBottomNavigationBar(
     val bottomTabRoutes = items.map { it.route }
 
     NavigationBar(
-        containerColor = PickeTheme.colors.surface,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
     ) {
         val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
 
@@ -99,10 +99,10 @@ fun CustomBottomNavigationBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = PickeTheme.colors.textPrimary,
-                    selectedTextColor = PickeTheme.colors.textPrimary,
-                    unselectedIconColor = PickeTheme.colors.textPrimary.copy(alpha = 0.4f),
-                    unselectedTextColor = PickeTheme.colors.textPrimary.copy(alpha = 0.4f),
+                    selectedIconColor = PickeTheme.colors.textDefault,
+                    selectedTextColor = PickeTheme.colors.textDefault,
+                    unselectedIconColor = PickeTheme.colors.textDefault.copy(alpha = 0.4f),
+                    unselectedTextColor = PickeTheme.colors.textDefault.copy(alpha = 0.4f),
                     indicatorColor = Color.Transparent
                 )
             )

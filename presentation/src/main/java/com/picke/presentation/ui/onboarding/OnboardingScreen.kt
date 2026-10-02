@@ -88,7 +88,7 @@ fun OnboardingScreen(onNavigateToLogin: () -> Unit) {
             CustomButton(
                 text = stringResource(R.string.onboarding_start),
                 onClick = onNavigateToLogin,
-                backgroundColor = PickeTheme.colors.primary,
+                backgroundColor = PickeTheme.colors.primary500,
                 textColor = Color.White
             )
         }
@@ -126,7 +126,7 @@ fun OnboardingPageContent(page: Int) {
                 letterSpacing = (-0.6).sp
             ),
             text = title,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             textAlign = TextAlign.Center
         )
 

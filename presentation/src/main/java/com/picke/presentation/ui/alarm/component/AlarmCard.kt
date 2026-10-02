@@ -65,7 +65,7 @@ fun AlarmCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
             .background(Color.White)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(4.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(4.dp))
             .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -106,7 +106,7 @@ fun AlarmCard(
                     Text(
                         text = item.createdAt.toRelativeTimeText(),
                         style = PickeTheme.typography.captionMdMedium,
-                        color = PickeTheme.colors.neutral200
+                        color = PickeTheme.colors.gray200
                     )
 
                     if (!item.isRead) {
@@ -114,7 +114,7 @@ fun AlarmCard(
                         Box(
                             modifier = Modifier
                                 .size(4.dp)
-                                .background(PickeTheme.colors.primary, CircleShape)
+                                .background(PickeTheme.colors.primary500, CircleShape)
                         )
                     }
                 }
@@ -125,7 +125,7 @@ fun AlarmCard(
             Text(
                 text = item.body,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )

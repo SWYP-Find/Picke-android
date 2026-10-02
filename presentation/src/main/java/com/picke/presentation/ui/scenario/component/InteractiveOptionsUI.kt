@@ -53,17 +53,17 @@ fun InteractiveOptionsUI(
         Row(verticalAlignment = Alignment.CenterVertically) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = PickeTheme.colors.neutral200
+                color = PickeTheme.colors.gray200
             )
             Text(
                 text = selectGuideText,
                 style = PickeTheme.typography.bodySmMedium.copy(fontStyle = FontStyle.Italic),
-                color = PickeTheme.colors.textTertiary,
+                color = PickeTheme.colors.textSubtler,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = PickeTheme.colors.neutral200
+                color = PickeTheme.colors.gray200
             )
         }
 
@@ -106,11 +106,11 @@ fun OptionSelectionCard(
     onClick: () -> Unit
 ) {
     val borderColor =
-        if (isSelected) PickeTheme.colors.secondary else PickeTheme.colors.borderSubtle
+        if (isSelected) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeSelected
     val bgColor =
-        if (isSelected) PickeTheme.colors.surfaceTertiary else PickeTheme.colors.surfaceTertiary
+        if (isSelected) PickeTheme.colors.surfaceBeigeStrong else PickeTheme.colors.surfaceBeigeStrong
     val textColor =
-        if (isSelected) PickeTheme.colors.textPrimary else PickeTheme.colors.textTertiary
+        if (isSelected) PickeTheme.colors.textDefault else PickeTheme.colors.textSubtler
 
     Box(
         modifier = Modifier

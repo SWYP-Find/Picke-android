@@ -47,8 +47,8 @@ fun Modifier.shimmer(
         ),
         label = "shimmerTranslate"
     )
-    val resolvedBase = baseColor ?: PickeTheme.colors.surfaceTertiary
-    val resolvedHighlight = highlightColor ?: PickeTheme.colors.surfaceDefault
+    val resolvedBase = baseColor ?: PickeTheme.colors.surfaceBeigeStrong
+    val resolvedHighlight = highlightColor ?: PickeTheme.colors.surfaceBeigeDefault
 
     this
         .background(

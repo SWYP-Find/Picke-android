@@ -35,9 +35,9 @@ fun VoteSkeleton(
     modifier: Modifier = Modifier
 ) {
     val isPreVote = voteType == VoteType.PRE
-    val bgColor = if (isPreVote) PickeTheme.colors.surface else Color.Black
-    val shimmerBase = if (isPreVote) null else PickeTheme.colors.neutral600
-    val shimmerHighlight = if (isPreVote) null else PickeTheme.colors.neutral400
+    val bgColor = if (isPreVote) PickeTheme.colors.surfaceBeigeDefault else Color.Black
+    val shimmerBase = if (isPreVote) null else PickeTheme.colors.gray600
+    val shimmerHighlight = if (isPreVote) null else PickeTheme.colors.gray400
 
     Column(
         modifier = modifier
@@ -158,8 +158,8 @@ private fun VoteOptionCardSkeleton(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDisabled, RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceSubtle)
+            .border(1.dp, PickeTheme.colors.borderBeigeDisabled, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
             .padding(vertical = 24.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

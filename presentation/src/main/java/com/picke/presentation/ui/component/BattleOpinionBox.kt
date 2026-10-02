@@ -30,8 +30,8 @@ fun BattleOpinionBox(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDisabled, RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceSubtle)
+            .border(1.dp, PickeTheme.colors.borderBeigeDisabled, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -42,7 +42,7 @@ fun BattleOpinionBox(
             Text(
                 text = opinion ?: "의견",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.textSecondary,
+                color = PickeTheme.colors.textSubtle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

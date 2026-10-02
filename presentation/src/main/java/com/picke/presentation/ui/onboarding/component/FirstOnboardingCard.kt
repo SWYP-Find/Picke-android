@@ -75,7 +75,7 @@ fun FirstOnboardingCard(modifier: Modifier = Modifier) {
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.White.copy(alpha = 0f),
-                            PickeTheme.colors.surfaceSubtle
+                            PickeTheme.colors.surfaceBeigeSubtle
                         )
                     )
                 )
@@ -91,9 +91,9 @@ fun FirstOnboardingChatBubble(
     isLeft: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val bubbleBgColor = if (isLeft) Color.White else PickeTheme.colors.borderDisabled
+    val bubbleBgColor = if (isLeft) Color.White else PickeTheme.colors.borderBeigeDisabled
     val bubbleBorderColor =
-        if (isLeft) PickeTheme.colors.borderDisabled else PickeTheme.colors.borderSubtle
+        if (isLeft) PickeTheme.colors.borderBeigeDisabled else PickeTheme.colors.borderBeigeSelected
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -119,7 +119,7 @@ fun FirstOnboardingChatBubble(
             Text(
                 text = name,
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.neutral400,
+                color = PickeTheme.colors.gray400,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 6.dp),
@@ -136,7 +136,7 @@ fun FirstOnboardingChatBubble(
                 Text(
                     text = message,
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.textSecondary,
+                    color = PickeTheme.colors.textSubtle,
                     textAlign = TextAlign.Start
                 )
             }

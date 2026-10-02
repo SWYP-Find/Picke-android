@@ -22,12 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.theme.Beige100
-import com.picke.presentation.ui.theme.Gray100
-import com.picke.presentation.ui.theme.Gray50
-import com.picke.presentation.ui.theme.Gray900
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.White
 import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 /**
@@ -44,7 +39,7 @@ fun AttendanceCheckBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = White,
+        containerColor = PickeTheme.colors.surfaceDefault,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -56,7 +51,7 @@ fun AttendanceCheckBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(width = 40.dp, height = 4.dp)
-                        .background(Gray100, RoundedCornerShape(2.dp))
+                        .background(PickeTheme.colors.neutral100, RoundedCornerShape(2.dp))
                 )
             }
         }
@@ -72,7 +67,7 @@ fun AttendanceCheckBottomSheet(
             Text(
                 text = uiState.title,
                 style = PickeTheme.typography.headingLg,
-                color = Gray900,
+                color = PickeTheme.colors.textPrimary,
                 textAlign = TextAlign.Center
             )
 
@@ -90,8 +85,8 @@ fun AttendanceCheckBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Beige100, RoundedCornerShape(6.dp))
-                    .border(1.dp, Gray50, RoundedCornerShape(6.dp))
+                    .background(PickeTheme.colors.beige100, RoundedCornerShape(6.dp))
+                    .border(1.dp, PickeTheme.colors.neutral50, RoundedCornerShape(6.dp))
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

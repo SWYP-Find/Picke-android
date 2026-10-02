@@ -24,12 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.theme.Beige900
-import com.picke.presentation.ui.theme.Gray600
-import com.picke.presentation.ui.theme.Primary500
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.White
-import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 private val DayCellSize = 36.dp
@@ -55,7 +50,7 @@ fun AttendanceWeekRow(
                 Text(
                     text = day.label,
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = Gray600
+                    color = PickeTheme.colors.neutral600
                 )
                 AttendanceDayCell(status = day.status, points = day.points)
             }
@@ -77,13 +72,13 @@ fun AttendanceDayCell(
             modifier = modifier
                 .size(DayCellSize)
                 .clip(CircleShape)
-                .background(Primary500),
+                .background(PickeTheme.colors.primary),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "+${points}P",
                 style = PickeTheme.typography.captionMdSemiBold,
-                color = White
+                color = PickeTheme.colors.textInverse
             )
         }
 
@@ -91,14 +86,14 @@ fun AttendanceDayCell(
             modifier = modifier
                 .size(DayCellSize)
                 .clip(CircleShape)
-                .background(BrandColorTokens.beige600),
+                .background(PickeTheme.colors.beige600),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_x),
                 contentDescription = null,
                 modifier = Modifier.size(12.dp),
-                colorFilter = ColorFilter.tint(Beige900)
+                colorFilter = ColorFilter.tint(PickeTheme.colors.beige900)
             )
         }
 

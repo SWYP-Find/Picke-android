@@ -28,12 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.theme.Gray100
-import com.picke.presentation.ui.theme.Gray300
-import com.picke.presentation.ui.theme.Gray900
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.White
-import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +46,7 @@ fun NotificationPermissionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = { if (isDismissible) onDismiss() },
         sheetState = sheetState,
-        containerColor = White,
+        containerColor = PickeTheme.colors.surfaceDefault,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -63,7 +58,7 @@ fun NotificationPermissionBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(width = 40.dp, height = 4.dp)
-                        .background(Gray100, RoundedCornerShape(2.dp))
+                        .background(PickeTheme.colors.neutral100, RoundedCornerShape(2.dp))
                 )
             }
         }
@@ -79,7 +74,7 @@ fun NotificationPermissionBottomSheet(
         ) {
             Box(
                 modifier = Modifier
-                    .border(1.dp, BrandColorTokens.neutral50, RoundedCornerShape(50))
+                    .border(1.dp, PickeTheme.colors.neutral50, RoundedCornerShape(50))
                     .background(
                         color = PickeTheme.colors.backgroundBrand,
                         shape = RoundedCornerShape(50)
@@ -92,7 +87,7 @@ fun NotificationPermissionBottomSheet(
                     contentDescription = "Picke Logo",
                     modifier = Modifier
                         .size(width = 58.dp, height = 58.dp),
-                    colorFilter = ColorFilter.tint(BrandColorTokens.primary600)
+                    colorFilter = ColorFilter.tint(PickeTheme.colors.primaryPressed)
                 )
             }
 
@@ -101,7 +96,7 @@ fun NotificationPermissionBottomSheet(
             Text(
                 text = "푸시 알림 설정",
                 style = PickeTheme.typography.headingMd,
-                color = Gray900
+                color = PickeTheme.colors.textPrimary
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -109,7 +104,7 @@ fun NotificationPermissionBottomSheet(
             Text(
                 text = "픽케의 매일 새로운 배틀 소식을 알려드려요",
                 style = PickeTheme.typography.bodySmRegular,
-                color = Gray300
+                color = PickeTheme.colors.textMuted
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -117,7 +112,7 @@ fun NotificationPermissionBottomSheet(
             Text(
                 text = "설정 > 앱 > 픽케에서\n알림설정 변경이 가능합니다.",
                 style = PickeTheme.typography.bodyXsRegular,
-                color = Gray300,
+                color = PickeTheme.colors.textMuted,
                 textAlign = TextAlign.Center
             )
 
@@ -132,14 +127,14 @@ fun NotificationPermissionBottomSheet(
                     onClick = onDisagree,
                     modifier = Modifier.weight(1f),
                     backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDisabled,
-                    textColor = White
+                    textColor = PickeTheme.colors.textInverse
                 )
                 CustomButton(
                     text = "동의함",
                     onClick = onAgree,
                     modifier = Modifier.weight(1f),
                     backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundPressed,
-                    textColor = White
+                    textColor = PickeTheme.colors.textInverse
                 )
             }
         }

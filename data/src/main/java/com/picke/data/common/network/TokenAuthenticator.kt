@@ -18,21 +18,27 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.Route
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TokenAuthenticator @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
     private val gson: Gson,
-    @ApplicationContext private val context: Context
+    private val loggingInterceptor: HttpLoggingInterceptor
 ) : Authenticator {
 
     companion object {
         private const val TAG = "TokenAuthenticator_Picke"
     }
 
-    private val refreshClient: OkHttpClient by lazy { OkHttpClient() }
+    private val refreshClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
 
     @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -48,8 +54,6 @@ class TokenAuthenticator @Inject constructor(
         }
 
         return try {
-            if (BuildConfig.DEBUG) Log.d(TAG, "[AUTH] 401 감지 → 리프레시 토큰으로 재발급 시도")
-
             val client = refreshClient
             val refreshRequest = Request.Builder()
                 .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
@@ -68,8 +72,6 @@ class TokenAuthenticator @Inject constructor(
                 if (parsed.statusCode == 200 && data != null) {
                     preferencesManager.saveAccessToken(data.accessToken)
                     preferencesManager.saveRefreshToken(data.refreshToken)
-                    Log.i(TAG, "[AUTH] 토큰 갱신 완료. 원래 요청 재시도.")
-
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
                             Toast.makeText(

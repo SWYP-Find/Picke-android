@@ -32,7 +32,7 @@ fun CustomTopAppBar(
     showLogo: Boolean = false,
     showBackButton: Boolean = false,
     backgroundColor: Color,
-    backIconColor: Color = PickeTheme.colors.textPrimary,
+    backIconColor: Color = PickeTheme.colors.textDefault,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     val startPadding = if (showBackButton) 4.dp else 20.dp
@@ -76,7 +76,7 @@ fun CustomTopAppBar(
                 Text(
                     text = title,
                     style = PickeTheme.typography.headingSm,
-                    color = PickeTheme.colors.textPrimary
+                    color = PickeTheme.colors.textDefault
                 )
             }
         }
@@ -85,7 +85,7 @@ fun CustomTopAppBar(
             Text(
                 text = title,
                 style = PickeTheme.typography.headingSm,
-                color = PickeTheme.colors.textPrimary,
+                color = PickeTheme.colors.textDefault,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

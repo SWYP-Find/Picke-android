@@ -154,10 +154,10 @@ fun VoteScreen(
     val battleInfo = battleDetail.battleInfo
 
     val backgroundColor =
-        if (selectedOptionId != null) PickeTheme.colors.primary else PickeTheme.colors.primaryDisabled
-    val bgColor = if (isPreVote) PickeTheme.colors.surface else Color.Black
-    val titleColor = if (isPreVote) PickeTheme.colors.textPrimary else PickeTheme.colors.surface
-    val descColor = if (isPreVote) PickeTheme.colors.textSecondary else PickeTheme.colors.neutral400
+        if (selectedOptionId != null) PickeTheme.colors.primary500 else PickeTheme.colors.primary300
+    val bgColor = if (isPreVote) PickeTheme.colors.surfaceBeigeDefault else Color.Black
+    val titleColor = if (isPreVote) PickeTheme.colors.textDefault else PickeTheme.colors.surfaceBeigeDefault
+    val descColor = if (isPreVote) PickeTheme.colors.textSubtle else PickeTheme.colors.gray400
 
     val onKakaoShareClick = {
         isSharing = true
@@ -271,7 +271,7 @@ fun VoteScreen(
                         },
                         modifier = Modifier.padding(20.dp),
                         backgroundColor = backgroundColor,
-                        textColor = PickeTheme.colors.surfaceDefault
+                        textColor = PickeTheme.colors.surfaceBeigeDefault
                     )
                 }
             }
@@ -322,8 +322,8 @@ fun VoteScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .shimmer(
-                                        baseColor = if (isPreVote) null else PickeTheme.colors.neutral600,
-                                        highlightColor = if (isPreVote) null else PickeTheme.colors.neutral400
+                                        baseColor = if (isPreVote) null else PickeTheme.colors.gray600,
+                                        highlightColor = if (isPreVote) null else PickeTheme.colors.gray400
                                     )
                             )
                         }
@@ -350,7 +350,7 @@ fun VoteScreen(
                                             vertical = 2.dp
                                         ),
                                         style = PickeTheme.typography.captionLgMedium,
-                                        color = PickeTheme.colors.primary
+                                        color = PickeTheme.colors.primary500
                                     )
                                 }
                             }
@@ -414,7 +414,7 @@ fun VoteScreen(
                             Text(
                                 text = "VS",
                                 style = PickeTheme.typography.bodySmMedium,
-                                color = PickeTheme.colors.textPrimary
+                                color = PickeTheme.colors.textDefault
                             )
                         }
                     }
@@ -464,7 +464,7 @@ fun VoteScreen(
                     .pointerInput(Unit) {},
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
             }
         }
 
@@ -486,14 +486,14 @@ fun VoteScreen(
 @Composable
 private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
                     showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBrand,
+                    backgroundColor = PickeTheme.colors.backgroundBeige,
                 )
             }
         }
@@ -509,7 +509,7 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
                 painter = painterResource(id = R.drawable.logo_picke),
                 contentDescription = "빈 화면 로고",
                 modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                tint = PickeTheme.colors.borderDefault
+                tint = PickeTheme.colors.borderBeigeDefault
             )
             Text(
                 text = "해당 배틀은 존재하지 않습니다",

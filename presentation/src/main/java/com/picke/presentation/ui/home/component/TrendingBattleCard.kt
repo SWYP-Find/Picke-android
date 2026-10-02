@@ -42,8 +42,8 @@ fun TrendingBattleCard(
     Column(
         modifier = Modifier
             .width(220.dp)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surface)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeDefault)
             .clickable { onClick() }
             .padding(12.dp)
     ) {
@@ -52,14 +52,14 @@ fun TrendingBattleCard(
                 .fillMaxWidth()
                 .aspectRatio(1.2f),
             shape = RoundedCornerShape(4.dp),
-            border = BorderStroke(4.dp, PickeTheme.colors.borderSubtle)
+            border = BorderStroke(4.dp, PickeTheme.colors.borderBeigeSelected)
         ) {
             SubcomposeAsyncImage(
                 model = item.thumbnailUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(2.dp))
-                    .background(PickeTheme.colors.backgroundBrand),
+                    .background(PickeTheme.colors.backgroundBeige),
                 contentScale = ContentScale.Crop,
                 loading = {
                     Spacer(
@@ -72,12 +72,12 @@ fun TrendingBattleCard(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-        Surface(color = PickeTheme.colors.borderDefault, shape = RoundedCornerShape(2.dp)) {
+        Surface(color = PickeTheme.colors.borderBeigeDefault, shape = RoundedCornerShape(2.dp)) {
             Text(
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 text = "#${item.tags.firstOrNull() ?: "이슈"}",
                 style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.primary
+                color = PickeTheme.colors.primary500
             )
         }
 
@@ -85,7 +85,7 @@ fun TrendingBattleCard(
         Text(
             text = item.title,
             style = PickeTheme.typography.bodySmSemiBold,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -96,14 +96,14 @@ fun TrendingBattleCard(
                 painter = painterResource(id = R.drawable.ic_clock),
                 contentDescription = null,
                 modifier = Modifier.size(12.dp),
-                tint = PickeTheme.colors.neutral400
+                tint = PickeTheme.colors.gray400
             )
 
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = item.timeInfoText,
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral400
+                color = PickeTheme.colors.gray400
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -111,14 +111,14 @@ fun TrendingBattleCard(
                 painter = painterResource(id = R.drawable.ic_eye),
                 contentDescription = null,
                 modifier = Modifier.size(12.dp),
-                tint = PickeTheme.colors.neutral400
+                tint = PickeTheme.colors.gray400
             )
 
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = item.viewCountText,
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral400
+                color = PickeTheme.colors.gray400
             )
         }
     }

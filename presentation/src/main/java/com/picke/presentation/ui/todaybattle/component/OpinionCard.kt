@@ -30,7 +30,7 @@ fun OpinionCard(
     onClick: () -> Unit
 ) {
     val borderColor = if (isSelected) PickeTheme.colors.secondary700 else Color.Transparent
-    val bgColor = if (isSelected) PickeTheme.colors.textPrimary else PickeTheme.colors.textPrimary
+    val bgColor = if (isSelected) PickeTheme.colors.textDefault else PickeTheme.colors.textDefault
 
     Column(
         modifier = Modifier
@@ -46,7 +46,7 @@ fun OpinionCard(
         Text(
             text = name,
             style = PickeTheme.typography.captionSmSemiBold,
-            color = PickeTheme.colors.secondary,
+            color = PickeTheme.colors.secondary500,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )

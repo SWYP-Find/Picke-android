@@ -17,7 +17,7 @@ fun SettingProfileScreen(
 ) {
 
     Scaffold(
-        containerColor = PickeTheme.colors.surface,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
         modifier = Modifier.systemBarsPadding(),
         topBar={
             CustomTopAppBar(
@@ -26,7 +26,7 @@ fun SettingProfileScreen(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.surface
+                backgroundColor = PickeTheme.colors.surfaceBeigeDefault
             )
         }
     ){ innerPadding ->

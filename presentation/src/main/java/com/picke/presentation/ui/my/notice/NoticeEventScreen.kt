@@ -76,7 +76,7 @@ fun NoticeEventScreen(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             CustomTopAppBar(
                 title = tabs[pagerState.currentPage],
@@ -90,7 +90,7 @@ fun NoticeEventScreen(
                         onBackClick()
                     }
                 },
-                backgroundColor = PickeTheme.colors.backgroundBrand
+                backgroundColor = PickeTheme.colors.backgroundBeige
             )
         }
     ) { innerPadding ->
@@ -181,20 +181,20 @@ fun NoticeEventDetailContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PickeTheme.colors.surface)
+                .background(PickeTheme.colors.surfaceBeigeDefault)
                 .padding(horizontal = 24.dp, vertical = 32.dp)
         ) {
             // [뱃지]
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(2.dp))
-                    .background(PickeTheme.colors.borderDefault)
+                    .background(PickeTheme.colors.borderBeigeDefault)
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
                     text = item.type,
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.primary
+                    color = PickeTheme.colors.primary500
                 )
             }
 
@@ -204,7 +204,7 @@ fun NoticeEventDetailContent(
             Text(
                 text = item.title,
                 style = PickeTheme.typography.bodySmMedium,
-                color = PickeTheme.colors.textTertiary
+                color = PickeTheme.colors.textSubtler
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -222,7 +222,7 @@ fun NoticeEventDetailContent(
             Text(
                 text = item.content,
                 style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.neutral400
+                color = PickeTheme.colors.gray400
             )
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -235,7 +235,7 @@ fun NoticeEventDetailContent(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(2.dp))
-                        .background(PickeTheme.colors.primary)
+                        .background(PickeTheme.colors.primary500)
                         .clickable { onGoToList() }
                         .padding(horizontal = 32.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
@@ -267,7 +267,7 @@ fun NoticeEventList(
                 painter = painterResource(id = R.drawable.logo_picke),
                 contentDescription = "빈 화면 로고",
                 modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                tint = PickeTheme.colors.borderDefault
+                tint = PickeTheme.colors.borderBeigeDefault
             )
             Text(
                 text = emptyMessage,
@@ -296,13 +296,13 @@ fun NoticeEventCard(
     item: NoticeEventItem,
     onClick: () -> Unit
 ) {
-    //val borderColor =  if (!item.isRead) PickeTheme.colors.primaryDisabled else PickeTheme.colors.surfaceTertiary
+    //val borderColor =  if (!item.isRead) PickeTheme.colors.primary300 else PickeTheme.colors.surfaceBeigeStrong
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surface)
-            .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeDefault)
+            .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(2.dp))
             .clickable { onClick() }
             .padding(16.dp)
     ) {
@@ -316,13 +316,13 @@ fun NoticeEventCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(2.dp))
-                    .background(PickeTheme.colors.borderDefault)
+                    .background(PickeTheme.colors.borderBeigeDefault)
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
                     text = item.type,
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.primary
+                    color = PickeTheme.colors.primary500
                 )
             }
 
@@ -331,7 +331,7 @@ fun NoticeEventCard(
                 Box(
                     modifier = Modifier
                         .size(4.dp)
-                        .background(PickeTheme.colors.primary, CircleShape)
+                        .background(PickeTheme.colors.primary500, CircleShape)
                 )
             }*/
         }
@@ -342,7 +342,7 @@ fun NoticeEventCard(
         Text(
             text = item.title,
             style = PickeTheme.typography.bodySmMedium,
-            color = PickeTheme.colors.textTertiary,
+            color = PickeTheme.colors.textSubtler,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

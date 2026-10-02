@@ -41,14 +41,14 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp)
-                .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(2.dp))
+                .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(2.dp))
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(4.dp)
-                        .background(PickeTheme.colors.primary)
+                        .background(PickeTheme.colors.primary500)
                 )
 
                 Column(
@@ -60,14 +60,14 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                     Text(
                         text = "나의 철학자 유형",
                         style = PickeTheme.typography.bodySmMedium,
-                        color = PickeTheme.colors.primary
+                        color = PickeTheme.colors.primary500
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "칸트형",
                         style = PickeTheme.typography.headingMd,
-                        color = PickeTheme.colors.neutral600
+                        color = PickeTheme.colors.gray600
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -84,7 +84,7 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                     Text(
                         text = "결과보다 과정을 중시하고, 보편적 도덕 법칙을 따르는 원칙주의자. 어떤 상황에서도 흔들리지 않는 기준을 가진 사람입니다.",
                         style = PickeTheme.typography.bodyXxsMedium,
-                        color = PickeTheme.colors.neutral600,
+                        color = PickeTheme.colors.gray600,
                         textAlign = TextAlign.Center
                     )
 
@@ -99,7 +99,7 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                                 modifier = Modifier
                                     .border(
                                         1.dp,
-                                        PickeTheme.colors.borderDefault,
+                                        PickeTheme.colors.borderBeigeDefault,
                                         RoundedCornerShape(2.dp)
                                     )
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -125,7 +125,7 @@ fun FourthOnboardingCard(modifier: Modifier = Modifier) {
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.White.copy(alpha = 0f),
-                            PickeTheme.colors.surfaceSubtle
+                            PickeTheme.colors.surfaceBeigeSubtle
                         )
                     )
                 )

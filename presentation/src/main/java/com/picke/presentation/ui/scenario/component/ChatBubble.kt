@@ -57,7 +57,7 @@ fun ChatBubble(
         ) {
             Text(
                 text = formattedText,
-                color = if (isActive) PickeTheme.colors.textSecondary else PickeTheme.colors.textMuted,
+                color = if (isActive) PickeTheme.colors.textSubtle else PickeTheme.colors.textMuted,
                 style = PickeTheme.typography.captionLgMedium.copy(
                     fontStyle = FontStyle.Italic
                 ),
@@ -73,11 +73,11 @@ fun ChatBubble(
     val imageModel = script.profileImageUrl ?: R.drawable.illust_mengzi
 
     val bubbleBgColor =
-        if (isLeft) Color.White else PickeTheme.colors.borderDisabled
+        if (isLeft) Color.White else PickeTheme.colors.borderBeigeDisabled
     val bubbleBorderColor =
-        if (isLeft) PickeTheme.colors.borderDisabled else PickeTheme.colors.borderSubtle
+        if (isLeft) PickeTheme.colors.borderBeigeDisabled else PickeTheme.colors.borderBeigeSelected
     val textColor =
-        if (isActive) PickeTheme.colors.textSecondary else PickeTheme.colors.textMuted
+        if (isActive) PickeTheme.colors.textSubtle else PickeTheme.colors.textMuted
 
     Row(
         modifier = Modifier
@@ -108,7 +108,7 @@ fun ChatBubble(
                 Text(
                     text = script.speakerName,
                     style = PickeTheme.typography.bodySmSemiBold,
-                    color = PickeTheme.colors.neutral400,
+                    color = PickeTheme.colors.gray400,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 6.dp),

@@ -106,10 +106,10 @@ fun MyScreen(
 ) {
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             CustomTopAppBar(
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
                 centerTitle = false,
                 actions = {
                     if (uiState.isLoading || uiState.isAlarmStatusLoading) {
@@ -132,7 +132,7 @@ fun MyScreen(
                                 badge = {
                                     if (uiState.hasNewNotice) {
                                         Badge(
-                                            containerColor = PickeTheme.colors.primary,
+                                            containerColor = PickeTheme.colors.primary500,
                                             modifier = Modifier.offset(x = 4.dp, y = (-4).dp)
                                         )
                                     }
@@ -141,7 +141,7 @@ fun MyScreen(
                                 Icon(
                                     painter = painterResource(R.drawable.ic_alarm),
                                     contentDescription = stringResource(R.string.alarm),
-                                    tint = PickeTheme.colors.textPrimary
+                                    tint = PickeTheme.colors.textDefault
                                 )
                             }
                         }
@@ -152,7 +152,7 @@ fun MyScreen(
                             Icon(
                                 painter = painterResource(R.drawable.ic_setting),
                                 contentDescription = stringResource(R.string.setting),
-                                tint = PickeTheme.colors.textPrimary
+                                tint = PickeTheme.colors.textDefault
                             )
                         }
                     }
@@ -242,7 +242,7 @@ fun ProfileSection(
             Text(
                 text = userHandle,
                 style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.textTertiary
+                color = PickeTheme.colors.textSubtler
             )
         }
     }
@@ -261,8 +261,8 @@ fun PhilosopherTypeSection(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceTertiary)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeStrong)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .clickable { onClick() }
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -277,14 +277,14 @@ fun PhilosopherTypeSection(
             Text(
                 text = stringResource(R.string.my_menu_philosopher),
                 style = PickeTheme.typography.captionMdMedium,
-                color = PickeTheme.colors.textTertiary
+                color = PickeTheme.colors.textSubtler
             )
 
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (isLocked) displayName else "$displayName ",
                 style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textSecondary
+                color = PickeTheme.colors.textSubtle
             )
         }
 
@@ -292,7 +292,7 @@ fun PhilosopherTypeSection(
             painter = painterResource(id = R.drawable.ic_arrow_right_a),
             contentDescription = null,
             modifier = Modifier.size(12.dp),
-            tint = PickeTheme.colors.textPrimary
+            tint = PickeTheme.colors.textDefault
         )
     }
 }

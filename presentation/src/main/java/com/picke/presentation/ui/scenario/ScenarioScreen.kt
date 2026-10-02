@@ -120,14 +120,14 @@ fun ScenarioScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
                     title = uiState.title,
                     centerTitle = true,
                     showBackButton = false,
-                    backgroundColor = PickeTheme.colors.backgroundBrand,
+                    backgroundColor = PickeTheme.colors.backgroundBeige,
                 )
             }
         },

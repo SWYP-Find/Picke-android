@@ -44,7 +44,7 @@ private fun PointHistoryItemSkeleton() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         Row(

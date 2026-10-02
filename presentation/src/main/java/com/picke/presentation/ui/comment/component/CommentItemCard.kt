@@ -69,12 +69,12 @@ fun CommentItemCard(
                 Text(
                     text = if (item.isMine) "나" else item.nickname,
                     style = PickeTheme.typography.bodySmMedium,
-                    color = PickeTheme.colors.textSecondary
+                    color = PickeTheme.colors.textSubtle
                 )
                 Text(
                     text = item.timeAgo,
                     style = PickeTheme.typography.captionSmSemiBold,
-                    color = PickeTheme.colors.outline
+                    color = PickeTheme.colors.textMuted
                 )
             }
 
@@ -94,7 +94,7 @@ fun CommentItemCard(
                         expanded = isMenuExpanded,
                         onDismissRequest = { isMenuExpanded = false },
                         modifier = Modifier
-                            .background(PickeTheme.colors.primaryPressed)
+                            .background(PickeTheme.colors.primary600)
                             .clip(RoundedCornerShape(8.dp))
                     ) {
                         if (item.isMine) {
@@ -120,13 +120,13 @@ fun CommentItemCard(
         Spacer(modifier = Modifier.height(8.dp))
 
         Surface(
-            color = PickeTheme.colors.badgeBackground,
+            color = PickeTheme.colors.badgeFilledBackground,
             shape = RoundedCornerShape(2.dp)
         ) {
             Text(
                 text = item.stance,
                 style = PickeTheme.typography.bodyXxsMedium,
-                color = PickeTheme.colors.badgeText,
+                color = PickeTheme.colors.badgeFilledText,
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
             )
         }
@@ -136,7 +136,7 @@ fun CommentItemCard(
         Text(
             text = item.content,
             style = PickeTheme.typography.bodyXsRegular,
-            color = PickeTheme.colors.neutral600
+            color = PickeTheme.colors.gray600
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -166,14 +166,14 @@ fun CommentItemCard(
                         painter = painterResource(id = R.drawable.ic_heart_plus),
                         contentDescription = "좋아요",
                         modifier = Modifier.size(16.dp),
-                        tint = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted
+                        tint = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted
                     )
                 }
 
                 Text(
                     text = "${item.likeCount}",
                     style = PickeTheme.typography.bodyXxsMedium,
-                    color = if (item.isLiked) PickeTheme.colors.primary else PickeTheme.colors.textMuted,
+                    color = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
                     modifier = Modifier.padding(start = 2.dp)
                 )
             }

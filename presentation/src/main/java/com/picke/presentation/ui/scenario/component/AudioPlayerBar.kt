@@ -53,7 +53,7 @@ fun AudioPlayerBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(PickeTheme.colors.surfaceDefault)
+            .background(PickeTheme.colors.surfaceBeigeDefault)
             .navigationBarsPadding()
             .padding(horizontal = 24.dp, vertical = 20.dp)
     ) {
@@ -75,7 +75,7 @@ fun AudioPlayerBar(
                         modifier = Modifier
                             .size(12.dp)
                             .background(
-                                color = PickeTheme.colors.primary,
+                                color = PickeTheme.colors.primary500,
                                 shape = CircleShape
                             )
                     )
@@ -98,7 +98,7 @@ fun AudioPlayerBar(
                         modifier = Modifier
                             .fillMaxWidth(fraction = sliderState.value.coerceIn(0f, 1f))
                             .height(trackHeight)
-                            .background(PickeTheme.colors.primary)
+                            .background(PickeTheme.colors.primary500)
                     )
                 }
             }
@@ -158,7 +158,7 @@ fun AudioPlayerBar(
                         contentDescription = stringResource(
                             if (isPlaying) R.string.scenario_audio_pause else R.string.scenario_audio_play
                         ),
-                        tint = PickeTheme.colors.neutral600,
+                        tint = PickeTheme.colors.gray600,
                         modifier = Modifier
                             .width(22.dp)
                             .height(31.dp)
@@ -182,7 +182,7 @@ fun AudioPlayerBar(
                 Icon(
                     painter = painterResource(R.drawable.ic_replay),
                     contentDescription = null,
-                    tint = PickeTheme.colors.textPrimary,
+                    tint = PickeTheme.colors.textDefault,
                     modifier = Modifier.size(24.dp)
                 )
                 Text(
@@ -212,7 +212,7 @@ private fun PlaybackSpeedButton(
         Text(
             text = formatSpeed(speed),
             style = PickeTheme.typography.bodyLgMedium,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             textAlign = TextAlign.Center
         )
         Text(
@@ -241,7 +241,7 @@ private fun ControlSkipButton(
         Icon(
             painter = painterResource(iconResId),
             contentDescription = label,
-            tint = PickeTheme.colors.neutral600,
+            tint = PickeTheme.colors.gray600,
             modifier = Modifier.size(20.dp)
         )
 

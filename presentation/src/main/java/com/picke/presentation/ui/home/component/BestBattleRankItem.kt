@@ -48,7 +48,7 @@ fun BestBattleRankItem(
             verticalAlignment = Alignment.Top
         ) {
             val rankColor =
-                if (rank == 1) PickeTheme.colors.primary else if (rank == 2) PickeTheme.colors.secondary else PickeTheme.colors.borderSubtle
+                if (rank == 1) PickeTheme.colors.primary500 else if (rank == 2) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeSelected
 
             Text(
                 text = rank.toString(),
@@ -63,12 +63,12 @@ fun BestBattleRankItem(
 
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Surface(color = PickeTheme.colors.borderDefault, shape = RoundedCornerShape(2.dp)) {
+                Surface(color = PickeTheme.colors.borderBeigeDefault, shape = RoundedCornerShape(2.dp)) {
                     Text(
                         text = "${item.leftProfileName ?: "A"} VS ${item.rightProfileName ?: "B"}",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.primary
+                        color = PickeTheme.colors.primary500
                     )
                 }
 
@@ -76,7 +76,7 @@ fun BestBattleRankItem(
                 Text(
                     text = item.title,
                     style = PickeTheme.typography.bodySmSemiBold,
-                    color = PickeTheme.colors.textPrimary,
+                    color = PickeTheme.colors.textDefault,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -104,7 +104,7 @@ fun BestBattleRankItem(
                         Text(
                             text = item.timeInfoText,
                             style = PickeTheme.typography.captionLgMedium,
-                            color = PickeTheme.colors.neutral400
+                            color = PickeTheme.colors.gray400
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
@@ -119,13 +119,13 @@ fun BestBattleRankItem(
                         Text(
                             text = item.viewCountText,
                             style = PickeTheme.typography.captionLgMedium,
-                            color = PickeTheme.colors.neutral400
+                            color = PickeTheme.colors.gray400
                         )
                     }
                 }
             }
         }
-        HorizontalDivider(color = PickeTheme.colors.surfaceTertiary, thickness = 1.dp)
+        HorizontalDivider(color = PickeTheme.colors.surfaceBeigeStrong, thickness = 1.dp)
     }
 }
 

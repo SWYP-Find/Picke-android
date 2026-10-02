@@ -35,8 +35,8 @@ fun CustomConfirmDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val modalBackgroundColor = PickeTheme.colors.borderDisabled
-    val pointColor = PickeTheme.colors.primary
+    val modalBackgroundColor = PickeTheme.colors.borderBeigeDisabled
+    val pointColor = PickeTheme.colors.primary500
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -120,8 +120,8 @@ fun CustomReverseConfirmDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    val modalBackgroundColor = PickeTheme.colors.borderDisabled
-    val pointColor = PickeTheme.colors.primary
+    val modalBackgroundColor = PickeTheme.colors.borderBeigeDisabled
+    val pointColor = PickeTheme.colors.primary500
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -225,8 +225,8 @@ fun CustomSingleActionDialog(
         ) {
             Surface(
                 shape = RoundedCornerShape(2.dp),
-                color = PickeTheme.colors.borderDisabled,
-                border = BorderStroke(1.dp, PickeTheme.colors.primary),
+                color = PickeTheme.colors.borderBeigeDisabled,
+                border = BorderStroke(1.dp, PickeTheme.colors.primary500),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = if (imageResId != null) 16.dp else 0.dp)
@@ -242,7 +242,7 @@ fun CustomSingleActionDialog(
                         Text(
                             text = message,
                             style = PickeTheme.typography.headingSm,
-                            color = PickeTheme.colors.primary,
+                            color = PickeTheme.colors.primary500,
                             textAlign = TextAlign.Center,
                             lineHeight = 24.sp
                         )
@@ -252,20 +252,20 @@ fun CustomSingleActionDialog(
                             Text(
                                 text = subMessage,
                                 style = PickeTheme.typography.bodyXsRegular,
-                                color = PickeTheme.colors.primary,
+                                color = PickeTheme.colors.primary500,
                                 textAlign = TextAlign.Center
                             )
                         }
                     }
 
                     // 가로 구분선
-                    HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.primary)
+                    HorizontalDivider(thickness = 1.dp, color = PickeTheme.colors.primary500)
 
                     // 버튼 영역
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(PickeTheme.colors.primary)
+                            .background(PickeTheme.colors.primary500)
                             .clickable { onConfirm() }
                             .padding(vertical = 16.dp),
                         contentAlignment = Alignment.Center

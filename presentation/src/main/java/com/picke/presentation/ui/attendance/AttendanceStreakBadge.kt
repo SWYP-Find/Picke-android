@@ -16,9 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.theme.Gray500
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 
 /**
  * "🔥 N일 연속 출석 중/달성" 배지 + 오늘 획득 포인트를 보여주는 상단 정보 로우
@@ -37,7 +35,7 @@ fun AttendanceStreakBadge(
     ) {
         Row(
             modifier = Modifier
-                .background(BrandColorTokens.secondary100, RoundedCornerShape(6.dp))
+                .background(PickeTheme.colors.secondary100, RoundedCornerShape(6.dp))
                 .padding(horizontal = 6.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -51,7 +49,7 @@ fun AttendanceStreakBadge(
             Text(
                 text = "${streakDays}일 연속 출석 $stateLabel",
                 style = PickeTheme.typography.bodyXsMedium,
-                color = BrandColorTokens.primary700
+                color = PickeTheme.colors.primary700
             )
         }
 
@@ -62,7 +60,7 @@ fun AttendanceStreakBadge(
             Text(
                 text = "+${earnedPoints}P 획득",
                 style = PickeTheme.typography.bodyXsMedium,
-                color = Gray500
+                color = PickeTheme.colors.textSubtler
             )
             Image(
                 painter = painterResource(R.drawable.ic_point_coin),

@@ -43,7 +43,7 @@ private fun RecommendItemCardSkeleton() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(12.dp)
     ) {
         Row(
@@ -83,7 +83,7 @@ private fun OpinionBoxSkeleton(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderDisabled, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDisabled, RoundedCornerShape(2.dp))
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

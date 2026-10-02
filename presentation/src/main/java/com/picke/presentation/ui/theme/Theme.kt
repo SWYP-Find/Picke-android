@@ -14,7 +14,7 @@ import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 private val LightColorScheme = lightColorScheme(
     primary = BrandColorTokens.primary500,
-    background = SemanticColorTokens.surfaceDefault,
+    background = SemanticColorTokens.surfaceBeigeDefault,
     surface = Color.White,
 )
 

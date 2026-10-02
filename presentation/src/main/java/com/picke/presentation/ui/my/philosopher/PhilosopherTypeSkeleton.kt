@@ -51,10 +51,10 @@ private fun HeaderCardSkeleton() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PickeTheme.colors.surface, cardShape)
-            .border(1.dp, PickeTheme.colors.surfaceTertiary, cardShape)
+            .background(PickeTheme.colors.surfaceBeigeDefault, cardShape)
+            .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, cardShape)
     ) {
-        Box(modifier = Modifier.fillMaxWidth().height(4.dp).background(PickeTheme.colors.primary))
+        Box(modifier = Modifier.fillMaxWidth().height(4.dp).background(PickeTheme.colors.primary500))
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(24.dp),
@@ -86,8 +86,8 @@ private fun TraitAnalysisCardSkeleton() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PickeTheme.colors.surface, RoundedCornerShape(4.dp))
-                .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(4.dp))
+                .background(PickeTheme.colors.surfaceBeigeDefault, RoundedCornerShape(4.dp))
+                .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(4.dp))
                 .padding(vertical = 24.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -136,21 +136,21 @@ private fun TasteReportCardSkeleton() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PickeTheme.colors.surface, RoundedCornerShape(4.dp))
-                .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(4.dp))
+                .background(PickeTheme.colors.surfaceBeigeDefault, RoundedCornerShape(4.dp))
+                .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(4.dp))
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 ReportStatItemSkeleton()
-                Box(modifier = Modifier.height(40.dp).width(1.dp).background(PickeTheme.colors.surfaceTertiary))
+                Box(modifier = Modifier.height(40.dp).width(1.dp).background(PickeTheme.colors.surfaceBeigeStrong))
                 ReportStatItemSkeleton()
-                Box(modifier = Modifier.height(40.dp).width(1.dp).background(PickeTheme.colors.surfaceTertiary))
+                Box(modifier = Modifier.height(40.dp).width(1.dp).background(PickeTheme.colors.surfaceBeigeStrong))
                 ReportStatItemSkeleton()
             }
 
-            HorizontalDivider(color = PickeTheme.colors.surfaceTertiary)
+            HorizontalDivider(color = PickeTheme.colors.surfaceBeigeStrong)
 
             repeat(3) { index ->
                 Row(
@@ -206,8 +206,8 @@ private fun ChemistrySectionSkeleton() {
 private fun ChemistryCardSkeleton(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .background(PickeTheme.colors.surface, RoundedCornerShape(4.dp))
-            .border(1.dp, PickeTheme.colors.surfaceTertiary, RoundedCornerShape(4.dp))
+            .background(PickeTheme.colors.surfaceBeigeDefault, RoundedCornerShape(4.dp))
+            .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, RoundedCornerShape(4.dp))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

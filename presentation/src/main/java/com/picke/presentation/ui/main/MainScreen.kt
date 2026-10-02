@@ -57,7 +57,7 @@ fun MainScreen(
     var exploreScrollTrigger by remember { mutableIntStateOf(0) }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         bottomBar = {
             CustomBottomNavigationBar(
                 mainNavController = mainNavController,
@@ -81,7 +81,7 @@ fun MainScreen(
             startDestination = initialTabRoute,
             modifier = Modifier.fillMaxSize()
                 .padding(innerPadding)
-                .background(PickeTheme.colors.surface),
+                .background(PickeTheme.colors.surfaceBeigeDefault),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },

@@ -44,7 +44,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-                    .border(1.dp, PickeTheme.colors.borderSubtle, RoundedCornerShape(2.dp))
+                    .border(1.dp, PickeTheme.colors.borderBeigeSelected, RoundedCornerShape(2.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -53,20 +53,20 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Surface(
-                        color = PickeTheme.colors.surfaceTertiary,
+                        color = PickeTheme.colors.surfaceBeigeStrong,
                         shape = RoundedCornerShape(2.dp)
                     ) {
                         Text(
                             text = "#투표",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = PickeTheme.typography.bodyXsRegular,
-                            color = PickeTheme.colors.primary
+                            color = PickeTheme.colors.primary500
                         )
                     }
                     Text(
                         text = "985명 참여",
                         style = PickeTheme.typography.captionLgMedium,
-                        color = PickeTheme.colors.neutral400
+                        color = PickeTheme.colors.gray400
                     )
                 }
 
@@ -82,7 +82,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                         Text(
                             text = "가상국가를 만든다면 대통령은 ",
                             style = PickeTheme.typography.bodySmSemiBold,
-                            color = PickeTheme.colors.textPrimary
+                            color = PickeTheme.colors.textDefault
                         )
                         Box(
                             modifier = Modifier
@@ -90,15 +90,15 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                                 .height(20.dp)
                                 .border(
                                     1.dp,
-                                    PickeTheme.colors.borderDefault,
+                                    PickeTheme.colors.borderBeigeDefault,
                                     RoundedCornerShape(2.dp)
                                 )
-                                .background(PickeTheme.colors.surfaceSubtle)
+                                .background(PickeTheme.colors.surfaceBeigeSubtle)
                         )
                         Text(
                             text = "이다",
                             style = PickeTheme.typography.bodySmSemiBold,
-                            color = PickeTheme.colors.textPrimary
+                            color = PickeTheme.colors.textDefault
                         )
                     }
 
@@ -156,7 +156,7 @@ fun ThirdOnboardingCard(modifier: Modifier = Modifier) {
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.White.copy(alpha = 0f),
-                            PickeTheme.colors.surfaceSubtle
+                            PickeTheme.colors.surfaceBeigeSubtle
                         )
                     )
                 )
@@ -173,8 +173,8 @@ fun ThirdOnboardingButton(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceSubtle)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(vertical = 14.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -187,7 +187,7 @@ fun ThirdOnboardingButton(
         Text(
             text = text,
             style = PickeTheme.typography.captionLgMedium,
-            color = PickeTheme.colors.textPrimary
+            color = PickeTheme.colors.textDefault
         )
     }
 }

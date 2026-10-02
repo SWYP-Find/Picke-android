@@ -32,7 +32,7 @@ fun VoteOptionCard(
     modifier: Modifier = Modifier
 ) {
     val borderColor =
-        if (isSelected) PickeTheme.colors.secondary else PickeTheme.colors.borderDisabled
+        if (isSelected) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeDisabled
     val contentAlpha = if (isSelected) 1f else 0.8f
 
     Column(
@@ -44,7 +44,7 @@ fun VoteOptionCard(
                 color = borderColor,
                 shape = RoundedCornerShape(2.dp)
             )
-            .background(PickeTheme.colors.surfaceSubtle)
+            .background(PickeTheme.colors.surfaceBeigeSubtle)
             .clickable { onClick() }
             .padding(vertical = 24.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +59,7 @@ fun VoteOptionCard(
         Text(
             text = option.title,
             style = PickeTheme.typography.headingSm,
-            color = PickeTheme.colors.textPrimary,
+            color = PickeTheme.colors.textDefault,
             textAlign = TextAlign.Center
         )
 
@@ -67,7 +67,7 @@ fun VoteOptionCard(
         Text(
             text = option.representative,
             style = PickeTheme.typography.captionSmSemiBold,
-            color = PickeTheme.colors.textTertiary
+            color = PickeTheme.colors.textSubtler
         )
     }
 }

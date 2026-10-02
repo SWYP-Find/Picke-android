@@ -56,20 +56,20 @@ fun RecommendScreen(
     onItemClick: (String) -> Unit
 ) {
     Scaffold(
-        containerColor = PickeTheme.colors.surface,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
                     title = "더 흥미로운 배틀도 있어요!",
                     showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.surface,
+                    backgroundColor = PickeTheme.colors.surfaceBeigeDefault,
                     actions = {
                         IconButton(onClick = onCloseClick) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_x),
                                 contentDescription = "닫기",
-                                tint = PickeTheme.colors.textPrimary
+                                tint = PickeTheme.colors.textDefault
                             )
                         }
                     }

@@ -41,12 +41,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.picke.presentation.R
 import com.picke.presentation.ui.my.setting.policy.PolicyWebViewScreen
-import com.picke.presentation.ui.theme.Gray100
-import com.picke.presentation.ui.theme.Gray300
-import com.picke.presentation.ui.theme.Gray900
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.White
-import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.util.PolicyUrls
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +62,7 @@ fun TermsOfServiceBottomSheet(
     ModalBottomSheet(
         onDismissRequest = {},
         sheetState = sheetState,
-        containerColor = White,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -79,7 +74,7 @@ fun TermsOfServiceBottomSheet(
                 Box(
                     modifier = Modifier
                         .size(width = 40.dp, height = 4.dp)
-                        .background(Gray100, RoundedCornerShape(2.dp))
+                        .background(PickeTheme.colors.gray100, RoundedCornerShape(2.dp))
                 )
             }
         }
@@ -96,9 +91,9 @@ fun TermsOfServiceBottomSheet(
             // Logo
             Box(
                 modifier = Modifier
-                    .border(1.dp, BrandColorTokens.neutral50, RoundedCornerShape(50))
+                    .border(1.dp, PickeTheme.colors.gray50, RoundedCornerShape(50))
                     .background(
-                        color = PickeTheme.colors.backgroundBrand,
+                        color = PickeTheme.colors.backgroundBeige,
                         shape = RoundedCornerShape(50)
                     )
                     .padding(horizontal = 8.dp, vertical = 8.dp),
@@ -109,7 +104,7 @@ fun TermsOfServiceBottomSheet(
                     contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .size(width = 58.dp, height = 58.dp),
-                    colorFilter = ColorFilter.tint(BrandColorTokens.primary600)
+                    colorFilter = ColorFilter.tint(PickeTheme.colors.primary600)
                 )
             }
 
@@ -118,7 +113,7 @@ fun TermsOfServiceBottomSheet(
             Text(
                 text = stringResource(R.string.terms_sheet_title),
                 style = PickeTheme.typography.headingMd,
-                color = Gray900
+                color = PickeTheme.colors.textDefault
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -126,7 +121,7 @@ fun TermsOfServiceBottomSheet(
             Text(
                 text = stringResource(R.string.terms_sheet_description),
                 style = PickeTheme.typography.bodySmRegular,
-                color = Gray300,
+                color = PickeTheme.colors.textMuted,
                 textAlign = TextAlign.Center
             )
 
@@ -156,8 +151,8 @@ fun TermsOfServiceBottomSheet(
             CustomButton(
                 text = stringResource(R.string.terms_sheet_agree),
                 onClick = { if (isAllAgreed) onConfirm() },
-                backgroundColor = if (isAllAgreed) PickeTheme.colors.buttonPrimaryBackground else PickeTheme.colors.buttonPrimaryBackgroundDisabled,
-                textColor = White,
+                backgroundColor = if (isAllAgreed) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled,
+                textColor = PickeTheme.colors.textInverse,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -187,8 +182,8 @@ private fun TermsItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PickeTheme.colors.surfaceSubtle, RoundedCornerShape(8.dp))
-            .border(1.dp, Gray100, RoundedCornerShape(8.dp))
+            .background(PickeTheme.colors.surfaceBeigeSubtle, RoundedCornerShape(8.dp))
+            .border(1.dp, PickeTheme.colors.gray100, RoundedCornerShape(8.dp))
             .clickable { onToggle() }
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -198,10 +193,10 @@ private fun TermsItem(
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .background(if (isAgreed) PickeTheme.colors.buttonPrimaryBackground else PickeTheme.colors.buttonPrimaryBackgroundDisabled)
+                .background(if (isAgreed) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled)
                 .border(
                     1.dp,
-                    if (isAgreed) PickeTheme.colors.borderDefault else PickeTheme.colors.borderDisabled,
+                    if (isAgreed) PickeTheme.colors.borderBeigeDefault else PickeTheme.colors.borderBeigeDisabled,
                     CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -210,7 +205,7 @@ private fun TermsItem(
                 Icon(
                     painter = painterResource(R.drawable.ic_check),
                     contentDescription = null,
-                    tint = White,
+                    tint = PickeTheme.colors.textInverse,
                     modifier = Modifier.size(12.dp)
                 )
             }
@@ -221,14 +216,14 @@ private fun TermsItem(
         Text(
             text = text,
             style = PickeTheme.typography.bodySmRegular,
-            color = Gray900,
+            color = PickeTheme.colors.textDefault,
             modifier = Modifier.weight(1f)
         )
 
         Icon(
             painter = painterResource(R.drawable.ic_arrow_right_a),
             contentDescription = stringResource(R.string.terms_sheet_view_detail),
-            tint = Gray900,
+            tint = PickeTheme.colors.textDefault,
             modifier = Modifier
                 .size(20.dp)
                 .clickable { onViewDetail() }

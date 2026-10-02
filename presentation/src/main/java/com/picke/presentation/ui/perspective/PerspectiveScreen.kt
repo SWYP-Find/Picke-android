@@ -200,7 +200,7 @@ fun PerspectiveScreenContent(
     }
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
@@ -210,13 +210,13 @@ fun PerspectiveScreenContent(
                     showLogo = false,
                     showBackButton = false,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBrand,
+                    backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
                         IconButton(onClick = { onNextClick(uiState.battleId) }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_right),
                                 contentDescription = "null",
-                                tint = PickeTheme.colors.textPrimary,
+                                tint = PickeTheme.colors.textDefault,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -350,7 +350,7 @@ fun PerspectiveScreenContent(
                                     state = pullToRefreshState,
                                     isRefreshing = isRefreshing,
                                     containerColor = Color.White,
-                                    color = PickeTheme.colors.primary,
+                                    color = PickeTheme.colors.primary500,
                                     modifier = Modifier.align(Alignment.TopCenter)
                                 )
                             }
@@ -476,7 +476,7 @@ fun PerspectiveScreenContent(
                                                 .padding(16.dp),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                                            CircularProgressIndicator(color = PickeTheme.colors.primary900)
                                         }
                                     }
                                 }
@@ -548,14 +548,14 @@ fun PerspectiveHeader(
             Text(
                 text = leftOption?.title ?: "",
                 style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSecondary,
+                color = PickeTheme.colors.textSubtle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "${proRatio.toInt()}%",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral600
+                color = PickeTheme.colors.gray600
             )
         }
 
@@ -565,7 +565,7 @@ fun PerspectiveHeader(
             modifier = Modifier.weight(1f)
         ) {
             Surface(
-                color = PickeTheme.colors.primaryLight,
+                color = PickeTheme.colors.primary50,
                 shape = RoundedCornerShape(4.dp)
             ) {
                 Row(
@@ -575,14 +575,14 @@ fun PerspectiveHeader(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_think),
                         contentDescription = "생각 변경",
-                        tint = PickeTheme.colors.primary,
+                        tint = PickeTheme.colors.primary500,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = if (opinionChanged) "생각이 바뀌었어요" else "생각이 동일해요",
                         style = PickeTheme.typography.captionMdSemiBold,
-                        color = PickeTheme.colors.primary
+                        color = PickeTheme.colors.primary500
                     )
                 }
             }
@@ -604,7 +604,7 @@ fun PerspectiveHeader(
                     modifier = Modifier
                         .weight(if (conRatio > 0) conRatio else 0.1f)
                         .fillMaxHeight()
-                        .background(PickeTheme.colors.backgroundTertiary)
+                        .background(PickeTheme.colors.backgroundSubtler)
                 )
             }
         }
@@ -622,14 +622,14 @@ fun PerspectiveHeader(
             Text(
                 text = rightOption?.title ?: "",
                 style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSecondary,
+                color = PickeTheme.colors.textSubtle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "${conRatio.toInt()}%",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral600
+                color = PickeTheme.colors.gray600
             )
         }
     }

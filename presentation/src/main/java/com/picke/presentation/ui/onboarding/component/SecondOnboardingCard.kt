@@ -80,7 +80,7 @@ fun SecondOnboardingCard(modifier: Modifier = Modifier) {
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.White.copy(alpha = 0f),
-                            PickeTheme.colors.surfaceSubtle
+                            PickeTheme.colors.surfaceBeigeSubtle
                         )
                     )
                 )
@@ -96,7 +96,7 @@ fun SecondOnboardingHeader() {
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Surface(color = PickeTheme.colors.primaryLight, shape = RoundedCornerShape(4.dp)) {
+            Surface(color = PickeTheme.colors.primary50, shape = RoundedCornerShape(4.dp)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
@@ -104,14 +104,14 @@ fun SecondOnboardingHeader() {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_think),
                         contentDescription = null,
-                        tint = PickeTheme.colors.primary,
+                        tint = PickeTheme.colors.primary500,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "생각이 바뀌었어요",
                         style = PickeTheme.typography.captionMdSemiBold,
-                        color = PickeTheme.colors.primary
+                        color = PickeTheme.colors.primary500
                     )
                 }
             }
@@ -125,7 +125,7 @@ fun SecondOnboardingHeader() {
             Text(
                 text = "A 78.0%",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral600
+                color = PickeTheme.colors.gray600
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -145,7 +145,7 @@ fun SecondOnboardingHeader() {
                     modifier = Modifier
                         .weight(0.22f)
                         .fillMaxHeight()
-                        .background(PickeTheme.colors.backgroundTertiary)
+                        .background(PickeTheme.colors.backgroundSubtler)
                 )
             }
 
@@ -153,7 +153,7 @@ fun SecondOnboardingHeader() {
             Text(
                 text = "B 22.0%",
                 style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.neutral600
+                color = PickeTheme.colors.gray600
             )
         }
     }
@@ -174,7 +174,7 @@ fun SecondOnboardingItemCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = PickeTheme.colors.borderDefault
+            color = PickeTheme.colors.borderBeigeDefault
         )
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
@@ -194,18 +194,18 @@ fun SecondOnboardingItemCard(
                         Text(
                             text = nickname,
                             style = PickeTheme.typography.bodySmMedium,
-                            color = PickeTheme.colors.textSecondary
+                            color = PickeTheme.colors.textSubtle
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
                         Surface(
-                            color = PickeTheme.colors.primary.copy(alpha = 0.1f),
+                            color = PickeTheme.colors.primary500.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(2.dp)
                         ) {
                             Text(
                                 text = "A",
                                 style = PickeTheme.typography.bodyXxsMedium,
-                                color = PickeTheme.colors.primary,
+                                color = PickeTheme.colors.primary500,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
@@ -214,7 +214,7 @@ fun SecondOnboardingItemCard(
                     Text(
                         text = "2분 전",
                         style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.outline
+                        color = PickeTheme.colors.textMuted
                     )
                 }
 
@@ -230,7 +230,7 @@ fun SecondOnboardingItemCard(
             Text(
                 text = "제도화가 무서운 건, 사회적 압력이 '선택'을 '의무'로 바꿀 수 있다는 거예요. 네덜란드 사례를 보면 우려가 현실이 되고 있죠.",
                 style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.neutral600,
+                color = PickeTheme.colors.gray600,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )

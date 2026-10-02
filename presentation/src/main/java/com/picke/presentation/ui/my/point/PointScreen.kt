@@ -67,7 +67,7 @@ fun PointScreen(
     val pullToRefreshState = rememberPullToRefreshState()
 
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBrand,
+        containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             CustomTopAppBar(
@@ -76,7 +76,7 @@ fun PointScreen(
                 showLogo = false,
                 showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBrand,
+                backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
                     IconButton(
                         onClick = {
@@ -85,7 +85,7 @@ fun PointScreen(
                         Icon(
                             painterResource(R.drawable.ic_point),
                             contentDescription = stringResource(R.string.setting),
-                            tint = PickeTheme.colors.primary
+                            tint = PickeTheme.colors.primary500
                         )
                     }
                 }
@@ -106,7 +106,7 @@ fun PointScreen(
                     state = pullToRefreshState,
                     isRefreshing = uiState.isRefreshing,
                     containerColor = Color.White,
-                    color = PickeTheme.colors.primary,
+                    color = PickeTheme.colors.primary500,
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
@@ -128,7 +128,7 @@ fun PointScreen(
                         painter = painterResource(id = R.drawable.logo_picke),
                         contentDescription = "빈 화면 로고",
                         modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                        tint = PickeTheme.colors.borderDefault
+                        tint = PickeTheme.colors.borderBeigeDefault
                     )
                     Text(
                         text = "아직 포인트 내역이 없습니다",
@@ -165,7 +165,7 @@ fun PointScreen(
                                     .padding(16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(color = PickeTheme.colors.primaryDarkest)
+                                CircularProgressIndicator(color = PickeTheme.colors.primary900)
                             }
                         }
                     }
@@ -199,7 +199,7 @@ fun PointHistoryItem(
     item: PointHistoryUiModel
 ) {
     val isEarned = item.point > 0
-    val pointColor = if (isEarned) PickeTheme.colors.primary else PickeTheme.colors.textTertiary
+    val pointColor = if (isEarned) PickeTheme.colors.primary500 else PickeTheme.colors.textSubtler
     val pointText = if (isEarned) "+ ${item.point}P" else "${item.point}P"
 
     Box(
@@ -207,7 +207,7 @@ fun PointHistoryItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .background(Color.White)
-            .border(1.dp, PickeTheme.colors.borderDefault, RoundedCornerShape(2.dp))
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
             .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         Row(
@@ -219,7 +219,7 @@ fun PointHistoryItem(
             Column(horizontalAlignment = Alignment.Start) {
                 Text(
                     text = item.title,
-                    color = PickeTheme.colors.textPrimary,
+                    color = PickeTheme.colors.textDefault,
                     style = PickeTheme.typography.bodySmSemiBold
                 )
                 Spacer(modifier = Modifier.height(6.dp))

@@ -20,9 +20,9 @@ fun SortFilterChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) PickeTheme.colors.primary else PickeTheme.colors.primaryLight
-    val contentColor = if (isSelected) PickeTheme.colors.primaryLight else PickeTheme.colors.primary
-    val borderColor = PickeTheme.colors.primary
+    val backgroundColor = if (isSelected) PickeTheme.colors.primary500 else PickeTheme.colors.primary50
+    val contentColor = if (isSelected) PickeTheme.colors.primary50 else PickeTheme.colors.primary500
+    val borderColor = PickeTheme.colors.primary500
 
     Box(
         modifier = Modifier

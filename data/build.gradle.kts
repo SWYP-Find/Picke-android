@@ -17,7 +17,9 @@ android {
         properties.load(propertiesFile.inputStream())
     }
 
-    val mixpanelToken = properties.getProperty("MIXPANEL_PROJECT_TOKEN") ?: ""
+    val mixpanelToken = properties.getProperty("MIXPANEL_PROJECT_TOKEN")
+    val baseUrlDebug = properties.getProperty("BASE_URL_DEBUG")
+    val baseUrlRelease = properties.getProperty("BASE_URL_RELEASE")
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -27,10 +29,10 @@ android {
 
     buildTypes {
         release {
-            buildConfigField("String", "BASE_URL", "\"https://picke.store/\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrlRelease\"")
         }
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://dev.picke.store/\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrlDebug\"")
         }
     }
 

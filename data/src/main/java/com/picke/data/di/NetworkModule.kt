@@ -1,5 +1,6 @@
 package com.picke.data.di
 
+import android.util.Log
 import com.google.gson.Gson
 import com.picke.data.BuildConfig
 import com.picke.data.common.network.AuthInterceptor
@@ -14,21 +15,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-// Hilt에게 네트워크 통신에 필요한 부품(OkHttpClient, Retrofit)을 조립하는 방법을 알려주는 모듈
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    private const val API_LOG_TAG = "PickeApi"
+
+    private val SENSITIVE_JSON_FIELD =
+        Regex("(\"(?:access_token|refresh_token|authorizationCode|fcmToken)\"\\s*:\\s*\")[^\"]*\"")
+
+    @Provides
+    @Singleton
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        val logger = HttpLoggingInterceptor.Logger { message ->
+            Log.d(API_LOG_TAG, SENSITIVE_JSON_FIELD.replace(message) { "${it.groupValues[1]}██\"" })
+        }
+        return HttpLoggingInterceptor(logger).apply {
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+            else HttpLoggingInterceptor.Level.NONE
+            redactHeader("Authorization")
+            redactHeader("X-Refresh-Token")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
-        tokenAuthenticator: TokenAuthenticator
+        tokenAuthenticator: TokenAuthenticator,
+        loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC
-            else HttpLoggingInterceptor.Level.NONE
-        }
-
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)

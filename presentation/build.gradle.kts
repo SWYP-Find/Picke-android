@@ -19,8 +19,8 @@ android {
     }
 
     // UI 계층에서 필요한 키값만 추출
-    val baseUrlDebug = properties.getProperty("BASE_URL_DEBUG") ?: ""
-    val baseUrlRelease = properties.getProperty("BASE_URL_RELEASE") ?: ""
+    val baseUrlDebug = properties.getProperty("BASE_URL_DEBUG")
+    val baseUrlRelease = properties.getProperty("BASE_URL_RELEASE")
 
     val kakaoDebugAppKey = properties.getProperty("KAKAO_DEBUG_APPKEY") ?: ""
     val admobRewardedAdUnitId = properties.getProperty("ADMOB_REWARDED_AD_UNIT_ID") ?: ""
@@ -55,11 +55,11 @@ android {
     buildTypes {
         release {
             // 배포용 서버 주소 설정
-            buildConfigField("String", "BASE_URL", "\"$baseUrlDebug\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrlRelease\"")
         }
         debug {
             // 개발용 서버 주소 설정
-            buildConfigField("String", "BASE_URL", "\"$baseUrlRelease\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrlDebug\"")
         }
     }
 

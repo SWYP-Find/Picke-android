@@ -84,7 +84,8 @@ class ScenarioViewModel @Inject constructor(
             if (audioUrl != null) {
                 currentAudioKey = targetKey
                 val fullAudioUrl =
-                    if (audioUrl.startsWith("http")) audioUrl else BuildConfig.BASE_URL + audioUrl
+                    if (audioUrl.startsWith("http")) audioUrl
+                    else "${BuildConfig.BASE_URL}${audioUrl.removePrefix("/")}"
                 audioPlayerManager.loadAudio(fullAudioUrl, _uiState.value.currentPositionMs)
             }
         }

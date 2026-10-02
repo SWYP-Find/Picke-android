@@ -112,8 +112,9 @@ keyPassword=...
 **`sentry.properties`**: ProGuard 매핑 업로드용 Sentry 인증 토큰 필요
 
 **빌드 variant별 BASE_URL**
-- `debug`: `https://dev.picke.store/`
-- `release`: `https://picke.store/` (minify + shrink 활성화, 서명 필요)
+- `debug`: `local.properties`의 `BASE_URL_DEBUG`
+- `release`: `local.properties`의 `BASE_URL_RELEASE` (minify + shrink 활성화, 서명 필요)
+- 두 키 모두 필수이며, 값은 `/`로 끝나야 합니다 (예: `https://example.com/`). 주소는 팀에 문의하세요.
 
 ## CI/CD
 

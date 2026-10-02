@@ -52,7 +52,7 @@ class TokenAuthenticator @Inject constructor(
 
             val client = refreshClient
             val refreshRequest = Request.Builder()
-                .url("${BuildConfig.BASE_URL}/api/v1/auth/refresh")
+                .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
                 .post(ByteArray(0).toRequestBody(null))
                 .header("X-Refresh-Token", refreshToken)
                 .build()

@@ -40,12 +40,23 @@ android {
     }
 
     signingConfigs {
+        getByName("debug") {
+            val debugStoreFilePath = properties.getProperty("debugStoreFile")
+            if (debugStoreFilePath != null) {
+                storeFile = rootProject.file(debugStoreFilePath)
+                storePassword = properties.getProperty("debugStorePassword") ?: ""
+                keyAlias = properties.getProperty("debugKeyAlias") ?: ""
+                keyPassword = properties.getProperty("debugKeyPassword") ?: ""
+            }
+        }
         create("release") {
             val storeFilePath = properties.getProperty("storeFile")
-            if (storeFilePath != null) storeFile = file(storeFilePath)
-            storePassword = properties.getProperty("storePassword") ?: ""
-            keyAlias = properties.getProperty("keyAlias") ?: ""
-            keyPassword = properties.getProperty("keyPassword") ?: ""
+            if (storeFilePath != null) {
+                storeFile = file(storeFilePath)
+                storePassword = properties.getProperty("storePassword") ?: ""
+                keyAlias = properties.getProperty("keyAlias") ?: ""
+                keyPassword = properties.getProperty("keyPassword") ?: ""
+            }
         }
     }
 

@@ -1,8 +1,8 @@
-package com.picke.data.di
+package com.picke.presentation.analytics
 
 import android.content.Context
 import com.mixpanel.android.mpmetrics.MixpanelAPI
-import com.picke.data.BuildConfig
+import com.picke.presentation.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,13 @@ object MixpanelModule {
     fun provideMixpanel(@ApplicationContext context: Context): MixpanelAPI {
         val projectToken = BuildConfig.MIXPANEL_PROJECT_TOKEN
 
-        // trackAutomaticEvents=true: 세션/설치/업데이트 자동 이벤트 (계약서 §0 - 양 플랫폼 통일)
-        return MixpanelAPI.getInstance(context, projectToken, true)
+        val mixpanel = MixpanelAPI.getInstance(context, projectToken, BuildConfig.DEBUG, true)
+
+        if (BuildConfig.DEBUG) {
+            mixpanel.optOutTracking()
+        } else if (mixpanel.hasOptedOutTracking()) {
+            mixpanel.optInTracking()
+        }
+        return mixpanel
     }
 }

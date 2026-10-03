@@ -135,7 +135,8 @@ class VoteViewModel @Inject constructor(
         _uiState.update { it.copy(isInsufficientPoints = false) }
     }
 
-    fun trackShare(channel: String) {
-        analyticsTracker.trackShareAction(ShareTarget.BATTLE, channel)
+    fun trackShare(voteType: VoteType, channel: String) {
+        val target = if (voteType == VoteType.POST) ShareTarget.FINAL_VOTE else ShareTarget.BATTLE
+        analyticsTracker.trackShareAction(target, channel)
     }
 }

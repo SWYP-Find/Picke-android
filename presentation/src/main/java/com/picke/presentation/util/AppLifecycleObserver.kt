@@ -83,6 +83,7 @@ class AppLifecycleObserver @Inject constructor(
                         amount = totalEarned,
                         balance = result.totalPoints
                     )
+                    analyticsTracker.setPointBalance(result.totalPoints)
                 }
                 .onFailure { error ->
                     Log.w(TAG, "[출석] 체크 실패: ${error.message}")

@@ -60,7 +60,6 @@ import coil.request.ImageRequest
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
-import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.component.shimmer
@@ -87,8 +86,6 @@ fun TodayBattleScreen(
     val clipboardManager = LocalClipboardManager.current
     val uiState by viewModel.uiState.collectAsState()
 
-    val analyticsTracker = rememberAnalyticsTracker()
-
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -113,15 +110,14 @@ fun TodayBattleScreen(
                 onSuccess = { url ->
                     clipboardManager.setText(AnnotatedString(url))
                     Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                    viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
                 },
                 onError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             )
         },
-        onTrackShareAction = { target, channel ->
-            analyticsTracker.trackShareAction(target, channel)
-        }
+        onTrackShareAction = viewModel::trackShareAction
     )
 }
 
@@ -168,7 +164,8 @@ fun TodayBattleScreen(
                             battleId = battle.battleId,
                             battleTitle = battle.title,
                             battleDescription = battle.description,
-                            onComplete = { isSharing = false }
+                            onComplete = { isSharing = false },
+                            onSuccess = { onTrackShareAction(ShareTarget.BATTLE, ShareChannel.KAKAO) }
                         )
                     } else {
                         isSharing = false
@@ -190,7 +187,8 @@ fun TodayBattleScreen(
                 shareBattleToInstagramStoryDarkMode(
                     context = context,
                     bitmap = bitmap,
-                    onComplete = { isSharing = false }
+                    onComplete = { isSharing = false },
+                    onSuccess = { onTrackShareAction(ShareTarget.BATTLE, ShareChannel.INSTAGRAM) }
                 )
             } catch (_: Exception) {
                 isSharing = false
@@ -375,12 +373,10 @@ fun TodayBattleScreen(
                 onDismiss = { showShareDialog = false },
                 onKakaoClick = {
                     showShareDialog = false
-                    onTrackShareAction(ShareTarget.BATTLE, ShareChannel.KAKAO)
                     onKakaoShareClick()
                 },
                 onInstaClick = {
                     showShareDialog = false
-                    onTrackShareAction(ShareTarget.BATTLE, ShareChannel.INSTAGRAM)
                     onInstaShareClick()
                 },
                 onFacebookClick = {
@@ -388,8 +384,6 @@ fun TodayBattleScreen(
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
-                    onTrackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
-
                     val currentBattleId = battleList[pagerState.currentPage].battleId.toInt()
                     onGetShareLink(currentBattleId)
                 }

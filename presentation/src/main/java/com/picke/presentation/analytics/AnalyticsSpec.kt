@@ -1,5 +1,8 @@
 package com.picke.presentation.analytics
 
+import com.picke.presentation.AppRoute
+import com.picke.presentation.ui.main.BottomNavItem
+
 /**
  * Pické Mixpanel 이벤트 명세 (크로스플랫폼 계약서) 상수 정의
  *
@@ -76,6 +79,7 @@ object OnboardingStep {
     const val SPLASH = "splash"
     const val LOGIN_SHOWN = "login_shown"
     const val KAKAO_START = "kakao_start"
+    const val GOOGLE_START = "google_start"
     const val TERMS_SHOWN = "terms_shown"
     const val TERMS_AGREED = "terms_agreed"
     const val PERMISSION_ASKED = "permission_asked"
@@ -148,11 +152,6 @@ object UiActionName {
     const val RECAP_SHARE = "recap_share"
 }
 
-/**
- * screen_view.screen enum (§2) 및 NavController route → screen 매핑
- *
- * 신규 화면 추가 시 여기에 상수 등록 후 fromRoute()에 매핑 추가 (iOS 동시 반영).
- */
 object AnalyticsScreen {
     const val SPLASH = "splash"
     const val ONBOARDING = "onboarding"
@@ -174,29 +173,24 @@ object AnalyticsScreen {
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
 
-    /**
-     * NavController route → §2 screen enum 매핑.
-     * 매핑에 없는 route(마이 하위 화면 등 명세 미등재 화면)는 null 반환 → screen_view 미전송.
-     */
     fun fromRoute(route: String): String? = when (route) {
-        "onboarding_screen" -> ONBOARDING
-        "login_screen" -> LOGIN
-        "tab_home" -> HOME
-        "tab_explore" -> EXPLORE
-        "tab_battle", "tab_battle?battleId={battleId}" -> QUICK_BATTLE
-        "tab_my" -> MYPAGE
-        "pre_vote_screen/{battleId}" -> PREVOTE
-        "scenario_screen/{battleId}" -> CHATROOM
-        "post_vote_screen/{battleId}" -> VOTE_CONTENT
-        "perspective_screen/{battleId}?commentId={commentId}" -> BATTLE_DETAIL
-        "comment_screen/{itemId}?firstOptionId={firstOptionId}&commentId={commentId}" -> COMMENT
-        "recommend_screen/{battleId}" -> CURATION
-        "alarm_screen" -> NOTIFICATION
-        "point_screen" -> POINT
-        "setting_screen" -> SETTINGS
-        "withdraw_screen" -> WITHDRAW
-        "philosopher_type_screen" -> RECAP
-        "other_philosopher_screen/{reportId}" -> RECAP
+        AppRoute.Onboarding.route -> ONBOARDING
+        AppRoute.Login.route -> LOGIN
+        BottomNavItem.Home.route -> HOME
+        BottomNavItem.Explore.route -> EXPLORE
+        BottomNavItem.TodayBattle.route, AppRoute.TodayBattle.route -> QUICK_BATTLE
+        BottomNavItem.My.route -> MYPAGE
+        AppRoute.PreVote.route -> PREVOTE
+        AppRoute.Scenario.route -> CHATROOM
+        AppRoute.PostVote.route -> VOTE_CONTENT
+        AppRoute.Perspective.route -> BATTLE_DETAIL
+        AppRoute.Comment.route -> COMMENT
+        AppRoute.Recommend.route -> CURATION
+        AppRoute.Alarm.route -> NOTIFICATION
+        AppRoute.Point.route -> POINT
+        AppRoute.Setting.route -> SETTINGS
+        AppRoute.Withdraw.route -> WITHDRAW
+        AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         else -> null
     }
 }

@@ -63,6 +63,8 @@ import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ads.showAdFitTransitionPopupAd
+import com.picke.presentation.analytics.ContentActionType
+import com.picke.presentation.analytics.ContentSection
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.shimmer
@@ -113,6 +115,7 @@ fun HomeScreen(
         uiState = uiState,
         onNavigateToAlarm = onNavigateToAlarm,
         onNavigateToVote = onNavigateToVote,
+        onTrackBattleTap = viewModel::trackBattleTap,
         onNavigateToTrendingBattle = onNavigateToTrendingBattle,
         onNavigateToBestBattle = onNavigateToBestBattle,
         onNavigateToTodayPicke = onNavigateToTodayPicke,
@@ -128,6 +131,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
+    onTrackBattleTap: (action: String, contentId: String, section: String?) -> Unit,
     onNavigateToTrendingBattle: () -> Unit,
     onNavigateToBestBattle: () -> Unit,
     onNavigateToTodayPicke: () -> Unit,
@@ -233,6 +237,7 @@ fun HomeScreen(
                     EditorPickSection(
                         items = uiState.editorPicks,
                         onItemClick = { contentId ->
+                            onTrackBattleTap(ContentActionType.HERO_TAP, contentId, null)
                             onNavigateToVote(contentId)
                         }
                     )
@@ -255,7 +260,14 @@ fun HomeScreen(
                             items(uiState.trendingBattles) { item ->
                                 TrendingBattleCard(
                                     item = item,
-                                    onClick = { onNavigateToVote(item.contentId) }
+                                    onClick = {
+                                        onTrackBattleTap(
+                                            ContentActionType.BATTLE_CARD_TAP,
+                                            item.contentId,
+                                            ContentSection.HOT
+                                        )
+                                        onNavigateToVote(item.contentId)
+                                    }
                                 )
                             }
                         }
@@ -289,7 +301,14 @@ fun HomeScreen(
                             BestBattleRankItem(
                                 item = item,
                                 rank = index + 1,
-                                onClick = { onNavigateToVote(item.contentId) }
+                                onClick = {
+                                    onTrackBattleTap(
+                                        ContentActionType.BATTLE_CARD_TAP,
+                                        item.contentId,
+                                        ContentSection.BEST
+                                    )
+                                    onNavigateToVote(item.contentId)
+                                }
                             )
                         }
                     }
@@ -339,7 +358,14 @@ fun HomeScreen(
                         uiState.newBattles.forEach { item ->
                             NewBattleCard(
                                 item = item,
-                                onClick = { onNavigateToVote(item.contentId) }
+                                onClick = {
+                                    onTrackBattleTap(
+                                        ContentActionType.NEW_BATTLE_TAP,
+                                        item.contentId,
+                                        ContentSection.NEW
+                                    )
+                                    onNavigateToVote(item.contentId)
+                                }
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                         }
@@ -610,6 +636,7 @@ fun HomeScreenPreview() {
         ),
         onNavigateToAlarm = {},
         onNavigateToVote = {},
+        onTrackBattleTap = { _, _, _ -> },
         onNavigateToTrendingBattle = {},
         onNavigateToBestBattle = {},
         onNavigateToTodayPicke = {},

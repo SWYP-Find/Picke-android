@@ -121,7 +121,8 @@ fun PhilosopherTypeScreen(
                             bitmap = bitmap,
                             resultId = shareKey,
                             philosopherName = recapBoard?.myCard?.philosopherLabel ?: "알 수 없음",
-                            description = recapBoard?.myCard?.description ?: ""
+                            description = recapBoard?.myCard?.description ?: "",
+                            onSuccess = { viewModel.trackRecapShare(ShareChannel.KAKAO) }
                         )
                     },
                     onError = { errorMessage ->
@@ -137,7 +138,11 @@ fun PhilosopherTypeScreen(
         coroutineScope.launch {
             try {
                 val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
-                shareToInstagramStory(context = context, bitmap = bitmap)
+                shareToInstagramStory(
+                    context = context,
+                    bitmap = bitmap,
+                    onSuccess = { viewModel.trackRecapShare(ShareChannel.INSTAGRAM) }
+                )
             } catch (e: Exception) {
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }
@@ -251,12 +256,10 @@ fun PhilosopherTypeScreen(
                 onDismiss = { showShareDialog = false },
                 onKakaoClick = {
                     showShareDialog = false
-                    viewModel.trackRecapShare(ShareChannel.KAKAO)
                     onKakaoShareClick()
                 },
                 onInstaClick = {
                     showShareDialog = false
-                    viewModel.trackRecapShare(ShareChannel.INSTAGRAM)
                     onInstaShareClick()
                 },
                 onFacebookClick = {
@@ -264,14 +267,13 @@ fun PhilosopherTypeScreen(
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
-                    viewModel.trackRecapShare(ShareChannel.LINK)
-
                     viewModel.getRecapShareKey(
                         onSuccess = { shareKey ->
                             val shareUrl = "${BuildConfig.BASE_URL}recap/$shareKey"
 
                             clipboardManager.setText(AnnotatedString(shareUrl))
                             Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                            viewModel.trackRecapShare(ShareChannel.LINK)
                         },
                         onError = { errorMessage ->
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()

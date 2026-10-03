@@ -8,6 +8,7 @@ import com.picke.domain.feature.auth.usecase.AuthUseCases
 import com.picke.domain.feature.device.usecase.DeviceUseCases
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.ui.login.model.LoginUiState
 import com.picke.presentation.ui.login.model.Provider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +29,25 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
+    init {
+        analyticsTracker.trackOnboardingStep(OnboardingStep.LOGIN_SHOWN)
+    }
+
     fun resetState() {
         _uiState.value = LoginUiState.Idle
     }
 
     fun markTermsAgreed() {
         preferencesUseCases.saveTermsAgreed()
+        analyticsTracker.trackOnboardingStep(OnboardingStep.TERMS_AGREED)
+    }
+
+    fun onKakaoLoginStart() {
+        analyticsTracker.trackOnboardingStep(OnboardingStep.KAKAO_START, method = "kakao")
+    }
+
+    fun onGoogleLoginStart() {
+        analyticsTracker.trackOnboardingStep(OnboardingStep.GOOGLE_START, method = "google")
     }
 
     fun handleSocialLoginSuccess(provider: Provider, authCode: String) {
@@ -66,6 +80,9 @@ class LoginViewModel @Inject constructor(
                 preferencesUseCases.saveUserTag(userTag)
                 preferencesUseCases.saveLoginProvider(provider.name)
                 analyticsTracker.onLogin(userTag, provider.name, authToken.isNewUser)
+                if (needsTermsAgreement) {
+                    analyticsTracker.trackOnboardingStep(OnboardingStep.TERMS_SHOWN)
+                }
 
                 FirebaseMessaging.getInstance().token
                     .addOnSuccessListener { fcmToken ->

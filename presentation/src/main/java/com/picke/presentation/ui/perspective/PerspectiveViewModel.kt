@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
+import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.toUiModel
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class PerspectiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val perspectiveUseCases: PerspectiveUseCases,
-    private val voteUseCases: VoteUseCases
+    private val voteUseCases: VoteUseCases,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val receivedBattleId: String = checkNotNull(savedStateHandle["battleId"])
@@ -167,6 +169,9 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             perspectiveUseCases.submitPerspectiveUseCase(battleIdLong, editId, content)
                 .onSuccess {
+                    if (editId == null) {
+                        analyticsTracker.trackCommunityAction(receivedBattleId, content.length)
+                    }
                     onSuccess()
                     loadMyPerspective()
                     loadPerspectives(isRefresh = true)

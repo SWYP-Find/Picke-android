@@ -140,11 +140,7 @@ class AlarmViewModel @Inject constructor(
 
     // 모두 읽음 처리 (낙관적 업데이트: 클릭 즉시 UI 반영 후 실패 시 롤백)
     fun readAllAlarms() {
-        analyticsTracker.trackNotificationAction(
-            action = NotificationActionType.READ_ALL,
-            unreadCount = _uiState.value.alarmList.count { !it.isRead }
-        )
-
+        val unreadCount = _uiState.value.alarmList.count { !it.isRead }
         val previousAlarmList = _uiState.value.alarmList
         _uiState.update { state ->
             state.copy(alarmList = state.alarmList.map { it.copy(isRead = true) })
@@ -156,6 +152,10 @@ class AlarmViewModel @Inject constructor(
 
             result.onSuccess {
                 Log.d("AlarmFlow", "✅ 전체 알림 읽음 처리 성공!")
+                analyticsTracker.trackNotificationAction(
+                    action = NotificationActionType.READ_ALL,
+                    unreadCount = unreadCount
+                )
             }.onFailure { error ->
                 Log.e("AlarmFlow", "❌ 전체 알림 읽음 처리 실패: ${error.message}", error)
                 _uiState.update { state -> state.copy(alarmList = previousAlarmList) }

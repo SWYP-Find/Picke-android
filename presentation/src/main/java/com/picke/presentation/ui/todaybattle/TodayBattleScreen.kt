@@ -60,7 +60,6 @@ import coil.request.ImageRequest
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
-import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.component.shimmer
@@ -86,8 +85,6 @@ fun TodayBattleScreen(
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
     val uiState by viewModel.uiState.collectAsState()
-
-    val analyticsTracker = rememberAnalyticsTracker()
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -119,9 +116,7 @@ fun TodayBattleScreen(
                 }
             )
         },
-        onTrackShareAction = { target, channel ->
-            analyticsTracker.trackShareAction(target, channel)
-        }
+        onTrackShareAction = viewModel::trackShareAction
     )
 }
 

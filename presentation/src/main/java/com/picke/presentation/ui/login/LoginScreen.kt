@@ -44,8 +44,6 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.analytics.OnboardingStep
-import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.model.LoginUiState
@@ -59,13 +57,8 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    val analyticsTracker = rememberAnalyticsTracker()
     var showTermsSheet by rememberSaveable { mutableStateOf(false) }
     var pendingIsNewUser by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        analyticsTracker.trackOnboardingStep(OnboardingStep.LOGIN_SHOWN)
-    }
 
     BackHandler {
         (context as? Activity)?.finish()
@@ -92,7 +85,6 @@ fun LoginScreen(
                 if (state.needsTermsAgreement) {
                     pendingIsNewUser = state.isNewUser
                     showTermsSheet = true
-                    analyticsTracker.trackOnboardingStep(OnboardingStep.TERMS_SHOWN)
                 } else {
                     onNavigateToMain(state.isNewUser)
                 }
@@ -111,7 +103,6 @@ fun LoginScreen(
         TermsOfServiceBottomSheet(
             onConfirm = {
                 viewModel.markTermsAgreed()
-                analyticsTracker.trackOnboardingStep(OnboardingStep.TERMS_AGREED)
                 showTermsSheet = false
                 onNavigateToMain(pendingIsNewUser)
             }
@@ -121,7 +112,7 @@ fun LoginScreen(
     LoginScreenContent(
         isLoading = uiState is LoginUiState.Loading,
         onKakaoClick = {
-            analyticsTracker.trackOnboardingStep(OnboardingStep.KAKAO_START, method = "kakao")
+            viewModel.onKakaoLoginStart()
             loginWithKakaoForAuthCode(context, viewModel) { token ->
                 viewModel.handleSocialLoginSuccess(Provider.KAKAO, token)
             }

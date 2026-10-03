@@ -46,6 +46,10 @@ class LoginViewModel @Inject constructor(
         analyticsTracker.trackOnboardingStep(OnboardingStep.KAKAO_START, method = "kakao")
     }
 
+    fun onGoogleLoginStart() {
+        analyticsTracker.trackOnboardingStep(OnboardingStep.GOOGLE_START, method = "google")
+    }
+
     fun handleSocialLoginSuccess(provider: Provider, authCode: String) {
         if (_uiState.value is LoginUiState.Loading) return
 

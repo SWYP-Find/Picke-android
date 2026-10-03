@@ -79,6 +79,7 @@ object OnboardingStep {
     const val SPLASH = "splash"
     const val LOGIN_SHOWN = "login_shown"
     const val KAKAO_START = "kakao_start"
+    const val GOOGLE_START = "google_start"
     const val TERMS_SHOWN = "terms_shown"
     const val TERMS_AGREED = "terms_agreed"
     const val PERMISSION_ASKED = "permission_asked"
@@ -171,7 +172,6 @@ object AnalyticsScreen {
     const val SETTINGS = "settings"
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
-
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING

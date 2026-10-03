@@ -8,6 +8,7 @@ import com.picke.domain.feature.todaybattle.usecase.TodayBattleUseCases
 import com.picke.domain.feature.vote.usecase.SubmitVoteResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.analytics.BattleStepName
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.ui.todaybattle.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,6 +71,11 @@ class TodayBattleViewModel @Inject constructor(
         ).onSuccess { result ->
             when (result) {
                 is SubmitVoteResult.Success -> {
+                    analyticsTracker.trackBattleStep(
+                        stepName = BattleStepName.PRE_VOTE,
+                        contentId = battleId.toString(),
+                        choice = optionId.toString()
+                    )
                     _uiState.update { it.copy(isEntering = false) }
                     onNavigateToScenario(battleId.toString())
                 }

@@ -1,8 +1,8 @@
-package com.picke.data.di
+package com.picke.presentation.analytics
 
 import android.content.Context
 import com.mixpanel.android.mpmetrics.MixpanelAPI
-import com.picke.data.BuildConfig
+import com.picke.presentation.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

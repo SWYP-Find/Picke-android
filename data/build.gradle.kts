@@ -17,14 +17,11 @@ android {
         properties.load(propertiesFile.inputStream())
     }
 
-    val mixpanelToken = properties.getProperty("MIXPANEL_PROJECT_TOKEN")
     val baseUrlDebug = properties.getProperty("BASE_URL_DEBUG")
     val baseUrlRelease = properties.getProperty("BASE_URL_RELEASE")
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-
-        buildConfigField("String", "MIXPANEL_PROJECT_TOKEN", "\"$mixpanelToken\"")
     }
 
     buildTypes {
@@ -66,7 +63,4 @@ dependencies {
 
     // [Paging3]
     implementation(libs.androidx.paging.runtime)
-
-    // 💡 믹스패널 라이브러리 추가
-    implementation(libs.mixpanel.android)
 }

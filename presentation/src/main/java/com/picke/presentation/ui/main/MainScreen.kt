@@ -95,10 +95,6 @@ fun MainScreen(
                         rootNavController.navigate(AppRoute.Alarm.route)
                     },
                     onNavigateToVote = { contentId ->
-                        analyticsTracker.trackContentAction(
-                            ContentActionType.BATTLE_CARD_TAP,
-                            contentId
-                        )
                         rootNavController.navigate(AppRoute.BattleRouting.createRoute(contentId))
                     },
                     onNavigateToTrendingBattle = { },

@@ -6,6 +6,7 @@ import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
 import com.picke.domain.feature.attendance.usecase.AttendanceUseCases
 import com.picke.domain.feature.home.usecase.HomeUseCases
+import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.attendance.toAttendanceCheckUiState
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.home.model.toUiModel
@@ -23,7 +24,8 @@ class HomeViewModel @Inject constructor(
     private val homeUseCases: HomeUseCases,
     private val attendanceUseCases: AttendanceUseCases,
     private val alarmUseCases: AlarmUseCases,
-    private val localPreferencesUseCases: LocalPreferencesUseCases
+    private val localPreferencesUseCases: LocalPreferencesUseCases,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
@@ -51,6 +53,10 @@ class HomeViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun trackBattleTap(action: String, contentId: String, section: String?) {
+        analyticsTracker.trackContentAction(action, contentId, section)
     }
 
     fun dismissAttendanceCheckSheet() {

@@ -108,7 +108,7 @@ fun VoteRoute(
                     )
                 },
                 onTrackShare = { channel ->
-                    viewModel.trackShare(channel)
+                    viewModel.trackShare(voteType, channel)
                 },
                 onGetShareLink = { battleId, onSuccess, onError ->
                     viewModel.getShareLink(

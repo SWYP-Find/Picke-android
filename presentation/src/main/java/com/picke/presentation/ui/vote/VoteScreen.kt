@@ -177,7 +177,8 @@ fun VoteScreen(
                         battleId = battleInfo.battleId,
                         battleTitle = battleInfo.title,
                         battleDescription = if (isPreVote) battleInfo.summary else battleDetail.description,
-                        onComplete = { isSharing = false }
+                        onComplete = { isSharing = false },
+                        onSuccess = { onTrackShare(ShareChannel.KAKAO) }
                     )
                 } else {
                     isSharing = false
@@ -205,13 +206,15 @@ fun VoteScreen(
                     shareBattleToInstagramStoryBrightMode(
                         context = context,
                         bitmap = bitmap,
-                        onComplete = { isSharing = false }
+                        onComplete = { isSharing = false },
+                        onSuccess = { onTrackShare(ShareChannel.INSTAGRAM) }
                     )
                 } else {
                     shareBattleToInstagramStoryDarkMode(
                         context = context,
                         bitmap = bitmap,
-                        onComplete = { isSharing = false }
+                        onComplete = { isSharing = false },
+                        onSuccess = { onTrackShare(ShareChannel.INSTAGRAM) }
                     )
                 }
 
@@ -428,12 +431,10 @@ fun VoteScreen(
                 onDismiss = { showShareDialog = false },
                 onKakaoClick = {
                     showShareDialog = false
-                    onTrackShare(ShareChannel.KAKAO)
                     onKakaoShareClick()
                 },
                 onInstaClick = {
                     showShareDialog = false
-                    onTrackShare(ShareChannel.INSTAGRAM)
                     onInstaShareClick()
                 },
                 onFacebookClick = {
@@ -441,12 +442,12 @@ fun VoteScreen(
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
-                    onTrackShare(ShareChannel.LINK)
                     onGetShareLink(
                         battleInfo.battleId.toInt(),
                         { url ->
                             clipboardManager.setText(AnnotatedString(url))
                             Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                            onTrackShare(ShareChannel.LINK)
                         },
                         { errorMessage ->
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()

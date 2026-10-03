@@ -41,7 +41,8 @@ fun shareCapturedImageToKakao(
     bitmap: Bitmap,
     resultId: String,
     philosopherName: String,
-    description: String
+    description: String,
+    onSuccess: () -> Unit = {}
 ) {
     // 1. 공통 함수를 이용해 이미지 저장
     val file = saveBitmapToCache(context, bitmap, "kakao_share.png") ?: return
@@ -87,6 +88,7 @@ fun shareCapturedImageToKakao(
                         Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
                     } else if (sharingResult != null) {
                         context.startActivity(sharingResult.intent)
+                        onSuccess()
                     }
                 }
             } else {
@@ -101,7 +103,8 @@ fun shareCapturedImageToKakao(
  */
 fun shareToInstagramStory(
     context: Context,
-    bitmap: Bitmap
+    bitmap: Bitmap,
+    onSuccess: () -> Unit = {}
 ) {
     try {
         // 1. 공통 함수를 이용해 이미지 저장
@@ -126,11 +129,16 @@ fun shareToInstagramStory(
 
         // 4. 인스타그램 앱에 읽기 권한 임시 부여
         val activity = context as? Activity
-        activity?.grantUriPermission("com.instagram.android", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        activity?.grantUriPermission(
+            "com.instagram.android",
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
 
         // 5. 인스타그램 앱 설치 여부 확인 후 실행
         if (context.packageManager.resolveActivity(intent, 0) != null) {
             context.startActivity(intent)
+            onSuccess()
         } else {
             Toast.makeText(context, "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -151,7 +159,8 @@ fun shareBattleToKakao(
     battleId: String,
     battleTitle: String,
     battleDescription: String,
-    onComplete: () -> Unit = {}
+    onComplete: () -> Unit = {},
+    onSuccess: () -> Unit = {}
 ) {
     // 1. 비트맵을 캐시에 파일로 저장
     val file = saveBitmapToCache(context, bitmap, "kakao_battle_share.png")
@@ -165,7 +174,11 @@ fun shareBattleToKakao(
     ShareClient.instance.uploadImage(file) { imageUploadResult, error ->
         if (error != null || imageUploadResult == null) {
             onComplete()
-            android.widget.Toast.makeText(context, "카카오 이미지 업로드 실패", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(
+                context,
+                "카카오 이미지 업로드 실패",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
             android.util.Log.e("KakaoShare", "업로드 실패: ${error?.message}")
         } else {
             val uploadedImageUrl = imageUploadResult.infos.original.url
@@ -199,6 +212,7 @@ fun shareBattleToKakao(
                 onComplete()
                 if (shareError == null && result != null) {
                     context.startActivity(result.intent)
+                    onSuccess()
                 } else {
                     Toast.makeText(context, "카카오톡 공유 실패", android.widget.Toast.LENGTH_SHORT).show()
                 }
@@ -213,7 +227,8 @@ fun shareBattleToKakao(
 fun shareBattleToInstagramStoryBrightMode(
     context: Context,
     bitmap: Bitmap,
-    onComplete: () -> Unit = {}
+    onComplete: () -> Unit = {},
+    onSuccess: () -> Unit = {}
 ) {
     try {
         val imageFile = saveBitmapToCache(context, bitmap, "instagram_battle_story.png")
@@ -234,11 +249,16 @@ fun shareBattleToInstagramStoryBrightMode(
         }
 
         val activity = context as? Activity
-        activity?.grantUriPermission("com.instagram.android", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        activity?.grantUriPermission(
+            "com.instagram.android",
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
 
         if (context.packageManager.resolveActivity(intent, 0) != null) {
             context.startActivity(intent)
             onComplete()
+            onSuccess()
         } else {
             onComplete()
             Toast.makeText(context, "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -254,7 +274,8 @@ fun shareBattleToInstagramStoryBrightMode(
 fun shareBattleToInstagramStoryDarkMode(
     context: Context,
     bitmap: Bitmap,
-    onComplete: () -> Unit = {}
+    onComplete: () -> Unit = {},
+    onSuccess: () -> Unit = {}
 ) {
     try {
         val imageFile = saveBitmapToCache(context, bitmap, "instagram_battle_story.png")
@@ -275,11 +296,16 @@ fun shareBattleToInstagramStoryDarkMode(
         }
 
         val activity = context as? Activity
-        activity?.grantUriPermission("com.instagram.android", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        activity?.grantUriPermission(
+            "com.instagram.android",
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
 
         if (context.packageManager.resolveActivity(intent, 0) != null) {
             context.startActivity(intent)
             onComplete()
+            onSuccess()
         } else {
             onComplete()
             Toast.makeText(context, "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()

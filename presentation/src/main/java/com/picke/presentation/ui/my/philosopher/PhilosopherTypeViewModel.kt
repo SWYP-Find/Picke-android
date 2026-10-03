@@ -104,7 +104,7 @@ class PhilosopherTypeViewModel @Inject constructor(
         }
     }
 
-    /** 리캡 공유 시도 시 호출 (share_action target=recap, 모든 공유 이벤트 통일 규약) */
+    /** 리캡 공유 성공 시 호출 (share_action target=recap, 모든 공유 이벤트 통일 규약) */
     fun trackRecapShare(channel: String) {
         analyticsTracker.trackShareAction(ShareTarget.RECAP, channel)
     }

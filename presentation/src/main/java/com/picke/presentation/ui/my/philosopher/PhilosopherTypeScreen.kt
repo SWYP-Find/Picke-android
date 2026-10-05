@@ -73,7 +73,9 @@ import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.shareCapturedImageToKakao
 import com.picke.presentation.util.shareToInstagramStory
+import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -129,7 +131,10 @@ fun PhilosopherTypeScreen(
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
+                Sentry.captureException(e)
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }
         }
@@ -143,7 +148,10 @@ fun PhilosopherTypeScreen(
                     bitmap = bitmap,
                     onSuccess = { viewModel.trackRecapShare(ShareChannel.INSTAGRAM) }
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
+                Sentry.captureException(e)
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }
         }

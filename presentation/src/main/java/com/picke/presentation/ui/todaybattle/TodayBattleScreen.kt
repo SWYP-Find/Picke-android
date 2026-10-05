@@ -72,7 +72,9 @@ import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
+import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun TodayBattleScreen(
@@ -171,7 +173,10 @@ fun TodayBattleScreen(
                         isSharing = false
                         Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
                     }
-                } catch (_: Exception) {
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Sentry.captureException(e)
                     isSharing = false
                     Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
                 }
@@ -190,7 +195,10 @@ fun TodayBattleScreen(
                     onComplete = { isSharing = false },
                     onSuccess = { onTrackShareAction(ShareTarget.BATTLE, ShareChannel.INSTAGRAM) }
                 )
-            } catch (_: Exception) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
                 isSharing = false
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }

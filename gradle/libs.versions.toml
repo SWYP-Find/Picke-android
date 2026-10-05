@@ -59,6 +59,8 @@ mixpanel = "7.5.0"
 
 # [Sentry]
 sentry = "5.8.0"
+sentrySdk = "8.14.0"
+
 jetbrainsKotlinJvm = "2.2.10"
 
 # [Coroutines]
@@ -121,6 +123,9 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 kakao-sdk-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" }
 kakao-share = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakao" }
 kakao-adfit = { group = "com.kakao.adfit", name = "ads-base", version.ref = "adfit" }
+
+# [Monitoring]
+sentry = { group = "io.sentry", name = "sentry", version.ref = "sentrySdk" }
 
 # [Paging]
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommon" }

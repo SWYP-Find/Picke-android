@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.picke.data.BuildConfig
+import com.picke.data.common.error.reportIfUnexpected
 import com.picke.data.common.local.PreferencesManager
 import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.auth.model.AuthResponseDto
@@ -95,6 +96,7 @@ class TokenAuthenticator @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e(TAG, "[AUTH] 토큰 갱신 중 예외 발생: ${e.message}", e)
+            reportIfUnexpected(e)
             null
         }
     }

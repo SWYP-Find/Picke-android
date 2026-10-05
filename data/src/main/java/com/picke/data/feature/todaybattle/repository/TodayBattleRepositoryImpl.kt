@@ -1,11 +1,13 @@
 package com.picke.data.feature.todaybattle.repository
 
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.todaybattle.datasource.TodayBattleApi
 import com.picke.data.feature.todaybattle.model.toDomainModel
 import com.picke.domain.feature.todaybattle.model.TodayBattleBoard
 import com.picke.domain.feature.todaybattle.repository.TodayBattleRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class TodayBattleRepositoryImpl @Inject constructor(
     private val battleApi: TodayBattleApi
@@ -15,8 +17,10 @@ class TodayBattleRepositoryImpl @Inject constructor(
             battleApi.getTodayBattles()
                 .toResult("오늘의 배틀을 불러오는데 실패했습니다.")
                 .map { it.toDomainModel() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

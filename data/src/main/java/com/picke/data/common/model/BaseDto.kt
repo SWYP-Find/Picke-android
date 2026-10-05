@@ -1,5 +1,7 @@
 package com.picke.data.common.model
 
+import com.picke.domain.common.exception.ApiErrorException
+
 data class BaseResponse<T>(
     val statusCode: Int,
     val data: T?,
@@ -16,6 +18,6 @@ fun <T> BaseResponse<T>.toResult(fallbackMessage: String = "알 수 없는 오�
     return if (statusCode == 200 && body != null) {
         Result.success(body)
     } else {
-        Result.failure(Exception(error?.message ?: fallbackMessage))
+        Result.failure(ApiErrorException(error?.message ?: fallbackMessage))
     }
 }

@@ -1,14 +1,17 @@
 package com.picke.data.feature.vote.repository
 
 import android.util.Log
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.feature.pollquiz.model.VoteRequestDto
 import com.picke.data.feature.vote.model.toDomainModel
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.vote.datasource.VoteApi
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.vote.model.MyVoteBoard
 import com.picke.domain.feature.vote.model.VoteStatsBoard
 import com.picke.domain.feature.vote.repository.VoteRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class VoteRepositoryImpl @Inject constructor(
     private val voteApi: VoteApi
@@ -34,15 +37,17 @@ class VoteRepositoryImpl @Inject constructor(
                 }
                 else -> {
                     Log.e(TAG, "[API_RES] 사전 투표 실패 - 에러: ${response.error?.message}")
-                    Result.failure(Exception(response.error?.message ?: "사전 투표에 실패했습니다."))
+                    Result.failure(ApiErrorException(response.error?.message ?: "사전 투표에 실패했습니다."))
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 사전 투표 예외 발생: ${e.message}")
             if (e.message?.contains("400") == true) {
                 Result.failure(Exception("CREDIT_400_INSUFFICIENT"))
             } else {
-                Result.failure(e)
+                e.toReportedFailure()
             }
         }
     }
@@ -63,12 +68,14 @@ class VoteRepositoryImpl @Inject constructor(
                 }
                 else -> {
                     Log.e(TAG, "[API_RES] 최종 투표 실패 - 에러: ${response.error?.message}")
-                    Result.failure(Exception(response.error?.message ?: "최종 투표에 실패했습니다."))
+                    Result.failure(ApiErrorException(response.error?.message ?: "최종 투표에 실패했습니다."))
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 최종 투표 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -85,9 +92,11 @@ class VoteRepositoryImpl @Inject constructor(
                     }
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 투표 통계 조회 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -103,9 +112,11 @@ class VoteRepositoryImpl @Inject constructor(
                     Log.d(TAG, "   └ 생각 변화 여부(opinionChanged): ${domainData.opinionChanged}")
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 내 투표 내역 조회 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

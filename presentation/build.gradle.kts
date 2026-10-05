@@ -96,7 +96,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Coil
+    // [Coil]
     implementation(libs.coil.compose)
 
     // [Media & Paging3]
@@ -110,16 +110,19 @@ dependencies {
     implementation(libs.kakao.adfit)
     implementation(libs.mixpanel.android)
 
-    // [Firebase] App 레벨 초기화 및 서비스
+    // [Sentry]
+    implementation(libs.sentry)
+
+    // [Firebase]
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.database)
     implementation(libs.firebase.dynamic.links)
     implementation(libs.firebase.messaging)
 
-    // Splash
+    // [Splash]
     implementation(libs.androidx.core.splashscreen)
 
-    // Exoplayer
+    // [Exoplayer]
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.datasource.okhttp)

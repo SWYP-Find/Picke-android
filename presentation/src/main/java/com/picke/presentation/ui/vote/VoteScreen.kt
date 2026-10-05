@@ -72,7 +72,9 @@ import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
+import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun VoteRoute(
@@ -188,7 +190,10 @@ fun VoteScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            } catch (_: Exception) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
                 isSharing = false
                 Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT)
                     .show()
@@ -218,7 +223,10 @@ fun VoteScreen(
                     )
                 }
 
-            } catch (_: Exception) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
                 isSharing = false
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }

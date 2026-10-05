@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
 import java.security.KeyStore
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +35,8 @@ class PreferencesManager @Inject constructor(
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (e: Exception) {
+            // 여기서 IOException은 네트워크가 아니라 암호화 파일 손상이라 reportIfUnexpected() 필터 없이 항상 보고
+            Sentry.captureException(e)
             // NOTE: 유저가 기기의 잠금 방식(PIN, 생체인식 등)을 변경하면 기존 Keystore가 초기화되며 복호화 불가 상태가 됨.
             // clear()는 XML의 keyset 메타데이터를 남기므로 deleteSharedPreferences()로 파일 자체를 삭제해야 함.
             context.deleteSharedPreferences("auth_prefs_v2")
@@ -60,6 +63,7 @@ class PreferencesManager @Inject constructor(
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
                 )
             } catch (e2: Exception) {
+                Sentry.captureException(e2)
                 // FIXME: 재시도마저 실패할 경우, 강제로 로그아웃 처리하거나 유저에게 '앱 재설치 권장' 팝업을 띄우는 예외 처리 로직 추가 고민 필요
             }
         }

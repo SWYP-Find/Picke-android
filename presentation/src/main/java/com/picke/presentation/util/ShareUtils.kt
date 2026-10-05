@@ -11,6 +11,7 @@ import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
+import io.sentry.Sentry
 import java.io.File
 import java.io.FileOutputStream
 
@@ -28,7 +29,7 @@ private fun saveBitmapToCache(context: Context, bitmap: Bitmap, fileName: String
         fos.close()
         file
     } catch (e: Exception) {
-        e.printStackTrace()
+        Sentry.captureException(e)
         null
     }
 }
@@ -144,7 +145,7 @@ fun shareToInstagramStory(
         }
 
     } catch (e: Exception) {
-        e.printStackTrace()
+        Sentry.captureException(e)
         android.util.Log.e("InstagramShare", "🚨 인스타 공유 실패 원인: ", e)
         Toast.makeText(context, "이미지 처리 중 에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
     }
@@ -266,7 +267,7 @@ fun shareBattleToInstagramStoryBrightMode(
 
     } catch (e: Exception) {
         onComplete()
-        e.printStackTrace()
+        Sentry.captureException(e)
         Toast.makeText(context, "이미지 처리 중 에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
     }
 }
@@ -313,7 +314,7 @@ fun shareBattleToInstagramStoryDarkMode(
 
     } catch (e: Exception) {
         onComplete()
-        e.printStackTrace()
+        Sentry.captureException(e)
         Toast.makeText(context, "이미지 처리 중 에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
     }
 }

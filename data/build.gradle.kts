@@ -61,6 +61,9 @@ dependencies {
     // [Security]
     implementation(libs.androidx.security.crypto)
 
+    // [Sentry]
+    implementation(libs.sentry)
+
     // [Paging3]
     implementation(libs.androidx.paging.runtime)
 }

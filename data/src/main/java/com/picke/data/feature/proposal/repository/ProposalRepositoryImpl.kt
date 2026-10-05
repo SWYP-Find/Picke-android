@@ -1,11 +1,14 @@
 package com.picke.data.feature.proposal.repository
 
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.feature.proposal.datasource.ProposalApi
 import com.picke.data.feature.proposal.model.ProposalRequestDto
 import com.picke.data.feature.proposal.model.toDomainModel
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.common.exception.NotEnoughPointsException
 import com.picke.domain.feature.proposal.model.ProposalBoard
 import com.picke.domain.feature.proposal.repository.ProposalRepository
+import kotlin.coroutines.cancellation.CancellationException
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -30,7 +33,7 @@ class ProposalRepositoryImpl @Inject constructor(
             )
 
             val response = proposalApi.submitProposal(request)
-            val data = response.data ?: throw Exception(response.error?.message ?: "주제 제안에 실패했습니다.")
+            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "주제 제안에 실패했습니다.")
 
             Result.success(data.toDomainModel())
         } catch (e: HttpException) {
@@ -39,8 +42,10 @@ class ProposalRepositoryImpl @Inject constructor(
             } else {
                 Result.failure(e)
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

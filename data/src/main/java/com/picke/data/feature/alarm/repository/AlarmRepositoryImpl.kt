@@ -1,5 +1,6 @@
 package com.picke.data.feature.alarm.repository
 
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.alarm.datasource.AlarmApi
 import com.picke.data.feature.alarm.model.toDomainModel
@@ -7,6 +8,7 @@ import com.picke.domain.feature.alarm.model.AlarmDetailBoard
 import com.picke.domain.feature.alarm.model.AlarmPageBoard
 import com.picke.domain.feature.alarm.repository.AlarmRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class AlarmRepositoryImpl @Inject constructor(
     private val alarmApi: AlarmApi
@@ -17,8 +19,10 @@ class AlarmRepositoryImpl @Inject constructor(
             alarmApi.getAlarms(category, page, size)
                 .toResult("알림 목록을 불러오지 못했습니다.")
                 .map { it.toDomainModel() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -27,8 +31,10 @@ class AlarmRepositoryImpl @Inject constructor(
             alarmApi.getUnreadExists(category)
                 .toResult("미읽음 알림 여부를 불러오지 못했습니다.")
                 .map { it.hasUnread ?: false }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -37,8 +43,10 @@ class AlarmRepositoryImpl @Inject constructor(
             alarmApi.getAlarmDetail(notificationId)
                 .toResult("알림 상세 정보를 불러오지 못했습니다.")
                 .map { it.toDomainModel() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -52,8 +60,10 @@ class AlarmRepositoryImpl @Inject constructor(
                 val errorMessage = response.error?.message ?: "알림 읽음 처리에 실패했습니다."
                 Result.failure(Exception(errorMessage))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -67,8 +77,10 @@ class AlarmRepositoryImpl @Inject constructor(
                 val errorMessage = response.error?.message ?: "알림 전체 읽음 처리에 실패했습니다."
                 Result.failure(Exception(errorMessage))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

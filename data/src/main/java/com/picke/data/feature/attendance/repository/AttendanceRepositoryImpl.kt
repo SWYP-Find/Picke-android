@@ -1,6 +1,7 @@
 package com.picke.data.feature.attendance.repository
 
 import android.util.Log
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.attendance.datasource.AttendanceApi
 import com.picke.data.feature.attendance.model.toDomain
@@ -9,6 +10,7 @@ import com.picke.domain.feature.attendance.model.WeeklyAttendance
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "AttendanceRepositoryImpl"
 
@@ -26,9 +28,11 @@ class AttendanceRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 출석 체크 응답 수신: $dto")
                     dto.toDomain()
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 출석 체크 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -41,9 +45,11 @@ class AttendanceRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 이번 주 출석 현황 응답 수신: $dto")
                     dto.toDomain()
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 이번 주 출석 현황 조회 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.picke.data.feature.battle.repository
 
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.battle.datasource.BattleApi
 import com.picke.data.feature.battle.model.toDomainModel
@@ -7,6 +8,7 @@ import com.picke.domain.feature.battle.model.BattleDetailBoard
 import com.picke.domain.feature.battle.model.BattleStatusBoard
 import com.picke.domain.feature.battle.repository.BattleRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class BattleRepositoryImpl @Inject constructor(
     private val battleApi: BattleApi
@@ -17,8 +19,10 @@ class BattleRepositoryImpl @Inject constructor(
             battleApi.getBattleDetail(battleId)
                 .toResult("배틀 상세 정보를 불러오지 못했습니다.")
                 .map { it.toDomainModel() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -27,8 +31,10 @@ class BattleRepositoryImpl @Inject constructor(
             battleApi.getBattleStatus(battleId)
                 .toResult("배틀 진행 상태를 불러오지 못했습니다.")
                 .map { it.toDomainModel() }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

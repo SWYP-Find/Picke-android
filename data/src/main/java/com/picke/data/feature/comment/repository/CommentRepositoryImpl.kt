@@ -2,16 +2,19 @@ package com.picke.data.feature.comment.repository
 
 import android.util.Log
 import com.picke.data.BuildConfig
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.feature.comment.datasource.CommentApi
 import com.picke.data.feature.comment.model.CommentRequestDto
 import com.picke.data.feature.comment.model.toDomainModel
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.comment.model.CommentCreateBoard
 import com.picke.domain.feature.comment.model.CommentLikeToggleBoard
 import com.picke.domain.feature.comment.model.CommentPageBoard
 import com.picke.domain.feature.comment.model.CommentUpdateBoard
 import com.picke.domain.feature.comment.repository.CommentRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class CommentRepositoryImpl @Inject constructor(
     private val commentApi: CommentApi
@@ -35,9 +38,11 @@ class CommentRepositoryImpl @Inject constructor(
                     }
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 목록 조회 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -51,9 +56,11 @@ class CommentRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 댓글 작성 성공! - 생성된 댓글 ID: ${domainData.commentId}, 작성시간: ${domainData.createdAt}")
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 작성 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -66,9 +73,11 @@ class CommentRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 댓글 삭제 성공 - 서버 응답: $data")
                     data
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 삭제 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -82,9 +91,11 @@ class CommentRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 댓글 수정 성공! - 수정된 댓글 ID: ${domainData.commentId}, 수정시간: ${domainData.updatedAt}")
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 수정 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -98,9 +109,11 @@ class CommentRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 댓글 좋아요 등록 성공 - 내 좋아요 여부: ${domainData.isLiked}, 현재 총 좋아요 수: ${domainData.likeCount}")
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 좋아요 등록 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -114,9 +127,11 @@ class CommentRepositoryImpl @Inject constructor(
                     Log.d(TAG, "[API_RES] 댓글 좋아요 취소 성공 - 내 좋아요 여부: ${domainData.isLiked}, 현재 총 좋아요 수: ${domainData.likeCount}")
                     domainData
                 }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 좋아요 취소 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -135,15 +150,17 @@ class CommentRepositoryImpl @Inject constructor(
                 }
                 else -> {
                     Log.e(TAG, "[API_RES] 댓글 신고 실패 - 에러: ${response.error?.message}")
-                    Result.failure(Exception(response.error?.message ?: "댓글 신고에 실패했습니다."))
+                    Result.failure(ApiErrorException(response.error?.message ?: "댓글 신고에 실패했습니다."))
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[API_ERR] 댓글 신고 예외 발생: ${e.message}")
             if (e.message?.contains("409") == true) {
                 Result.failure(Exception("ALREADY_REPORTED"))
             } else {
-                Result.failure(e)
+                e.toReportedFailure()
             }
         }
     }

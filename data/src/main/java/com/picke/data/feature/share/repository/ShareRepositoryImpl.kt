@@ -2,15 +2,18 @@ package com.picke.data.feature.share.repository
 
 import android.util.Log
 import com.picke.data.BuildConfig
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.feature.mypage.model.toDomainModel
 import com.picke.data.feature.share.datasource.ShareApi
 import com.picke.data.feature.share.model.toDomainModel
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.mypage.model.MyRecapBoard
 import com.picke.domain.feature.share.model.ShareKey
 import com.picke.domain.feature.share.model.ShareUrl
 import com.picke.domain.feature.share.repository.ShareRepository
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class ShareRepositoryImpl @Inject constructor(
@@ -33,12 +36,14 @@ class ShareRepositoryImpl @Inject constructor(
                 Result.success(response.data.toDomainModel())
             } else {
                 Log.e(TAG, "[API_RES] 리포트 공유 링크 요청 실패: ${response.statusCode}, 에러: ${response.error?.message}")
-                Result.failure(Exception(response.error?.message ?: "리포트 공유 링크를 불러오는데 실패했습니다."))
+                Result.failure(ApiErrorException(response.error?.message ?: "리포트 공유 링크를 불러오는데 실패했습니다."))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "[API_ERR] 리포트 공유 링크 요청 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -54,12 +59,14 @@ class ShareRepositoryImpl @Inject constructor(
                 Result.success(response.data.toDomainModel())
             } else {
                 Log.e(TAG, "[API_RES] 배틀 공유 링크 요청 실패: ${response.statusCode}, 에러: ${response.error?.message}")
-                Result.failure(Exception(response.error?.message ?: "배틀 공유 링크를 불러오는데 실패했습니다."))
+                Result.failure(ApiErrorException(response.error?.message ?: "배틀 공유 링크를 불러오는데 실패했습니다."))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "[API_ERR] 배틀 공유 링크 요청 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -76,12 +83,14 @@ class ShareRepositoryImpl @Inject constructor(
                 Result.success(response.data.toDomainModel())
             } else {
                 Log.e(TAG, "[API_RES] 리캡 공유 키 발급 실패: ${response.statusCode}, 에러: ${response.error?.message}")
-                Result.failure(Exception(response.error?.message ?: "공유 키를 불러오는데 실패했습니다."))
+                Result.failure(ApiErrorException(response.error?.message ?: "공유 키를 불러오는데 실패했습니다."))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "[API_ERR] 리캡 공유 키 발급 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -98,12 +107,14 @@ class ShareRepositoryImpl @Inject constructor(
                 Result.success(response.data.toDomainModel())
             } else {
                 Log.e(TAG, "[API_RES] 타인 리캡 상세 정보 요청 실패: ${response.statusCode}, 에러: ${response.error?.message}")
-                Result.failure(Exception(response.error?.message ?: "타인의 리캡 정보를 불러오는데 실패했습니다."))
+                Result.failure(ApiErrorException(response.error?.message ?: "타인의 리캡 정보를 불러오는데 실패했습니다."))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "[API_ERR] 타인 리캡 상세 정보 요청 예외 발생: ${e.message}")
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

@@ -1,14 +1,17 @@
 package com.picke.data.feature.auth.repository
 
+import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.local.PreferencesManager
 import com.picke.data.feature.auth.model.SocialLoginRequest
 import com.picke.data.feature.auth.model.WithdrawalRequest
 import com.picke.data.feature.auth.model.toDomain
 import com.picke.data.feature.auth.datasource.AuthApi
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.auth.model.AuthBoard
 import com.picke.domain.feature.auth.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
@@ -31,10 +34,12 @@ class AuthRepositoryImpl @Inject constructor(
 
                 Result.success(Unit)
             } else {
-                Result.failure(Exception(response.error?.message ?: "토큰 갱신 실패"))
+                Result.failure(ApiErrorException(response.error?.message ?: "토큰 갱신 실패"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -58,10 +63,12 @@ class AuthRepositoryImpl @Inject constructor(
                 val authToken = response.data.toDomain()
                 Result.success(authToken)
             } else {
-                Result.failure(Exception(response.error?.message ?: "로그인 실패"))
+                Result.failure(ApiErrorException(response.error?.message ?: "로그인 실패"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -73,11 +80,13 @@ class AuthRepositoryImpl @Inject constructor(
                 preferencesManager.clearAll()
                 Result.success(Unit)
             } else {
-                Result.failure(Exception(response.error?.message ?: "로그아웃 실패"))
+                Result.failure(ApiErrorException(response.error?.message ?: "로그아웃 실패"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             preferencesManager.clearAll()
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 
@@ -90,11 +99,13 @@ class AuthRepositoryImpl @Inject constructor(
                 preferencesManager.clearAll()
                 Result.success(Unit)
             } else {
-                Result.failure(Exception(response.error?.message ?: "탈퇴 실패"))
+                Result.failure(ApiErrorException(response.error?.message ?: "탈퇴 실패"))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             preferencesManager.clearAll()
-            Result.failure(e)
+            e.toReportedFailure()
         }
     }
 }

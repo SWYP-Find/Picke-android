@@ -6,6 +6,8 @@ import android.util.Log
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.picke.presentation.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
+import io.sentry.protocol.User
 import org.json.JSONObject
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -21,7 +23,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class AnalyticsTracker @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val mixpanel: MixpanelAPI
 ) {
     companion object {
@@ -71,11 +73,12 @@ class AnalyticsTracker @Inject constructor(
     }
 
     /**
-     * 로그인 성공 시 호출. identify(user_tag) + 로그인 슈퍼 프로퍼티 + 유저 프로퍼티 등록.
+     * 로그인 성공 시 호출. identify(user_tag) + Sentry 사용자 지정 + 로그인 슈퍼 프로퍼티 + 유저 프로퍼티 등록.
      * 신규 가입이면 sign_up 이벤트 1회 전송 + signup_date setOnce.
      */
     fun onLogin(userTag: String, provider: String, isNewUser: Boolean) {
         safely("onLogin") {
+            Sentry.setUser(User().apply { id = userTag })
             mixpanel.identify(userTag)
             mixpanel.registerSuperProperties(JSONObject().apply {
                 put(AnalyticsProp.IS_LOGGED_IN, true)
@@ -98,9 +101,10 @@ class AnalyticsTracker @Inject constructor(
         }
     }
 
-    /** 자동 로그인(스플래시) 시 호출. identify + 로그인 슈퍼 프로퍼티 갱신 */
+    /** 자동 로그인(스플래시) 시 호출. identify + Sentry 사용자 지정 + 로그인 슈퍼 프로퍼티 갱신 */
     fun onSessionStart(userTag: String, provider: String?) {
         safely("onSessionStart") {
+            Sentry.setUser(User().apply { id = userTag })
             mixpanel.identify(userTag)
             mixpanel.registerSuperProperties(JSONObject().apply {
                 put(AnalyticsProp.IS_LOGGED_IN, true)
@@ -109,9 +113,10 @@ class AnalyticsTracker @Inject constructor(
         }
     }
 
-    /** 로그아웃/회원탈퇴 시 호출. reset() 후 기본 슈퍼 프로퍼티 재등록 + is_logged_in=false */
+    /** 로그아웃/회원탈퇴 시 호출. reset() + Sentry 사용자 해제 후 기본 슈퍼 프로퍼티 재등록 + is_logged_in=false */
     fun onLogout() {
         safely("onLogout") {
+            Sentry.setUser(null)
             mixpanel.reset()
             mixpanel.registerSuperProperties(JSONObject().apply {
                 put(AnalyticsProp.OS_TYPE, "android")

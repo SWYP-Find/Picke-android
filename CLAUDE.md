@@ -156,9 +156,22 @@ class HomeViewModel @Inject constructor(
 | Screen | `XxxScreen(viewModel = hiltViewModel(), 네비게이션 콜백)` | ViewModel 연결, `uiState` 수집, `uiEvent` 수집과 사이드이펙트(토스트·네비게이션·트래킹) 처리. UI는 그리지 않고 Content만 호출 | `XxxScreen.kt` |
 | Content | `XxxContent(uiState, 콜백...)` | 전체 화면 UI. 상태와 콜백만 받는 stateless | `XxxScreen.kt` |
 | Section | `private fun XxxSection(...)` | 화면을 구역(헤더, 목록, 하단 버튼 등)별로 나눈 단위 | `XxxScreen.kt` 안 |
-| Component | `XxxCard`, `XxxItem` 등 | Section 안의 재사용 가능한 UI 조각 | `component/XxxCard.kt` (여러 화면 공용이면 `ui/component/`) |
+| Component | `XxxCard`, `XxxItem` 등 | Section 안의 재사용 가능한 UI 조각 | `component/XxxCard.kt` (공용 위치는 아래 참고) |
 | Skeleton | `XxxSkeleton` | 로딩 중 화면 | `component/XxxSkeleton.kt` |
 
+- 한 feature에 화면이 여러 개면 화면별 하위 패키지로 나눕니다. feature 루트에는 진입 화면(탭 화면 등)과 그 화면의
+  `component/`만 두고, 나머지 화면은 `ui/<feature>/<screen>/`에 Screen·ViewModel·`component/`·`model/`을 둡니다.
+
+  ```
+  ui/classroom/
+  ├── ClassScreen.kt                 # 진입(탭) 화면
+  ├── component/                     # ClassShortcutCard(진입 화면 전용), ClassTextField(feature 내 공용)
+  ├── classcreate/  ClassCreateScreen.kt, ClassCreateViewModel.kt, component/, model/
+  ├── classjoin/    ClassJoinScreen.kt, ClassJoinViewModel.kt, model/
+  └── myclass/      MyClassScreen.kt, MyClassViewModel.kt, component/, model/
+  ```
+- 컴포넌트 위치: 한 화면만 쓰면 그 화면의 `component/`, 같은 feature의 여러 화면이 쓰면 `ui/<feature>/component/`,
+  다른 feature도 쓰면 `ui/component/`.
 - 모든 Screen은 Screen/Content를 분리합니다. Preview는 Content부터 아래 단계에 둡니다.
 - `uiState`는 `collectAsStateWithLifecycle()`로 수집합니다.
 - 모든 Composable은 `modifier: Modifier = Modifier`를 첫 번째 선택 파라미터로 받습니다.
@@ -260,6 +273,38 @@ class HomeViewModel @Inject constructor(
   보여 줄 문구는 presentation의 `strings.xml`에서 가져옵니다.
 - Retrofit suspend 호출은 `withContext(Dispatchers.IO)`로 감싸지 않습니다. 파일 I/O, 암호화 저장소 접근처럼
   블로킹 작업만 `Dispatchers.IO`를 씁니다.
+
+### 분석·모니터링 (Mixpanel / Sentry)
+
+화면·기능·API를 추가하거나 수정할 때는 아래에 해당하는지 확인하고, 해당하면 **같은 작업 안에서** 관련 코드를
+작성합니다. 작업을 마치고 보고할 때 Mixpanel·Sentry를 무엇을 적용했는지(또는 해당 없음)를 함께 적습니다.
+
+**Mixpanel** (`presentation/analytics/`)
+- 이벤트·속성·화면 이름은 `AnalyticsSpec.kt`의 명세(iOS와 공유하는 크로스플랫폼 계약서)에 있는 것을 씁니다.
+  필요한 이벤트·속성·화면 이름이 명세에 없으면 `AnalyticsSpec.kt`에 **직접 추가**합니다.
+  - 이름은 기존 규칙대로 snake_case 소문자, 기존 항목과 같은 형식(`tab_xxx`, 화면은 기능 이름 등)으로 짓습니다.
+  - 명세 문서와 iOS에도 같은 값을 반영해야 하므로, 작업 보고와 PR 설명의 체크리스트에 추가한 항목을 적습니다.
+- 새 화면을 추가하면 `AnalyticsScreen`에 화면 이름을 두고 `fromRoute()`에 route를 매핑합니다
+  (매핑하지 않으면 `screen_view`가 전송되지 않음).
+- 전송은 `AnalyticsTracker`의 typed 메서드로만 하고, ViewModel이나 Screen의 사이드이펙트에서 호출합니다.
+  Content/Preview는 트래킹에 의존하지 않게 콜백으로 밖으로 뺍니다.
+- 공유·투표·신고처럼 결과가 있는 행동은 **성공했을 때만** 전송합니다.
+- 속성에 개인정보(이메일·실명·토큰)를 넣지 않습니다. 유저 키는 `user_tag`만 씁니다.
+
+**Sentry**
+- data `RepositoryImpl`의 `catch`는 `CancellationException` 재던지기 다음에 `e.toReportedFailure()`로
+  처리합니다 (`data/common/error/ErrorReporter.kt`). 직접 `Result.failure(e)`를 반환하지 않습니다.
+  - 네트워크(`IOException`), `HttpException`, 서버 에러 응답(`ApiErrorException`), 도메인 예외처럼 **정상적인
+    실패는 보고하지 않습니다.** 새 도메인 예외 타입을 만들면 `ErrorReporter`의 제외 목록에 추가합니다.
+  - 필터를 거치면 안 되는 실패(예: `PreferencesManager`의 암호화 저장소 오류)만 `Sentry.captureException`을
+    직접 호출하고, 이유를 주석으로 남깁니다.
+- presentation의 `catch`는 앱 버그일 가능성이 있는 실패(비트맵·파일 처리, 인텐트, SDK 예외 등)만
+  `Sentry.captureException(e)`로 보고합니다. 대체값으로 넘어가는 정상 흐름이나 사용자 취소는 보고하지 않습니다.
+  코루틴 안의 `catch`는 `CancellationException`을 먼저 다시 던집니다.
+- 공유 기능은 `util/ShareUtils.kt`의 `launchBitmapShare`를 씁니다 (실패 보고·취소 처리 포함).
+- 5xx 응답은 Sentry OkHttp 자동 계측이 보고하므로 직접 보고하지 않습니다.
+- Sentry 사용자 지정·해제는 `AnalyticsTracker`의 로그인·로그아웃 시점에서만 하고, `user_tag` 외의 개인정보는
+  보내지 않습니다.
 
 ## 문서화 규칙
 

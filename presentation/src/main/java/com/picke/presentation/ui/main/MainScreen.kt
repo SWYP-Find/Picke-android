@@ -37,18 +37,17 @@ import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
 import com.picke.presentation.ui.my.point.PointScreen
 import com.picke.presentation.ui.my.setting.SettingScreen
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.DeepLinkManager
 
 @Composable
 fun MainScreen(
     rootNavController : NavController,
-    isNotificationSheetPending: Boolean = false,
+    initialTab: String? = null,
+    isNotificationSheetPending: Boolean = false
 ){
     val mainNavController = rememberNavController()
     val analyticsTracker = rememberAnalyticsTracker()
 
-    // 항상 Home에서 시작, LaunchedEffect에서 pendingTab을 처리
-    val initialTabRoute = BottomNavItem.Home.route
+    val initialTabRoute = initialTab ?: BottomNavItem.Home.route
 
     // 탭 NavHost 내부 화면들의 screen_view 자동 전송
     TrackScreenViews(mainNavController)

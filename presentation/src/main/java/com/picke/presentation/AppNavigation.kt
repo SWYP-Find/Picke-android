@@ -106,18 +106,18 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
             }
 
             is SplashUiState.NavigateToMain -> {
-                rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                rootNavController.navigate(AppRoute.Main.createRoute()) { popUpTo(0) }
                 if (state.needsTermsAgreement) showTermsSheet = true
             }
 
             is SplashUiState.NavigateToOtherPhilosopher -> {
-                rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                rootNavController.navigate(AppRoute.Main.createRoute()) { popUpTo(0) }
                 rootNavController.navigate(AppRoute.OtherPhilosopher.createRoute(state.reportId))
                 if (state.needsTermsAgreement) showTermsSheet = true
             }
 
             is SplashUiState.NavigateToBattle -> {
-                rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                rootNavController.navigate(AppRoute.Main.createRoute()) { popUpTo(0) }
                 rootNavController.navigate(AppRoute.BattleRouting.createRoute(state.battleId))
                 if (state.needsTermsAgreement) showTermsSheet = true
             }
@@ -140,7 +140,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                 // DeepLink 화면으로 이동하면 덮어씌워지므로, onNavigationHandled() 호출 후 이동)
                 splashViewModel.uiState.first { it is SplashUiState.NavigationHandled }
 
-                rootNavController.navigate(AppRoute.Main.route) {
+                rootNavController.navigate(AppRoute.Main.createRoute()) {
                     popUpTo(AppRoute.Main.route) {
                         inclusive = false
                     }
@@ -220,7 +220,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                         val pendingBattle = DeepLinkManager.pendingBattleId
 
                         analyticsTracker.trackOnboardingStep(OnboardingStep.HOME_ENTERED)
-                        rootNavController.navigate(AppRoute.Main.route) {
+                        rootNavController.navigate(AppRoute.Main.createRoute()) {
                             popUpTo(AppRoute.Login.route) { inclusive = true }
                         }
                         checkAndShowNotificationSheet(isNewUser)
@@ -244,9 +244,17 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                 )
             }
 
-            composable(route = AppRoute.Main.route) {
+            composable(
+                route = AppRoute.Main.route,
+                arguments = listOf(navArgument("tab") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                })
+            ) { backStackEntry ->
                 MainScreen(
                     rootNavController = rootNavController,
+                    initialTab = backStackEntry.arguments?.getString("tab"),
                     isNotificationSheetPending = showNotificationSheet
                 )
             }
@@ -349,8 +357,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                 MakeBattleScreen(
                     onBackClick = { rootNavController.popBackStack() },
                     onNavigateToExplore = {
-                        DeepLinkManager.pendingTab = BottomNavItem.Explore.route
-                        rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) { popUpTo(0) }
                     }
                 )
             }
@@ -373,7 +380,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     onBackClick = {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route) {
-                            rootNavController.navigate(AppRoute.Main.route) {
+                            rootNavController.navigate(AppRoute.Main.createRoute()) {
                                 popUpTo(0) {
                                     inclusive = true
                                 }
@@ -388,8 +395,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                         }
                     },
                     onNavigateToExplore = {
-                        DeepLinkManager.pendingTab = BottomNavItem.Explore.route
-                        rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) { popUpTo(0) }
                     }
                 )
             }
@@ -428,8 +434,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                         }
                     },
                     onNavigateToExplore = {
-                        DeepLinkManager.pendingTab = BottomNavItem.Explore.route
-                        rootNavController.navigate(AppRoute.Main.route) { popUpTo(0) }
+                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) { popUpTo(0) }
                     }
                 )
             }
@@ -450,7 +455,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     onBackClick = {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
-                            rootNavController.navigate(AppRoute.Main.route) {
+                            rootNavController.navigate(AppRoute.Main.createRoute()) {
                                 popUpTo(0) {
                                     inclusive = true
                                 }
@@ -544,7 +549,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     onBackClick = {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
-                            rootNavController.navigate(AppRoute.Main.route) {
+                            rootNavController.navigate(AppRoute.Main.createRoute()) {
                                 popUpTo(0) {
                                     inclusive = true
                                 }
@@ -555,7 +560,7 @@ fun AppNavigation(splashViewModel: SplashViewModel) {
                     },
                     onGoToSplashClick = {
                         DeepLinkManager.pendingReportId = null
-                        rootNavController.navigate(AppRoute.Main.route) {
+                        rootNavController.navigate(AppRoute.Main.createRoute()) {
                             popUpTo(0) {
                                 inclusive = true
                             }

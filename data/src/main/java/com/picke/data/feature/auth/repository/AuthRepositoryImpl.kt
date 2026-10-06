@@ -58,8 +58,6 @@ class AuthRepositoryImpl @Inject constructor(
                 if (!dto.loggedOut) throw ApiErrorException("로그아웃하지 못했습니다.")
             }
             .onSuccess { preferencesManager.clearAll() }
-    }.onFailure { exception ->
-        if (exception !is ApiErrorException) preferencesManager.clearAll()
     }
 
     override suspend fun withdraw(reason: String): Result<Unit> = apiCall {
@@ -69,7 +67,5 @@ class AuthRepositoryImpl @Inject constructor(
                 if (!dto.withdrawn) throw ApiErrorException("회원 탈퇴를 하지 못했습니다.")
             }
             .onSuccess { preferencesManager.clearAll() }
-    }.onFailure { exception ->
-        if (exception !is ApiErrorException) preferencesManager.clearAll()
     }
 }

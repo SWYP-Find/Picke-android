@@ -1,26 +1,25 @@
 package com.picke.presentation.ui.my.setting
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.auth.usecase.AuthUseCases
+import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsScreen
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.UiActionName
+import com.picke.presentation.ui.my.setting.model.SettingUiEvent
+import com.picke.presentation.ui.my.setting.model.SettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class SettingUiState(
-    val isLoading: Boolean = false,
-    val navigateToLogin: Boolean = false,
-    val errorMessage: String? = null
-)
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
@@ -31,70 +30,43 @@ class SettingViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SettingUiState())
     val uiState: StateFlow<SettingUiState> = _uiState.asStateFlow()
-    private val TAG = "SettingFlow"
 
-    // 1. 로그아웃
+    private val _uiEvent = Channel<SettingUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<SettingUiEvent> = _uiEvent.receiveAsFlow()
+
     fun logout() {
-        Log.d(TAG, "▶️ [로그아웃] 프로세스 시작")
         analyticsTracker.trackUiAction(UiActionName.SETTINGS_LOGOUT, AnalyticsScreen.SETTINGS)
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true) }
 
-            val result = authUseCases.logoutUseCase(localPreferencesUseCases.getFcmToken())
-            Log.d(TAG, "➡️ [로그아웃] 결과 수신: $result")
+            authUseCases.logoutUseCase(localPreferencesUseCases.getFcmToken())
+                .onSuccess {
+                    analyticsTracker.onLogout()
+                    _uiEvent.send(SettingUiEvent.NavigateToLogin)
+                }
+                .onFailure {
+                    _uiEvent.send(SettingUiEvent.ShowToast(R.string.setting_logout_error))
+                }
 
-            result.onSuccess {
-                Log.i(TAG, "✅ [로그아웃] 성공! 로컬 토큰 삭제 및 로그인 화면으로 이동합니다.")
-                localPreferencesUseCases.clearAll()
-                analyticsTracker.onLogout()
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        navigateToLogin = true
-                    )
-                }
-            }.onFailure { error ->
-                Log.e(TAG, "❌ [로그아웃] 실패: ${error.message}", error)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "로그아웃 중 오류가 발생했습니다: ${error.localizedMessage}"
-                    )
-                }
-            }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
-    // 2. 회원 탈퇴
     fun withdraw(selectedKoreanReason: String) {
-        Log.d(TAG, "▶️ [회원탈퇴] 프로세스 시작 (사유: $selectedKoreanReason)")
         analyticsTracker.trackUiAction(UiActionName.SETTINGS_WITHDRAW, AnalyticsScreen.WITHDRAW)
-
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true) }
 
-            val result = authUseCases.withdrawUseCase(selectedKoreanReason)
-            Log.d(TAG, "➡️ [회원탈퇴] 서버 응답 결과: $result")
+            authUseCases.withdrawUseCase(selectedKoreanReason)
+                .onSuccess {
+                    analyticsTracker.onLogout()
+                    _uiEvent.send(SettingUiEvent.NavigateToLogin)
+                }
+                .onFailure {
+                    _uiEvent.send(SettingUiEvent.ShowToast(R.string.setting_withdraw_error))
+                }
 
-            result.onSuccess {
-                Log.i(TAG, "✅ [회원탈퇴] 성공! 서버 연동 해제 및 데이터 파기 완료.")
-//                tokenManager.clearAll()
-                analyticsTracker.onLogout()
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        navigateToLogin = true
-                    )
-                }
-            }.onFailure { error ->
-                Log.e(TAG, "❌ [회원탈퇴] 서버 통신 실패 (HTTP 400 등이 발생했을 수 있음)", error)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "탈퇴 요청에 실패했습니다. 잠시 후 다시 시도해주세요."
-                    )
-                }
-            }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 }

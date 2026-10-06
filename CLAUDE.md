@@ -182,23 +182,21 @@ class HomeViewModel @Inject constructor(
 - **`GlobalScope` 금지.** 항상 `viewModelScope` 사용.
 - **`CancellationException` 삼키지 않기.** `catch (e: Exception)`만 있으면 코루틴 취소까지 `Result.failure`로
   바뀝니다. `catch (e: Exception)` 앞에 항상 `catch (e: CancellationException) { throw e }`를 둡니다.
-- API 응답은 statusCode를 직접 분기하지 말고 `data/common/model/BaseDto.kt`의
-  `BaseResponse<T>.toResult(fallbackMessage)`로 변환합니다. 기준 예시는 `PollQuizRepositoryImpl`,
-  `PerspectiveRepositoryImpl`:
+- RepositoryImpl의 API 호출은 `data/common/network/ApiCall.kt`의 `apiCall { }`로 감싸고, 응답은 statusCode를
+  직접 분기하지 말고 `data/common/model/BaseDto.kt`의 `toResult(fallbackMessage)`로 변환합니다. 결과 값이 필요 없는
+  API는 `.toResult(...).map { }`로 `Result<Unit>`을 만듭니다. `apiCall`이 `CancellationException`
+  재던지기와 `toReportedFailure()`를 처리하므로 RepositoryImpl에 try/catch를 직접 쓰지 않습니다.
+  기준 예시는 `PollQuizRepositoryImpl`:
 
   ```kotlin
-  override suspend fun getMyPollVote(battleId: Long): Result<PollQuizVoteBoard> = try {
+  override suspend fun getMyPollVote(battleId: Long): Result<PollQuizVoteBoard> = apiCall {
       pollQuizApi.getMyPollVote(battleId)
           .toResult("내 투표 내역을 불러오지 못했습니다.")
           .map { it.toDomainModel() }
-  } catch (e: CancellationException) {
-      throw e
-  } catch (e: Exception) {
-      Result.failure(e)
   }
   ```
 
-  `HomeRepositoryImpl`(`data ?: throw`), `VoteRepositoryImpl`(`when (statusCode)` 분기)처럼 짜지 않습니다.
+  `data ?: throw`, `when (statusCode)` 분기처럼 짜지 않습니다.
   특정 에러 코드별 처리가 필요하면 `domain/common/exception`에 예외 타입을 정의해서 씁니다
   (`NotEnoughPointsException` 참고, 문자열 `contains("400")` 비교 금지).
 - UI 상태는 항상 `StateFlow`로 캡슐화해서 노출 (`private val _x` + `val x: StateFlow`).
@@ -222,8 +220,11 @@ class HomeViewModel @Inject constructor(
   - 기존 리터럴은 일괄로 바꾸지 않습니다.
 - 간격은 `Spacer`와 `Arrangement.spacedBy` 중 편한 쪽을 씁니다.
 - trailing comma를 쓰지 않습니다. 여러 줄 파라미터·인자·리스트의 마지막 항목 뒤에 쉼표를 붙이지 않습니다.
-- 주석은 로직이 어렵거나, 중요하거나, 의도가 코드만으로 드러나지 않는 곳에만 한국어 `//`로 "왜"를 적습니다.
-  KDoc을 일괄로 달지 않습니다.
+- 파일 끝에 줄바꿈을 넣지 않습니다. 새로 만들거나 수정하는 파일은 마지막 줄 뒤에 빈 줄 없이 끝냅니다.
+  손대지 않는 기존 파일은 일괄로 바꾸지 않습니다.
+- **주석은 기본적으로 달지 않습니다.** 주석 없이는 이해하기 어렵거나, 특이한 상황이거나, 특별한 이슈가 있는
+  곳만 후보로 보고, **추가하기 전에 위치와 문구를 보여 주고 물어본 뒤** 승인받은 것만 한국어 `//`로 "왜"를 적습니다.
+  KDoc을 달지 않습니다. 기존 주석은 일괄로 지우지 않습니다.
 - **타이포그래피는 `PickeTheme.typography`의 Figma 대응 토큰만 사용합니다.** (`ui/theme/Type.kt`)
   - 토큰은 Figma의 소문자 텍스트 스타일(`display/`, `heading/`, `body/`, `caption/`)과 1:1이며, 이름은 경로를
     camelCase로 옮긴 것입니다 (`body/sm/semibold` → `bodySmSemiBold`). 대문자 `Headings/`·`Body/`·`Caption/`,
@@ -292,12 +293,12 @@ class HomeViewModel @Inject constructor(
 - 속성에 개인정보(이메일·실명·토큰)를 넣지 않습니다. 유저 키는 `user_tag`만 씁니다.
 
 **Sentry**
-- data `RepositoryImpl`의 `catch`는 `CancellationException` 재던지기 다음에 `e.toReportedFailure()`로
-  처리합니다 (`data/common/error/ErrorReporter.kt`). 직접 `Result.failure(e)`를 반환하지 않습니다.
+- data `RepositoryImpl`의 예외는 `apiCall { }`이 `e.toReportedFailure()`로 처리합니다
+  (`data/common/error/ErrorReporter.kt`). 직접 `Result.failure(e)`를 반환하지 않습니다.
   - 네트워크(`IOException`), `HttpException`, 서버 에러 응답(`ApiErrorException`), 도메인 예외처럼 **정상적인
     실패는 보고하지 않습니다.** 새 도메인 예외 타입을 만들면 `ErrorReporter`의 제외 목록에 추가합니다.
   - 필터를 거치면 안 되는 실패(예: `PreferencesManager`의 암호화 저장소 오류)만 `Sentry.captureException`을
-    직접 호출하고, 이유를 주석으로 남깁니다.
+    직접 호출합니다. 이유를 주석으로 남길지는 주석 규칙대로 먼저 물어봅니다.
 - presentation의 `catch`는 앱 버그일 가능성이 있는 실패(비트맵·파일 처리, 인텐트, SDK 예외 등)만
   `Sentry.captureException(e)`로 보고합니다. 대체값으로 넘어가는 정상 흐름이나 사용자 취소는 보고하지 않습니다.
   코루틴 안의 `catch`는 `CancellationException`을 먼저 다시 던집니다.

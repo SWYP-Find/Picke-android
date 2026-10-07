@@ -2,6 +2,7 @@ package com.picke.data.feature.perspective.repository
 
 import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.perspective.datasource.PerspectiveApi
 import com.picke.data.feature.perspective.model.PerspectiveRequestDto
@@ -51,9 +52,9 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun deletePerspective(perspectiveId: Long): Result<String> = apiCall {
+    override suspend fun deletePerspective(perspectiveId: Long): Result<Unit> = apiCall {
         perspectiveApi.deletePerspective(perspectiveId)
-            .toResult("관점을 삭제하지 못했습니다.")
+            .toUnitResult("관점을 삭제하지 못했습니다.")
     }
 
     override suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard> = apiCall {
@@ -62,9 +63,9 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun retryModeration(perspectiveId: Long): Result<String> = apiCall {
+    override suspend fun retryModeration(perspectiveId: Long): Result<Unit> = apiCall {
         perspectiveApi.retryModeration(perspectiveId)
-            .toResult("검토 재요청을 하지 못했습니다.")
+            .toUnitResult("검토 재요청을 하지 못했습니다.")
     }
 
     override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> = apiCall {

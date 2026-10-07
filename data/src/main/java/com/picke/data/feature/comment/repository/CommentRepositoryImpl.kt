@@ -4,6 +4,7 @@ import android.util.Log
 import com.picke.data.BuildConfig
 import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.comment.datasource.CommentApi
 import com.picke.data.feature.comment.model.CommentRequestDto
@@ -37,9 +38,9 @@ class CommentRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun deleteComment(perspectiveId: Long, commentId: Long): Result<String> = apiCall {
+    override suspend fun deleteComment(perspectiveId: Long, commentId: Long): Result<Unit> = apiCall {
         commentApi.deleteComment(perspectiveId, commentId)
-            .toResult("댓글을 삭제하지 못했습니다.")
+            .toUnitResult("댓글을 삭제하지 못했습니다.")
     }
 
     override suspend fun updateComment(perspectiveId: Long, commentId: Long, content: String): Result<CommentUpdateBoard> = apiCall {

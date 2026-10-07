@@ -1,6 +1,7 @@
 package com.picke.data.feature.alarm.repository
 
 import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.alarm.datasource.AlarmApi
 import com.picke.data.feature.alarm.model.toDomainModel
@@ -31,9 +32,9 @@ class AlarmRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun readAlarm(notificationId: Long): Result<String> = apiCall {
+    override suspend fun readAlarm(notificationId: Long): Result<Unit> = apiCall {
         alarmApi.readAlarm(notificationId)
-            .toResult("알림을 읽음 처리하지 못했습니다.")
+            .toUnitResult("알림을 읽음 처리하지 못했습니다.")
     }
 
     override suspend fun readAllAlarms(): Result<Unit> = apiCall {

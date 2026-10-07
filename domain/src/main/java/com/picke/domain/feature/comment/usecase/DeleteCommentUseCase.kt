@@ -5,7 +5,7 @@ import com.picke.domain.feature.comment.repository.CommentRepository
 class DeleteCommentUseCase(
     private val commentRepository: CommentRepository
 ) {
-    suspend operator fun invoke(perspectiveId: Long, commentId: Long): Result<String> {
+    suspend operator fun invoke(perspectiveId: Long, commentId: Long): Result<Unit> {
         return commentRepository.deleteComment(perspectiveId, commentId)
     }
 }

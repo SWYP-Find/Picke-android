@@ -1,6 +1,6 @@
 package com.picke.data.feature.device.repository
 
-import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.device.datasource.DeviceApi
 import com.picke.data.feature.device.model.RegisterDeviceRequest
@@ -15,13 +15,11 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun registerDevice(fcmToken: String): Result<Unit> = apiCall {
         deviceApi.registerDevice(RegisterDeviceRequest(fcmToken = fcmToken, platform = "ANDROID"))
-            .toResult("디바이스를 등록하지 못했습니다.")
-            .map { }
+            .toUnitResult("디바이스를 등록하지 못했습니다.")
     }
 
     override suspend fun unregisterDevice(fcmToken: String): Result<Unit> = apiCall {
         deviceApi.deleteDevice(fcmToken)
-            .toResult("디바이스를 해제하지 못했습니다.")
-            .map { }
+            .toUnitResult("디바이스를 해제하지 못했습니다.")
     }
 }

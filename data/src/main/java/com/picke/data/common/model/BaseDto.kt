@@ -21,3 +21,11 @@ fun <T> BaseResponse<T>.toResult(fallbackMessage: String = "알 수 없는 오�
         Result.failure(ApiErrorException(error?.message ?: fallbackMessage))
     }
 }
+
+fun BaseResponse<*>.toUnitResult(fallbackMessage: String = "알 수 없는 오류가 발생했습니다."): Result<Unit> {
+    return if (statusCode == 200) {
+        Result.success(Unit)
+    } else {
+        Result.failure(ApiErrorException(error?.message ?: fallbackMessage))
+    }
+}

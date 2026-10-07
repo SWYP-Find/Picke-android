@@ -5,7 +5,7 @@ import com.picke.domain.feature.perspective.repository.PerspectiveRepository
 class RetryModerationUseCase(
     private val perspectiveRepository: PerspectiveRepository
 ) {
-    suspend operator fun invoke(perspectiveId: Long): Result<String> {
+    suspend operator fun invoke(perspectiveId: Long): Result<Unit> {
         return perspectiveRepository.retryModeration(perspectiveId)
     }
 }

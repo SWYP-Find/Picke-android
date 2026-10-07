@@ -183,8 +183,9 @@ class HomeViewModel @Inject constructor(
 - **`CancellationException` 삼키지 않기.** `catch (e: Exception)`만 있으면 코루틴 취소까지 `Result.failure`로
   바뀝니다. `catch (e: Exception)` 앞에 항상 `catch (e: CancellationException) { throw e }`를 둡니다.
 - RepositoryImpl의 API 호출은 `data/common/network/ApiCall.kt`의 `apiCall { }`로 감싸고, 응답은 statusCode를
-  직접 분기하지 말고 `data/common/model/BaseDto.kt`의 `toResult(fallbackMessage)`로 변환합니다. 결과 값이 필요 없는
-  API는 `.toResult(...).map { }`로 `Result<Unit>`을 만듭니다. `apiCall`이 `CancellationException`
+  직접 분기하지 말고 `data/common/model/BaseDto.kt`의 `toResult(fallbackMessage)`로 변환합니다. 서버 명세(Swagger)에서
+  성공 응답이 `ApiResponseVoid`(data가 항상 null)인 API는 `toUnitResult(fallbackMessage)`를 씁니다. `toResult()`는
+  data가 없으면 실패로 처리하므로, 새 API를 붙일 때 명세의 응답 타입을 먼저 확인합니다. `apiCall`이 `CancellationException`
   재던지기와 `toReportedFailure()`를 처리하므로 RepositoryImpl에 try/catch를 직접 쓰지 않습니다.
   기준 예시는 `PollQuizRepositoryImpl`:
 

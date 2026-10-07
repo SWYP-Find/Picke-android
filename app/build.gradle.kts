@@ -83,7 +83,7 @@ android {
             buildConfigField("String", "KAKAO_DEBUG_APPKEY", "\"$kakaoDebugAppKey\"")
             // Sentry 환경 구분 (개발)
             manifestPlaceholders["sentryEnvironment"] = "debug"
-            manifestPlaceholders["sentryDebug"] = "true"
+            manifestPlaceholders["sentryDebug"] = "false"
         }
     }
 

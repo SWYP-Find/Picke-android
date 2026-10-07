@@ -1,17 +1,17 @@
 package com.picke.data.feature.auth.repository
 
-import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.local.PreferencesManager
+import com.picke.data.common.model.toResult
+import com.picke.data.common.network.apiCall
+import com.picke.data.feature.auth.datasource.AuthApi
 import com.picke.data.feature.auth.model.SocialLoginRequest
 import com.picke.data.feature.auth.model.WithdrawalRequest
 import com.picke.data.feature.auth.model.toDomain
-import com.picke.data.feature.auth.datasource.AuthApi
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.auth.model.AuthBoard
 import com.picke.domain.feature.auth.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
@@ -20,26 +20,16 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun refreshAccessToken(): Result<Unit> {
-        return try {
+        return apiCall {
             val refreshToken = preferencesManager.getRefreshToken()
                 ?: return Result.failure(Throwable("리프레쉬 토큰 없음"))
 
-            val response = authApi.refreshAccessToken(refreshToken)
-
-            if (response.statusCode == 200 && response.data != null) {
-                val data = response.data
-
-                preferencesManager.saveAccessToken(data.accessToken)
-                preferencesManager.saveRefreshToken(data.refreshToken)
-
-                Result.success(Unit)
-            } else {
-                Result.failure(ApiErrorException(response.error?.message ?: "토큰 갱신 실패"))
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
+            authApi.refreshAccessToken(refreshToken)
+                .toResult("토큰을 갱신하지 못했습니다.")
+                .map { dto ->
+                    preferencesManager.saveAccessToken(dto.accessToken)
+                    preferencesManager.saveRefreshToken(dto.refreshToken)
+                }
         }
     }
 
@@ -47,65 +37,35 @@ class AuthRepositoryImpl @Inject constructor(
         provider: String,
         authCode: String,
         redirectUri: String
-    ): Result<AuthBoard> {
-        return try {
-            val request = SocialLoginRequest(
-                authorizationCode = authCode,
-                redirectUri = redirectUri
-            )
-            val response = authApi.login(provider, request)
-
-            if (response.statusCode == 200 && response.data != null) {
-
-                preferencesManager.saveAccessToken(response.data.accessToken)
-                preferencesManager.saveRefreshToken(response.data.refreshToken)
-
-                val authToken = response.data.toDomain()
-                Result.success(authToken)
-            } else {
-                Result.failure(ApiErrorException(response.error?.message ?: "로그인 실패"))
+    ): Result<AuthBoard> = apiCall {
+        val request = SocialLoginRequest(
+            authorizationCode = authCode,
+            redirectUri = redirectUri
+        )
+        authApi.login(provider, request)
+            .toResult("로그인하지 못했습니다.")
+            .map { dto ->
+                preferencesManager.saveAccessToken(dto.accessToken)
+                preferencesManager.saveRefreshToken(dto.refreshToken)
+                dto.toDomain()
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
     }
 
-    override suspend fun logout(): Result<Unit> {
-        return try {
-            val response = authApi.logout()
-
-            if (response.statusCode == 200 && response.data?.loggedOut == true) {
-                preferencesManager.clearAll()
-                Result.success(Unit)
-            } else {
-                Result.failure(ApiErrorException(response.error?.message ?: "로그아웃 실패"))
+    override suspend fun logout(): Result<Unit> = apiCall {
+        authApi.logout()
+            .toResult("로그아웃하지 못했습니다.")
+            .map { dto ->
+                if (!dto.loggedOut) throw ApiErrorException("로그아웃하지 못했습니다.")
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            preferencesManager.clearAll()
-            e.toReportedFailure()
-        }
+            .onSuccess { preferencesManager.clearAll() }
     }
 
-    override suspend fun withdraw(reason: String): Result<Unit> {
-        return try {
-            val request = WithdrawalRequest(reason = reason)
-            val response = authApi.withdraw(request)
-
-            if (response.statusCode == 200 && response.data?.withdrawn == true) {
-                preferencesManager.clearAll()
-                Result.success(Unit)
-            } else {
-                Result.failure(ApiErrorException(response.error?.message ?: "탈퇴 실패"))
+    override suspend fun withdraw(reason: String): Result<Unit> = apiCall {
+        authApi.withdraw(WithdrawalRequest(reason = reason))
+            .toResult("회원 탈퇴를 하지 못했습니다.")
+            .map { dto ->
+                if (!dto.withdrawn) throw ApiErrorException("회원 탈퇴를 하지 못했습니다.")
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            preferencesManager.clearAll()
-            e.toReportedFailure()
-        }
+            .onSuccess { preferencesManager.clearAll() }
     }
 }

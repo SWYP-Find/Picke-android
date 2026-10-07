@@ -1,8 +1,9 @@
 package com.picke.data.feature.perspective.repository
 
-import android.util.Log
 import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
+import com.picke.data.common.network.apiCall
 import com.picke.data.feature.perspective.datasource.PerspectiveApi
 import com.picke.data.feature.perspective.model.PerspectiveRequestDto
 import com.picke.data.feature.perspective.model.toDomainModel
@@ -21,159 +22,68 @@ class PerspectiveRepositoryImpl @Inject constructor(
     private val perspectiveApi: PerspectiveApi
 ) : PerspectiveRepository {
 
-    companion object {
-        private const val TAG = "PerspectiveRepo_Picke"
-    }
-
     override suspend fun getPerspectives(
-        battleId: Long, cursor: String?, size: Int, optionId: Long?, sort: String
-    ): Result<PerspectivePage> {
-        return try {
-            Log.d(TAG, "[API_REQ] 관점 목록 조회 시도 - battleId: $battleId, optionId: $optionId, sort: $sort")
-            perspectiveApi.getPerspectives(battleId, cursor, size, optionId, sort)
-                .toResult("관점 목록을 불러오지 못했습니다.")
-                .map { dto ->
-                    val domainData = dto.toDomainModel()
-                    Log.d(TAG, "[API_RES] 관점 목록 조회 성공 - 총 ${domainData.items.size}개 수신")
-                    domainData.items.forEachIndexed { index, item ->
-                        val shortContent = item.content.take(15).replace("\n", " ")
-                        Log.d(TAG, "   └ [$index] ID: ${item.commentId} | 입장(Option): ${item.optionTitle} | 닉네임: ${item.nickname} | 내용: $shortContent...")
-                    }
-                    domainData
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 관점 목록 조회 예외: ${e.message}")
-            e.toReportedFailure()
-        }
+        battleId: Long,
+        cursor: String?,
+        size: Int,
+        optionId: Long?,
+        sort: String
+    ): Result<PerspectivePage> = apiCall {
+        perspectiveApi.getPerspectives(battleId, cursor, size, optionId, sort)
+            .toResult("관점 목록을 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard> {
-        return try {
-            Log.d(TAG, "[API_REQ] 관점 작성 시도 - battleId: $battleId, 내용: $content")
-            perspectiveApi.createPerspective(battleId, PerspectiveRequestDto(content))
-                .toResult("관점 작성에 실패했습니다.")
-                .map { dto ->
-                    Log.d(TAG, "[API_RES] 관점 작성 성공 - 서버 응답 상태: ${dto.status}")
-                    dto.toDomainModel()
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 관점 작성 예외: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard> = apiCall {
+        perspectiveApi.createPerspective(battleId, PerspectiveRequestDto(content))
+            .toResult("관점을 작성하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun getMyPerspective(battleId: Long): Result<PerspectiveDetailBoard> {
-        return try {
-            Log.d(TAG, "[API_REQ] 내 관점 조회 시도 - battleId: $battleId")
-            perspectiveApi.getMyPerspective(battleId)
-                .toResult("내 관점이 없습니다.")
-                .map { dto ->
-                    val domainData = dto.toDomainModel()
-                    Log.d(TAG, "[API_RES] 내 관점 조회 성공 - ID: ${domainData.perspectiveId} | 내 입장: ${domainData.optionTitle} | 상태: ${domainData.status}")
-                    domainData
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 내 관점 조회 예외: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun getMyPerspective(battleId: Long): Result<PerspectiveDetailBoard> = apiCall {
+        perspectiveApi.getMyPerspective(battleId)
+            .toResult("내 관점을 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard> {
-        return try {
-            Log.d(TAG, "[API_REQ] 관점 상세(본문) 조회 시도 - perspectiveId: $perspectiveId")
-            perspectiveApi.getPerspective(perspectiveId)
-                .toResult("상세 정보가 없습니다.")
-                .map { dto ->
-                    val domainData = dto.toDomainModel()
-                    Log.d(TAG, "[API_RES] 관점 상세 조회 성공 - 입장: ${domainData.optionTitle} | 작성자: ${domainData.nickname}")
-                    domainData
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 관점 상세 조회 예외: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard> = apiCall {
+        perspectiveApi.getPerspective(perspectiveId)
+            .toResult("관점 상세 정보를 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun deletePerspective(perspectiveId: Long): Result<String> {
-        return try {
-            val response = perspectiveApi.deletePerspective(perspectiveId)
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "삭제 실패")
-            Result.success(data)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun deletePerspective(perspectiveId: Long): Result<Unit> = apiCall {
+        perspectiveApi.deletePerspective(perspectiveId)
+            .toUnitResult("관점을 삭제하지 못했습니다.")
     }
 
-    override suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard> {
-        return try {
-            val response = perspectiveApi.updatePerspective(perspectiveId,
-                PerspectiveRequestDto(content)
-            )
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "수정 실패")
-            Result.success(data.toDomainModel())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard> = apiCall {
+        perspectiveApi.updatePerspective(perspectiveId, PerspectiveRequestDto(content))
+            .toResult("관점을 수정하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun retryModeration(perspectiveId: Long): Result<String> {
-        return try {
-            val response = perspectiveApi.retryModeration(perspectiveId)
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "재시도 요청 실패")
-            Result.success(data)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun retryModeration(perspectiveId: Long): Result<Unit> = apiCall {
+        perspectiveApi.retryModeration(perspectiveId)
+            .toUnitResult("검토 재요청을 하지 못했습니다.")
     }
 
-    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> {
-        return try {
-            val response = perspectiveApi.getPerspectiveLikeCount(perspectiveId)
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "좋아요 수 조회 실패")
-            Result.success(data.toDomainModel())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> = apiCall {
+        perspectiveApi.getPerspectiveLikeCount(perspectiveId)
+            .toResult("좋아요 수를 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> {
-        return try {
-            val response = perspectiveApi.likePerspective(perspectiveId)
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "좋아요 등록 실패")
-            Result.success(data.toDomainModel())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> = apiCall {
+        perspectiveApi.likePerspective(perspectiveId)
+            .toResult("좋아요를 등록하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> {
-        return try {
-            val response = perspectiveApi.unlikePerspective(perspectiveId)
-            val data = response.data ?: throw ApiErrorException(response.error?.message ?: "좋아요 취소 실패")
-            Result.success(data.toDomainModel())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            e.toReportedFailure()
-        }
+    override suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> = apiCall {
+        perspectiveApi.unlikePerspective(perspectiveId)
+            .toResult("좋아요를 취소하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
     override suspend fun reportPerspective(perspectiveId: Long): Result<String> {

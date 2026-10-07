@@ -58,7 +58,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val redirectUri = when (provider) {
                 Provider.KAKAO -> "kakao${BuildConfig.KAKAO_DEBUG_APPKEY}://oauth"
-                Provider.GOOGLE -> "https://picke.store/oauth/google"
+                Provider.GOOGLE -> BuildConfig.GOOGLE_OAUTH_REDIRECT_URL
             }
 
             val result = authUseCases.loginUseCase(

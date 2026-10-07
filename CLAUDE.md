@@ -156,9 +156,22 @@ class HomeViewModel @Inject constructor(
 | Screen | `XxxScreen(viewModel = hiltViewModel(), 네비게이션 콜백)` | ViewModel 연결, `uiState` 수집, `uiEvent` 수집과 사이드이펙트(토스트·네비게이션·트래킹) 처리. UI는 그리지 않고 Content만 호출 | `XxxScreen.kt` |
 | Content | `XxxContent(uiState, 콜백...)` | 전체 화면 UI. 상태와 콜백만 받는 stateless | `XxxScreen.kt` |
 | Section | `private fun XxxSection(...)` | 화면을 구역(헤더, 목록, 하단 버튼 등)별로 나눈 단위 | `XxxScreen.kt` 안 |
-| Component | `XxxCard`, `XxxItem` 등 | Section 안의 재사용 가능한 UI 조각 | `component/XxxCard.kt` (여러 화면 공용이면 `ui/component/`) |
+| Component | `XxxCard`, `XxxItem` 등 | Section 안의 재사용 가능한 UI 조각 | `component/XxxCard.kt` (공용 위치는 아래 참고) |
 | Skeleton | `XxxSkeleton` | 로딩 중 화면 | `component/XxxSkeleton.kt` |
 
+- 한 feature에 화면이 여러 개면 화면별 하위 패키지로 나눕니다. feature 루트에는 진입 화면(탭 화면 등)과 그 화면의
+  `component/`만 두고, 나머지 화면은 `ui/<feature>/<screen>/`에 Screen·ViewModel·`component/`·`model/`을 둡니다.
+
+  ```
+  ui/classroom/
+  ├── ClassScreen.kt                 # 진입(탭) 화면
+  ├── component/                     # ClassShortcutCard(진입 화면 전용), ClassTextField(feature 내 공용)
+  ├── classcreate/  ClassCreateScreen.kt, ClassCreateViewModel.kt, component/, model/
+  ├── classjoin/    ClassJoinScreen.kt, ClassJoinViewModel.kt, model/
+  └── myclass/      MyClassScreen.kt, MyClassViewModel.kt, component/, model/
+  ```
+- 컴포넌트 위치: 한 화면만 쓰면 그 화면의 `component/`, 같은 feature의 여러 화면이 쓰면 `ui/<feature>/component/`,
+  다른 feature도 쓰면 `ui/component/`.
 - 모든 Screen은 Screen/Content를 분리합니다. Preview는 Content부터 아래 단계에 둡니다.
 - `uiState`는 `collectAsStateWithLifecycle()`로 수집합니다.
 - 모든 Composable은 `modifier: Modifier = Modifier`를 첫 번째 선택 파라미터로 받습니다.
@@ -169,23 +182,22 @@ class HomeViewModel @Inject constructor(
 - **`GlobalScope` 금지.** 항상 `viewModelScope` 사용.
 - **`CancellationException` 삼키지 않기.** `catch (e: Exception)`만 있으면 코루틴 취소까지 `Result.failure`로
   바뀝니다. `catch (e: Exception)` 앞에 항상 `catch (e: CancellationException) { throw e }`를 둡니다.
-- API 응답은 statusCode를 직접 분기하지 말고 `data/common/model/BaseDto.kt`의
-  `BaseResponse<T>.toResult(fallbackMessage)`로 변환합니다. 기준 예시는 `PollQuizRepositoryImpl`,
-  `PerspectiveRepositoryImpl`:
+- RepositoryImpl의 API 호출은 `data/common/network/ApiCall.kt`의 `apiCall { }`로 감싸고, 응답은 statusCode를
+  직접 분기하지 말고 `data/common/model/BaseDto.kt`의 `toResult(fallbackMessage)`로 변환합니다. 서버 명세(Swagger)에서
+  성공 응답이 `ApiResponseVoid`(data가 항상 null)인 API는 `toUnitResult(fallbackMessage)`를 씁니다. `toResult()`는
+  data가 없으면 실패로 처리하므로, 새 API를 붙일 때 명세의 응답 타입을 먼저 확인합니다. `apiCall`이 `CancellationException`
+  재던지기와 `toReportedFailure()`를 처리하므로 RepositoryImpl에 try/catch를 직접 쓰지 않습니다.
+  기준 예시는 `PollQuizRepositoryImpl`:
 
   ```kotlin
-  override suspend fun getMyPollVote(battleId: Long): Result<PollQuizVoteBoard> = try {
+  override suspend fun getMyPollVote(battleId: Long): Result<PollQuizVoteBoard> = apiCall {
       pollQuizApi.getMyPollVote(battleId)
           .toResult("내 투표 내역을 불러오지 못했습니다.")
           .map { it.toDomainModel() }
-  } catch (e: CancellationException) {
-      throw e
-  } catch (e: Exception) {
-      Result.failure(e)
   }
   ```
 
-  `HomeRepositoryImpl`(`data ?: throw`), `VoteRepositoryImpl`(`when (statusCode)` 분기)처럼 짜지 않습니다.
+  `data ?: throw`, `when (statusCode)` 분기처럼 짜지 않습니다.
   특정 에러 코드별 처리가 필요하면 `domain/common/exception`에 예외 타입을 정의해서 씁니다
   (`NotEnoughPointsException` 참고, 문자열 `contains("400")` 비교 금지).
 - UI 상태는 항상 `StateFlow`로 캡슐화해서 노출 (`private val _x` + `val x: StateFlow`).
@@ -209,8 +221,11 @@ class HomeViewModel @Inject constructor(
   - 기존 리터럴은 일괄로 바꾸지 않습니다.
 - 간격은 `Spacer`와 `Arrangement.spacedBy` 중 편한 쪽을 씁니다.
 - trailing comma를 쓰지 않습니다. 여러 줄 파라미터·인자·리스트의 마지막 항목 뒤에 쉼표를 붙이지 않습니다.
-- 주석은 로직이 어렵거나, 중요하거나, 의도가 코드만으로 드러나지 않는 곳에만 한국어 `//`로 "왜"를 적습니다.
-  KDoc을 일괄로 달지 않습니다.
+- 파일 끝에 줄바꿈을 넣지 않습니다. 새로 만들거나 수정하는 파일은 마지막 줄 뒤에 빈 줄 없이 끝냅니다.
+  손대지 않는 기존 파일은 일괄로 바꾸지 않습니다.
+- **주석은 기본적으로 달지 않습니다.** 주석 없이는 이해하기 어렵거나, 특이한 상황이거나, 특별한 이슈가 있는
+  곳만 후보로 보고, **추가하기 전에 위치와 문구를 보여 주고 물어본 뒤** 승인받은 것만 한국어 `//`로 "왜"를 적습니다.
+  KDoc을 달지 않습니다. 기존 주석은 일괄로 지우지 않습니다.
 - **타이포그래피는 `PickeTheme.typography`의 Figma 대응 토큰만 사용합니다.** (`ui/theme/Type.kt`)
   - 토큰은 Figma의 소문자 텍스트 스타일(`display/`, `heading/`, `body/`, `caption/`)과 1:1이며, 이름은 경로를
     camelCase로 옮긴 것입니다 (`body/sm/semibold` → `bodySmSemiBold`). 대문자 `Headings/`·`Body/`·`Caption/`,
@@ -261,6 +276,38 @@ class HomeViewModel @Inject constructor(
 - Retrofit suspend 호출은 `withContext(Dispatchers.IO)`로 감싸지 않습니다. 파일 I/O, 암호화 저장소 접근처럼
   블로킹 작업만 `Dispatchers.IO`를 씁니다.
 
+### 분석·모니터링 (Mixpanel / Sentry)
+
+화면·기능·API를 추가하거나 수정할 때는 아래에 해당하는지 확인하고, 해당하면 **같은 작업 안에서** 관련 코드를
+작성합니다. 작업을 마치고 보고할 때 Mixpanel·Sentry를 무엇을 적용했는지(또는 해당 없음)를 함께 적습니다.
+
+**Mixpanel** (`presentation/analytics/`)
+- 이벤트·속성·화면 이름은 `AnalyticsSpec.kt`의 명세(iOS와 공유하는 크로스플랫폼 계약서)에 있는 것을 씁니다.
+  필요한 이벤트·속성·화면 이름이 명세에 없으면 `AnalyticsSpec.kt`에 **직접 추가**합니다.
+  - 이름은 기존 규칙대로 snake_case 소문자, 기존 항목과 같은 형식(`tab_xxx`, 화면은 기능 이름 등)으로 짓습니다.
+  - 명세 문서와 iOS에도 같은 값을 반영해야 하므로, 작업 보고와 PR 설명의 체크리스트에 추가한 항목을 적습니다.
+- 새 화면을 추가하면 `AnalyticsScreen`에 화면 이름을 두고 `fromRoute()`에 route를 매핑합니다
+  (매핑하지 않으면 `screen_view`가 전송되지 않음).
+- 전송은 `AnalyticsTracker`의 typed 메서드로만 하고, ViewModel이나 Screen의 사이드이펙트에서 호출합니다.
+  Content/Preview는 트래킹에 의존하지 않게 콜백으로 밖으로 뺍니다.
+- 공유·투표·신고처럼 결과가 있는 행동은 **성공했을 때만** 전송합니다.
+- 속성에 개인정보(이메일·실명·토큰)를 넣지 않습니다. 유저 키는 `user_tag`만 씁니다.
+
+**Sentry**
+- data `RepositoryImpl`의 예외는 `apiCall { }`이 `e.toReportedFailure()`로 처리합니다
+  (`data/common/error/ErrorReporter.kt`). 직접 `Result.failure(e)`를 반환하지 않습니다.
+  - 네트워크(`IOException`), `HttpException`, 서버 에러 응답(`ApiErrorException`), 도메인 예외처럼 **정상적인
+    실패는 보고하지 않습니다.** 새 도메인 예외 타입을 만들면 `ErrorReporter`의 제외 목록에 추가합니다.
+  - 필터를 거치면 안 되는 실패(예: `PreferencesManager`의 암호화 저장소 오류)만 `Sentry.captureException`을
+    직접 호출합니다. 이유를 주석으로 남길지는 주석 규칙대로 먼저 물어봅니다.
+- presentation의 `catch`는 앱 버그일 가능성이 있는 실패(비트맵·파일 처리, 인텐트, SDK 예외 등)만
+  `Sentry.captureException(e)`로 보고합니다. 대체값으로 넘어가는 정상 흐름이나 사용자 취소는 보고하지 않습니다.
+  코루틴 안의 `catch`는 `CancellationException`을 먼저 다시 던집니다.
+- 공유 기능은 `util/ShareUtils.kt`의 `launchBitmapShare`를 씁니다 (실패 보고·취소 처리 포함).
+- 5xx 응답은 Sentry OkHttp 자동 계측이 보고하므로 직접 보고하지 않습니다.
+- Sentry 사용자 지정·해제는 `AnalyticsTracker`의 로그인·로그아웃 시점에서만 하고, `user_tag` 외의 개인정보는
+  보내지 않습니다.
+
 ## 문서화 규칙
 
 모든 작업은 커밋 메시지 / PR 설명을 남기고, 원인 분석이 필요했던 문제나 여러 커밋에 걸친 작업은
@@ -303,44 +350,76 @@ class HomeViewModel @Inject constructor(
 | 커밋 메시지 한 줄로 충분한 수정 (스타일, 누락된 import 등) | 관련 문서의 커밋 표에만 기재 |
 
 - 모든 문서는 `트러블 슈팅` 콜아웃 바로 아래에 둡니다. **문서 안에 하위 페이지를 만들지 않습니다.**
-- 관련된 다른 문서는 `관련` 항목에서 멘션으로 연결합니다.
 - 문서는 관련 코드를 커밋한 뒤에 작성하고, 커밋 해시를 남깁니다.
 
 ### 3. 문서 형식
 
-```markdown
-# <영역> <리팩토링 | 오류 | 기능>   (예: 시나리오 오디오 리팩토링, 스플래시 네비게이션 오류)
+이 코드를 처음 보는 다른 개발자(Android·iOS)가 읽고 흐름을 따라갈 수 있는 수준으로 씁니다. 번호 섹션과 굵은 라벨
+불릿으로 구조를 잡고, 문장은 개조식으로 짧게 씁니다. **기술 내용은 줄이지 않습니다.** 원인 코드, 스택트레이스, 로그,
+Before / After 코드, 수치, 트레이드오프는 그대로 넣습니다.
 
-- 날짜: YYYY-MM-DD
-- 관련: PR/이슈, 브랜치, 관련 문서 멘션
+````markdown
+# <아이콘> <영역> <트러블슈팅 | 리팩토링 | 기능 명세>   (예: 🛠️ 앱 전환 팝업 광고 크래시 트러블슈팅)
 
-## 개요
-배경(무엇이 문제였거나 무엇이 필요했는지), 커밋 표(커밋 / 파일 / 내용)
+<이 문서가 무엇을 기록하는지 한 줄 소개>
+(이슈가 3개 이상이면 목차 블록)
 
-## 1. <이슈 제목>          ← 이슈마다 반복
-### 문제      사용자가 겪은 현상 또는 코드상 문제
-### 원인      왜 발생했는지. 원인이 되는 코드를 보여 주고 주석으로 짚음
-### 해결      Before / After 코드
-### 결과      바뀐 동작, 트레이드오프, 주의할 점
+## 1. 개요
+### 1.1. <기존 구조 / 기능 설명>
+- 관련 코드 위치와 동작 방식
+### 1.2. <발견 경위 / 작업 배경>
+- 왜 이 작업을 하게 됐는지
 
-## 검토했지만 하지 않은 것
-대안이나 되돌린 변경과 그 이유 (없으면 "없음")
-
-## 검증
-- `./gradlew test` 결과, 추가한 테스트
-- 수동 확인 시나리오 (debug 빌드 기준)
-- 리팩토링이면 **기존 동작과 동일함을 어떻게 확인했는지** 반드시 기재
-
-## 후속 작업
-남은 TODO (없으면 "없음")
+## 2. 트러블슈팅                ← 기능 문서면 "2. 주요 기능 및 핵심 로직"
+### 2.1. <현상이 드러나는 이슈 제목>   ← 이슈마다 반복
+- **문제 상황**: 사용자가 겪은 현상 또는 코드상 문제
+    - 발생 수치, 로그, 스택트레이스
+- **원인**: 왜 발생했는지
+    - 세부 원인
+```kotlin
+// 파일명.kt - 수정 전
+원인이 되는 코드 (주석으로 문제 지점 표시)
 ```
+- **해결 전략**: 무엇을 어떻게 바꿨는지
+    - 세부 변경
+```kotlin
+// 파일명.kt - 수정 후
+```
+- **결과**: 바뀐 동작
+    - **트레이드오프** / **주의**: 감수한 점, 알아둘 점
 
-- 이슈가 하나뿐인 문서(단일 버그 등)는 `## 1.` 없이 문제 / 원인 / 해결 / 결과를 바로 씁니다.
-- **변경 내용은 가능한 한 코드로** 씁니다. 이슈마다 Before / After 핵심 부분만 10~20줄 정도로 넣고,
-  전체 diff는 넣지 않고 커밋 해시로 대신합니다.
-- 코드가 아닌 흐름은 코드 블록 흐름도, 여러 항목 비교는 노션 표로 씁니다.
+## 3. 검토했지만 하지 않은 것   (없으면 섹션 생략)
+- **<대안>**: 하지 않은 이유
+
+## 4. 검증
+- 빌드·테스트 결과, 실기기 확인 시나리오
+
+## 5. 남은 작업                 (없으면 섹션 생략)
+- [ ] 후속 TODO
+
+## 참고: 커밋
+| 커밋 | 파일 | 내용 |
+````
+
+- 날짜·PR·브랜치·관련 문서 멘션 줄은 넣지 않습니다. 커밋은 맨 아래 `참고: 커밋` 표에만 남깁니다.
+- 이슈가 하나뿐이어도 `2.1.` 하나로 같은 구조를 씁니다. 라벨이 필요 없는 항목(예: 예외 처리)은 `**예외 처리**:`처럼
+  라벨을 추가해도 됩니다.
+
+**문체**
+- 개조식으로 짧게 씁니다. 끝맺음은 "~추가", "~삭제", "~변경", "~확인", "~제외", "~발생"처럼 씁니다.
+  - 예: "`printStackTrace()` 삭제 후 `Sentry.captureException(e)`로 교체", "사용자 3명 / 10회 발생"
+- 한 불릿에는 한 가지 내용만 쓰고, 세부 내용은 하위 불릿으로 내립니다.
+- 소제목은 현상이 드러나게 짓습니다 ("AdFit 수정" ✗ → "백그라운드 전환 시 광고 표시 크래시" ○).
+- 개발자라면 아는 일반 용어(`CancellationException`, ANR, DialogFragment 등)는 풀어 쓰지 않습니다. 이 프로젝트에만
+  있는 이름(`toReportedFailure`, `launchBitmapShare`, `user_tag` 등)은 처음 나올 때 괄호로 한 줄 설명을 붙입니다.
+- 숫자와 사실로 씁니다 ("자주 발생" ✗ → "사용자 3명 / 10회 발생" ○).
+
+**내용**
+- 코드 블록 첫 줄에 `// 파일명.kt - 설명` 주석을 답니다. 코드는 핵심만 10~20줄 정도로 넣고, 전체 diff 대신 커밋 해시를 남깁니다.
+- 흐름은 코드 블록 흐름도나 mermaid로, 여러 항목 비교는 노션 표로 보여 줍니다.
 - 파일명·클래스명은 인라인 코드로 감싸서 자동 링크(예: `CLAUDE.md` → `http://CLAUDE.md`)가 생기지 않게 합니다.
 - 추정인지 확인한 사실인지 구분해서 씁니다 (예: "코드 분석 기준, 실기기 재현은 안 함").
+- 리팩토링이면 **기존 동작과 같다는 것을 어떻게 확인했는지** `4. 검증`에 반드시 씁니다.
 
 ## 빌드 & 명령어
 
@@ -358,6 +437,19 @@ class HomeViewModel @Inject constructor(
   release 빌드는 `BASE_URL_RELEASE`를 씁니다. 두 키는 필수입니다(없으면 `BASE_URL`이 `"null"`로 들어감).
   값은 `/`로 끝나야 하고(Retrofit 관례), 코드에서는 `"${BuildConfig.BASE_URL}경로"`처럼 앞에 `/` 없이 이어 붙입니다.
   서버 주소는 저장소(코드·README·커밋 메시지)에 적지 않습니다.
+- 웹 도메인 URL도 하드코딩하지 않고 `local.properties`에서 읽습니다. 모두 필수이며, 없으면 빈 문자열로 빌드되어
+  약관 화면·구글 로그인·공유 링크·App Links가 동작하지 않습니다.
+
+  | 키 | 주입 위치 | 쓰는 곳 |
+  |---|---|---|
+  | `TERMS_OF_SERVICE_URL`, `PRIVACY_POLICY_URL` | `presentation` `BuildConfig` | 약관 시트, 설정의 약관 WebView |
+  | `GOOGLE_OAUTH_REDIRECT_URL` | `presentation` `BuildConfig` | `LoginViewModel` 구글 로그인 redirect URI |
+  | `BATTLE_SHARE_URL` | `presentation` `BuildConfig` | `ShareUtils` 카카오 공유 링크 (`/`로 끝나고 뒤에 `battleId`를 붙임) |
+  | `APP_LINK_HOST` | `presentation` `BuildConfig`, `app` `manifestPlaceholders["appLinkHost"]` | `MainActivity` 딥링크 호스트 판별, `AndroidManifest` App Links 호스트 |
+
+  새 웹 URL이 필요하면 같은 방식으로 키를 추가하고 이 표에 적습니다.
+- 샌드박스 등 `local.properties`를 읽지 못하는 환경에서 프로젝트 폴더에 빌드하면 빈 값으로 APK가 덮여 실행 시
+  크래시가 납니다. 이런 환경의 컴파일 확인은 임시 worktree에서 합니다.
 - `release`: minify + shrinkResources, 서명 필요.
 - CI 없음 — 로컬에서 `./gradlew assembleDebug`로 확인.
 

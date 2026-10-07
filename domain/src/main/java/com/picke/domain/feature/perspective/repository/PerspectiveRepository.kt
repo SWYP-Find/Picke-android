@@ -27,13 +27,13 @@ interface PerspectiveRepository {
     suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard>
 
     // 5. 관점 삭제
-    suspend fun deletePerspective(perspectiveId: Long): Result<String>
+    suspend fun deletePerspective(perspectiveId: Long): Result<Unit>
 
     // 6. 관점 수정
     suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard>
 
     // 7. 관점 검수 재시도
-    suspend fun retryModeration(perspectiveId: Long): Result<String>
+    suspend fun retryModeration(perspectiveId: Long): Result<Unit>
 
     // 8. 관점 좋아요 수 조회
     suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard>

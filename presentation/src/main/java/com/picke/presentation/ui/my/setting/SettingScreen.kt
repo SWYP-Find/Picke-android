@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.my.setting
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +17,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,13 +33,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
 fun SettingScreen(
-    onBackClick: ()->Unit,
-    onNavigateToSettingProfile: ()->Unit,
-    onNavigateToSettingAlarm: ()->Unit,
+    onBackClick: () -> Unit,
+    onNavigateToSettingProfile: () -> Unit,
+    onNavigateToSettingAlarm: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
     onNavigateToTermsOfService: () -> Unit,
     onNavigateToWithdraw: () -> Unit,
@@ -46,10 +50,26 @@ fun SettingScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                SettingUiEvent.NavigateToLogin -> onNavigateToLogin()
+                is SettingUiEvent.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.messageResId),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar={
+            topBar = {
                 CustomTopAppBar(
                     title = stringResource(R.string.setting),
                     centerTitle = true,
@@ -104,7 +124,6 @@ fun SettingScreen(
                     onConfirm = {
                         showLogoutDialog = false
                         viewModel.logout()
-                        onNavigateToLogin()
                     },
                     onDismiss = {
                         showLogoutDialog = false
@@ -148,15 +167,17 @@ fun SettingMenuItem(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.clickable{ onClick() }
+        modifier = Modifier
+            .clickable { onClick() }
             .fillMaxWidth(),
-    ){
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(
                 text = title,
                 style = PickeTheme.typography.bodySmSemiBold,

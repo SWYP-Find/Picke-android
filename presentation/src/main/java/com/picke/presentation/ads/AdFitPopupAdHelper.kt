@@ -40,6 +40,7 @@ fun showAdFitTransitionPopupAd(activity: FragmentActivity, adUnitId: String) {
             override fun onAdLoaded(ad: AdFitPopupAd) {
                 Log.d(TAG, "[팝업 광고 로드 성공] adUnitId=$adUnitId")
                 if (activity.isFinishing || activity.isDestroyed) return
+                if (activity.supportFragmentManager.isStateSaved) return
                 AdFitPopupAdDialogFragment(ad).show(activity.supportFragmentManager, AdFitPopupAdDialogFragment.TAG)
             }
 

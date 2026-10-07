@@ -4,16 +4,54 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.core.content.FileProvider
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
+import com.picke.presentation.BuildConfig
 import io.sentry.Sentry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.coroutines.cancellation.CancellationException
+
+fun CoroutineScope.launchBitmapShare(
+    loadBitmap: suspend () -> Bitmap?,
+    onBitmapReady: (Bitmap) -> Unit,
+    onError: () -> Unit,
+    onBitmapMissing: () -> Unit = {}
+): Job = launch {
+    try {
+        val bitmap = loadBitmap()
+        if (bitmap != null) onBitmapReady(bitmap) else onBitmapMissing()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Sentry.captureException(e)
+        onError()
+    }
+}
+
+suspend fun GraphicsLayer.captureBitmap(): Bitmap = toImageBitmap().asAndroidBitmap()
+
+suspend fun loadBitmapFromUrl(context: Context, url: String): Bitmap? {
+    val request = ImageRequest.Builder(context)
+        .data(url)
+        .allowHardware(false)
+        .build()
+    val result = context.imageLoader.execute(request)
+    return (result.drawable as? BitmapDrawable)?.bitmap
+}
 
 /**
  * [공통 로직] 비트맵을 캐시 폴더에 파일로 저장하는 함수
@@ -191,8 +229,8 @@ fun shareBattleToKakao(
                     description = battleDescription,
                     imageUrl = uploadedImageUrl,
                     link = Link(
-                        webUrl = "https://picke.store/battle/$battleId",
-                        mobileWebUrl = "https://picke.store/battle/$battleId",
+                        webUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
+                        mobileWebUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
                         androidExecutionParams = mapOf("battleId" to battleId)
                     )
                 ),
@@ -200,8 +238,8 @@ fun shareBattleToKakao(
                     Button(
                         title = "배틀 참여하러 가기🙆‍♂️",
                         link = Link(
-                            webUrl = "https://picke.store/battle/$battleId",
-                            mobileWebUrl = "https://picke.store/battle/$battleId",
+                            webUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
+                            mobileWebUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
                             androidExecutionParams = mapOf("battleId" to battleId)
                         )
                     )

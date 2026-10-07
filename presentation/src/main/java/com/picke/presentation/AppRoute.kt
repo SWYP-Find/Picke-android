@@ -4,7 +4,10 @@ sealed class AppRoute(val route: String){
     object Splash : AppRoute("splash_screen")
     object Login : AppRoute("login_screen")
     object Onboarding : AppRoute("onboarding_screen")
-    object Main : AppRoute("main_screen")
+    object Main : AppRoute("main_screen?tab={tab}") {
+        fun createRoute() = "main_screen"
+        fun createRoute(tab: String) = "main_screen?tab=$tab"
+    }
     object Alarm : AppRoute("alarm_screen")
     object Setting : AppRoute("setting_screen")
 

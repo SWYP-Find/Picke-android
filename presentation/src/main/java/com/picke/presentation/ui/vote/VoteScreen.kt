@@ -1,6 +1,5 @@
 ﻿package com.picke.presentation.ui.vote
 
-import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -39,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -53,8 +51,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
-import coil.imageLoader
-import coil.request.ImageRequest
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.ui.component.CustomButton
@@ -69,12 +65,12 @@ import com.picke.presentation.ui.vote.model.BattleDetailUiModel
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiState
 import com.picke.presentation.util.DummyData
+import com.picke.presentation.util.captureBitmap
+import com.picke.presentation.util.launchBitmapShare
+import com.picke.presentation.util.loadBitmapFromUrl
 import com.picke.presentation.util.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
-import io.sentry.Sentry
-import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun VoteRoute(
@@ -163,50 +159,35 @@ fun VoteScreen(
 
     val onKakaoShareClick = {
         isSharing = true
-        coroutineScope.launch {
-            try {
-                val request = ImageRequest.Builder(context)
-                    .data(battleInfo.thumbnailUrl)
-                    .allowHardware(false)
-                    .build()
-                val result = context.imageLoader.execute(request)
-                val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
-
-                if (bitmap != null) {
-                    shareBattleToKakao(
-                        context = context,
-                        bitmap = bitmap,
-                        battleId = battleInfo.battleId,
-                        battleTitle = battleInfo.title,
-                        battleDescription = if (isPreVote) battleInfo.summary else battleDetail.description,
-                        onComplete = { isSharing = false },
-                        onSuccess = { onTrackShare(ShareChannel.KAKAO) }
-                    )
-                } else {
-                    isSharing = false
-                    Toast.makeText(
-                        context,
-                        "이미지 로드 실패",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Sentry.captureException(e)
+        coroutineScope.launchBitmapShare(
+            loadBitmap = { loadBitmapFromUrl(context, battleInfo.thumbnailUrl) },
+            onBitmapReady = { bitmap ->
+                shareBattleToKakao(
+                    context = context,
+                    bitmap = bitmap,
+                    battleId = battleInfo.battleId,
+                    battleTitle = battleInfo.title,
+                    battleDescription = if (isPreVote) battleInfo.summary else battleDetail.description,
+                    onComplete = { isSharing = false },
+                    onSuccess = { onTrackShare(ShareChannel.KAKAO) }
+                )
+            },
+            onBitmapMissing = {
                 isSharing = false
-                Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
+            },
+            onError = {
+                isSharing = false
+                Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
             }
-        }
+        )
     }
 
     val onInstaShareClick = {
         isSharing = true
-        coroutineScope.launch {
-            try {
-                val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
-
+        coroutineScope.launchBitmapShare(
+            loadBitmap = { graphicsLayer.captureBitmap() },
+            onBitmapReady = { bitmap ->
                 if (isPreVote) {
                     shareBattleToInstagramStoryBrightMode(
                         context = context,
@@ -222,15 +203,12 @@ fun VoteScreen(
                         onSuccess = { onTrackShare(ShareChannel.INSTAGRAM) }
                     )
                 }
-
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Sentry.captureException(e)
+            },
+            onError = {
                 isSharing = false
                 Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
             }
-        }
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

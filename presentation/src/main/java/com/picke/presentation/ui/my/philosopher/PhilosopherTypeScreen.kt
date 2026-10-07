@@ -44,7 +44,6 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.nativeCanvas
@@ -71,11 +70,10 @@ import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.util.captureBitmap
+import com.picke.presentation.util.launchBitmapShare
 import com.picke.presentation.util.shareCapturedImageToKakao
 import com.picke.presentation.util.shareToInstagramStory
-import io.sentry.Sentry
-import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -112,10 +110,9 @@ fun PhilosopherTypeScreen(
     }
 
     val onKakaoShareClick = {
-        coroutineScope.launch {
-            try {
-                val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
-
+        coroutineScope.launchBitmapShare(
+            loadBitmap = { graphicsLayer.captureBitmap() },
+            onBitmapReady = { bitmap ->
                 viewModel.getRecapShareKey(
                     onSuccess = { shareKey ->
                         shareCapturedImageToKakao(
@@ -131,30 +128,22 @@ fun PhilosopherTypeScreen(
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 )
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Sentry.captureException(e)
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
+            },
+            onError = { Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show() }
+        )
     }
     val onInstaShareClick = {
-        coroutineScope.launch {
-            try {
-                val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
+        coroutineScope.launchBitmapShare(
+            loadBitmap = { graphicsLayer.captureBitmap() },
+            onBitmapReady = { bitmap ->
                 shareToInstagramStory(
                     context = context,
                     bitmap = bitmap,
                     onSuccess = { viewModel.trackRecapShare(ShareChannel.INSTAGRAM) }
                 )
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Sentry.captureException(e)
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
+            },
+            onError = { Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show() }
+        )
     }
 
     Scaffold(

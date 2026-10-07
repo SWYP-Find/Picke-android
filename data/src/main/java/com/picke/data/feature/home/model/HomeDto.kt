@@ -2,6 +2,7 @@ package com.picke.data.feature.home.model
 
 import com.picke.domain.feature.home.model.ContentDomainType
 import com.picke.domain.feature.home.model.ContentOption
+import com.picke.domain.feature.home.model.HomeBoard
 import com.picke.domain.feature.home.model.HomeContent
 import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
 import com.picke.domain.feature.home.model.TodayPick
@@ -92,6 +93,15 @@ data class NewBattleDto(
     val tags: List<TagDto>?,
     val audioDuration: Int?,
     val viewCount: Int?
+)
+
+fun HomeResponseDto.toDomainModel() = HomeBoard(
+    editorPicks = editorPicks?.map { it.toDomainModel() } ?: emptyList(),
+    trendingBattles = trendingBattles?.map { it.toDomainModel() } ?: emptyList(),
+    bestBattles = bestBattles?.map { it.toDomainModel() } ?: emptyList(),
+    todayPicks = (todayQuizzes?.map { it.toTodayPickDomainModel() } ?: emptyList()) +
+        (todayVotes?.map { it.toTodayPickDomainModel() } ?: emptyList()),
+    newBattles = newBattles?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun EditorPickDto.toDomainModel() = HomeContent(

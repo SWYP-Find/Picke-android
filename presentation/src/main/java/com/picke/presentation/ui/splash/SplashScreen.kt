@@ -32,8 +32,6 @@ fun SplashScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToMain: () -> Unit,
-    onNavigateToOtherPhilosopher: (String) -> Unit,
-    onNavigateToBattle: (String) -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -60,12 +58,10 @@ fun SplashScreen(
     }
 
     LaunchedEffect(uiState) {
-        when (val state = uiState) {
+        when (uiState) {
             is SplashUiState.NavigateToLogin -> onNavigateToLogin()
             is SplashUiState.NavigateToOnboarding -> onNavigateToOnboarding()
             is SplashUiState.NavigateToMain -> onNavigateToMain()
-            is SplashUiState.NavigateToOtherPhilosopher -> onNavigateToOtherPhilosopher(state.reportId)
-            is SplashUiState.NavigateToBattle -> onNavigateToBattle(state.battleId)
             is SplashUiState.Loading, SplashUiState.NavigationHandled -> {}
         }
     }
@@ -94,9 +90,7 @@ private fun SplashScreenPreview() {
         SplashScreen(
             onNavigateToLogin = { },
             onNavigateToOnboarding = { },
-            onNavigateToMain = { },
-            onNavigateToOtherPhilosopher = { },
-            onNavigateToBattle = { }
+            onNavigateToMain = { }
         )
     }
 }

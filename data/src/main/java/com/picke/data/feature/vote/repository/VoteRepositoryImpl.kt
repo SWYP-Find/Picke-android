@@ -5,6 +5,7 @@ import com.picke.data.common.error.toReportedFailure
 import com.picke.data.feature.pollquiz.model.VoteRequestDto
 import com.picke.data.feature.vote.model.toDomainModel
 import com.picke.data.common.model.toResult
+import com.picke.data.common.network.apiCall
 import com.picke.data.feature.vote.datasource.VoteApi
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.vote.model.MyVoteBoard
@@ -79,44 +80,15 @@ class VoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getVoteStats(battleId: Long): Result<VoteStatsBoard> {
-        return try {
-            Log.d(TAG, "[API_REQ] 투표 통계(비율) 단건 조회 시도 - battleId: $battleId")
-            voteApi.getVoteStats(battleId)
-                .toResult("투표 통계를 불러오지 못했습니다.")
-                .map { dto ->
-                    val domainData = dto.toDomainModel()
-                    Log.d(TAG, "[API_RES] 투표 통계 조회 성공")
-                    domainData.options.forEach { option ->
-                        Log.d(TAG, "   └ 입장: ${option.title} | 비율: ${option.ratio}%")
-                    }
-                    domainData
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 투표 통계 조회 예외 발생: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun getVoteStats(battleId: Long): Result<VoteStatsBoard> = apiCall {
+        voteApi.getVoteStats(battleId)
+            .toResult("투표 통계를 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
-    override suspend fun getMyVoteHistory(battleId: Long): Result<MyVoteBoard> {
-        return try {
-            Log.d(TAG, "[API_REQ] 내 투표 내역(History) 조회 시도 - battleId: $battleId")
-            voteApi.getMyVoteHistory(battleId)
-                .toResult("내 투표 내역을 불러오지 못했습니다.")
-                .map { dto ->
-                    val domainData = dto.toDomainModel()
-                    Log.d(TAG, "[API_RES] 내 투표 내역 조회 성공")
-                    Log.d(TAG, "   └ 내 사전 투표(Pre): ${domainData.preVote} | 최종 투표(Post): ${domainData.postVote}")
-                    Log.d(TAG, "   └ 생각 변화 여부(opinionChanged): ${domainData.opinionChanged}")
-                    domainData
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 내 투표 내역 조회 예외 발생: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun getMyVoteHistory(battleId: Long): Result<MyVoteBoard> = apiCall {
+        voteApi.getMyVoteHistory(battleId)
+            .toResult("내 투표 내역을 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 }

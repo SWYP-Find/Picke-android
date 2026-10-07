@@ -5,7 +5,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 class ReadAlarmUseCase(
     private val alarmRepository: AlarmRepository
 ) {
-    suspend operator fun invoke(notificationId: Long): Result<String> {
+    suspend operator fun invoke(notificationId: Long): Result<Unit> {
         return alarmRepository.readAlarm(notificationId)
     }
 }

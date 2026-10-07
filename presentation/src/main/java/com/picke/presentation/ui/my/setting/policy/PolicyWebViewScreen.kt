@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.setting.policy
 
+import android.net.Uri
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -27,11 +28,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.PolicyUrls
-import com.picke.presentation.util.PolicyUrls.POLICY_HOST
 
 @Composable
 fun PolicyWebViewScreen(
@@ -90,7 +90,7 @@ private fun PolicyWebViewContent(
                                 request: WebResourceRequest
                             ): Boolean {
                                 val target = request.url
-                                return target.scheme != "https" || target.host != POLICY_HOST
+                                return target.scheme != "https" || target.host != Uri.parse(url).host
                             }
 
                             override fun onPageFinished(view: WebView, url: String) {
@@ -144,7 +144,7 @@ private fun PolicyWebViewScreenPreview() {
     PickeTheme {
         PolicyWebViewScreen(
             titleRes = R.string.policy_title_privacy,
-            url = PolicyUrls.PRIVACY_POLICY,
+            url = BuildConfig.PRIVACY_POLICY_URL,
             onBackClick = {}
         )
     }

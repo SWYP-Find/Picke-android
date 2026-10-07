@@ -9,7 +9,6 @@ import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.ui.splash.model.SplashUiState
 import com.picke.presentation.util.AppLifecycleObserver
-import com.picke.presentation.util.DeepLinkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -71,26 +70,7 @@ class SplashViewModel @Inject constructor(
                     }
 
                     val needsTermsAgreement = !localPreferencesUseCases.checkTermsAgreed()
-                    val pendingReport = DeepLinkManager.pendingReportId
-                    val pendingBattle = DeepLinkManager.pendingBattleId
-
-                    when {
-                        pendingReport != null -> {
-                            _uiState.value = SplashUiState.NavigateToOtherPhilosopher(
-                                pendingReport,
-                                needsTermsAgreement
-                            )
-                        }
-
-                        pendingBattle != null -> {
-                            _uiState.value =
-                                SplashUiState.NavigateToBattle(pendingBattle, needsTermsAgreement)
-                        }
-
-                        else -> {
-                            _uiState.value = SplashUiState.NavigateToMain(needsTermsAgreement)
-                        }
-                    }
+                    _uiState.value = SplashUiState.NavigateToMain(needsTermsAgreement)
                 }.onFailure {
                     localPreferencesUseCases.clearAll()
                     _uiState.value = SplashUiState.NavigateToLogin

@@ -78,15 +78,12 @@ fun CustomBottomNavigationBar(
                         rootNavController.navigate(BottomNavItem.TodayBattle.route)
                     }else {
                         if (isSelected) {
-                            when (item.route) {
-                                BottomNavItem.Home.route -> onHomeReselected()
-                                BottomNavItem.Explore.route -> onExploreReselected()
+                            if (navBackStackEntry?.destination?.route == item.route) {
+                                when (item.route) {
+                                    BottomNavItem.Home.route -> onHomeReselected()
+                                    BottomNavItem.Explore.route -> onExploreReselected()
+                                }
                             }
-
-                            mainNavController.popBackStack(
-                                route = item.route,
-                                inclusive = false
-                            )
                         } else {
                             mainNavController.navigate(item.route) {
                                 popUpTo(mainNavController.graph.findStartDestination().id) {

@@ -198,7 +198,7 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        if (uiState.isLoading) {
+        if (uiState.isLoading && isDataEmpty) {
             HomeSkeleton(
                 modifier = Modifier
                     .fillMaxSize()

@@ -436,6 +436,19 @@ Before / After 코드, 수치, 트레이드오프는 그대로 넣습니다.
   release 빌드는 `BASE_URL_RELEASE`를 씁니다. 두 키는 필수입니다(없으면 `BASE_URL`이 `"null"`로 들어감).
   값은 `/`로 끝나야 하고(Retrofit 관례), 코드에서는 `"${BuildConfig.BASE_URL}경로"`처럼 앞에 `/` 없이 이어 붙입니다.
   서버 주소는 저장소(코드·README·커밋 메시지)에 적지 않습니다.
+- 웹 도메인 URL도 하드코딩하지 않고 `local.properties`에서 읽습니다. 모두 필수이며, 없으면 빈 문자열로 빌드되어
+  약관 화면·구글 로그인·공유 링크·App Links가 동작하지 않습니다.
+
+  | 키 | 주입 위치 | 쓰는 곳 |
+  |---|---|---|
+  | `TERMS_OF_SERVICE_URL`, `PRIVACY_POLICY_URL` | `presentation` `BuildConfig` | 약관 시트, 설정의 약관 WebView |
+  | `GOOGLE_OAUTH_REDIRECT_URL` | `presentation` `BuildConfig` | `LoginViewModel` 구글 로그인 redirect URI |
+  | `BATTLE_SHARE_URL` | `presentation` `BuildConfig` | `ShareUtils` 카카오 공유 링크 (`/`로 끝나고 뒤에 `battleId`를 붙임) |
+  | `APP_LINK_HOST` | `presentation` `BuildConfig`, `app` `manifestPlaceholders["appLinkHost"]` | `MainActivity` 딥링크 호스트 판별, `AndroidManifest` App Links 호스트 |
+
+  새 웹 URL이 필요하면 같은 방식으로 키를 추가하고 이 표에 적습니다.
+- 샌드박스 등 `local.properties`를 읽지 못하는 환경에서 프로젝트 폴더에 빌드하면 빈 값으로 APK가 덮여 실행 시
+  크래시가 납니다. 이런 환경의 컴파일 확인은 임시 worktree에서 합니다.
 - `release`: minify + shrinkResources, 서명 필요.
 - CI 없음 — 로컬에서 `./gradlew assembleDebug`로 확인.
 

@@ -91,7 +91,7 @@ class MainActivity : FragmentActivity() {
         var targetBattleId: String? = null
         var targetReportId: String? = null
 
-        if (uri.host == "picke.store") {
+        if (uri.host == BuildConfig.APP_LINK_HOST) {
             if (uri.path?.startsWith("/recap/") == true) targetReportId = uri.lastPathSegment
             if (uri.path?.startsWith("/battle/") == true) targetBattleId = uri.lastPathSegment
         } else if (uri.host == "kakaolink") {

@@ -39,10 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ui.my.setting.policy.PolicyWebViewScreen
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.PolicyUrls
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,13 +135,13 @@ fun TermsOfServiceBottomSheet(
                     text = stringResource(R.string.terms_sheet_required_terms),
                     isAgreed = isServiceTermsAgreed,
                     onToggle = { isServiceTermsAgreed = !isServiceTermsAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_terms to PolicyUrls.TERMS_OF_SERVICE }
+                    onViewDetail = { openedPolicy = R.string.policy_title_terms to BuildConfig.TERMS_OF_SERVICE_URL }
                 )
                 TermsItem(
                     text = stringResource(R.string.terms_sheet_required_privacy),
                     isAgreed = isPrivacyPolicyAgreed,
                     onToggle = { isPrivacyPolicyAgreed = !isPrivacyPolicyAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_privacy to PolicyUrls.PRIVACY_POLICY }
+                    onViewDetail = { openedPolicy = R.string.policy_title_privacy to BuildConfig.PRIVACY_POLICY_URL }
                 )
             }
 

@@ -16,6 +16,7 @@ import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
+import com.picke.presentation.BuildConfig
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -228,8 +229,8 @@ fun shareBattleToKakao(
                     description = battleDescription,
                     imageUrl = uploadedImageUrl,
                     link = Link(
-                        webUrl = "https://picke.store/battle/$battleId",
-                        mobileWebUrl = "https://picke.store/battle/$battleId",
+                        webUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
+                        mobileWebUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
                         androidExecutionParams = mapOf("battleId" to battleId)
                     )
                 ),
@@ -237,8 +238,8 @@ fun shareBattleToKakao(
                     Button(
                         title = "배틀 참여하러 가기🙆‍♂️",
                         link = Link(
-                            webUrl = "https://picke.store/battle/$battleId",
-                            mobileWebUrl = "https://picke.store/battle/$battleId",
+                            webUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
+                            mobileWebUrl = "${BuildConfig.BATTLE_SHARE_URL}$battleId",
                             androidExecutionParams = mapOf("battleId" to battleId)
                         )
                     )

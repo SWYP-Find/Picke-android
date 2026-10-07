@@ -31,6 +31,11 @@ android {
     val adfitBannerMy = properties.getProperty("ADFIT_BANNER_MY") ?: ""
     val adfitAppTransition = properties.getProperty("ADFIT_APP_TRANSITION") ?: ""
     val googleWebClientId = properties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
+    val termsOfServiceUrl = properties.getProperty("TERMS_OF_SERVICE_URL") ?: ""
+    val privacyPolicyUrl = properties.getProperty("PRIVACY_POLICY_URL") ?: ""
+    val googleOauthRedirectUrl = properties.getProperty("GOOGLE_OAUTH_REDIRECT_URL") ?: ""
+    val battleShareUrl = properties.getProperty("BATTLE_SHARE_URL") ?: ""
+    val appLinkHost = properties.getProperty("APP_LINK_HOST") ?: ""
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -45,6 +50,11 @@ android {
         buildConfigField("String", "ADFIT_APP_TRANSITION", "\"$adfitAppTransition\"")
         // 배포용 구글 클라이언트 ID 설정
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+        buildConfigField("String", "TERMS_OF_SERVICE_URL", "\"$termsOfServiceUrl\"")
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
+        buildConfigField("String", "GOOGLE_OAUTH_REDIRECT_URL", "\"$googleOauthRedirectUrl\"")
+        buildConfigField("String", "BATTLE_SHARE_URL", "\"$battleShareUrl\"")
+        buildConfigField("String", "APP_LINK_HOST", "\"$appLinkHost\"")
     }
 
     buildFeatures {

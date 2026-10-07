@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.analytics.TrackScreenViews
@@ -58,7 +59,6 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.todaybattle.TodayBattleScreen
 import com.picke.presentation.ui.vote.VoteRoute
 import com.picke.presentation.ui.vote.model.VoteType
-import com.picke.presentation.util.PolicyUrls
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -488,7 +488,7 @@ fun AppNavigation(
             composable(AppRoute.PrivacyPolicy.route) {
                 PolicyWebViewScreen(
                     titleRes = R.string.policy_title_privacy,
-                    url = PolicyUrls.PRIVACY_POLICY,
+                    url = BuildConfig.PRIVACY_POLICY_URL,
                     onBackClick = { rootNavController.popBackStack() }
                 )
             }
@@ -496,7 +496,7 @@ fun AppNavigation(
             composable(AppRoute.TermsOfService.route) {
                 PolicyWebViewScreen(
                     titleRes = R.string.policy_title_terms,
-                    url = PolicyUrls.TERMS_OF_SERVICE,
+                    url = BuildConfig.TERMS_OF_SERVICE_URL,
                     onBackClick = { rootNavController.popBackStack() }
                 )
             }

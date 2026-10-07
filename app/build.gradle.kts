@@ -24,6 +24,7 @@ android {
     val kakaoDebugAppKey = properties.getProperty("KAKAO_DEBUG_APPKEY") ?: ""
     val admobAppId = properties.getProperty("ADMOB_APP_ID") ?: ""
     val sentryDsn = properties.getProperty("SENTRY_DSN") ?: ""
+    val appLinkHost = properties.getProperty("APP_LINK_HOST") ?: ""
 
     defaultConfig {
         applicationId = "com.picke.app"
@@ -37,6 +38,7 @@ android {
         manifestPlaceholders["admobAppId"] = admobAppId
         manifestPlaceholders["kakaoDebugAppKey"] = kakaoDebugAppKey
         manifestPlaceholders["sentryDsn"] = sentryDsn
+        manifestPlaceholders["appLinkHost"] = appLinkHost
     }
 
     signingConfigs {

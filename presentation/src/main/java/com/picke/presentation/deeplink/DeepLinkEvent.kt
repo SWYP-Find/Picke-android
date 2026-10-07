@@ -1,6 +1,4 @@
-package com.picke.presentation.util
-
-import kotlinx.coroutines.flow.MutableSharedFlow
+package com.picke.presentation.deeplink
 
 sealed class DeepLinkEvent {
     data class GoToBattle(val battleId: String) : DeepLinkEvent()
@@ -8,10 +6,4 @@ sealed class DeepLinkEvent {
     data class GoToReport(val reportId: String) : DeepLinkEvent()
     data object GoToAlarm : DeepLinkEvent()
     data class GoToPerspective(val perspectiveId: String, val commentId: String?) : DeepLinkEvent()
-}
-
-object DeepLinkManager {
-    var pendingReportId: String? = null
-    var pendingBattleId: String? = null
-    val deepLinkEvent = MutableSharedFlow<DeepLinkEvent>(replay = 1, extraBufferCapacity = 1)
 }

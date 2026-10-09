@@ -35,6 +35,7 @@ import com.picke.presentation.deeplink.DeepLinkEvent
 import com.picke.presentation.deeplink.DeepLinkHandler
 import com.picke.presentation.ui.alarm.AlarmScreen
 import com.picke.presentation.ui.battleentry.BattleRoutingScreen
+import com.picke.presentation.ui.classroom.classGraph
 import com.picke.presentation.ui.comment.CommentScreen
 import com.picke.presentation.ui.component.NotificationPermissionBottomSheet
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
@@ -225,6 +226,8 @@ fun AppNavigation(
                     isNotificationSheetPending = showNotificationSheet
                 )
             }
+
+            classGraph(navController = rootNavController)
 
             composable(
                 route = AppRoute.BattleRouting.route,

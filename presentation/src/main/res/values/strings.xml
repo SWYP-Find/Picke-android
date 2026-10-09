@@ -94,4 +94,21 @@
     <string name="terms_sheet_required_privacy">(필수) 개인정보처리방침</string>
     <string name="terms_sheet_view_detail">자세히 보기</string>
     <string name="terms_sheet_agree">동의</string>
+
+    <!-- 클래스 - 탭 -->
+    <string name="class_title">클래스</string>
+    <string name="class_intro_title">함께 생각을 나누는\n클래스를 시작해 보세요</string>
+    <string name="class_intro_description">콘텐츠를 직접 만들고 사람들을 초대하세요.</string>
+    <string name="class_join_code_description">참여 코드 입력</string>
+    <string name="class_my_class_description">참여중인 클래스</string>
+    <string name="class_ticket_register">이용권 등록하기</string>
+
+    <!-- 클래스 - 만들기 -->
+    <string name="class_create_title">새 클래스 만들기</string>
+
+    <!-- 클래스 - 참여 -->
+    <string name="class_join_action">클래스 참여하기</string>
+
+    <!-- 클래스 - 내 클래스 -->
+    <string name="my_class_title">내 클래스</string>
 </resources>

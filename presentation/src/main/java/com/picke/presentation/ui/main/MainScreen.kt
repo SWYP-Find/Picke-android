@@ -23,7 +23,6 @@ import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.TrackScreenViews
-import com.picke.presentation.analytics.UiActionName
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.component.CustomBottomNavigationBar
 import com.picke.presentation.ui.explore.ExploreScreen
@@ -61,15 +60,7 @@ fun MainScreen(
             CustomBottomNavigationBar(
                 mainNavController = mainNavController,
                 rootNavController = rootNavController,
-                onTabClick = { item ->
-                    val tabAction = when (item) {
-                        BottomNavItem.Home -> UiActionName.TAB_HOME
-                        BottomNavItem.Explore -> UiActionName.TAB_EXPLORE
-                        BottomNavItem.TodayBattle -> UiActionName.TAB_QUICK_BATTLE
-                        BottomNavItem.My -> UiActionName.TAB_MYPAGE
-                    }
-                    analyticsTracker.trackUiAction(tabAction)
-                },
+                onTabClick = { item -> analyticsTracker.trackUiAction(item.toTabAction()) },
                 onHomeReselected = { homeScrollTrigger++ },
                 onExploreReselected = { exploreScrollTrigger++ }
             )

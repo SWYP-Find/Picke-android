@@ -78,6 +78,7 @@ data class PickeColors(
     val badgeOutlineBackground: Color = ComponentColorTokens.badgeOutlineBackground,
     val badgeOutlineBorder: Color = ComponentColorTokens.badgeOutlineBorder,
     val badgeOutlineText: Color = ComponentColorTokens.badgeOutlineText,
+    val cardGrayBackgroundDefault: Color = ComponentColorTokens.cardGrayBackgroundDefault,
 
     // Brand palette — colors not covered by semantic tokens
     val primary50: Color = BrandColorTokens.primary50,

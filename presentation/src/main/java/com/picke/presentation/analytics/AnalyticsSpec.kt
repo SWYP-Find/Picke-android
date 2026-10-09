@@ -145,6 +145,7 @@ object UiActionName {
     const val TAB_HOME = "tab_home"
     const val TAB_EXPLORE = "tab_explore"
     const val TAB_QUICK_BATTLE = "tab_quick_battle"
+    const val TAB_CLASS = "tab_class"
     const val TAB_MYPAGE = "tab_mypage"
     const val SETTINGS_LOGOUT = "settings_logout"
     const val SETTINGS_WITHDRAW = "settings_withdraw"
@@ -172,6 +173,7 @@ object AnalyticsScreen {
     const val SETTINGS = "settings"
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
+    const val CLASS = "class"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -191,6 +193,7 @@ object AnalyticsScreen {
         AppRoute.Setting.route -> SETTINGS
         AppRoute.Withdraw.route -> WITHDRAW
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
+        BottomNavItem.Class.route -> CLASS
         else -> null
     }
 }

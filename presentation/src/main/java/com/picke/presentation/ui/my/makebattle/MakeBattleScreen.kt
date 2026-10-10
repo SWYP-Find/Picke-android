@@ -83,9 +83,8 @@ fun MakeBattleScreen(
                 title = "배틀 만들기",
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBeige,
+                backgroundColor = PickeTheme.colors.backgroundBeige
             )
         },
         bottomBar = {

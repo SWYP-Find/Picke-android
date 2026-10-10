@@ -126,8 +126,7 @@ fun ScenarioScreen(
                 CustomTopAppBar(
                     title = uiState.title,
                     centerTitle = true,
-                    showBackButton = false,
-                    backgroundColor = PickeTheme.colors.backgroundBeige,
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             }
         },

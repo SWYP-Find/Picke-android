@@ -208,8 +208,6 @@ fun PerspectiveScreenContent(
                     title = uiState.battleTitle.ifBlank { "관점 남기기" },
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = false,
-                    onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
                         IconButton(onClick = { onNextClick(uiState.battleId) }) {

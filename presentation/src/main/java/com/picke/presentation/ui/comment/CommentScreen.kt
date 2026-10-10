@@ -182,7 +182,6 @@ fun CommentScreenContent(
                     title = "댓글",
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

@@ -61,7 +61,6 @@ fun RecommendScreen(
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
                     title = "더 흥미로운 배틀도 있어요!",
-                    showBackButton = true,
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.surfaceBeigeDefault,
                     actions = {

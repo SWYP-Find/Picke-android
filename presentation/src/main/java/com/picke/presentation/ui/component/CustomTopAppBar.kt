@@ -28,15 +28,14 @@ import com.picke.presentation.ui.theme.PickeTheme
 fun CustomTopAppBar(
     title: String? = null,
     centerTitle: Boolean = true,
-    onBackClick: () -> Unit = {},
+    onBackClick: (() -> Unit)? = null,
     showLogo: Boolean = false,
-    showBackButton: Boolean = false,
     backgroundColor: Color,
     backIconColor: Color = PickeTheme.colors.textDefault,
     titleColor: Color = PickeTheme.colors.textDefault,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    val startPadding = if (showBackButton) 4.dp else 20.dp
+    val startPadding = if (onBackClick != null) 4.dp else 20.dp
 
     Box(
         modifier = Modifier
@@ -53,7 +52,7 @@ fun CustomTopAppBar(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.CenterStart)
         ) {
-            if (showBackButton) {
+            if (onBackClick != null) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_left),

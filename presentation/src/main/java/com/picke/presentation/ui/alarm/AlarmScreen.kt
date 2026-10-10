@@ -118,7 +118,6 @@ fun AlarmScreen(
                 title = stringResource(R.string.alarm),
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = onBackClick,
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {

@@ -95,7 +95,6 @@ private fun ClassContent(
             CustomTopAppBar(
                 title = stringResource(R.string.class_title),
                 onBackClick = onBackClick,
-                showBackButton = true,
                 backgroundColor = Color.Transparent,
                 backIconColor = PickeTheme.colors.textInverse,
                 titleColor = PickeTheme.colors.textInverse

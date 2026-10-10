@@ -74,7 +74,6 @@ fun SettingScreen(
                     title = stringResource(R.string.setting),
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = { onBackClick() },
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

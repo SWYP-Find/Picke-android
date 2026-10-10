@@ -74,7 +74,6 @@ fun PointScreen(
                 title = "포인트 내역",
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {

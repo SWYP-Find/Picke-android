@@ -154,7 +154,6 @@ fun PhilosopherTypeScreen(
                     title = "나의 철학자 유형",
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
@@ -176,7 +175,6 @@ fun PhilosopherTypeScreen(
                         title = "상대방의 철학자 유형",
                         centerTitle = true,
                         showLogo = false,
-                        showBackButton = true,
                         onBackClick = onBackClick,
                         backgroundColor = PickeTheme.colors.backgroundBeige
                     )

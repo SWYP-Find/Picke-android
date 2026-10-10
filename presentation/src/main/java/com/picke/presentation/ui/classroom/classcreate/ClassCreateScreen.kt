@@ -94,7 +94,6 @@ private fun ClassCreateContent(
             CustomTopAppBar(
                 title = stringResource(uiState.step.titleRes()),
                 onBackClick = { onAction(ClassCreateUiAction.BackClick) },
-                showBackButton = true,
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 titleColor = PickeTheme.colors.textSubtler
             )

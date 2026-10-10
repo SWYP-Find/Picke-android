@@ -220,7 +220,6 @@ fun VoteScreen(
                 Box(modifier = Modifier.statusBarsPadding()) {
                     CustomTopAppBar(
                         centerTitle = false,
-                        showBackButton = true,
                         onBackClick = onBackClick,
                         backIconColor = Color.White,
                         backgroundColor = Color.Transparent,
@@ -478,9 +477,8 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
-                    showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBeige,
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             }
         }

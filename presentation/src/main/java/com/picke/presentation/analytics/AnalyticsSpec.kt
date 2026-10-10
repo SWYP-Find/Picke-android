@@ -175,6 +175,7 @@ object AnalyticsScreen {
     const val RECAP = "recap"
     const val CLASS = "class"
     const val CLASS_CREATE = "class_create"
+    const val MY_CLASS = "my_class"
     const val CLASS_SHARE = "class_share"
 
     fun fromRoute(route: String): String? = when (route) {
@@ -197,6 +198,7 @@ object AnalyticsScreen {
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         BottomNavItem.Class.route -> CLASS
         AppRoute.ClassCreate.route -> CLASS_CREATE
+        AppRoute.MyClass.route -> MY_CLASS
         AppRoute.ClassShare.route -> CLASS_SHARE
         else -> null
     }

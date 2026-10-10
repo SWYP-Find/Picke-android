@@ -42,6 +42,7 @@ import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.LoginScreen
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.main.MainScreen
+import com.picke.presentation.ui.main.toTabAction
 import com.picke.presentation.ui.my.makebattle.MakeBattleScreen
 import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
@@ -227,7 +228,19 @@ fun AppNavigation(
                 )
             }
 
-            classGraph(navController = rootNavController)
+            classGraph(
+                navController = rootNavController,
+                onTabClick = { item ->
+                    analyticsTracker.trackUiAction(item.toTabAction())
+                    when (item) {
+                        BottomNavItem.Class -> Unit
+                        BottomNavItem.TodayBattle -> rootNavController.navigate(item.route)
+                        else -> rootNavController.navigate(AppRoute.Main.createRoute(item.route)) {
+                            popUpTo(AppRoute.Main.route) { inclusive = true }
+                        }
+                    }
+                }
+            )
 
             composable(
                 route = AppRoute.BattleRouting.route,

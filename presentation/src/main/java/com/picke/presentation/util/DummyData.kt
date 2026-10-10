@@ -6,6 +6,7 @@ import com.picke.domain.feature.scenario.model.SpeakerType
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.home.model.ContentUiType
@@ -647,7 +648,6 @@ object DummyData {
         )
     )
 
-    const val dummyClassName = "1학년 3반 사회 토론"
     const val dummyClassCode = "PK7M2Q"
     val dummyClassDeadline: LocalDateTime = LocalDateTime.of(2026, 9, 23, 18, 0)
 
@@ -744,6 +744,36 @@ object DummyData {
                 ClassBattleOptionUiModel(stance = "무책임한 태도다", subText = "타인과 사회에 대한 책임이 있다")
             ),
             isAiQuestion = true
+        )
+    )
+
+    val dummyMyClasses = listOf(
+        MyClassUiModel(
+            1L,
+            "1학년 3반 사회 토론",
+            "촉법소년 연령을 낮춰야 할까?",
+            true,
+            32,
+            "2026. 11. 23. 월요일 20:00까지",
+            isOperator = true
+        ),
+        MyClassUiModel(
+            2L,
+            "윤리와 사상 토론 클래스",
+            "인간은 본래 선한가?",
+            true,
+            13,
+            "2026. 10. 11. 일요일 23:59까지",
+            isOperator = false
+        ),
+        MyClassUiModel(
+            3L,
+            "주간 독서토론 모임",
+            "무지는 죄인가?",
+            false,
+            4,
+            "2026. 09. 23. 수요일 18:00까지",
+            isOperator = false
         )
     )
 }

@@ -52,8 +52,10 @@ class ClassShareViewModel @Inject constructor(
 
     private fun fetchClassShare() {
         // TODO: API 연동 - 클래스 정보·참여 코드 조회로 교체
+        val classItem =
+            DummyData.dummyMyClasses.firstOrNull { it.id == _uiState.value.classId } ?: return
         val mutation = ClassShareMutation.ClassShareLoaded(
-            className = DummyData.dummyClassName,
+            className = classItem.title,
             deadline = DummyData.dummyClassDeadline,
             code = DummyData.dummyClassCode,
             battle = DummyData.dummyClassBattles.first()

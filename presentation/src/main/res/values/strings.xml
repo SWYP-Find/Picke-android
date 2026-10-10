@@ -15,6 +15,15 @@
     <string name="top_app_bar_close">닫기</string>
     <string name="top_app_bar_next">다음</string>
 
+    <!-- 다이얼로그 -->
+    <string name="dialog_confirm">네, 확인합니다</string>
+    <string name="dialog_dismiss">뒤로가기</string>
+    <string name="share_dialog_title">공유하기</string>
+    <string name="share_dialog_close">닫기</string>
+    <string name="share_dialog_kakao">카카오톡</string>
+    <string name="share_dialog_instagram">인스타그램</string>
+    <string name="share_dialog_copy_link">링크 복사</string>
+
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
     <string name="my_charge_free">무료 충전</string>

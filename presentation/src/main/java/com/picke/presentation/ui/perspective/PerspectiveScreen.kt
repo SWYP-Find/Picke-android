@@ -60,12 +60,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.SortFilterChip
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveInputField

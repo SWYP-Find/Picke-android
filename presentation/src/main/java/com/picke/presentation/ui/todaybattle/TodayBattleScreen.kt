@@ -57,7 +57,7 @@ import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
 import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.ShareDialog
+import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.todaybattle.component.OpinionCard
@@ -363,7 +363,6 @@ fun TodayBattleScreen(
 
         if (showShareDialog) {
             ShareDialog(
-                onDismiss = { showShareDialog = false },
                 onKakaoClick = {
                     showShareDialog = false
                     onKakaoShareClick()
@@ -372,14 +371,12 @@ fun TodayBattleScreen(
                     showShareDialog = false
                     onInstaShareClick()
                 },
-                onFacebookClick = {
-                    showShareDialog = false
-                },
                 onCopyLinkClick = {
                     showShareDialog = false
                     val currentBattleId = battleList[pagerState.currentPage].battleId.toInt()
                     onGetShareLink(currentBattleId)
-                }
+                },
+                onDismiss = { showShareDialog = false }
             )
         }
 

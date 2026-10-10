@@ -40,10 +40,9 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateCondition
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateMethodStep
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelectionStep
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 private object ClassCreateScreenDimens {
@@ -99,10 +98,11 @@ private fun ClassCreateContent(
             )
         },
         bottomBar = {
-            ClassCreateBottomSection(
+            ClassBottomButton(
                 text = stringResource(uiState.nextButtonRes()),
-                isEnabled = uiState.isNextEnabled,
-                onClick = { onAction(ClassCreateUiAction.NextClick) }
+                onClick = { onAction(ClassCreateUiAction.NextClick) },
+                enabled = uiState.isNextEnabled,
+                topPadding = SpacingTokens.s0
             )
         },
         containerColor = PickeTheme.colors.backgroundBeige,
@@ -255,39 +255,6 @@ private fun ClassCreateHeaderSection(
                 style = PickeTheme.typography.bodyMdMedium
             )
         }
-    }
-}
-
-@Composable
-private fun ClassCreateBottomSection(
-    text: String,
-    isEnabled: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val backgroundColor = if (isEnabled) {
-        PickeTheme.colors.buttonPrimaryBackgroundDefault
-    } else {
-        PickeTheme.colors.buttonPrimaryBackgroundDisabled
-    }
-
-    Box(
-        modifier = modifier
-            .background(PickeTheme.colors.backgroundBeige)
-            .padding(
-                start = SpacingTokens.s16,
-                end = SpacingTokens.s16,
-                bottom = SpacingTokens.s16
-            )
-    ) {
-        CustomButton(
-            text = text,
-            onClick = onClick,
-            modifier = Modifier.height(ComponentNumberTokens.buttonPrimaryLargeHeight),
-            backgroundColor = backgroundColor,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
-            enabled = isEnabled
-        )
     }
 }
 

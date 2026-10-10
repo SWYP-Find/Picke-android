@@ -33,7 +33,7 @@ private val bottomNavItems = listOf(
 @Composable
 fun CustomBottomNavigationBar(
     mainNavController: NavController,
-    rootNavController: NavController,
+    onRootTabClick: (BottomNavItem) -> Unit,
     onTabClick: (BottomNavItem) -> Unit = {},
     onHomeReselected: () -> Unit = {},
     onExploreReselected: () -> Unit = {}
@@ -53,9 +53,7 @@ fun CustomBottomNavigationBar(
             onTabClick(item)
 
             when {
-                item.route == BottomNavItem.TodayBattle.route || item.route == BottomNavItem.Class.route -> {
-                    rootNavController.navigate(item.route)
-                }
+                item == BottomNavItem.TodayBattle || item == BottomNavItem.Class -> onRootTabClick(item)
 
                 activeTabRoute == item.route -> {
                     if (navBackStackEntry?.destination?.route == item.route) {

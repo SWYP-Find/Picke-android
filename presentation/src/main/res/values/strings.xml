@@ -8,6 +8,10 @@
     <string name="login_with_google">구글로 로그인</string>
     <string name="onboarding_start">시작하기</string>
 
+    <!-- 상단 바 -->
+    <string name="top_app_bar_back">뒤로가기</string>
+    <string name="top_app_bar_logo">Picke 로고</string>
+
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
     <string name="my_charge_free">무료 충전</string>

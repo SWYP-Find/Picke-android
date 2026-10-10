@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -224,14 +225,14 @@ fun VoteScreen(
                         backIconColor = Color.White,
                         backgroundColor = Color.Transparent,
                         actions = {
-                            Icon(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable { showShareDialog = true },
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = "공유",
-                                tint = Color.White
-                            )
+                            IconButton(onClick = { showShareDialog = true }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_share),
+                                    contentDescription = "공유",
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.White
+                                )
+                            }
                         }
                     )
                 }

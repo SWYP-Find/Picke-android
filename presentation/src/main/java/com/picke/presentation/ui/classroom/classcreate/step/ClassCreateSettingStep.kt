@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +25,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassFormField
 import com.picke.presentation.ui.classroom.component.ClassTextField
+import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.CustomToggle
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -33,7 +33,6 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 private object ClassCreateSettingStepDimens {
     val deadlineToggleWidth = 40.dp
@@ -115,10 +114,7 @@ private fun ClassDeadlineField(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
-    val deadlineFormat = stringResource(R.string.class_setting_deadline_format)
-    val deadlineText = remember(deadline, deadlineFormat) {
-        deadline?.format(DateTimeFormatter.ofPattern(deadlineFormat))
-    }
+    val deadlineText = rememberClassDeadlineText(deadline)
 
     Box(
         modifier = modifier
@@ -147,7 +143,7 @@ private fun ClassDeadlineField(
             ),
         contentAlignment = Alignment.CenterStart
     ) {
-        if (isEnabled && deadlineText != null) {
+        if (isEnabled && deadline != null) {
             Text(
                 text = deadlineText,
                 color = PickeTheme.colors.textDefault,

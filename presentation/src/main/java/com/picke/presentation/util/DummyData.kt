@@ -23,6 +23,7 @@ import com.picke.presentation.ui.vote.model.BattleDetailUiModel
 import com.picke.presentation.ui.vote.model.BattleInfoUiModel
 import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.ui.vote.model.BattleTagUiModel
+import java.time.LocalDateTime
 
 object DummyData {
 
@@ -645,6 +646,10 @@ object DummyData {
             )
         )
     )
+
+    const val dummyClassName = "1학년 3반 사회 토론"
+    const val dummyClassCode = "PK7M2Q"
+    val dummyClassDeadline: LocalDateTime = LocalDateTime.of(2026, 9, 23, 18, 0)
 
     val dummyClassBattles = listOf(
         ClassBattleUiModel(

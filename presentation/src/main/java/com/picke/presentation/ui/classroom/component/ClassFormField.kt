@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.classroom.classcreate.component
+package com.picke.presentation.ui.classroom.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

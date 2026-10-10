@@ -179,8 +179,19 @@
     <string name="class_setting_operator_join_description">운영자도 배틀에 참여해요</string>
     <string name="class_setting_create">클래스 만들기</string>
 
+    <!-- 클래스 - 공유 -->
+    <string name="class_share_title">클래스 공유하기</string>
+    <string name="class_share_headline">클래스가 준비됐어요</string>
+    <string name="class_share_description">참여 코드를 멤버들에게 공유해주세요</string>
+    <string name="class_share_deadline">참여 마감・%1$s</string>
+    <string name="class_share_code_action">코드 공유하기</string>
+    <string name="class_share_go_to_class">클래스로 이동하기</string>
+    <string name="class_share_copy_code">참여 코드 복사</string>
+    <string name="class_share_code_copied">참여 코드를 복사했어요</string>
+
     <!-- 클래스 - 참여 -->
     <string name="class_join_action">클래스 참여하기</string>
+    <string name="class_join_code_label">참여 코드</string>
 
     <!-- 클래스 - 내 클래스 -->
     <string name="my_class_title">내 클래스</string>

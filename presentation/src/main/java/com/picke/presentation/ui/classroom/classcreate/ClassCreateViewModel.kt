@@ -86,6 +86,6 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
 
     private fun createClass() {
         // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동
-        sendEvent(ClassCreateUiEvent.NavigateToShare(0L))
+        sendEvent(ClassCreateUiEvent.NavigateToShare(1L))
     }
 }

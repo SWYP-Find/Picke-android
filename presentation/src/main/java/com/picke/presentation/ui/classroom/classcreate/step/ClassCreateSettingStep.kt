@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classcreate.component.ClassFormField
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
+import com.picke.presentation.ui.classroom.component.ClassFormField
 import com.picke.presentation.ui.classroom.component.ClassTextField
 import com.picke.presentation.ui.component.CustomToggle
 import com.picke.presentation.ui.theme.PickeTheme

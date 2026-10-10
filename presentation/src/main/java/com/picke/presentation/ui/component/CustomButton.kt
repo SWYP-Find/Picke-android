@@ -27,15 +27,20 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     backgroundColor: Color,
     textColor: Color,
-    iconResId: Int? = null
+    iconResId: Int? = null,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp),
+        enabled = enabled,
         shape = RoundedCornerShape(2.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            disabledContainerColor = backgroundColor
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

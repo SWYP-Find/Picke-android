@@ -3,6 +3,8 @@ package com.picke.presentation.ui.classroom
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.picke.presentation.AppRoute
+import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.main.BottomNavItem
 
 fun NavGraphBuilder.classGraph(navController: NavController) {
@@ -11,8 +13,15 @@ fun NavGraphBuilder.classGraph(navController: NavController) {
             onBackClick = { navController.popBackStack() },
             onNavigateToJoin = { },
             onNavigateToMyClass = { },
-            onNavigateToCreate = { },
+            onNavigateToCreate = { navController.navigate(AppRoute.ClassCreate.route) },
             onNavigateToTicket = { }
+        )
+    }
+
+    composable(AppRoute.ClassCreate.route) {
+        ClassCreateScreen(
+            onBackClick = { navController.popBackStack() },
+            onNavigateToShare = { }
         )
     }
 }

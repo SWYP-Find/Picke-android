@@ -174,6 +174,7 @@ object AnalyticsScreen {
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
     const val CLASS = "class"
+    const val CLASS_CREATE = "class_create"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -194,6 +195,7 @@ object AnalyticsScreen {
         AppRoute.Withdraw.route -> WITHDRAW
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         BottomNavItem.Class.route -> CLASS
+        AppRoute.ClassCreate.route -> CLASS_CREATE
         else -> null
     }
 }

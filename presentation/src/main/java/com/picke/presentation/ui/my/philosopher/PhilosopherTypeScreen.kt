@@ -27,7 +27,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,6 +66,7 @@ import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -158,14 +158,12 @@ fun PhilosopherTypeScreen(
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
                         if (recapBoard != null) {
-                            IconButton(onClick = { showShareDialog = true }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_share),
-                                    contentDescription = "공유",
-                                    tint = PickeTheme.colors.textDefault,
-                                    modifier = modifier.size(16.dp)
-                                )
-                            }
+                            CustomTopAppBarAction(
+                                iconRes = R.drawable.ic_share,
+                                contentDescription = stringResource(R.string.top_app_bar_share),
+                                onClick = { showShareDialog = true },
+                                iconSize = 16.dp
+                            )
                         }
                     }
                 )

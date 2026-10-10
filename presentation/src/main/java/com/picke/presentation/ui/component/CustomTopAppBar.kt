@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.size
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
@@ -91,6 +93,25 @@ fun CustomTopAppBar(
 }
 
 @Composable
+fun CustomTopAppBarAction(
+    @DrawableRes iconRes: Int,
+    contentDescription: String?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = ComponentNumberTokens.iconLg,
+    tint: Color = PickeTheme.colors.textDefault
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier.size(iconSize),
+            tint = tint
+        )
+    }
+}
+
+@Composable
 private fun CustomTopAppBarTitle(
     title: String,
     color: Color,
@@ -131,13 +152,11 @@ private fun CustomTopAppBarPreview() {
             onBackClick = {},
             backgroundColor = PickeTheme.colors.backgroundBeige,
             actions = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_more),
-                        contentDescription = null,
-                        modifier = Modifier.size(ComponentNumberTokens.iconLg)
-                    )
-                }
+                CustomTopAppBarAction(
+                    iconRes = R.drawable.ic_more,
+                    contentDescription = null,
+                    onClick = {}
+                )
             }
         )
     }

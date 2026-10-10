@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,6 +56,7 @@ import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomSingleActionDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
@@ -225,14 +225,13 @@ fun VoteScreen(
                         backIconColor = Color.White,
                         backgroundColor = Color.Transparent,
                         actions = {
-                            IconButton(onClick = { showShareDialog = true }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_share),
-                                    contentDescription = "공유",
-                                    modifier = Modifier.size(20.dp),
-                                    tint = Color.White
-                                )
-                            }
+                            CustomTopAppBarAction(
+                                iconRes = R.drawable.ic_share,
+                                contentDescription = stringResource(R.string.top_app_bar_share),
+                                onClick = { showShareDialog = true },
+                                iconSize = 20.dp,
+                                tint = Color.White
+                            )
                         }
                     )
                 }

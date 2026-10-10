@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +23,7 @@ import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.recommend.component.RecommendItemCard
 import com.picke.presentation.ui.recommend.component.RecommendListSkeleton
 import com.picke.presentation.ui.recommend.model.RecommendUiState
@@ -64,13 +63,12 @@ fun RecommendScreen(
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.surfaceBeigeDefault,
                     actions = {
-                        IconButton(onClick = onCloseClick) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_x),
-                                contentDescription = "닫기",
-                                tint = PickeTheme.colors.textDefault
-                            )
-                        }
+                        CustomTopAppBarAction(
+                            iconRes = R.drawable.ic_x,
+                            contentDescription = stringResource(R.string.top_app_bar_close),
+                            onClick = onCloseClick,
+                            iconSize = 14.dp
+                        )
                     }
                 )
             }

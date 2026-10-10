@@ -11,6 +11,9 @@
     <!-- 상단 바 -->
     <string name="top_app_bar_back">뒤로가기</string>
     <string name="top_app_bar_logo">Picke 로고</string>
+    <string name="top_app_bar_share">공유</string>
+    <string name="top_app_bar_close">닫기</string>
+    <string name="top_app_bar_next">다음</string>
 
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>

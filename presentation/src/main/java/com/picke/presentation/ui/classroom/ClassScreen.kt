@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -187,9 +186,9 @@ private fun ClassMenuSection(
             CustomButton(
                 text = stringResource(R.string.class_create_title),
                 onClick = onCreateClick,
-                modifier = Modifier.height(ComponentNumberTokens.buttonPrimaryLargeHeight),
                 backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-                textColor = PickeTheme.colors.buttonPrimaryTextDefault
+                textColor = PickeTheme.colors.buttonPrimaryTextDefault,
+                minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
             )
             Text(
                 text = stringResource(R.string.class_ticket_register),

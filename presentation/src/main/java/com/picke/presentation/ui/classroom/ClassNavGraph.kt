@@ -17,7 +17,7 @@ fun NavGraphBuilder.classGraph(
     navController: NavController,
     onTabClick: (BottomNavItem) -> Unit
 ) {
-    val classIdArguments = listOf(navArgument("classId") { type = NavType.LongType })
+    val classIdArguments = listOf(navArgument(AppRoute.ARG_CLASS_ID) { type = NavType.LongType })
 
     composable(BottomNavItem.Class.route) {
         ClassScreen(

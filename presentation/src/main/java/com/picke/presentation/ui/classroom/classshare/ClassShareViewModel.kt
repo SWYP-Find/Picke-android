@@ -3,6 +3,7 @@ package com.picke.presentation.ui.classroom.classshare
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareMutation
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
@@ -25,7 +26,7 @@ class ClassShareViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        ClassShareUiState(classId = savedStateHandle.get<Long>(CLASS_ID_KEY) ?: 0L)
+        ClassShareUiState(classId = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID) ?: 0L)
     )
     val uiState: StateFlow<ClassShareUiState> = _uiState.asStateFlow()
 
@@ -61,9 +62,5 @@ class ClassShareViewModel @Inject constructor(
             battle = DummyData.dummyClassBattles.first()
         )
         _uiState.update { reduce(it, mutation) }
-    }
-
-    companion object {
-        private const val CLASS_ID_KEY = "classId"
     }
 }

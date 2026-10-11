@@ -68,7 +68,7 @@ sealed class AppRoute(val route: String){
     object ClassCreate : AppRoute("class_create_screen")
     object ClassJoin : AppRoute("class_join_screen")
     object MyClass : AppRoute("my_class_screen")
-    object ClassShare : AppRoute("class_share_screen/{classId}") {
+    object ClassShare : AppRoute("class_share_screen/{$ARG_CLASS_ID}") {
         fun createRoute(classId: Long) = "class_share_screen/$classId"
     }
 
@@ -76,4 +76,7 @@ sealed class AppRoute(val route: String){
         fun createRoute(battleId: String) = "tab_battle?battleId=$battleId"
     }
 
+    companion object {
+        const val ARG_CLASS_ID = "classId"
+    }
 }

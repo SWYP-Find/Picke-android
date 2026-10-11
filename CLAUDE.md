@@ -60,8 +60,10 @@ presentation/src/main/java/com/picke/presentation/
     └── <feature>/
         ├── XxxScreen.kt          # XxxScreen(stateful) + XxxContent(stateless) + private XxxSection
         ├── XxxViewModel.kt
+        ├── XxxReducer.kt         # MVI 화면의 reduce
         ├── component/          # Section 안에서 쓰는 화면 전용 컴포넌트, XxxSkeleton
-        └── model/                # XxxUiState, XxxUiEvent, XxxUiModel
+        ├── step/                 # 한 화면 안의 단계 UI (단계가 있는 화면만)
+        └── model/                # XxxUiState, XxxUiModel, XxxTypes, XxxUiAction, XxxUiEvent, XxxMutation
 
 app/src/main/java/com/picke/app/
 ├── PickeApplication.kt
@@ -134,18 +136,116 @@ class HomeViewModel @Inject constructor(
   - 로딩은 `isLoading: Boolean` 같은 필드로 표현합니다. UiState를 sealed(Loading/Success/Error)로 만들지 않습니다.
   - 에러 메시지는 UiState에 두지 않고 `XxxUiEvent`로 전달합니다.
   - 리스트 필드 기본값은 `emptyList()`.
-- `XxxUiEvent`: 1회성 사이드이펙트(토스트, 네비게이션 등). `sealed class`로 정의합니다.
-  새 이벤트 클래스 이름은 `XxxUiEvent`로 맞춥니다 (기존 `MakeBattleEvent`, `DeepLinkEvent`는 그대로 둠)
+- `XxxUiEvent`: 1회성 사이드이펙트(토스트, 네비게이션 등). 새로 만드는 이벤트는 `sealed interface`로 정의합니다
+  (기존 `sealed class` 이벤트는 그대로 두고 손대는 김에 바꿈). 새 이벤트 클래스 이름은 `XxxUiEvent`로 맞춥니다
+  (기존 `MakeBattleEvent`, `DeepLinkEvent`는 그대로 둠)
   - 화면 하나에서 쓰는 이벤트: `private val _uiEvent = Channel<XxxUiEvent>(Channel.BUFFERED)` +
     `val uiEvent: Flow<XxxUiEvent> = _uiEvent.receiveAsFlow()` (수집자가 없을 때 이벤트 유실 방지)
   - 로그아웃처럼 여러 곳에 동시에 알려야 하는 앱 전역 이벤트만 `MutableSharedFlow` + `SharedFlow`
   - 기존 `MutableSharedFlow` UiEvent는 그대로 두고, 손대는 김에 바꿉니다.
-- ViewModel 공개 함수는 화면에서 직접 호출 (`onAction()` 단일 디스패처로 억지로 합치지 않음 — 지금 방식 유지)
-- 함수 이름: 데이터 로드는 `fetchXxx()`, 사용자 액션은 동사형(`toggleLike()`, `selectOption()`, `submitComment()`).
-  `onXxxClick` 형태는 Composable 콜백 파라미터 이름에만 씁니다.
+- 함수 이름: 데이터 로드는 `fetchXxx()`, 상태를 바꾸는 내부 함수는 동사형(`toggleLike()`, `selectOption()`,
+  `submitComment()`). `onXxxClick` 형태는 Composable 콜백 파라미터 이름에만 씁니다.
+- ViewModel 멤버는 이 순서로 선언합니다. 없는 단계는 건너뜁니다.
+  1. `_uiState` / `uiState`
+  2. `_uiEvent` / `uiEvent`
+  3. `init`
+  4. 공개 함수 (MVI 화면은 `onAction`)
+  5. `handleSideEffect`
+  6. `sendEvent`
+  7. `fetchXxx()` (불러오기)
+  8. 나머지 private 함수 (`createClass()`, `deleteClass()` 등, `handleSideEffect`에서 부르는 순서)
+  9. `companion object`
+
+### Presentation: MVI (새 기능·화면부터, `ui/classroom` 포함)
+
+새로 만드는 기능·화면은 사용자 동작을 `XxxUiAction`으로 정의하고 ViewModel의 `onAction()` 하나로 받습니다.
+기존 화면(공개 함수를 직접 호출하는 방식)은 그대로 두고, 일괄로 바꾸지 않습니다.
+
+```kotlin
+// model/ClassShareUiAction.kt, model/ClassShareUiEvent.kt
+sealed interface ClassShareUiAction {
+    data object BackClick : ClassShareUiAction
+    data object ShareCodeClick : ClassShareUiAction
+}
+sealed interface ClassShareUiEvent {
+    data object NavigateBack : ClassShareUiEvent
+    data class ShareCode(val code: String) : ClassShareUiEvent
+}
+
+// ClassShareViewModel.kt
+fun onAction(action: ClassShareUiAction) {
+    when (action) {
+        ClassShareUiAction.BackClick -> sendEvent(ClassShareUiEvent.NavigateBack)
+        ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(_uiState.value.code))
+    }
+}
+```
+
+- `XxxUiAction`·`XxxUiEvent`는 `model/`에 파일을 따로 두고 `sealed interface`로 정의합니다. 상태가 없으면 `data object`,
+  값이 있으면 `data class`. `when`에서 `else`를 쓰지 않아 새 항목을 빠뜨리면 컴파일 오류가 나게 합니다.
+- 이름 짓기
+  - Action은 **사용자가 한 일**을 `대상 + 동작`으로 씁니다: `BackClick`, `NextClick`, `FilterSelect(filter)`,
+    `CodeChange(code)`, `DeadlineToggle(isEnabled)`, `DeleteConfirm`, `NameSheetDismiss`.
+    Composable 콜백 이름에서 `on`을 뺀 형태와 맞춥니다 (`onBackClick` ↔ `BackClick`).
+  - Event는 **화면이 해야 할 일**을 명령형으로 씁니다: `NavigateBack`, `NavigateToXxx(id)`, `ShowToast(...)`, `ShareCode(code)`.
+- ViewModel
+  - 공개 진입점은 `onAction(action)` 하나이고, 실제 처리 함수는 `private`입니다.
+  - 화면 진입 시 데이터 로드는 `init`에서 `fetchXxx()`로 하고 Action으로 만들지 않습니다.
+    다시 불러오기처럼 사용자가 일으키는 로드만 Action으로 만듭니다 (예: `RegenerateClick`).
+  - 뒤로가기·다른 화면 이동처럼 상태가 바뀌지 않는 동작도 Action으로 받아 `XxxUiEvent.NavigateXxx`로 내보냅니다.
+- Screen은 `uiEvent`를 수집해 네비게이션 콜백을 호출하고, Content에 `onAction = viewModel::onAction`만 넘깁니다.
+  `BackHandler`도 `viewModel.onAction(XxxUiAction.BackClick)`을 보냅니다.
+- Content는 `XxxContent(uiState, onAction, modifier)` 형태이고, 바텀시트·다이얼로그도 Content 안에서 `uiState`로 그립니다.
+  Section·Step·Component는 지금처럼 구체적인 콜백(`onClick`, `onValueChange`)을 받고, Content에서 Action으로 연결합니다
+  (재사용 컴포넌트가 특정 화면의 Action에 묶이지 않게).
+- 상태 변경은 순수 함수 `reduce`로 모읍니다 (현재 `ui/classroom`의 모든 화면에 적용).
+  - `XxxReducer.kt`(Screen과 같은 패키지)에 순수 함수 `internal fun reduce(state, action): XxxUiState`를 둡니다.
+    `state.copy(...)`만 돌려주고, 이벤트 전송·불러오기·`launch`는 넣지 않습니다.
+  - 상태만 보고 계산되는 값(파생 상태, 예: `nextStep`, `previousStep`, `isNextEnabled`)은 Reducer·ViewModel이 아니라
+    `XxxUiState`의 계산 프로퍼티로 둡니다. 화면이 쓰지 않는 값은 `internal`, UiState 안에서만 쓰면 `private`.
+  - 불러오기 결과처럼 화면이 보내지 않는 상태 변경은 `model/XxxMutation.kt`의 `internal sealed interface`로 정의하고
+    `internal fun reduce(state, mutation): XxxUiState`로 반영합니다 (UI가 결과 액션을 직접 보낼 수 없게).
+    이름은 불러오는 함수에 맞춰 `fetchXxx()` → `XxxLoaded`로 짓습니다 (`fetchClassDetail()` → `ClassDetailLoaded`).
+  - 부수 효과(이벤트 전송·불러오기)는 ViewModel의 `private fun handleSideEffect(state, action)`에서 처리합니다.
+    부수 효과가 없는 Action은 `XxxUiAction` 안의 `sealed interface StateOnly : XxxUiAction`을 구현하고
+    `is XxxUiAction.StateOnly -> Unit` 한 줄로 처리합니다.
+  - 반대로 상태는 바꾸지 않고 부수 효과만 있는 Action(화면 이동 등)은 `sealed interface SideEffectOnly : XxxUiAction`을 구현하고
+    `reduce(state, action)`에서 `is XxxUiAction.SideEffectOnly -> state` 한 줄로 처리합니다.
+  - 상태도 바꾸고 부수 효과도 있는 Action(시트 닫고 이동, 다이얼로그 닫고 삭제 요청 등)만 `XxxUiAction`을 바로 구현해
+    `reduce`·`handleSideEffect` 양쪽에 나열합니다. 새 Action은 셋 중 하나를 골라야 컴파일됩니다.
+
+    | 선언 | `reduce` | `handleSideEffect` |
+    |---|---|---|
+    | `: StateOnly` | 나열 | `is StateOnly -> Unit` 한 줄 |
+    | `: SideEffectOnly` | `is SideEffectOnly -> state` 한 줄 | 나열 |
+    | `: XxxUiAction` | 나열 | 나열 |
+  - 기존 화면의 `-> state`로 나열된 Action은 손대는 김에 `SideEffectOnly`로 옮깁니다.
+  - 서버 요청이 필요한 Action(삭제·나가기·수정 확인 등)은 `StateOnly`로 두지 않습니다.
+    - `reduce(state, action)`에는 시트·다이얼로그 닫기처럼 바로 바뀌는 상태만 둡니다.
+    - 요청은 `handleSideEffect`에서 부르는 private 함수(`deleteClass()` 등)가 하고, `// TODO: API 연동 - …` 주석도 이 함수에 답니다
+      (reducer에 달지 않음).
+    - 요청 결과는 Mutation(`ClassDeleted(classId)` 등)으로 반영합니다. API가 없는 동안은 성공한 것으로 보고 Mutation을 바로 반영합니다.
+  - Action으로 바뀌는 상태가 없는 화면(모든 Action이 화면 이동·공유 같은 부수 효과뿐)은 `reduce(state, action)`과
+    `handleSideEffect`를 두지 않고 `onAction`의 `when`에서 바로 처리합니다 (위 `ClassShareViewModel` 예시 형태).
+    불러오기 결과용 `reduce(state, mutation)`은 그대로 둡니다. 상태를 바꾸는 Action이 생기면 그때 아래 형태로 바꿉니다.
+  - `onAction`은 아래 형태로 씁니다. 부수 효과는 상태가 바뀌기 **전** 상태로 판단합니다.
+    `reduce`·`handleSideEffect`의 `when` 모두 `else`를 쓰지 않습니다.
+    ```kotlin
+    fun onAction(action: XxxUiAction) {
+        val previousState = _uiState.value
+        _uiState.update { reduce(it, action) }
+        handleSideEffect(previousState, action)
+    }
+    ```
 - `Result` 실패 처리 람다 파라미터 이름은 `exception`으로 씁니다 (`.onFailure { exception -> }`).
 - API 실패 시 사용자에게 어떻게 알릴지(Toast / 화면 에러 상태 + 재시도 등)는 화면 성격에 맞게 고릅니다.
-- `fun XxxBoard.toUiModel()` 매퍼는 `model/XxxUiModel.kt` 안에 둡니다 (ViewModel 안에 두지 않음).
+- `model/` 파일 나누기 (새 화면부터, 기존 화면은 손대는 김에)
+  - `XxxUiState.kt`: `XxxUiState` data class만 둡니다.
+  - `XxxUiModel.kt`: UiModel 하나당 파일 하나로 두고, 그 UiModel의 `fun XxxBoard.toUiModel()` 매퍼를 같은 파일에 둡니다
+    (매퍼는 ViewModel 안에 두지 않음, 예: `classcreate/model/ClassMethodGuideUiModel.kt`).
+  - `XxxTypes.kt`: `enum class`처럼 화면에서 쓰는 타입 값을 모읍니다 (예: `classcreate/model/ClassCreateTypes.kt`).
+  - 같은 feature의 여러 화면이 같이 쓰는 UiModel은 `ui/<feature>/model/XxxUiModel.kt`에 둡니다
+    (예: `classroom/model/ClassBattleUiModel.kt`).
 
 ### Presentation: Compose 화면 구조
 
@@ -159,23 +259,81 @@ class HomeViewModel @Inject constructor(
 | Component | `XxxCard`, `XxxItem` 등 | Section 안의 재사용 가능한 UI 조각 | `component/XxxCard.kt` (공용 위치는 아래 참고) |
 | Skeleton | `XxxSkeleton` | 로딩 중 화면 | `component/XxxSkeleton.kt` |
 
-- 한 feature에 화면이 여러 개면 화면별 하위 패키지로 나눕니다. feature 루트에는 진입 화면(탭 화면 등)과 그 화면의
-  `component/`만 두고, 나머지 화면은 `ui/<feature>/<screen>/`에 Screen·ViewModel·`component/`·`model/`을 둡니다.
+- 한 feature에 화면이 여러 개면 화면별 하위 패키지로 나눕니다. 나머지 화면은 `ui/<feature>/<screen>/`에
+  Screen·ViewModel·Reducer·`component/`·`model/`(단계가 있으면 `step/`)을 둡니다.
+  - feature 루트에는 진입 화면(탭 화면 등), feature의 NavGraph, feature 공용 `component/`·`model/`만 둡니다.
+  - 진입 화면 전용 컴포넌트도 따로 패키지를 만들지 않고 루트 `component/`에 둡니다 (예: `ClassShortcutCard`).
 
   ```
   ui/classroom/
   ├── ClassScreen.kt                 # 진입(탭) 화면
-  ├── component/                     # ClassShortcutCard(진입 화면 전용), ClassTextField(feature 내 공용)
-  ├── classcreate/  ClassCreateScreen.kt, ClassCreateViewModel.kt, component/, model/
-  ├── classjoin/    ClassJoinScreen.kt, ClassJoinViewModel.kt, model/
-  └── myclass/      MyClassScreen.kt, MyClassViewModel.kt, component/, model/
+  ├── ClassNavGraph.kt               # classGraph()
+  ├── component/                     # feature 공용 (ClassBattleCard, ClassTextField 등) + 진입 화면 전용 (ClassShortcutCard)
+  ├── model/                         # feature 공용 UiModel (ClassBattleUiModel)
+  ├── classcreate/   Screen, ViewModel, Reducer, component/(deadline/), model/, step/
+  ├── classjoin/     Screen, ViewModel, Reducer, component/, model/, step/
+  ├── classshare/    Screen, ViewModel, Reducer, model/
+  ├── myclass/       Screen, ViewModel, Reducer, component/, model/
+  ├── classdetail/   Screen, ViewModel, Reducer, component/, model/
+  ├── classmember/   Screen, ViewModel, Reducer, component/, model/
+  ├── classbattle/   Screen, ViewModel, Reducer, model/
+  └── classresult/   Screen, ViewModel, Reducer, model/
   ```
+- 독립 화면(하위 패키지 + 자기 route·ViewModel)과 한 화면 안의 단계(`step/`)는 이렇게 구분합니다.
+  - 정의: **하나의 제출(서버 요청)을 만들기 위해 값을 나눠 받는 구간은 한 화면의 단계**, **그 제출과 상관없이 키(id)만으로
+    스스로 열릴 수 있는 화면은 독립 화면**입니다.
+  - 아래 질문 중 하나라도 "예"면 독립 화면입니다.
+    1. `classId` 같은 키만 받으면 필요한 데이터를 스스로 불러와 그릴 수 있는가 (작성 중인 초안 값이 있어야 그릴 수 있으면 단계)
+    2. 다른 화면에서 이 화면으로 바로 들어오는 길이 있는가
+    3. 서버 상태가 바뀐 뒤(생성·참여·제출 완료)에 보여 주는 결과·후속 화면인가
+    4. 뒤로가기가 "이전 입력으로 돌아가 고치기"가 아니라 "이 화면 떠나기"여야 하는가
+  - 예: 클래스 만들기 ①~④는 단계(`classcreate/step/`), 공유는 독립 화면(`classshare/`), 참여의 코드 입력·이름 입력은 같은 참여 요청이라 참여 화면의 단계(`classjoin/step/`)
+- UI를 새로 만들기 전에 같은 역할의 컴포넌트가 있는지 먼저 찾고(`ui/component/`, `ui/<feature>/component/`), 있으면 그대로 쓰거나
+  파라미터를 추가해 씁니다(예: 버튼은 `CustomButton`, 상단 바는 `CustomTopAppBar`, 확인 창은 `component/dialog/`).
+  `Text` + `clickable`처럼 기존 컴포넌트와 같은 역할을 직접 다시 그리지 않습니다. 맞는 컴포넌트가 없을 때만 새로 만듭니다.
 - 컴포넌트 위치: 한 화면만 쓰면 그 화면의 `component/`, 같은 feature의 여러 화면이 쓰면 `ui/<feature>/component/`,
   다른 feature도 쓰면 `ui/component/`.
+  - 별도 파일(`component/`)로 뺄지, Screen·Step 파일 안의 `private` Composable로 둘지는 이렇게 정합니다.
+    - `component/` 파일: 자기 상태·변형이 있어 혼자 Preview할 의미가 있는 UI 조각 (카드, 칩, 탭, 입력 박스, 시트 등.
+      예: `classjoin/component/ClassCodeBox`, `classcreate/component/ClassMethodCard`)
+    - 같은 파일의 `private` Composable: 상태·변형 없이 그 Step·Section의 배치를 나누려고 뺀 조각 (스타일만 정한 제목 한 줄 등.
+      예: `ClassResultScreen`의 `ClassResultBlockTitle`). 따로 Preview를 두지 않습니다.
+    - 선택 파라미터에 따라 모양이 달라지면(버튼 문구가 있을 때만 표시 등) 변형이 있는 것으로 보고 `component/`로 뺍니다
+      (예: `classdetail/component/ClassDetailInfoRow`).
+    - 기존 코드는 손대는 김에 맞춥니다.
+  - 여러 파일로 이루어진 컴포넌트(시트 + 하위 컴포넌트 + state holder 등)는 `component/<기능>/` 하위 패키지로 묶습니다
+    (예: `classcreate/component/deadline/`의 `ClassDeadlineSheet`, `ClassWheelPicker`, `ClassDeadlinePickerState`).
+  - 같은 종류의 독립 컴포넌트가 여러 개면 `component/<종류>/` 하위 패키지로 묶습니다
+    (예: `ui/component/dialog/`의 `CustomConfirmDialog`, `CustomReverseConfirmDialog`, `CustomSingleActionDialog`, `ShareDialog`).
+- 한 화면 안에서 단계(step)가 바뀌는 화면(예: `ClassCreateScreen`)은 단계별 UI를 `step/XxxStep.kt`에 `internal`
+  Composable로 나누고 단계마다 Preview를 둡니다. Screen 파일에는 Scaffold, 공통 헤더·하단 버튼, 단계 전환만 둡니다.
 - 모든 Screen은 Screen/Content를 분리합니다. Preview는 Content부터 아래 단계에 둡니다.
+- 바텀시트처럼 한 컴포넌트 안에서만 쓰는 임시 상태(확인 전까지 화면 UiState에 반영하지 않는 값)가 복잡하면
+  `XxxState` 클래스 + `rememberXxxState()`(state holder)로 분리합니다 (예: `ClassDeadlinePickerState`).
+  상태 값은 `mutableStateOf` + `private set`, 변경은 함수로만 하고, 회전 복원이 필요하면 `Saver`를 둡니다.
+  확인 시점에 결과 값만 콜백으로 넘겨 Action으로 연결합니다.
 - `uiState`는 `collectAsStateWithLifecycle()`로 수집합니다.
+- Composable 본문의 변수는 의존하는 쪽이 아래로 오게 이 순서로 선언합니다. 없는 단계는 건너뜁니다.
+  1. 바깥 상태 수집 (`viewModel.uiState.collectAsStateWithLifecycle()`)
+  2. CompositionLocal (`LocalContext.current`, `LocalClipboard.current`, `LocalDensity.current` 등)
+  3. 리소스 (`stringResource`, `painterResource` 등)
+  4. `remember` 계열 상태·객체 (`rememberCoroutineScope`, `rememberLazyListState`, `remember { mutableStateOf() }`, `rememberXxxState()`)
+  5. 파생 값 (`derivedStateOf`, 위 값으로 계산하는 `val`)
+  6. 오래 도는 effect에서 쓸 최신 값 (`rememberUpdatedState`)
+  7. 부수 효과 (`BackHandler`, `LaunchedEffect`, `DisposableEffect`)
+  8. UI
 - 모든 Composable은 `modifier: Modifier = Modifier`를 첫 번째 선택 파라미터로 받습니다.
+- Composable 파라미터는 Compose API 가이드라인 순서로 선언합니다: **필수 → `modifier` → 선택 → Composable 람다**.
+  - 필수 파라미터(기본값 없음)는 데이터·상태를 먼저, 콜백을 뒤에 두고, 값과 변경 콜백은 붙여 둡니다 (`value`, `onValueChange`).
+  - 선택 파라미터(기본값 있음)는 자주 쓰는 것부터 둡니다.
+  - `content` 같은 Composable 람다는 맨 마지막에 둡니다.
+  - 예: `Button(onClick, modifier, enabled, shape, colors, content)`
+  - 기존 컴포넌트(`CustomButton`, `CustomTopAppBar` 등)는 호출부를 함께 바꿔야 하므로 별도 작업으로 정리합니다.
 - 네비게이션은 기존 문자열 route + `navArgument` 방식(`AppRoute`)을 유지합니다.
+- 클래스(`ui/classroom`) 화면은 `ui/classroom/ClassNavGraph.kt`의 `classGraph()`로 `AppNavigation` 루트에 등록합니다
+  (하단 바의 클래스 탭은 빠른배틀 탭처럼 `rootNavController`로 이동). `MainScreen` 내부에 두면 하단 바·여백이 이동 뒤에
+  바뀌어 화면 전환이 어색하게 보이기 때문입니다. 하단 바가 필요한 화면(내 클래스·상세·멤버·결과)만 `ClassTabScaffold`로
+  감싸고, 나머지는 각 화면이 시스템 바 여백을 직접 처리합니다.
 
 ## 코드 규칙 (필수)
 
@@ -210,6 +368,10 @@ class HomeViewModel @Inject constructor(
 - `domain` 모듈은 `android.*`, `javax.inject`, Hilt에 의존하지 않음 (순수 Kotlin/JVM 유지).
   새 의존성 추가가 필요하면 먼저 물어볼 것.
 - 더미 데이터는 `presentation/util/DummyData.kt` 외에 새로 만들지 않고, 실제 API 경로에 섞지 않습니다.
+  - 백엔드 API가 아직 없는 기능은 ViewModel의 `fetchXxx()` 안에서만 `DummyData`를 읽어 UiState를 채웁니다.
+    API가 생기면 그 함수 본문만 UseCase 호출로 바꾸고 해당 더미를 삭제합니다 (Screen·Content는 수정하지 않아도 되게 둠).
+  - API 연동 때 바뀔 곳(더미 불러오기, 서버 요청 없이 상태만 바꾸는 확인·삭제 동작 등)에는
+    `// TODO: API 연동 - <바뀔 내용>` 주석을 답니다. 연동하면서 주석을 지웁니다.
 - `var`보다 `val` 우선.
 - `let`/`run`/`apply`/`also` 중첩 남용 금지 — 가독성 우선.
 - `@Immutable`/`@Stable` 어노테이션과 immutable collections 라이브러리는 쓰지 않습니다. 불필요한
@@ -217,9 +379,26 @@ class HomeViewModel @Inject constructor(
 - 여백·모서리는 새 코드부터 토큰에 있는 값이면 토큰을 씁니다 (`ui/theme/tokens/`).
   - 간격: `SpacingTokens.s16` (0·2·4·6·8·12·16·20·24·32·40·48·64·80·96)
   - 모서리: `RoundedCornerShape(RadiusTokens.default)` (2dp), 완전히 둥근 모양은 `RadiusTokens.max`
-  - 토큰에 없는 값(아이콘·이미지 크기, 10dp 같은 간격 등)만 `.dp` 리터럴로 씁니다.
+  - 컴포넌트 크기: `ComponentNumberTokens`에 의미가 맞는 값이 있으면 씁니다. 아이콘 `iconXs`·`iconSm`·`iconMd`·`iconLg`
+    (12·16·20·24), 테두리·구분선 두께 `borderWidthRegular` (1), 기본 버튼 높이 `buttonPrimaryLargeHeight` (52),
+    입력칸 높이 `inputTextfieldHeight` (44) 등. 값만 같고 용도가 다르면(예: 높이 44인 칩) 쓰지 않습니다.
+  - 토큰에 없는 값(이미지 크기, 10dp 같은 간격 등)만 `.dp` 리터럴로 씁니다.
+  - 토큰에 없는 `dp`·`sp` 값은 호출부에 바로 쓰지 않고, 그 파일 상단(import 아래)에 `private object XxxDimens`를 두고
+    이름 붙인 `val`로 모아 씁니다 (`ClassScreen.kt`의 `ClassScreenDimens` 참고).
+    - 이름은 용도를 드러내게 짓습니다 (`joinCardImageSize`, `createButtonHeight`, `introTitleLetterSpacing`).
+    - 토큰 값(`SpacingTokens`, `RadiusTokens`)은 object에 옮기지 않고 그대로 씁니다.
+  - `dp`·`sp`가 아닌 파일 전용 상수(개수, 길이 제한, 키 문자열 등)는 `XxxDimens`에 넣지 않고 파일 상단에
+    `private const val`로 둡니다 (예: `ClassCreateConditionStep.kt`의 `CATEGORY_COLUMNS`).
   - 기존 리터럴은 일괄로 바꾸지 않습니다.
+- 글자가 들어가는 컨트롤(입력칸, 칩, 탭 등)은 `height()`로 고정하지 않고 `heightIn(min = ...)` + 위아래 여백으로 둡니다.
+  기본 글꼴에서는 Figma 높이와 같고, 사용자가 시스템 글꼴을 키우면 잘리지 않고 늘어납니다.
+  이미지가 걸쳐 잘리는 카드처럼 크기 자체가 디자인인 영역만 고정 높이를 씁니다.
 - 간격은 `Spacer`와 `Arrangement.spacedBy` 중 편한 쪽을 씁니다.
+- 호출부의 인자는 선언부의 파라미터 순서대로 씁니다. Compose 기본 컴포넌트(`Text`, `Column`, `Icon` 등), `Modifier` 함수
+  (`padding(start, top, end, bottom)` 등), 프로젝트 커스텀 컴포넌트, data class 생성자·`copy()` 모두 해당합니다.
+  - 생략한 인자는 건너뛰고 남은 인자끼리의 순서만 맞춥니다. 예: `Text(text, modifier, color, textAlign, maxLines, overflow, style)`
+  - 마지막 Composable 람다는 trailing lambda로 괄호 밖에 둡니다.
+  - 기존 코드는 손대는 함수 안에서만 맞춥니다.
 - trailing comma를 쓰지 않습니다. 여러 줄 파라미터·인자·리스트의 마지막 항목 뒤에 쉼표를 붙이지 않습니다.
 - 파일 끝에 줄바꿈을 넣지 않습니다. 새로 만들거나 수정하는 파일은 마지막 줄 뒤에 빈 줄 없이 끝냅니다.
   손대지 않는 기존 파일은 일괄로 바꾸지 않습니다.
@@ -257,7 +436,13 @@ class HomeViewModel @Inject constructor(
   - `hiltViewModel()`이나 Hilt EntryPoint(`rememberAnalyticsTracker()` 등)에 의존하는 Composable은
     Preview에서 렌더링되지 않습니다. 상태를 받는 `XxxContent(uiState, 콜백...)`를 분리해서 그걸 Preview하고,
     트래킹 같은 사이드이펙트는 콜백으로 밖으로 뺍니다.
-  - Preview용 샘플 값은 Preview 함수 안에 직접 적습니다 (`DummyData.kt`에 추가하지 않음).
+  - Preview용 샘플 값 중 문자열·숫자 같은 단순 값은 Preview 함수 안에 직접 적습니다.
+  - `XxxUiModel` 같은 data class 예시가 필요하면 `DummyData.kt`의 값을 씁니다 (예: `DummyData.dummyClassBattles`).
+    맞는 값이 없으면 `DummyData.kt`에 추가하고, 일부만 다르면 `.copy(...)`로 바꿔 씁니다. `XxxUiState`는 Preview에서
+    직접 만들되 그 안의 모델은 `DummyData` 값을 넣습니다.
+  - `XxxUiState`에 넣을 값이 `DummyData`의 모델에 이미 있으면 단순 값이어도 그 모델에서 꺼내 씁니다
+    (예: `val classItem = DummyData.dummyMyClasses.first()` 후 `title = classItem.title`). 실행 화면의 더미와 Preview가
+    같은 값을 보여 주게 하려는 것입니다.
 - 주석 처리된 죽은 코드는 남기지 않고 삭제. (예: `HomeRepositoryImpl`의
   `// return Result.success(DummyHomeData...)` 같은 줄 — 발견하면 지울 것)
 - null 안전 처리는 `?:` 로 명시적으로 (기존 `HomeRepositoryImpl` 스타일 유지).
@@ -313,7 +498,9 @@ class HomeViewModel @Inject constructor(
 모든 작업은 커밋 메시지 / PR 설명을 남기고, 원인 분석이 필요했던 문제나 여러 커밋에 걸친 작업은
 **노션 트러블 슈팅 문서**로 남깁니다. 저장소에는 `docs/`를 만들지 않습니다.
 
-- 노션 위치: [Picke](https://app.notion.com/p/3a5520b13f1f8010a563c757023b0692) 페이지의 `트러블 슈팅` 콜아웃 아래
+- 노션 위치: [Picke](https://app.notion.com/p/3a5520b13f1f8010a563c757023b0692) 페이지의 콜아웃 아래에 성격별로 둡니다.
+  - `트러블 슈팅`: 이 프로젝트 코드를 작성·수정하면서 생긴 문제 해결, 리팩토링, 기능 구현 기록
+  - `학습`: 프로젝트 작업과 별개로 Android·Kotlin 개념이나 선택 이유를 정리한 학습용 문서 (예: sealed interface를 쓰는 이유)
 - Notion MCP로 작성합니다. 페이지에 접근할 수 없으면(404) 임의의 다른 위치에 만들지 말고, 노션 연결 권한을 먼저 확인해 달라고 요청합니다.
 - 단순 스타일 수정, 오타, 사소한 버그 픽스는 커밋/PR 설명만 남기고 문서를 만들지 않습니다.
 - 작업을 요청받아 끝낸 직후, 문서화 대상이면 먼저 "노션 문서로 남길까요?" 라고 확인하고 진행합니다
@@ -349,7 +536,7 @@ class HomeViewModel @Inject constructor(
 | 작업 중 **다른 영역**의 문제를 발견해 고쳤다 | 별도 문서 |
 | 커밋 메시지 한 줄로 충분한 수정 (스타일, 누락된 import 등) | 관련 문서의 커밋 표에만 기재 |
 
-- 모든 문서는 `트러블 슈팅` 콜아웃 바로 아래에 둡니다. **문서 안에 하위 페이지를 만들지 않습니다.**
+- 문서는 성격에 맞는 콜아웃(`트러블 슈팅` / `학습`) 바로 아래에 둡니다. **문서 안에 하위 페이지를 만들지 않습니다.**
 - 문서는 관련 코드를 커밋한 뒤에 작성하고, 커밋 해시를 남깁니다.
 
 ### 3. 문서 형식

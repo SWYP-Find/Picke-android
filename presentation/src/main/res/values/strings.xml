@@ -185,6 +185,8 @@
     <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
     <string name="class_setting_deadline_placeholder">마감일</string>
     <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_deadline_full_format">yyyy. MM. dd. EEEE HH:mm</string>
+    <string name="class_deadline_until">%1$s까지</string>
     <string name="class_deadline_sheet_today">오늘</string>
     <string name="class_deadline_sheet_date_format">M월 d일 (E)</string>
     <string name="class_deadline_sheet_confirm">수정하기</string>

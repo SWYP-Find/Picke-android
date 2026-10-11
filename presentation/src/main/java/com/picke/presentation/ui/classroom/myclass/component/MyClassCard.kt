@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassStatusBadge
+import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -48,6 +49,7 @@ fun MyClassCard(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val deadlineText = rememberClassDeadlineText(item.deadline, R.string.class_deadline_full_format)
     val shape = RoundedCornerShape(RadiusTokens.default)
 
     Column(
@@ -111,12 +113,17 @@ fun MyClassCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     MyClassMetaItem(iconResId = R.drawable.ic_class_member, text = stringResource(R.string.my_class_member_count, item.memberCount))
-                    Box(
-                        modifier = Modifier
-                            .size(MyClassCardDimens.metaDotSize)
-                            .background(PickeTheme.colors.textMuted, CircleShape)
-                    )
-                    MyClassMetaItem(iconResId = R.drawable.ic_class_deadline, text = item.deadlineText)
+                    if (item.deadline != null) {
+                        Box(
+                            modifier = Modifier
+                                .size(MyClassCardDimens.metaDotSize)
+                                .background(PickeTheme.colors.textMuted, CircleShape)
+                        )
+                        MyClassMetaItem(
+                            iconResId = R.drawable.ic_class_deadline,
+                            text = stringResource(R.string.class_deadline_until, deadlineText)
+                        )
+                    }
                 }
 
                 Row(

@@ -754,7 +754,7 @@ object DummyData {
             "촉법소년 연령을 낮춰야 할까?",
             true,
             32,
-            "2026. 11. 23. 월요일 20:00까지",
+            LocalDateTime.of(2026, 11, 23, 20, 0),
             isOperator = true
         ),
         MyClassUiModel(
@@ -763,7 +763,7 @@ object DummyData {
             "인간은 본래 선한가?",
             true,
             13,
-            "2026. 10. 11. 일요일 23:59까지",
+            LocalDateTime.of(2026, 10, 11, 23, 59),
             isOperator = false
         ),
         MyClassUiModel(
@@ -772,7 +772,7 @@ object DummyData {
             "무지는 죄인가?",
             false,
             4,
-            "2026. 09. 23. 수요일 18:00까지",
+            LocalDateTime.of(2026, 9, 23, 18, 0),
             isOperator = false
         )
     )

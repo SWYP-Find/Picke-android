@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
+import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.component.ClassTabScaffold
@@ -55,17 +56,38 @@ fun NavGraphBuilder.classGraph(
         ClassShareScreen(
             onBackClick = { navController.popBackStack() },
             onShareCodeClick = { },
-            onGoToClassClick = { }
+            onGoToClassClick = { classId ->
+                navController.navigate(AppRoute.ClassDetail.createRoute(classId)) {
+                    popUpTo(AppRoute.ClassShare.route) { inclusive = true }
+                }
+            }
         )
     }
     composable(AppRoute.MyClass.route) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             MyClassScreen(
                 onBackClick = { navController.popBackStack() },
-                onClassClick = { },
+                onClassClick = { classId ->
+                    navController.navigate(AppRoute.ClassDetail.createRoute(classId))
+                },
                 onShareCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))
                 },
+                modifier = contentModifier
+            )
+        }
+    }
+
+    composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) {
+        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+            ClassDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                onMemberClick = { },
+                onBattleClick = { },
+                onViewCodeClick = { classId ->
+                    navController.navigate(AppRoute.ClassShare.createRoute(classId))
+                },
+                onResultClick = { },
                 modifier = contentModifier
             )
         }

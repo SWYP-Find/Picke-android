@@ -229,6 +229,15 @@
     <string name="my_class_member_count">멤버 %1$d명</string>
     <string name="my_class_view">보기</string>
 
+    <!-- 클래스 - 상세 -->
+    <string name="class_detail_title">클래스 상세</string>
+    <string name="class_detail_member">클래스 멤버</string>
+    <string name="class_detail_member_count">총 %1$d명이 참여하고 있어요</string>
+    <string name="class_detail_this_battle">이번 클래스 배틀</string>
+    <string name="class_detail_view_code">참여 코드 보기</string>
+    <string name="class_detail_view_result">결과 보기</string>
+    <string name="class_detail_edit">수정</string>
+
     <!-- 클래스 - 관리 시트 -->
     <string name="class_manage_title">클래스 관리</string>
     <string name="class_manage_edit">클래스 정보 수정</string>

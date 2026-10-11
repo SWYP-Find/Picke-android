@@ -2,10 +2,11 @@ package com.picke.presentation.ui.classroom.myclass.model
 
 sealed interface MyClassUiAction {
     sealed interface StateOnly : MyClassUiAction
+    sealed interface SideEffectOnly : MyClassUiAction
 
-    data object BackClick : MyClassUiAction
+    data object BackClick : SideEffectOnly
     data class FilterSelect(val filter: MyClassFilter) : StateOnly
-    data class ClassClick(val classId: Long) : MyClassUiAction
+    data class ClassClick(val classId: Long) : SideEffectOnly
 
     data class MoreClick(val classId: Long) : StateOnly
     data object ManageEditClick : MyClassUiAction

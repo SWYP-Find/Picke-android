@@ -6,9 +6,9 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
 
 internal fun reduce(state: MyClassUiState, action: MyClassUiAction): MyClassUiState =
     when (action) {
-        MyClassUiAction.BackClick -> state
+        is MyClassUiAction.SideEffectOnly -> state
+
         is MyClassUiAction.FilterSelect -> state.copy(selectedFilter = action.filter)
-        is MyClassUiAction.ClassClick -> state
 
         is MyClassUiAction.MoreClick -> state.copy(managingClassId = action.classId)
         MyClassUiAction.ManageEditClick -> state.copy(managingClassId = null)

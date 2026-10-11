@@ -7,8 +7,9 @@ import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
 
 internal fun reduce(state: ClassJoinUiState, action: ClassJoinUiAction): ClassJoinUiState =
     when (action) {
+        is ClassJoinUiAction.SideEffectOnly -> state
+
         ClassJoinUiAction.BackClick -> if (state.step == ClassJoinStep.NAME) state.copy(step = ClassJoinStep.CODE) else state
-        ClassJoinUiAction.NextClick -> state
 
         is ClassJoinUiAction.CodeChange -> state.copy(
             code = action.code.toClassCode(),

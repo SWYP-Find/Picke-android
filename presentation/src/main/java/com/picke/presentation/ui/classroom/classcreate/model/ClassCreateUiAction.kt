@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 sealed interface ClassCreateUiAction {
     sealed interface StateOnly : ClassCreateUiAction
+    sealed interface SideEffectOnly : ClassCreateUiAction
 
     data object BackClick : ClassCreateUiAction
     data object NextClick : ClassCreateUiAction
@@ -17,7 +18,7 @@ sealed interface ClassCreateUiAction {
     data class CategorySelect(val category: ClassCategory) : StateOnly
 
     data class BattleSelect(val battleId: Long) : StateOnly
-    data class BattlePreviewClick(val battleId: Long) : StateOnly
+    data class BattlePreviewClick(val battleId: Long) : SideEffectOnly
     data object RegenerateClick : ClassCreateUiAction
 
     data class ClassNameChange(val name: String) : StateOnly

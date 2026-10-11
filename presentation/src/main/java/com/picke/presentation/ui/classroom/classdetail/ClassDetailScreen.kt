@@ -26,9 +26,9 @@ import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfo
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
+import com.picke.presentation.ui.classroom.component.ClassBadge
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
-import com.picke.presentation.ui.classroom.component.ClassStatusBadge
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.CustomButton
@@ -173,11 +173,16 @@ private fun ClassDetailHeaderSection(
     title: String,
     modifier: Modifier = Modifier
 ) {
+    val statusTextRes = if (isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        ClassStatusBadge(isInProgress = isInProgress)
+        ClassBadge(
+            text = stringResource(statusTextRes),
+            isMuted = !isInProgress
+        )
         Text(
             text = title,
             color = PickeTheme.colors.textSubtler,

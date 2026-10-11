@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.component.ClassStatusBadge
+import com.picke.presentation.ui.classroom.component.ClassBadge
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.theme.PickeTheme
@@ -51,6 +51,7 @@ fun MyClassCard(
 ) {
     val deadlineText = rememberClassDeadlineText(item.deadline, R.string.class_deadline_full_format)
     val shape = RoundedCornerShape(RadiusTokens.default)
+    val statusTextRes = if (item.isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
 
     Column(
         modifier = modifier
@@ -70,7 +71,10 @@ fun MyClassCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                ClassStatusBadge(isInProgress = item.isInProgress)
+                ClassBadge(
+                    text = stringResource(statusTextRes),
+                    isMuted = !item.isInProgress
+                )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_more),
                     contentDescription = stringResource(R.string.more),
@@ -101,7 +105,10 @@ fun MyClassCard(
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
-            HorizontalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = PickeTheme.colors.borderBeigeDefault)
+            HorizontalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.borderBeigeDefault
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -112,7 +119,10 @@ fun MyClassCard(
                     horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    MyClassMetaItem(iconResId = R.drawable.ic_class_member, text = stringResource(R.string.my_class_member_count, item.memberCount))
+                    MyClassMetaItem(
+                        iconResId = R.drawable.ic_class_member,
+                        text = stringResource(R.string.my_class_member_count, item.memberCount)
+                    )
                     if (item.deadline != null) {
                         Box(
                             modifier = Modifier

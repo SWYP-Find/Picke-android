@@ -8,27 +8,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-fun ClassStatusBadge(
-    isInProgress: Boolean,
-    modifier: Modifier = Modifier
+fun ClassBadge(
+    text: String,
+    modifier: Modifier = Modifier,
+    isMuted: Boolean = false
 ) {
-    val textRes =
-        if (isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
-    val backgroundColor =
-        if (isInProgress) PickeTheme.colors.badgeFilledBackground else PickeTheme.colors.backgroundSubtler
-    val textColor =
-        if (isInProgress) PickeTheme.colors.badgeFilledText else PickeTheme.colors.textMuted
+    val backgroundColor = if (isMuted) PickeTheme.colors.backgroundSubtler else PickeTheme.colors.badgeFilledBackground
+    val textColor = if (isMuted) PickeTheme.colors.textMuted else PickeTheme.colors.badgeFilledText
 
     Text(
-        text = stringResource(textRes),
+        text = text,
         modifier = modifier
             .background(backgroundColor, RoundedCornerShape(RadiusTokens.default))
             .padding(horizontal = SpacingTokens.s6, vertical = SpacingTokens.s2),
@@ -39,14 +34,16 @@ fun ClassStatusBadge(
 
 @Preview(showBackground = true)
 @Composable
-private fun ClassStatusBadgePreview() {
+private fun ClassBadgePreview() {
     PickeTheme {
         Row(
             modifier = Modifier.padding(SpacingTokens.s16),
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
-            ClassStatusBadge(isInProgress = true)
-            ClassStatusBadge(isInProgress = false)
+            ClassBadge(text = "진행 중")
+            ClassBadge(text = "종료", isMuted = true)
+            ClassBadge(text = "운영자")
+            ClassBadge(text = "나")
         }
     }
 }

@@ -54,9 +54,10 @@ import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomSingleActionDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.ShareDialog
+import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.vote.component.VoteOptionCard
@@ -220,17 +221,15 @@ fun VoteScreen(
                 Box(modifier = Modifier.statusBarsPadding()) {
                     CustomTopAppBar(
                         centerTitle = false,
-                        showBackButton = true,
                         onBackClick = onBackClick,
                         backIconColor = Color.White,
                         backgroundColor = Color.Transparent,
                         actions = {
-                            Icon(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable { showShareDialog = true },
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = "공유",
+                            CustomTopAppBarAction(
+                                iconRes = R.drawable.ic_share,
+                                contentDescription = stringResource(R.string.top_app_bar_share),
+                                onClick = { showShareDialog = true },
+                                iconSize = 20.dp,
                                 tint = Color.White
                             )
                         }
@@ -414,7 +413,6 @@ fun VoteScreen(
 
         if (showShareDialog) {
             ShareDialog(
-                onDismiss = { showShareDialog = false },
                 onKakaoClick = {
                     showShareDialog = false
                     onKakaoShareClick()
@@ -422,9 +420,6 @@ fun VoteScreen(
                 onInstaClick = {
                     showShareDialog = false
                     onInstaShareClick()
-                },
-                onFacebookClick = {
-                    showShareDialog = false
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
@@ -439,7 +434,8 @@ fun VoteScreen(
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                         }
                     )
-                }
+                },
+                onDismiss = { showShareDialog = false }
             )
         }
 
@@ -478,9 +474,8 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
-                    showBackButton = true,
                     onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBeige,
+                    backgroundColor = PickeTheme.colors.backgroundBeige
                 )
             }
         }

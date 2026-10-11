@@ -118,7 +118,6 @@ fun AlarmScreen(
                 title = stringResource(R.string.alarm),
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = onBackClick,
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
@@ -128,7 +127,7 @@ fun AlarmScreen(
                         color = PickeTheme.colors.textSubtler,
                         modifier = Modifier
                             .clickable { onReadAllClick() }
-                            .padding(end = 4.dp, top = 8.dp, bottom = 8.dp)
+                            .padding(end = 12.dp, top = 8.dp, bottom = 8.dp)
                     )
                 }
             )

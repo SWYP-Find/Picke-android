@@ -8,6 +8,22 @@
     <string name="login_with_google">구글로 로그인</string>
     <string name="onboarding_start">시작하기</string>
 
+    <!-- 상단 바 -->
+    <string name="top_app_bar_back">뒤로가기</string>
+    <string name="top_app_bar_logo">Picke 로고</string>
+    <string name="top_app_bar_share">공유</string>
+    <string name="top_app_bar_close">닫기</string>
+    <string name="top_app_bar_next">다음</string>
+
+    <!-- 다이얼로그 -->
+    <string name="dialog_confirm">네, 확인합니다</string>
+    <string name="dialog_dismiss">뒤로가기</string>
+    <string name="share_dialog_title">공유하기</string>
+    <string name="share_dialog_close">닫기</string>
+    <string name="share_dialog_kakao">카카오톡</string>
+    <string name="share_dialog_instagram">인스타그램</string>
+    <string name="share_dialog_copy_link">링크 복사</string>
+
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
     <string name="my_charge_free">무료 충전</string>
@@ -94,4 +110,130 @@
     <string name="terms_sheet_required_privacy">(필수) 개인정보처리방침</string>
     <string name="terms_sheet_view_detail">자세히 보기</string>
     <string name="terms_sheet_agree">동의</string>
+
+    <!-- 클래스 - 탭 -->
+    <string name="class_title">클래스</string>
+    <string name="class_intro_title">함께 생각을 나누는\n클래스를 시작해 보세요</string>
+    <string name="class_intro_description">콘텐츠를 직접 만들고 사람들을 초대하세요.</string>
+    <string name="class_join_code_description">참여 코드 입력</string>
+    <string name="class_my_class_description">참여중인 클래스</string>
+    <string name="class_ticket_register">이용권 등록하기</string>
+
+    <!-- 클래스 - 만들기 -->
+    <string name="class_create_title">새 클래스 만들기</string>
+    <string name="class_create_method_headline">어떤 방식으로\n클래스를 만들까요?</string>
+    <string name="class_create_method_description">준비된 콘텐츠를 쓰거나, 내 주제로 직접 시작할 수 있어요</string>
+    <string name="class_create_method_content_badge">TTS 포함</string>
+    <string name="class_create_method_content_title">Pické 배틀로 클래스 만들기</string>
+    <string name="class_create_method_content_description">기존 배틀 콘텐츠를 골라 클래스를 만들어요</string>
+    <string name="class_create_method_ai_badge">AI 채팅</string>
+    <string name="class_create_method_ai_title">커스텀 배틀로 클래스 만들기</string>
+    <string name="class_create_method_ai_description">원하는 주제로 직접 배틀을 만들어보세요</string>
+    <string name="class_create_set_topic">주제 정하기</string>
+    <string name="class_create_headline">어떤 주제로\n이야기 나눌까요?</string>
+    <string name="class_create_description">관심 있는 주제나 배틀 조건을 선택해 주세요.</string>
+    <string name="class_create_topic_label">찾고 싶은 주제</string>
+    <string name="class_create_topic_placeholder">예) AI, 범죄, 촉법</string>
+    <string name="class_form_required_mark">\u0020*</string>
+    <string name="class_create_level_label">대상 수준</string>
+    <string name="class_create_category_label">카테고리 (최대 3개)</string>
+    <string name="class_create_recommend">조건에 맞는 콘텐츠 보기</string>
+    <string name="class_level_beginner">초급</string>
+    <string name="class_level_intermediate">중급</string>
+    <string name="class_level_advanced">고급</string>
+    <string name="class_category_philosophy">철학</string>
+    <string name="class_category_society">사회</string>
+    <string name="class_category_literature">문학</string>
+    <string name="class_category_science">과학</string>
+    <string name="class_category_art">예술</string>
+    <string name="class_category_history">역사</string>
+    <string name="class_create_selection_title">추천 배틀</string>
+    <string name="class_create_battle_headline">주제에 어울리는\n배틀을 찾았어요</string>
+    <string name="class_create_battle_description">미리 듣고 클래스에 사용할 배틀을 골라보세요</string>
+    <string name="class_create_question_headline">AI가 주제에 어울리는\n질문을 만들었어요</string>
+    <string name="class_create_question_description">모임에서 나눌 질문을 골라 자유롭게 수정해보세요.</string>
+    <string name="class_create_selected_condition">선택한 조건</string>
+    <string name="class_create_edit_condition">조건 수정</string>
+    <string name="class_create_result_count">추천 결과 %1$d개</string>
+    <string name="class_create_regenerate">다시 추천</string>
+    <string name="class_create_select_battle">배틀 선택하기</string>
+    <string name="class_create_select_question">질문 선택하기</string>
+
+    <!-- 클래스 - 만들기 방식 가이드 시트 -->
+    <string name="class_guide_content_title">Pické 배틀 이용 가이드</string>
+    <string name="class_guide_content_headline">준비된 콘텐츠와 오디오로 바로 토론해요</string>
+    <string name="class_guide_content_description">Pické가 준비한 배틀을 선택하면 TTS 오디오로\n서로 다른 의견을 들으며 주제에 대한 관점을 비교해요.</string>
+    <string name="class_guide_content_chat_left_name">칸트</string>
+    <string name="class_guide_content_chat_left_message">인간은 짐승과 달리 스스로 세운 도덕 법칙에 복종할 수 있는 \'이성적 존재\'입니다. 감정이나 본능에 휘둘리는 것은 자유가 아닙니다.</string>
+    <string name="class_guide_content_chat_right_name">니체</string>
+    <string name="class_guide_content_chat_right_message">이성이요? 당신은 그 차가운 이성으로 생동감 넘치는 삶의 본능을 죽이고 있습니다.</string>
+    <string name="class_guide_custom_title">커스텀 배틀 이용 가이드</string>
+    <string name="class_guide_custom_headline">우리만의 주제로 AI와 토론해요</string>
+    <string name="class_guide_custom_description">직접 만든 주제로 반대 입장의 AI 철학자와\n3라운드 대화를 나누며 생각을 확장해요.</string>
+    <string name="class_guide_custom_chat_left_name">플라톤</string>
+    <string name="class_guide_custom_chat_left_message">이건 기만입니다. 하늘 아래 모든 사물은 그에 걸맞은 완벽한 목적과 형상, 즉 \'이데아\'를 가지고 있습니다.</string>
+    <string name="class_guide_custom_chat_right_name">나</string>
+    <string name="class_guide_custom_chat_right_message">플라톤 선생님, 당신은 사물에 \'영혼\'이 미리 정해져 있다고 믿는군요. 하지만 사물은 그저 그곳에 존재할 뿐입니다.</string>
+    <string name="class_guide_confirm">확인했어요</string>
+
+    <!-- 클래스 - 설정 -->
+    <string name="class_setting_title">클래스 설정</string>
+    <string name="class_setting_headline">거의 다 왔어요!\n클래스 정보를 입력해 주세요</string>
+    <string name="class_setting_name_label">클래스 명</string>
+    <string name="class_setting_name_placeholder">ex) 2학년 3반 1학기 토론</string>
+    <string name="class_setting_deadline_label">참여 마감일</string>
+    <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
+    <string name="class_setting_deadline_placeholder">마감일</string>
+    <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_deadline_sheet_today">오늘</string>
+    <string name="class_deadline_sheet_date_format">M월 d일 (E)</string>
+    <string name="class_deadline_sheet_confirm">수정하기</string>
+    <string name="class_setting_selected_battle">선택한 배틀</string>
+    <string name="class_setting_comment_required">댓글 달기 필수</string>
+    <string name="class_setting_comment_required_description">멤버의 생각을 댓글로 확인해요.</string>
+    <string name="class_setting_operator_join">나도 참여하기</string>
+    <string name="class_setting_operator_join_description">운영자도 배틀에 참여해요</string>
+    <string name="class_setting_create">클래스 만들기</string>
+
+    <!-- 클래스 - 공유 -->
+    <string name="class_share_title">클래스 공유하기</string>
+    <string name="class_share_headline">클래스가 준비됐어요</string>
+    <string name="class_share_description">참여 코드를 멤버들에게 공유해주세요</string>
+    <string name="class_share_deadline">참여 마감・%1$s</string>
+    <string name="class_share_code_action">코드 공유하기</string>
+    <string name="class_share_go_to_class">클래스로 이동하기</string>
+    <string name="class_share_copy_code">참여 코드 복사</string>
+    <string name="class_share_code_copied">참여 코드를 복사했어요</string>
+
+    <!-- 클래스 - 참여 -->
+    <string name="class_join_action">클래스 참여하기</string>
+    <string name="class_join_code_label">참여 코드</string>
+
+    <!-- 클래스 - 내 클래스 -->
+    <string name="my_class_title">내 클래스</string>
+    <string name="my_class_filter_all">전체</string>
+    <string name="my_class_status_in_progress">진행 중</string>
+    <string name="my_class_status_ended">종료</string>
+    <string name="my_class_member_count">멤버 %1$d명</string>
+    <string name="my_class_view">보기</string>
+
+    <!-- 클래스 - 관리 시트 -->
+    <string name="class_manage_title">클래스 관리</string>
+    <string name="class_manage_edit">클래스 정보 수정</string>
+    <string name="class_manage_edit_description">클래스명, 기본 정보를 수정해요.</string>
+    <string name="class_manage_share">참여 코드 공유</string>
+    <string name="class_manage_share_description">클래스 참여 코드를 공유해요.</string>
+    <string name="class_manage_delete">클래스 삭제</string>
+    <string name="class_manage_delete_description">삭제 후에는 복구할 수 없어요.</string>
+    <string name="class_manage_leave">클래스 나가기</string>
+    <string name="class_manage_leave_description">나간 후에는 데이터를 복구할 수 없어요.</string>
+    <string name="class_delete_confirm">삭제 후에는 복구할 수 없어요.\n그럼에도 삭제하시겠습니까?</string>
+    <string name="class_delete">삭제하기</string>
+    <string name="class_leave_confirm">클래스에서 나가면 해당 클래스의 활동과 결과를 더 이상 확인할 수 없어요.</string>
+    <string name="class_leave">나가기</string>
+
+    <!-- 클래스 - 배틀 -->
+    <string name="class_battle_duration">%1$d분</string>
+    <string name="class_battle_preview">미리듣기</string>
+    <string name="class_battle_versus">VS</string>
 </resources>

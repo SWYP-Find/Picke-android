@@ -22,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -43,8 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomReverseConfirmDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
 data class PointHistoryUiModel(
@@ -74,20 +74,15 @@ fun PointScreen(
                 title = "포인트 내역",
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
-                    IconButton(
-                        onClick = {
-                            showChargeDialog = true
-                        }) {
-                        Icon(
-                            painterResource(R.drawable.ic_point),
-                            contentDescription = stringResource(R.string.setting),
-                            tint = PickeTheme.colors.primary500
-                        )
-                    }
+                    CustomTopAppBarAction(
+                        iconRes = R.drawable.ic_point,
+                        contentDescription = stringResource(R.string.setting),
+                        onClick = { showChargeDialog = true },
+                        tint = PickeTheme.colors.primary500
+                    )
                 }
             )
         }

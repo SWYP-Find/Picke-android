@@ -34,8 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomSingleActionDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -83,9 +83,8 @@ fun MakeBattleScreen(
                 title = "배틀 만들기",
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
-                backgroundColor = PickeTheme.colors.backgroundBeige,
+                backgroundColor = PickeTheme.colors.backgroundBeige
             )
         },
         bottomBar = {

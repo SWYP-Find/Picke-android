@@ -31,7 +31,6 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,11 +60,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.SortFilterChip
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveInputField
@@ -208,18 +209,14 @@ fun PerspectiveScreenContent(
                     title = uiState.battleTitle.ifBlank { "관점 남기기" },
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = false,
-                    onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
-                        IconButton(onClick = { onNextClick(uiState.battleId) }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_arrow_right),
-                                contentDescription = "null",
-                                tint = PickeTheme.colors.textDefault,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
+                        CustomTopAppBarAction(
+                            iconRes = R.drawable.ic_arrow_right,
+                            contentDescription = stringResource(R.string.top_app_bar_next),
+                            onClick = { onNextClick(uiState.battleId) },
+                            iconSize = 16.dp
+                        )
                     }
                 )
             }

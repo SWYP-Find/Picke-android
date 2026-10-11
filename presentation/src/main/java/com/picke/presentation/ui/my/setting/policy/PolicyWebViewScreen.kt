@@ -47,7 +47,6 @@ fun PolicyWebViewScreen(
                     title = stringResource(titleRes),
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

@@ -24,7 +24,6 @@ fun SettingProfileScreen(
                 title = stringResource(R.string.my_setting_profile),
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.surfaceBeigeDefault
             )

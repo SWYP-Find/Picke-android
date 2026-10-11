@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,12 +36,14 @@ import com.picke.presentation.deeplink.DeepLinkEvent
 import com.picke.presentation.deeplink.DeepLinkHandler
 import com.picke.presentation.ui.alarm.AlarmScreen
 import com.picke.presentation.ui.battleentry.BattleRoutingScreen
+import com.picke.presentation.ui.classroom.classGraph
 import com.picke.presentation.ui.comment.CommentScreen
 import com.picke.presentation.ui.component.NotificationPermissionBottomSheet
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.LoginScreen
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.main.MainScreen
+import com.picke.presentation.ui.main.toTabAction
 import com.picke.presentation.ui.my.makebattle.MakeBattleScreen
 import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
@@ -77,6 +80,11 @@ fun AppNavigation(
 
     var showNotificationSheet by remember { mutableStateOf(false) }
     var showTermsSheet by remember { mutableStateOf(false) }
+    var requestedMainTab by remember { mutableStateOf<BottomNavItem?>(null) }
+
+    val navigateToTab: (BottomNavItem) -> Unit = { item ->
+        rootNavController.navigateToTab(item = item, onMainTabRequest = { requestedMainTab = it })
+    }
 
     LaunchedEffect(showTermsSheet) {
         if (showTermsSheet) analyticsTracker.trackOnboardingStep(OnboardingStep.TERMS_SHOWN)
@@ -211,20 +219,23 @@ fun AppNavigation(
                 )
             }
 
-            composable(
-                route = AppRoute.Main.route,
-                arguments = listOf(navArgument("tab") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                })
-            ) { backStackEntry ->
+            composable(AppRoute.Main.route) {
                 MainScreen(
                     rootNavController = rootNavController,
-                    initialTab = backStackEntry.arguments?.getString("tab"),
+                    requestedTab = requestedMainTab,
+                    onRootTabClick = navigateToTab,
+                    onRequestedTabOpened = { requestedMainTab = null },
                     isNotificationSheetPending = showNotificationSheet
                 )
             }
+
+            classGraph(
+                navController = rootNavController,
+                onTabClick = { item ->
+                    analyticsTracker.trackUiAction(item.toTabAction())
+                    navigateToTab(item)
+                }
+            )
 
             composable(
                 route = AppRoute.BattleRouting.route,
@@ -321,11 +332,7 @@ fun AppNavigation(
             composable(AppRoute.MakeBattle.route) {
                 MakeBattleScreen(
                     onBackClick = { rootNavController.popBackStack() },
-                    onNavigateToExplore = {
-                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) {
-                            popUpTo(0)
-                        }
-                    }
+                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
                 )
             }
 
@@ -359,11 +366,7 @@ fun AppNavigation(
                             popUpTo(AppRoute.PreVote.route) { inclusive = true }
                         }
                     },
-                    onNavigateToExplore = {
-                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) {
-                            popUpTo(0)
-                        }
-                    }
+                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
                 )
             }
 
@@ -400,11 +403,7 @@ fun AppNavigation(
                             popUpTo(AppRoute.Main.route) { inclusive = false }
                         }
                     },
-                    onNavigateToExplore = {
-                        rootNavController.navigate(AppRoute.Main.createRoute(BottomNavItem.Explore.route)) {
-                            popUpTo(0)
-                        }
-                    }
+                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
                 )
             }
 
@@ -568,5 +567,31 @@ fun AppNavigation(
                 markNotificationPermissionAsked()
             }
         )
+    }
+}
+
+private fun NavController.navigateToTab(
+    item: BottomNavItem,
+    onMainTabRequest: (BottomNavItem) -> Unit
+) {
+    when (item) {
+        BottomNavItem.Home, BottomNavItem.Explore, BottomNavItem.My -> {
+            onMainTabRequest(item)
+            if (currentDestination?.route != AppRoute.Main.route && !popBackStack(
+                    AppRoute.Main.route,
+                    inclusive = false
+                )
+            ) {
+                navigate(AppRoute.Main.route) { popUpTo(0) }
+            }
+        }
+
+        BottomNavItem.TodayBattle -> navigate(item.route) { launchSingleTop = true }
+
+        BottomNavItem.Class -> {
+            if (!popBackStack(item.route, inclusive = false)) {
+                navigate(item.route) { launchSingleTop = true }
+            }
+        }
     }
 }

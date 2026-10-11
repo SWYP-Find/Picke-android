@@ -4,6 +4,9 @@ import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
+import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.home.model.ContentUiType
@@ -21,6 +24,7 @@ import com.picke.presentation.ui.vote.model.BattleDetailUiModel
 import com.picke.presentation.ui.vote.model.BattleInfoUiModel
 import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.ui.vote.model.BattleTagUiModel
+import java.time.LocalDateTime
 
 object DummyData {
 
@@ -641,6 +645,135 @@ object DummyData {
                 BattleTagUiModel("val_3", "공정성", "VALUE"),
                 BattleTagUiModel("val_4", "인도주의", "VALUE")
             )
+        )
+    )
+
+    const val dummyClassCode = "PK7M2Q"
+    val dummyClassDeadline: LocalDateTime = LocalDateTime.of(2026, 9, 23, 18, 0)
+
+    val dummyClassBattles = listOf(
+        ClassBattleUiModel(
+            battleId = 101L,
+            tag = "#사회",
+            title = "촉법소년 연령을 낮춰야 할까?",
+            description = "날로 잔혹해지는 청소년 범죄, 당신은 강력한 처벌을 원하십니까, 아니면 기회와 교정을 원하십니까?",
+            durationMinutes = 5,
+            options = listOf(
+                ClassBattleOptionUiModel(
+                    stance = "낮춰야 한다",
+                    subText = "칸트",
+                    imageUrl = null
+                ),
+                ClassBattleOptionUiModel(
+                    stance = "교정이 우선이다",
+                    subText = "벤담",
+                    imageUrl = null
+                )
+            )
+        ),
+        ClassBattleUiModel(
+            battleId = 102L,
+            tag = "#철학",
+            title = "인간은 본래 선한가, 악한가?",
+            description = "인간 본성의 선악과 문명의 역할에 관한 철학적 대결!",
+            durationMinutes = 5,
+            options = listOf(
+                ClassBattleOptionUiModel(
+                    stance = "악하다",
+                    subText = "순자",
+                    imageUrl = null
+                ),
+                ClassBattleOptionUiModel(
+                    stance = "선하다",
+                    subText = "노자",
+                    imageUrl = null
+                )
+            )
+        ),
+        ClassBattleUiModel(
+            battleId = 103L,
+            tag = "#철학",
+            title = "불매운동은 소비자의 권리인가?",
+            description = "기업 불매운동은 사회를 바꾸는 소비자의 권리일까, 도덕적 우월감일까?",
+            durationMinutes = 5,
+            options = listOf(
+                ClassBattleOptionUiModel(
+                    stance = "소비자의 권리",
+                    subText = "마르크스",
+                    imageUrl = null
+                ),
+                ClassBattleOptionUiModel(
+                    stance = "도덕적 우월감",
+                    subText = "니체",
+                    imageUrl = null
+                )
+            )
+        )
+    )
+
+    val dummyClassAiQuestions = listOf(
+        ClassBattleUiModel(
+            battleId = 201L,
+            tag = "#도덕",
+            title = "슬픔을 드러내지 않은 뫼르소를 비난할 수 있을까?",
+            description = "감정을 표현하지 않는 태도를 도덕적으로 판단할 수 있는지 이야기해요.",
+            options = listOf(
+                ClassBattleOptionUiModel(stance = "비난할 수 있다", subText = "사회적 공감도 중요하다"),
+                ClassBattleOptionUiModel(stance = "유지해야 한다", subText = "연령과 교정 가능성 고려")
+            ),
+            isAiQuestion = true
+        ),
+        ClassBattleUiModel(
+            battleId = 202L,
+            tag = "#범죄",
+            title = "재판에서 삶의 태도까지 판단 근거가 되어도 될까?",
+            description = "뫼르소의 범죄와 무관한 태도가 재판에 영향을 주는 것이 정당할까요?",
+            options = listOf(
+                ClassBattleOptionUiModel(stance = "고려해도 된다", subText = "인물의 태도도 판단의 일부다"),
+                ClassBattleOptionUiModel(stance = "범죄만 봐야 한다", subText = "행위와 증거만 판단해야 한다")
+            ),
+            isAiQuestion = true
+        ),
+        ClassBattleUiModel(
+            battleId = 203L,
+            tag = "#철학",
+            title = "삶에 정해진 의미가 없다는 태도는 자유일까?",
+            description = "뫼르소의 삶의 태도를 개인의 자유와 책임이라는 관점에서 생각해봐요.",
+            options = listOf(
+                ClassBattleOptionUiModel(stance = "개인의 자유다", subText = "의미는 스스로 정할 수 있다"),
+                ClassBattleOptionUiModel(stance = "무책임한 태도다", subText = "타인과 사회에 대한 책임이 있다")
+            ),
+            isAiQuestion = true
+        )
+    )
+
+    val dummyMyClasses = listOf(
+        MyClassUiModel(
+            1L,
+            "1학년 3반 사회 토론",
+            "촉법소년 연령을 낮춰야 할까?",
+            true,
+            32,
+            "2026. 11. 23. 월요일 20:00까지",
+            isOperator = true
+        ),
+        MyClassUiModel(
+            2L,
+            "윤리와 사상 토론 클래스",
+            "인간은 본래 선한가?",
+            true,
+            13,
+            "2026. 10. 11. 일요일 23:59까지",
+            isOperator = false
+        ),
+        MyClassUiModel(
+            3L,
+            "주간 독서토론 모임",
+            "무지는 죄인가?",
+            false,
+            4,
+            "2026. 09. 23. 수요일 18:00까지",
+            isOperator = false
         )
     )
 }

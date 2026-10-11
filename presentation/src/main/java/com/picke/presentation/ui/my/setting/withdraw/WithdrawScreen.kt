@@ -38,7 +38,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.picke.presentation.ui.component.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.my.setting.SettingViewModel
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme

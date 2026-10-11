@@ -82,7 +82,6 @@ fun NoticeEventScreen(
                 title = tabs[pagerState.currentPage],
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = {
                     if (selectedItem != null) {
                         selectedItem = null

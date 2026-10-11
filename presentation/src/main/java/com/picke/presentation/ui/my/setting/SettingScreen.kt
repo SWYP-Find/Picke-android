@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -74,7 +74,6 @@ fun SettingScreen(
                     title = stringResource(R.string.setting),
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = { onBackClick() },
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

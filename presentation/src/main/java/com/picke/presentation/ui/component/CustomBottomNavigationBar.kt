@@ -18,43 +18,80 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
+
+private val bottomNavItems = listOf(
+    BottomNavItem.Home,
+    BottomNavItem.Explore,
+    BottomNavItem.TodayBattle,
+    BottomNavItem.Class,
+    BottomNavItem.My
+)
 
 @SuppressLint("RestrictedApi")
 @Composable
 fun CustomBottomNavigationBar(
     mainNavController: NavController,
-    rootNavController: NavController,
+    onRootTabClick: (BottomNavItem) -> Unit,
     onTabClick: (BottomNavItem) -> Unit = {},
     onHomeReselected: () -> Unit = {},
     onExploreReselected: () -> Unit = {}
 ) {
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Explore,
-        BottomNavItem.TodayBattle,
-        BottomNavItem.My
-    )
+    val bottomTabRoutes = bottomNavItems.map { it.route }
+    val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
 
-    val bottomTabRoutes = items.map { it.route }
+    val activeTabRoute = remember(navBackStackEntry) {
+        mainNavController.currentBackStack.value.lastOrNull { entry ->
+            entry.destination.route in bottomTabRoutes
+        }?.destination?.route
+    }
 
-    NavigationBar(
-        containerColor = PickeTheme.colors.surfaceBeigeDefault,
-    ) {
-        val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
+    CustomBottomNavigationBar(
+        selectedRoute = activeTabRoute,
+        onItemClick = { item ->
+            onTabClick(item)
 
-        val activeTabRoute = remember(navBackStackEntry) {
-            mainNavController.currentBackStack.value.lastOrNull { entry ->
-                entry.destination.route in bottomTabRoutes
-            }?.destination?.route
+            when {
+                item == BottomNavItem.TodayBattle || item == BottomNavItem.Class -> onRootTabClick(item)
+
+                activeTabRoute == item.route -> {
+                    if (navBackStackEntry?.destination?.route == item.route) {
+                        when (item.route) {
+                            BottomNavItem.Home.route -> onHomeReselected()
+                            BottomNavItem.Explore.route -> onExploreReselected()
+                        }
+                    }
+                }
+
+                else -> {
+                    mainNavController.navigate(item.route) {
+                        popUpTo(mainNavController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            }
         }
+    )
+}
 
-        items.forEach { item ->
-            val isSelected = activeTabRoute == item.route
-
+@Composable
+fun CustomBottomNavigationBar(
+    selectedRoute: String?,
+    onItemClick: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = PickeTheme.colors.surfaceBeigeDefault
+    ) {
+        bottomNavItems.forEach { item ->
             NavigationBarItem(
+                selected = selectedRoute == item.route,
+                onClick = { onItemClick(item) },
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
@@ -68,42 +105,12 @@ fun CustomBottomNavigationBar(
                         style = PickeTheme.typography.captionLgMedium
                     )
                 },
-
-                selected = isSelected,
-
-                onClick = {
-                    onTabClick(item)
-
-                    if (item.route == BottomNavItem.TodayBattle.route) {
-                        rootNavController.navigate(BottomNavItem.TodayBattle.route)
-                    }else {
-                        if (isSelected) {
-                            when (item.route) {
-                                BottomNavItem.Home.route -> onHomeReselected()
-                                BottomNavItem.Explore.route -> onExploreReselected()
-                            }
-
-                            mainNavController.popBackStack(
-                                route = item.route,
-                                inclusive = false
-                            )
-                        } else {
-                            mainNavController.navigate(item.route) {
-                                popUpTo(mainNavController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    }
-                },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = PickeTheme.colors.textDefault,
                     selectedTextColor = PickeTheme.colors.textDefault,
+                    indicatorColor = Color.Transparent,
                     unselectedIconColor = PickeTheme.colors.textDefault.copy(alpha = 0.4f),
-                    unselectedTextColor = PickeTheme.colors.textDefault.copy(alpha = 0.4f),
-                    indicatorColor = Color.Transparent
+                    unselectedTextColor = PickeTheme.colors.textDefault.copy(alpha = 0.4f)
                 )
             )
         }
@@ -115,8 +122,8 @@ fun CustomBottomNavigationBar(
 fun CustomBottomNavigationBarPreview() {
     PickeTheme {
         CustomBottomNavigationBar(
-            mainNavController = rememberNavController(),
-            rootNavController = rememberNavController()
+            selectedRoute = BottomNavItem.Class.route,
+            onItemClick = {}
         )
     }
 }

@@ -54,7 +54,6 @@ fun DiscussionHistoryScreen(
                 title = stringResource(R.string.my_menu_discussion),
                 centerTitle = true,
                 showLogo = false,
-                showBackButton = true,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.backgroundBeige
             )

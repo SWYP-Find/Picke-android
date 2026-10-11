@@ -4,9 +4,8 @@ sealed class AppRoute(val route: String){
     object Splash : AppRoute("splash_screen")
     object Login : AppRoute("login_screen")
     object Onboarding : AppRoute("onboarding_screen")
-    object Main : AppRoute("main_screen?tab={tab}") {
-        fun createRoute() = "main_screen"
-        fun createRoute(tab: String) = "main_screen?tab=$tab"
+    object Main : AppRoute("main_screen") {
+        fun createRoute() = route
     }
     object Alarm : AppRoute("alarm_screen")
     object Setting : AppRoute("setting_screen")
@@ -65,6 +64,12 @@ sealed class AppRoute(val route: String){
     object Withdraw : AppRoute("withdraw_screen")
     object Point : AppRoute("point_screen")
     object MakeBattle : AppRoute("makebattle_screen")
+
+    object ClassCreate : AppRoute("class_create_screen")
+    object MyClass : AppRoute("my_class_screen")
+    object ClassShare : AppRoute("class_share_screen/{classId}") {
+        fun createRoute(classId: Long) = "class_share_screen/$classId"
+    }
 
     object TodayBattle : AppRoute("tab_battle?battleId={battleId}") {
         fun createRoute(battleId: String) = "tab_battle?battleId=$battleId"

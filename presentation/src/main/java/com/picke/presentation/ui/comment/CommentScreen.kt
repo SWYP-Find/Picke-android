@@ -44,8 +44,8 @@ import com.picke.presentation.ui.comment.component.CommentSkeleton
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
-import com.picke.presentation.ui.component.CustomConfirmDialog
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
@@ -182,7 +182,6 @@ fun CommentScreenContent(
                     title = "댓글",
                     centerTitle = true,
                     showLogo = false,
-                    showBackButton = true,
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

@@ -23,12 +23,10 @@ import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.TrackScreenViews
-import com.picke.presentation.analytics.UiActionName
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.component.CustomBottomNavigationBar
 import com.picke.presentation.ui.explore.ExploreScreen
 import com.picke.presentation.ui.home.HomeScreen
-import com.picke.presentation.ui.my.user.MyScreen
 import com.picke.presentation.ui.my.content.ContentActivityScreen
 import com.picke.presentation.ui.my.discussion.DiscussionHistoryScreen
 import com.picke.presentation.ui.my.makebattle.MakeBattleScreen
@@ -36,18 +34,19 @@ import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
 import com.picke.presentation.ui.my.point.PointScreen
 import com.picke.presentation.ui.my.setting.SettingScreen
+import com.picke.presentation.ui.my.user.MyScreen
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
 fun MainScreen(
-    rootNavController : NavController,
-    initialTab: String? = null,
+    rootNavController: NavController,
+    requestedTab: BottomNavItem?,
+    onRootTabClick: (BottomNavItem) -> Unit,
+    onRequestedTabOpened: () -> Unit,
     isNotificationSheetPending: Boolean = false
-){
+) {
     val mainNavController = rememberNavController()
     val analyticsTracker = rememberAnalyticsTracker()
-
-    val initialTabRoute = initialTab ?: BottomNavItem.Home.route
 
     // 탭 NavHost 내부 화면들의 screen_view 자동 전송
     TrackScreenViews(mainNavController)
@@ -55,41 +54,44 @@ fun MainScreen(
     var homeScrollTrigger by remember { mutableIntStateOf(0) }
     var exploreScrollTrigger by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(requestedTab) {
+        val tab = requestedTab ?: return@LaunchedEffect
+        mainNavController.navigate(tab.route) {
+            popUpTo(mainNavController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+        onRequestedTabOpened()
+    }
+
     Scaffold(
-        containerColor = PickeTheme.colors.backgroundBeige,
         bottomBar = {
             CustomBottomNavigationBar(
                 mainNavController = mainNavController,
-                rootNavController = rootNavController,
-                onTabClick = { item ->
-                    val tabAction = when (item) {
-                        BottomNavItem.Home -> UiActionName.TAB_HOME
-                        BottomNavItem.Explore -> UiActionName.TAB_EXPLORE
-                        BottomNavItem.TodayBattle -> UiActionName.TAB_QUICK_BATTLE
-                        BottomNavItem.My -> UiActionName.TAB_MYPAGE
-                    }
-                    analyticsTracker.trackUiAction(tabAction)
-                },
+                onRootTabClick = onRootTabClick,
+                onTabClick = { item -> analyticsTracker.trackUiAction(item.toTabAction()) },
                 onHomeReselected = { homeScrollTrigger++ },
                 onExploreReselected = { exploreScrollTrigger++ }
             )
-        }
-    ){ innerPadding ->
+        },
+        containerColor = PickeTheme.colors.backgroundBeige
+    ) { innerPadding ->
         NavHost(
             navController = mainNavController,
-            startDestination = initialTabRoute,
-            modifier = Modifier.fillMaxSize()
+            startDestination = BottomNavItem.Home.route,
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
                 .background(PickeTheme.colors.surfaceBeigeDefault),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
-        ){
-            composable(BottomNavItem.Home.route){
+        ) {
+            composable(BottomNavItem.Home.route) {
                 HomeScreen(
-                    scrollToTopTrigger = homeScrollTrigger,
-                    isNotificationSheetPending = isNotificationSheetPending,
                     onNavigateToAlarm = {
                         rootNavController.navigate(AppRoute.Alarm.route)
                     },
@@ -97,12 +99,14 @@ fun MainScreen(
                         rootNavController.navigate(AppRoute.BattleRouting.createRoute(contentId))
                     },
                     onNavigateToTrendingBattle = { },
-                    onNavigateToNewBattle = { },
                     onNavigateToBestBattle = { },
-                    onNavigateToTodayPicke = { }
+                    onNavigateToTodayPicke = { },
+                    onNavigateToNewBattle = { },
+                    scrollToTopTrigger = homeScrollTrigger,
+                    isNotificationSheetPending = isNotificationSheetPending
                 )
             }
-            composable(BottomNavItem.Explore.route){
+            composable(BottomNavItem.Explore.route) {
                 ExploreScreen(
                     scrollToTopTrigger = exploreScrollTrigger,
                     onNavigateToAlarm = {
@@ -117,7 +121,7 @@ fun MainScreen(
                     }
                 )
             }
-            composable(BottomNavItem.My.route){
+            composable(BottomNavItem.My.route) {
                 MyScreen(
                     onNavigateToAlarm = {
                         rootNavController.navigate(AppRoute.Alarm.route)
@@ -143,14 +147,14 @@ fun MainScreen(
                 )
             }
 
-            composable(AppRoute.Point.route){
+            composable(AppRoute.Point.route) {
                 PointScreen(
                     onBackClick = { mainNavController.popBackStack() },
                     onNavigateToMakeBattle = { mainNavController.navigate(AppRoute.MakeBattle.route) }
                 )
             }
 
-            composable(AppRoute.MakeBattle.route){
+            composable(AppRoute.MakeBattle.route) {
                 MakeBattleScreen(
                     onBackClick = { mainNavController.popBackStack() },
                     onNavigateToExplore = {
@@ -173,6 +177,7 @@ fun MainScreen(
                     }
                 )
             }
+
             composable(AppRoute.ContentActivity.route) {
                 ContentActivityScreen(
                     onBackClick = { mainNavController.popBackStack() },
@@ -181,12 +186,16 @@ fun MainScreen(
                     }
                 )
             }
+
             composable(AppRoute.PhilosopherType.route) {
                 PhilosopherTypeScreen(onBackClick = { mainNavController.popBackStack() })
             }
+
             composable(
                 route = AppRoute.NoticeEvent.route,
-                arguments = listOf(navArgument("noticeId") { type = NavType.LongType; defaultValue = -1L })
+                arguments = listOf(navArgument("noticeId") {
+                    type = NavType.LongType; defaultValue = -1L
+                })
             ) { backStackEntry ->
                 val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
                 NoticeEventScreen(
@@ -194,7 +203,8 @@ fun MainScreen(
                     initialNoticeId = noticeId
                 )
             }
-            composable(AppRoute.Setting.route){
+
+            composable(AppRoute.Setting.route) {
                 SettingScreen(
                     onBackClick = { mainNavController.popBackStack() },
                     onNavigateToSettingProfile = { rootNavController.navigate(AppRoute.SettingProfile.route) },
@@ -204,9 +214,7 @@ fun MainScreen(
                     onNavigateToWithdraw = { rootNavController.navigate(AppRoute.Withdraw.route) },
                     onNavigateToLogin = {
                         rootNavController.navigate(AppRoute.Login.route) {
-                            popUpTo(0) {
-                                inclusive = true
-                            }
+                            popUpTo(0) { inclusive = true }
                         }
                     },
                 )

@@ -330,6 +330,10 @@ fun onAction(action: ClassShareUiAction) {
   - 예: `Button(onClick, modifier, enabled, shape, colors, content)`
   - 기존 컴포넌트(`CustomButton`, `CustomTopAppBar` 등)는 호출부를 함께 바꿔야 하므로 별도 작업으로 정리합니다.
 - 네비게이션은 기존 문자열 route + `navArgument` 방식(`AppRoute`)을 유지합니다.
+  - 내비게이션 인자 이름은 `AppRoute`의 `companion object`에 `const val ARG_XXX`로 한 번만 정의하고, route 문자열
+    (`"class_detail_screen/{$ARG_CLASS_ID}"`), `navArgument(AppRoute.ARG_CLASS_ID)`, ViewModel의
+    `savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)`에서 같이 씁니다. 인자 이름 문자열을 화면·ViewModel마다 다시 적지 않습니다.
+  - 기존 인자(`battleId` 등)는 손대는 김에 `ARG_XXX` 상수로 옮깁니다.
 - 클래스(`ui/classroom`) 화면은 `ui/classroom/ClassNavGraph.kt`의 `classGraph()`로 `AppNavigation` 루트에 등록합니다
   (하단 바의 클래스 탭은 빠른배틀 탭처럼 `rootNavController`로 이동). `MainScreen` 내부에 두면 하단 바·여백이 이동 뒤에
   바뀌어 화면 전환이 어색하게 보이기 때문입니다. 하단 바가 필요한 화면(내 클래스·상세·멤버·결과)만 `ClassTabScaffold`로

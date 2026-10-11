@@ -9,6 +9,7 @@ import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
+import com.picke.presentation.ui.classroom.classmember.ClassMemberScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.component.ClassTabScaffold
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
@@ -82,12 +83,23 @@ fun NavGraphBuilder.classGraph(
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassDetailScreen(
                 onBackClick = { navController.popBackStack() },
-                onMemberClick = { },
+                onMemberClick = { classId ->
+                    navController.navigate(AppRoute.ClassMember.createRoute(classId))
+                },
                 onBattleClick = { },
                 onViewCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))
                 },
                 onResultClick = { },
+                modifier = contentModifier
+            )
+        }
+    }
+
+    composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {
+        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+            ClassMemberScreen(
+                onBackClick = { navController.popBackStack() },
                 modifier = contentModifier
             )
         }

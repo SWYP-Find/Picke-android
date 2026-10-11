@@ -4,6 +4,7 @@ import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
+import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
@@ -776,4 +777,15 @@ object DummyData {
             isOperator = false
         )
     )
+
+    val dummyClassMembers = listOf(
+        ClassMemberUiModel(1L, "김선생", null, isOperator = true, isMe = true),
+        ClassMemberUiModel(2L, "공은지", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(3L, "권동현", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(4L, "김민지", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(5L, "천다올", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(6L, "유시영", null, isOperator = false, isMe = false)
+    )
+
+    val dummyParticipantClassMembers = dummyClassMembers.map { member -> member.copy(isMe = member.memberId == 3L) }
 }

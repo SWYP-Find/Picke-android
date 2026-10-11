@@ -220,6 +220,8 @@
     <string name="class_name_sheet_title">이름을 입력해주세요</string>
     <string name="class_name_sheet_description">이 클래스에서만 보이는 이름이에요.\n입장 후에도 수정할 수 있어요.</string>
     <string name="class_name_sheet_enter">입장하기</string>
+    <string name="class_name_sheet_edit">수정하기</string>
+    <string name="class_name_sheet_edit_description">이 클래스에서만 보이는 이름이에요.</string>
 
     <!-- 클래스 - 내 클래스 -->
     <string name="my_class_title">내 클래스</string>
@@ -252,6 +254,14 @@
     <string name="class_delete">삭제하기</string>
     <string name="class_leave_confirm">클래스에서 나가면 해당 클래스의 활동과 결과를 더 이상 확인할 수 없어요.</string>
     <string name="class_leave">나가기</string>
+
+    <!-- 클래스 - 멤버 -->
+    <string name="class_member_search_placeholder">이름을 입력해주세요.</string>
+    <string name="class_member_count">멤버 %1$d</string>
+    <string name="class_member_operator">운영자</string>
+    <string name="class_member_me">나</string>
+    <string name="class_member_remove_confirm">%1$s님을 클래스에서 내보낼까요?\n한 번 내보내면 되돌릴 수 없어요.</string>
+    <string name="class_member_remove">내보내기</string>
 
     <!-- 클래스 - 배틀 -->
     <string name="class_battle_duration">%1$d분</string>

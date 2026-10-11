@@ -179,6 +179,7 @@ object AnalyticsScreen {
     const val MY_CLASS = "my_class"
     const val CLASS_SHARE = "class_share"
     const val CLASS_DETAIL = "class_detail"
+    const val CLASS_MEMBER = "class_member"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -204,6 +205,7 @@ object AnalyticsScreen {
         AppRoute.MyClass.route -> MY_CLASS
         AppRoute.ClassShare.route -> CLASS_SHARE
         AppRoute.ClassDetail.route -> CLASS_DETAIL
+        AppRoute.ClassMember.route -> CLASS_MEMBER
         else -> null
     }
 }

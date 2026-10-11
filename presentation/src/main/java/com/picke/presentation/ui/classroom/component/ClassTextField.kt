@@ -1,19 +1,25 @@
 package com.picke.presentation.ui.classroom.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -36,6 +42,7 @@ fun ClassTextField(
     modifier: Modifier = Modifier,
     placeholder: String = "",
     isError: Boolean = false,
+    @DrawableRes leadingIconRes: Int? = null,
     horizontalPadding: Dp = SpacingTokens.s8,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
@@ -54,23 +61,36 @@ fun ClassTextField(
             .padding(horizontal = horizontalPadding, vertical = SpacingTokens.s8),
         contentAlignment = Alignment.CenterStart
     ) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = textStyle.copy(color = PickeTheme.colors.textDefault),
-            keyboardOptions = keyboardOptions,
-            singleLine = true,
-            cursorBrush = SolidColor(PickeTheme.colors.textDefault)
-        ) { innerTextField ->
-            if (value.isEmpty()) {
-                Text(
-                    text = placeholder,
-                    color = PickeTheme.colors.inputTextfieldTextDefault,
-                    style = textStyle
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (leadingIconRes != null) {
+                Icon(
+                    painter = painterResource(id = leadingIconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(ComponentNumberTokens.iconMd),
+                    tint = PickeTheme.colors.textDefault
                 )
             }
-            innerTextField()
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = textStyle.copy(color = PickeTheme.colors.textDefault),
+                keyboardOptions = keyboardOptions,
+                singleLine = true,
+                cursorBrush = SolidColor(PickeTheme.colors.textDefault)
+            ) { innerTextField ->
+                if (value.isEmpty()) {
+                    Text(
+                        text = placeholder,
+                        color = PickeTheme.colors.inputTextfieldTextDefault,
+                        style = textStyle
+                    )
+                }
+                innerTextField()
+            }
         }
     }
 }

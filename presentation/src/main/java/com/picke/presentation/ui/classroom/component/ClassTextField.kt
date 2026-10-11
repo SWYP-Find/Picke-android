@@ -17,10 +17,15 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object ClassTextFieldDimens {
+    val errorBorderWidth = 2.dp
+}
 
 @Composable
 fun ClassTextField(
@@ -30,21 +35,22 @@ fun ClassTextField(
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
     placeholder: String = "",
+    isError: Boolean = false,
     horizontalPadding: Dp = SpacingTokens.s8,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
+    val width =
+        if (isError) ClassTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
+    val color =
+        if (isError) PickeTheme.colors.borderErrorDefault else PickeTheme.colors.inputTextfieldBorderDefault
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = minHeight)
             .background(PickeTheme.colors.inputTextfieldBackgroundDefault, shape)
-            .border(
-                ComponentNumberTokens.borderWidthRegular,
-                PickeTheme.colors.inputTextfieldBorderDefault,
-                shape
-            )
+            .border(width, color, shape)
             .padding(horizontal = horizontalPadding, vertical = SpacingTokens.s8),
         contentAlignment = Alignment.CenterStart
     ) {
@@ -69,7 +75,7 @@ fun ClassTextField(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "기본", showBackground = true)
 @Composable
 private fun ClassTextFieldPreview() {
     PickeTheme {
@@ -79,6 +85,20 @@ private fun ClassTextFieldPreview() {
             minHeight = ComponentNumberTokens.inputTextfieldHeight,
             textStyle = PickeTheme.typography.bodySmMedium,
             placeholder = "ex) 일상에 있을 법한 논쟁"
+        )
+    }
+}
+
+@Preview(name = "오류", showBackground = true)
+@Composable
+private fun ClassTextFieldErrorPreview() {
+    PickeTheme {
+        ClassTextField(
+            value = "권동현",
+            onValueChange = {},
+            minHeight = ComponentNumberTokens.inputTextfieldHeight,
+            textStyle = PickeTheme.typography.bodySmMedium,
+            isError = true
         )
     }
 }

@@ -206,8 +206,18 @@
     <string name="class_share_code_copied">참여 코드를 복사했어요</string>
 
     <!-- 클래스 - 참여 -->
+    <string name="class_join_title">클래스 참여</string>
     <string name="class_join_action">클래스 참여하기</string>
+    <string name="class_join_headline">공유받은 코드로\n클래스에 참여하세요</string>
+    <string name="class_join_description">전달받은 %1$d자리 코드를 입력해 주세요.</string>
     <string name="class_join_code_label">참여 코드</string>
+    <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
+    <string name="class_join_name_count">%1$d/%2$d</string>
+
+    <!-- 클래스 - 이름 입력 시트 -->
+    <string name="class_name_sheet_title">이름을 입력해주세요</string>
+    <string name="class_name_sheet_description">이 클래스에서만 보이는 이름이에요.\n입장 후에도 수정할 수 있어요.</string>
+    <string name="class_name_sheet_enter">입장하기</string>
 
     <!-- 클래스 - 내 클래스 -->
     <string name="my_class_title">내 클래스</string>

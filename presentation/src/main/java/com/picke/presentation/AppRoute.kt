@@ -66,6 +66,7 @@ sealed class AppRoute(val route: String){
     object MakeBattle : AppRoute("makebattle_screen")
 
     object ClassCreate : AppRoute("class_create_screen")
+    object ClassJoin : AppRoute("class_join_screen")
     object MyClass : AppRoute("my_class_screen")
     object ClassShare : AppRoute("class_share_screen/{classId}") {
         fun createRoute(classId: Long) = "class_share_screen/$classId"

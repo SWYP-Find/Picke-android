@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
+import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.component.ClassTabScaffold
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
@@ -21,7 +22,7 @@ fun NavGraphBuilder.classGraph(
     composable(BottomNavItem.Class.route) {
         ClassScreen(
             onBackClick = { navController.popBackStack() },
-            onNavigateToJoin = { },
+            onNavigateToJoin = { navController.navigate(AppRoute.ClassJoin.route) },
             onNavigateToMyClass = { navController.navigate(AppRoute.MyClass.route) },
             onNavigateToCreate = { navController.navigate(AppRoute.ClassCreate.route) },
             onNavigateToTicket = { }
@@ -34,6 +35,17 @@ fun NavGraphBuilder.classGraph(
             onNavigateToShare = { classId ->
                 navController.navigate(AppRoute.ClassShare.createRoute(classId)) {
                     popUpTo(AppRoute.ClassCreate.route) { inclusive = true }
+                }
+            }
+        )
+    }
+
+    composable(AppRoute.ClassJoin.route) {
+        ClassJoinScreen(
+            onBackClick = { navController.popBackStack() },
+            onNavigateToMyClass = {
+                navController.navigate(AppRoute.MyClass.route) {
+                    popUpTo(AppRoute.ClassJoin.route) { inclusive = true }
                 }
             }
         )

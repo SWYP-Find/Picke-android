@@ -63,7 +63,7 @@ private const val CLIP_LABEL = "class_code"
 fun ClassShareScreen(
     onBackClick: () -> Unit,
     onShareCodeClick: (code: String) -> Unit,
-    onGoToClassClick: (classId: Long) -> Unit,
+    onGoToClassClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassShareViewModel = hiltViewModel()
 ) {
@@ -86,7 +86,7 @@ fun ClassShareScreen(
                     }
                 }
 
-                is ClassShareUiEvent.NavigateToClass -> onGoToClassClick(event.classId)
+                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
             }
         }
     }

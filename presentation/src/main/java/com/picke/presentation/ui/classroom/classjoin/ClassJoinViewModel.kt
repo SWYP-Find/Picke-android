@@ -7,6 +7,7 @@ import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinStep
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiAction
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiEvent
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
+import com.picke.presentation.util.DummyData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +61,7 @@ class ClassJoinViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun enterClass() {
-        // TODO: API 연동 - 이름과 함께 클래스 참여 요청 후 이동, 이름 중복 시 isNameDuplicated 표시
-        sendEvent(ClassJoinUiEvent.NavigateToMyClass)
+        // TODO: API 연동 - 클래스 참여 요청 후 응답 classId로 이동, 이름 중복 시 isNameDuplicated 표시
+        sendEvent(ClassJoinUiEvent.NavigateToClassDetail(DummyData.dummyMyClasses[1].id))
     }
 }

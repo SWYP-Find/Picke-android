@@ -37,7 +37,7 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassJoinScreen(
     onBackClick: () -> Unit,
-    onNavigateToMyClass: () -> Unit,
+    onNavigateToClassDetail: (classId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassJoinViewModel = hiltViewModel()
 ) {
@@ -49,7 +49,7 @@ fun ClassJoinScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassJoinUiEvent.NavigateBack -> onBackClick()
-                ClassJoinUiEvent.NavigateToMyClass -> onNavigateToMyClass()
+                is ClassJoinUiEvent.NavigateToClassDetail -> onNavigateToClassDetail(event.classId)
             }
         }
     }

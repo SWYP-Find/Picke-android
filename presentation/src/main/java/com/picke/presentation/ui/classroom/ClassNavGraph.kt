@@ -45,8 +45,8 @@ fun NavGraphBuilder.classGraph(
     composable(AppRoute.ClassJoin.route) {
         ClassJoinScreen(
             onBackClick = { navController.popBackStack() },
-            onNavigateToMyClass = {
-                navController.navigate(AppRoute.MyClass.route) {
+            onNavigateToClassDetail = { classId ->
+                navController.navigate(AppRoute.ClassDetail.createRoute(classId)) {
                     popUpTo(AppRoute.ClassJoin.route) { inclusive = true }
                 }
             }
@@ -57,8 +57,8 @@ fun NavGraphBuilder.classGraph(
         ClassShareScreen(
             onBackClick = { navController.popBackStack() },
             onShareCodeClick = { },
-            onGoToClassClick = { classId ->
-                navController.navigate(AppRoute.ClassDetail.createRoute(classId)) {
+            onGoToClassClick = {
+                navController.navigate(AppRoute.MyClass.route) {
                     popUpTo(AppRoute.ClassShare.route) { inclusive = true }
                 }
             }

@@ -43,7 +43,7 @@ class ClassShareViewModel @Inject constructor(
             ClassShareUiAction.BackClick -> sendEvent(ClassShareUiEvent.NavigateBack)
             ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(state.code))
             ClassShareUiAction.CopyCodeClick -> sendEvent(ClassShareUiEvent.CopyCode(state.code))
-            ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToClass(state.classId))
+            ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToMyClass)
         }
     }
 

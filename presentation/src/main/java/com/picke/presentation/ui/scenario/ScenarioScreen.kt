@@ -27,9 +27,9 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.AudioPlayerBar
-import com.picke.presentation.ui.scenario.component.ChatBubble
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
+import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -172,7 +172,7 @@ fun ScenarioScreen(
                     Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
                 }
 
-                ChatBubble(
+                ScenarioChatBubble(
                     script = script,
                     isActive = uiState.isPlaying && if (isPastScript) {
                         index == uiState.activePastIndex

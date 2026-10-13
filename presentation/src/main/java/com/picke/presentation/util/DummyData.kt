@@ -722,7 +722,8 @@ object DummyData {
                 ClassBattleOptionUiModel(stance = "비난할 수 있다", subText = "사회적 공감도 중요하다"),
                 ClassBattleOptionUiModel(stance = "유지해야 한다", subText = "연령과 교정 가능성 고려")
             ),
-            isAiQuestion = true
+            isAiQuestion = true,
+            commentCount = 23
         ),
         ClassBattleUiModel(
             battleId = 202L,
@@ -776,6 +777,50 @@ object DummyData {
             LocalDateTime.of(2026, 9, 23, 18, 0),
             isOperator = false
         )
+    )
+
+    val dummyClassAiBattleDetail = BattleDetailUiModel(
+        battleInfo = BattleInfoUiModel(
+            battleId = "201",
+            title = "슬픔을 드러내지 않은 뫼르소를 비난할 수 있을까?",
+            summary = "감정을 표현하지 않는 태도를 도덕적으로 판단할 수 있는지 이야기해요.",
+            thumbnailUrl = "",
+            viewCount = 0,
+            participantsCount = 0,
+            audioDuration = 0,
+            tags = listOf(BattleTagBoard("class_tag_1", "도덕", "CATEGORY")),
+            options = listOf(
+                BattleOptionUiModel(
+                    optionId = "201_1",
+                    title = "비난할 수 있다",
+                    stance = "PRO",
+                    representative = "사회적 공감도 중요하다",
+                    imageUrl = "",
+                    tags = emptyList()
+                ),
+                BattleOptionUiModel(
+                    optionId = "201_2",
+                    title = "유지해야 한다",
+                    stance = "CON",
+                    representative = "연령과 교정 가능성 고려",
+                    imageUrl = "",
+                    tags = emptyList()
+                )
+            )
+        ),
+        description = "감정을 표현하지 않는 태도를 도덕적으로 판단할 수 있는지 이야기해요.",
+        shareUrl = "",
+        userVoteStatus = "",
+        currentStep = "",
+        categoryTags = emptyList(),
+        philosopherTags = emptyList(),
+        valueTags = emptyList()
+    )
+
+    val dummyClassBattleByClassId = mapOf(
+        1L to dummyClassBattles[0],
+        2L to dummyClassAiQuestions[0],
+        3L to dummyClassBattles[2]
     )
 
     val dummyClassMembers = listOf(

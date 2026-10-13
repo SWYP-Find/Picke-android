@@ -180,6 +180,9 @@ object AnalyticsScreen {
     const val CLASS_SHARE = "class_share"
     const val CLASS_DETAIL = "class_detail"
     const val CLASS_MEMBER = "class_member"
+    const val CLASS_VOTE = "class_vote"
+    const val CLASS_SCENARIO = "class_scenario"
+    const val CLASS_COMMENT = "class_comment"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -206,6 +209,9 @@ object AnalyticsScreen {
         AppRoute.ClassShare.route -> CLASS_SHARE
         AppRoute.ClassDetail.route -> CLASS_DETAIL
         AppRoute.ClassMember.route -> CLASS_MEMBER
+        AppRoute.ClassVote.route -> CLASS_VOTE
+        AppRoute.ClassScenario.route -> CLASS_SCENARIO
+        AppRoute.ClassPerspective.route -> CLASS_COMMENT
         else -> null
     }
 }

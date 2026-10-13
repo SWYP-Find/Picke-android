@@ -1,5 +1,7 @@
 package com.picke.presentation
 
+import com.picke.presentation.ui.vote.model.VoteType
+
 sealed class AppRoute(val route: String){
     object Splash : AppRoute("splash_screen")
     object Login : AppRoute("login_screen")
@@ -80,11 +82,25 @@ sealed class AppRoute(val route: String){
         fun createRoute(classId: Long) = "class_member_screen/$classId"
     }
 
+    object ClassVote : AppRoute("class_vote_screen/{$ARG_CLASS_ID}/{$ARG_VOTE_TYPE}") {
+        fun createRoute(classId: Long, voteType: VoteType) = "class_vote_screen/$classId/${voteType.name}"
+    }
+
+    object ClassScenario : AppRoute("class_scenario_screen/{$ARG_CLASS_ID}/{$ARG_BATTLE_ID}") {
+        fun createRoute(classId: Long, battleId: Long) = "class_scenario_screen/$classId/$battleId"
+    }
+
+    object ClassPerspective : AppRoute("class_perspective_screen/{$ARG_CLASS_ID}/{$ARG_BATTLE_ID}") {
+        fun createRoute(classId: Long, battleId: Long) = "class_perspective_screen/$classId/$battleId"
+    }
+
     object TodayBattle : AppRoute("tab_battle?battleId={battleId}") {
         fun createRoute(battleId: String) = "tab_battle?battleId=$battleId"
     }
 
     companion object {
         const val ARG_CLASS_ID = "classId"
+        const val ARG_VOTE_TYPE = "voteType"
+        const val ARG_BATTLE_ID = "battleId"
     }
 }

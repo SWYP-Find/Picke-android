@@ -9,7 +9,6 @@ sealed interface ClassDetailUiAction {
     data object MemberClick : SideEffectOnly
     data object DeadlineEditClick : SideEffectOnly
     data object BattleClick : SideEffectOnly
-    data object ViewCodeClick : SideEffectOnly
     data object ResultClick : SideEffectOnly
 
     data object ManageEditClick : ClassDetailUiAction

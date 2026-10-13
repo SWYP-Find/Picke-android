@@ -13,5 +13,6 @@ data class ClassBattleUiModel(
     val description: String,
     val durationMinutes: Int? = null,
     val options: List<ClassBattleOptionUiModel> = emptyList(),
-    val isAiQuestion: Boolean = false
+    val isAiQuestion: Boolean = false,
+    val commentCount: Int = 0
 )

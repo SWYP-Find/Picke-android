@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classdetail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
@@ -42,21 +43,21 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import java.time.LocalDateTime
 
-private object ClassDetailScreenDimens {
-    val actionButtonMinHeight = 44.dp
-}
-
 @Composable
 fun ClassDetailScreen(
     onBackClick: () -> Unit,
     onMemberClick: (classId: Long) -> Unit,
     onBattleClick: (classId: Long) -> Unit,
-    onViewCodeClick: (classId: Long) -> Unit,
+    onShareCodeClick: (classId: Long) -> Unit,
     onResultClick: (classId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    val deadlinePassedMessage = stringResource(R.string.class_detail_deadline_passed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -64,10 +65,12 @@ fun ClassDetailScreen(
                 ClassDetailUiEvent.NavigateBack -> onBackClick()
                 is ClassDetailUiEvent.NavigateToMember -> onMemberClick(event.classId)
                 is ClassDetailUiEvent.NavigateToBattle -> onBattleClick(event.classId)
-                is ClassDetailUiEvent.NavigateToShare -> onViewCodeClick(event.classId)
+                is ClassDetailUiEvent.NavigateToShare -> onShareCodeClick(event.classId)
                 is ClassDetailUiEvent.NavigateToResult -> onResultClick(event.classId)
                 // TODO: 클래스 정보 수정 화면이 생기면 이동 연결
                 is ClassDetailUiEvent.NavigateToEdit -> Unit
+                ClassDetailUiEvent.ShowDeadlinePassedToast ->
+                    Toast.makeText(context, deadlinePassedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -131,7 +134,7 @@ private fun ClassDetailContent(
             }
 
             ClassDetailActionSection(
-                onViewCodeClick = { onAction(ClassDetailUiAction.ViewCodeClick) },
+                onBattleClick = { onAction(ClassDetailUiAction.BattleClick) },
                 onResultClick = { onAction(ClassDetailUiAction.ResultClick) }
             )
         }
@@ -256,7 +259,7 @@ private fun ClassDetailBattleSection(
 
 @Composable
 private fun ClassDetailActionSection(
-    onViewCodeClick: () -> Unit,
+    onBattleClick: () -> Unit,
     onResultClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -265,18 +268,18 @@ private fun ClassDetailActionSection(
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
     ) {
         CustomButton(
-            text = stringResource(R.string.class_detail_view_code),
-            onClick = onViewCodeClick,
-            backgroundColor = PickeTheme.colors.surfacePrimarySubtle,
-            textColor = PickeTheme.colors.textPrimary,
-            minHeight = ClassDetailScreenDimens.actionButtonMinHeight
+            text = stringResource(R.string.class_detail_join_battle),
+            onClick = onBattleClick,
+            backgroundColor = PickeTheme.colors.buttonSecondaryBackgroundDefault,
+            textColor = PickeTheme.colors.buttonSecondaryTextDefault,
+            minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
         CustomButton(
             text = stringResource(R.string.class_detail_view_result),
             onClick = onResultClick,
             backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
             textColor = PickeTheme.colors.buttonPrimaryTextDefault,
-            minHeight = ClassDetailScreenDimens.actionButtonMinHeight
+            minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }
 }

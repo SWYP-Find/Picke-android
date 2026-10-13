@@ -47,8 +47,7 @@ class ClassDetailViewModel @Inject constructor(
         when (action) {
             ClassDetailUiAction.BackClick -> sendEvent(ClassDetailUiEvent.NavigateBack)
             ClassDetailUiAction.MemberClick -> sendEvent(ClassDetailUiEvent.NavigateToMember(state.classId))
-            ClassDetailUiAction.BattleClick -> sendEvent(ClassDetailUiEvent.NavigateToBattle(state.classId))
-            ClassDetailUiAction.ViewCodeClick -> sendEvent(ClassDetailUiEvent.NavigateToShare(state.classId))
+            ClassDetailUiAction.BattleClick -> startBattle(state)
             ClassDetailUiAction.ResultClick -> sendEvent(ClassDetailUiEvent.NavigateToResult(state.classId))
             ClassDetailUiAction.DeadlineEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
             ClassDetailUiAction.ManageEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
@@ -73,9 +72,18 @@ class ClassDetailViewModel @Inject constructor(
             title = classItem.title,
             memberCount = classItem.memberCount,
             deadline = classItem.deadline,
-            battle = DummyData.dummyClassBattles.first()
+            battle = DummyData.dummyClassBattleByClassId[classItem.id]
         )
         _uiState.update { reduce(it, mutation) }
+    }
+
+    private fun startBattle(state: ClassDetailUiState) {
+        val event = if (state.isInProgress) {
+            ClassDetailUiEvent.NavigateToBattle(state.classId)
+        } else {
+            ClassDetailUiEvent.ShowDeadlinePassedToast
+        }
+        sendEvent(event)
     }
 
     private fun deleteClass() {

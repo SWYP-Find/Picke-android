@@ -3,7 +3,6 @@
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,9 +59,14 @@ import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+import com.picke.presentation.ui.vote.component.VoteCommentCountBadge
 import com.picke.presentation.ui.vote.component.VoteOptionCard
 import com.picke.presentation.ui.vote.component.VoteSkeleton
 import com.picke.presentation.ui.vote.model.BattleDetailUiModel
+import com.picke.presentation.ui.vote.model.VoteClassInfoUiModel
+import com.picke.presentation.ui.vote.model.voteScreenStyle
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiState
 import com.picke.presentation.util.DummyData
@@ -83,9 +87,7 @@ fun VoteRoute(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    BackHandler {
-        onBackClick()
-    }
+    BackHandler { onBackClick() }
 
     if (uiState.isLoading) {
         VoteSkeleton(voteType = voteType, modifier = Modifier.fillMaxSize())
@@ -137,7 +139,8 @@ fun VoteScreen(
     onSubmitVote: (String, () -> Unit) -> Unit,
     onTrackShare: (String) -> Unit,
     onGetShareLink: (Int, (String) -> Unit, (String) -> Unit) -> Unit,
-    onDismissPointDialog: () -> Unit
+    onDismissPointDialog: () -> Unit,
+    classInfo: VoteClassInfoUiModel? = null
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -150,13 +153,11 @@ fun VoteScreen(
     var selectedOptionId by remember { mutableStateOf<String?>(null) }
 
     val isPreVote = voteType == VoteType.PRE
+    val style = voteScreenStyle(voteType = voteType, classInfo = classInfo)
     val battleInfo = battleDetail.battleInfo
 
     val backgroundColor =
         if (selectedOptionId != null) PickeTheme.colors.primary500 else PickeTheme.colors.primary300
-    val bgColor = if (isPreVote) PickeTheme.colors.surfaceBeigeDefault else Color.Black
-    val titleColor = if (isPreVote) PickeTheme.colors.textDefault else PickeTheme.colors.surfaceBeigeDefault
-    val descColor = if (isPreVote) PickeTheme.colors.textSubtle else PickeTheme.colors.gray400
 
     val onKakaoShareClick = {
         isSharing = true
@@ -215,31 +216,41 @@ fun VoteScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = bgColor,
+            containerColor = style.containerColor,
             contentWindowInsets = WindowInsets(0.dp),
             topBar = {
                 Box(modifier = Modifier.statusBarsPadding()) {
                     CustomTopAppBar(
-                        centerTitle = false,
+                        title = style.topBarTitle,
+                        centerTitle = style.topBarTitle != null,
                         onBackClick = onBackClick,
-                        backIconColor = Color.White,
                         backgroundColor = Color.Transparent,
+                        backIconColor = PickeTheme.colors.textInverse,
+                        titleColor = PickeTheme.colors.textInverse,
                         actions = {
-                            CustomTopAppBarAction(
-                                iconRes = R.drawable.ic_share,
-                                contentDescription = stringResource(R.string.top_app_bar_share),
-                                onClick = { showShareDialog = true },
-                                iconSize = 20.dp,
-                                tint = Color.White
-                            )
+                            if (style.isShareVisible) {
+                                CustomTopAppBarAction(
+                                    iconRes = R.drawable.ic_share,
+                                    contentDescription = stringResource(R.string.top_app_bar_share),
+                                    onClick = { showShareDialog = true },
+                                    iconSize = 20.dp,
+                                    tint = PickeTheme.colors.textInverse
+                                )
+                            }
                         }
                     )
                 }
             },
             bottomBar = {
-                Box(modifier = Modifier.navigationBarsPadding()) {
+                Column(
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     CustomButton(
-                        text = if (isPreVote) stringResource(R.string.prevote) else "최종 투표하기",
+                        text = stringResource(style.submitTextRes),
                         onClick = {
                             if (selectedOptionId != null) {
                                 onSubmitVote(selectedOptionId!!) {
@@ -257,10 +268,12 @@ fun VoteScreen(
                                 }
                             }
                         },
-                        modifier = Modifier.padding(20.dp),
                         backgroundColor = backgroundColor,
                         textColor = PickeTheme.colors.surfaceBeigeDefault
                     )
+                    if (style.deadlineText != null) {
+                        VoteDeadlineRow(deadlineText = style.deadlineText)
+                    }
                 }
             }
         ) { innerPadding ->
@@ -268,7 +281,7 @@ fun VoteScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = innerPadding.calculateBottomPadding())
-                    .background(bgColor)
+                    .background(style.containerColor)
                     .drawWithCache {
                         onDrawWithContent {
                             graphicsLayer.record {
@@ -296,7 +309,7 @@ fun VoteScreen(
                                             colors = listOf(
                                                 Color.Black.copy(alpha = 0.3f),
                                                 Color.Transparent,
-                                                bgColor
+                                                style.containerColor
                                             ),
                                             startY = 0f,
                                             endY = size.height
@@ -325,22 +338,31 @@ fun VoteScreen(
                             .padding(bottom = 16.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            battleInfo.tags.forEach { tag ->
-                                Surface(
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    shape = RoundedCornerShape(2.dp)
-                                ) {
-                                    Text(
-                                        text = "#${tag.name}",
-                                        modifier = Modifier.padding(
-                                            horizontal = 8.dp,
-                                            vertical = 2.dp
-                                        ),
-                                        style = PickeTheme.typography.captionLgMedium,
-                                        color = PickeTheme.colors.primary500
-                                    )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                battleInfo.tags.forEach { tag ->
+                                    Surface(
+                                        color = Color.White.copy(alpha = 0.8f),
+                                        shape = RoundedCornerShape(2.dp)
+                                    ) {
+                                        Text(
+                                            text = "#${tag.name}",
+                                            modifier = Modifier.padding(
+                                                horizontal = 8.dp,
+                                                vertical = 2.dp
+                                            ),
+                                            style = PickeTheme.typography.captionLgMedium,
+                                            color = PickeTheme.colors.primary500
+                                        )
+                                    }
                                 }
+                            }
+                            if (style.commentCount != null) {
+                                VoteCommentCountBadge(count = style.commentCount)
                             }
                         }
 
@@ -348,14 +370,14 @@ fun VoteScreen(
                         Text(
                             text = battleInfo.title.replace(", ", ",\n"),
                             style = PickeTheme.typography.displayMd,
-                            color = titleColor
+                            color = style.titleColor
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = battleDetail.description,
                             style = PickeTheme.typography.bodySmRegular,
-                            color = descColor
+                            color = style.descriptionColor
                         )
                     }
                 }
@@ -380,7 +402,8 @@ fun VoteScreen(
                                     .fillMaxHeight(),
                                 option = battleInfo.options[0],
                                 isSelected = selectedOptionId == battleInfo.options[0].optionId,
-                                onClick = { selectedOptionId = battleInfo.options[0].optionId }
+                                onClick = { selectedOptionId = battleInfo.options[0].optionId },
+                                isImageVisible = style.isOptionImageVisible
                             )
                             VoteOptionCard(
                                 modifier = Modifier
@@ -388,7 +411,8 @@ fun VoteScreen(
                                     .fillMaxHeight(),
                                 option = battleInfo.options[1],
                                 isSelected = selectedOptionId == battleInfo.options[1].optionId,
-                                onClick = { selectedOptionId = battleInfo.options[1].optionId }
+                                onClick = { selectedOptionId = battleInfo.options[1].optionId },
+                                isImageVisible = style.isOptionImageVisible
                             )
                         }
                     }
@@ -467,6 +491,30 @@ fun VoteScreen(
 }
 
 @Composable
+private fun VoteDeadlineRow(
+    deadlineText: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_clock),
+            contentDescription = null,
+            modifier = Modifier.size(ComponentNumberTokens.iconSm),
+            tint = PickeTheme.colors.cardBaseTextDecription
+        )
+        Text(
+            text = deadlineText,
+            color = PickeTheme.colors.cardBaseTextDecription,
+            style = PickeTheme.typography.bodyXsRegular
+        )
+    }
+}
+
+@Composable
 private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
@@ -517,6 +565,34 @@ fun VoteScreenPreview() {
             onTrackShare = { },
             onGetShareLink = { _, _, _ -> },
             onDismissPointDialog = {}
+        )
+    }
+}
+
+@Preview(name = "AI 배틀 사전 투표", showBackground = true)
+@Composable
+private fun VoteScreenClassPreview() {
+    val classItem = DummyData.dummyMyClasses[1]
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        VoteScreen(
+            voteType = VoteType.PRE,
+            battleDetail = DummyData.dummyClassAiBattleDetail,
+            uiState = VoteUiState(),
+            onBackClick = {},
+            onVoteSubmit = {},
+            onNavigateToExplore = {},
+            onSubmitVote = { _, _ -> },
+            onTrackShare = { },
+            onGetShareLink = { _, _, _ -> },
+            onDismissPointDialog = {},
+            classInfo = VoteClassInfoUiModel(
+                className = classItem.title,
+                commentCount = battle.commentCount,
+                deadlineText = "2026. 10. 11. 일요일 23:59까지",
+                isAiBattle = battle.isAiQuestion
+            )
         )
     }
 }

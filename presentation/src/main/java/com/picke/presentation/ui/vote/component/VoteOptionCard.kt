@@ -29,7 +29,8 @@ fun VoteOptionCard(
     option: BattleOptionUiModel,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isImageVisible: Boolean = true
 ) {
     val borderColor =
         if (isSelected) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeDisabled
@@ -50,12 +51,13 @@ fun VoteOptionCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        ProfileImage(
-            model = option.imageUrl,
-            modifier = Modifier.size(40.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        if (isImageVisible) {
+            ProfileImage(
+                model = option.imageUrl,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         Text(
             text = option.title,
             style = PickeTheme.typography.headingSm,
@@ -80,6 +82,19 @@ fun VoteOptionCardPreview() {
             option = DummyData.dummyBattleDetailList.first().battleInfo.options.first(),
             isSelected = true,
             onClick = { }
+        )
+    }
+}
+
+@Preview(name = "이미지 없음", showBackground = true)
+@Composable
+private fun VoteOptionCardNoImagePreview() {
+    PickeTheme {
+        VoteOptionCard(
+            option = DummyData.dummyBattleDetailList.first().battleInfo.options.first(),
+            isSelected = false,
+            onClick = {},
+            isImageVisible = false
         )
     }
 }

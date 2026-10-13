@@ -10,6 +10,6 @@ internal sealed interface ClassDetailMutation {
         val title: String,
         val memberCount: Int,
         val deadline: LocalDateTime?,
-        val battle: ClassBattleUiModel
+        val battle: ClassBattleUiModel?
     ) : ClassDetailMutation
 }

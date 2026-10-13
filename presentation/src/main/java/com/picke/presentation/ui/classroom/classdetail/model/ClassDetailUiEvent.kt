@@ -7,4 +7,5 @@ sealed interface ClassDetailUiEvent {
     data class NavigateToShare(val classId: Long) : ClassDetailUiEvent
     data class NavigateToResult(val classId: Long) : ClassDetailUiEvent
     data class NavigateToEdit(val classId: Long) : ClassDetailUiEvent
+    data object ShowDeadlinePassedToast : ClassDetailUiEvent
 }

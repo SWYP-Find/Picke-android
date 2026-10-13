@@ -11,9 +11,13 @@ import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classmember.ClassMemberScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
+import com.picke.presentation.ui.classroom.classvote.ClassVoteScreen
 import com.picke.presentation.ui.classroom.component.ClassTabScaffold
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
 import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.ui.perspective.PerspectiveScreen
+import com.picke.presentation.ui.scenario.ScenarioScreen
+import com.picke.presentation.ui.vote.model.VoteType
 
 fun NavGraphBuilder.classGraph(
     navController: NavController,
@@ -64,6 +68,56 @@ fun NavGraphBuilder.classGraph(
             }
         )
     }
+    composable(
+        route = AppRoute.ClassVote.route,
+        arguments = classIdArguments + navArgument(AppRoute.ARG_VOTE_TYPE) { type = NavType.StringType }
+    ) {
+        ClassVoteScreen(
+            onBackClick = { navController.popBackStack() },
+            onNavigateToDebate = { },
+            onNavigateToScenario = { classId, battleId ->
+                navController.navigate(AppRoute.ClassScenario.createRoute(classId, battleId)) {
+                    popUpTo(AppRoute.ClassVote.route) { inclusive = true }
+                }
+            },
+            onNavigateToPerspective = { classId, battleId ->
+                navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId)) {
+                    popUpTo(AppRoute.ClassVote.route) { inclusive = true }
+                }
+            }
+        )
+    }
+
+    composable(
+        route = AppRoute.ClassScenario.route,
+        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.LongType }
+    ) { backStackEntry ->
+        val classId = backStackEntry.arguments?.getLong(AppRoute.ARG_CLASS_ID) ?: 0L
+        val battleId = backStackEntry.arguments?.getLong(AppRoute.ARG_BATTLE_ID) ?: 0L
+        ScenarioScreen(
+            battleId = battleId.toString(),
+            onBackClick = { navController.popBackStack() },
+            onNextClick = {
+                navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
+                    popUpTo(AppRoute.ClassScenario.route) { inclusive = true }
+                }
+            }
+        )
+    }
+
+    composable(
+        route = AppRoute.ClassPerspective.route,
+        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType }
+    ) {
+        PerspectiveScreen(
+            onBackClick = { navController.popBackStack() },
+            onNextClick = { },
+            onMoreClick = { itemId, firstOptionId ->
+                navController.navigate(AppRoute.Comment.createRoute(itemId, firstOptionId))
+            }
+        )
+    }
+
     composable(AppRoute.MyClass.route) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             MyClassScreen(
@@ -86,8 +140,10 @@ fun NavGraphBuilder.classGraph(
                 onMemberClick = { classId ->
                     navController.navigate(AppRoute.ClassMember.createRoute(classId))
                 },
-                onBattleClick = { },
-                onViewCodeClick = { classId ->
+                onBattleClick = { classId ->
+                    navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.PRE))
+                },
+                onShareCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))
                 },
                 onResultClick = { },

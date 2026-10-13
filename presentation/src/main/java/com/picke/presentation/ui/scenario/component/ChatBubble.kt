@@ -13,12 +13,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,20 +36,36 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.scenario.model.ScenarioScriptUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private object ChatBubbleDimens {
+    val avatarSize = 40.dp
+    val bubbleMaxWidth = 272.dp
+    val playingBarWidth = 2.5.dp
+    val playingBarHeights = listOf(6.dp, 10.dp, 15.dp, 10.dp, 6.dp)
+}
+
+private const val PLAYING_BAR_MIN_SCALE = 0.6f
+private const val PLAYING_BAR_DURATION_MILLIS = 400
+private const val PLAYING_BAR_DELAY_MILLIS = 120
+private val PLAYING_BAR_MAX_SCALES = listOf(1.1f, 1.3f, 1.6f, 1.3f, 1.1f)
 
 @Composable
 fun ChatBubble(
     script: ScenarioScriptUiModel,
     isActive: Boolean,
     showAvatarAndName: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (script.speakerType == SpeakerType.NARRATOR) {
         val formattedText = script.displayText.replace(Regex(",\\s*"), ",\n")
 
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp)
                 .alpha(if (isActive) 1f else 0.8f),
@@ -57,12 +73,10 @@ fun ChatBubble(
         ) {
             Text(
                 text = formattedText,
+                modifier = Modifier.clickable(onClick = onClick),
                 color = if (isActive) PickeTheme.colors.textSubtle else PickeTheme.colors.textMuted,
-                style = PickeTheme.typography.captionLgMedium.copy(
-                    fontStyle = FontStyle.Italic
-                ),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.clickable { onClick() }
+                style = PickeTheme.typography.captionLgMedium.copy(fontStyle = FontStyle.Italic)
             )
         }
 
@@ -71,150 +85,179 @@ fun ChatBubble(
 
     val isLeft = script.speakerType == SpeakerType.A
     val imageModel = script.profileImageUrl ?: R.drawable.illust_mengzi
-
-    val bubbleBgColor =
-        if (isLeft) Color.White else PickeTheme.colors.borderBeigeDisabled
-    val bubbleBorderColor =
-        if (isLeft) PickeTheme.colors.borderBeigeDisabled else PickeTheme.colors.borderBeigeSelected
-    val textColor =
-        if (isActive) PickeTheme.colors.textSubtle else PickeTheme.colors.textMuted
+    val bubbleShape = RoundedCornerShape(RadiusTokens.default)
+    val bubbleColor =
+        if (isLeft) PickeTheme.colors.surfaceBeigeDefault else PickeTheme.colors.surfaceBeigeStrong
+    val bubblePadding = if (isLeft) {
+        PaddingValues(horizontal = SpacingTokens.s8, vertical = SpacingTokens.s6)
+    } else {
+        PaddingValues(SpacingTokens.s8)
+    }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .alpha(if (isActive) 1f else 0.8f),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(
+            space = SpacingTokens.s6,
+            alignment = if (isLeft) Alignment.Start else Alignment.End
+        ),
         verticalAlignment = Alignment.Top
     ) {
-        Box(
-            modifier = Modifier
-                .width(36.dp)
-                .align(if (!isLeft && isActive) Alignment.CenterVertically else Alignment.Top),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            if (isLeft && showAvatarAndName) {
-                ProfileImage(
-                    model = imageModel,
-                    modifier = Modifier.size(32.dp)
-                )
-            } else if (!isLeft && isActive) {
-                ChattingLoadingAnimation()
-            }
+        if (isLeft) {
+            ChatBubbleAvatar(model = imageModel, isVisible = showAvatarAndName)
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier.weight(1f, fill = false),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
+            horizontalAlignment = if (isLeft) Alignment.Start else Alignment.End
+        ) {
             if (showAvatarAndName) {
                 Text(
                     text = script.speakerName,
-                    style = PickeTheme.typography.bodySmSemiBold,
-                    color = PickeTheme.colors.gray400,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp),
-                    textAlign = if (isLeft) TextAlign.Start else TextAlign.End
+                    color = PickeTheme.colors.textDefault,
+                    style = PickeTheme.typography.bodySmSemiBold
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .align(if (isLeft) Alignment.Start else Alignment.End)
-                    .clickable { onClick() }
-                    .background(
-                        color = bubbleBgColor,
-                        shape = RoundedCornerShape(2.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = bubbleBorderColor,
-                        shape = RoundedCornerShape(2.dp)
-                    )
-                    .padding(12.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                if (!isLeft && isActive) {
+                    ChattingLoadingAnimation()
+                }
                 Text(
                     text = script.displayText,
-                    style = PickeTheme.typography.bodyXxsMedium,
-                    color = textColor,
-                    textAlign = TextAlign.Start
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .widthIn(max = ChatBubbleDimens.bubbleMaxWidth)
+                        .fillMaxWidth()
+                        .clickable(onClick = onClick)
+                        .background(bubbleColor, bubbleShape)
+                        .border(
+                            width = ComponentNumberTokens.borderWidthRegular,
+                            color = PickeTheme.colors.borderBeigeDefault,
+                            shape = bubbleShape
+                        )
+                        .padding(bubblePadding),
+                    color = PickeTheme.colors.textBody,
+                    style = PickeTheme.typography.bodyXsRegular
                 )
+                if (isLeft && isActive) {
+                    ChattingLoadingAnimation()
+                }
             }
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-        Box(
-            modifier = Modifier
-                .width(36.dp)
-                .align(if (isLeft && isActive) Alignment.CenterVertically else Alignment.Top),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            if (!isLeft && showAvatarAndName) {
-                ProfileImage(
-                    model = imageModel,
-                    modifier = Modifier.size(32.dp)
-                )
-            } else if (isLeft && isActive) {
-                ChattingLoadingAnimation()
-            }
+        if (!isLeft) {
+            ChatBubbleAvatar(model = imageModel, isVisible = showAvatarAndName)
         }
     }
 }
 
 @Composable
-private fun ChattingLoadingAnimation(modifier: Modifier = Modifier) {
-    val infiniteTransition = rememberInfiniteTransition(label = "audio_bars_5")
-    val baseHeights = listOf(6.dp, 10.dp, 15.dp, 10.dp, 6.dp)
-    val maxScales = listOf(1.1f, 1.3f, 1.6f, 1.3f, 1.1f)
+private fun ChatBubbleAvatar(
+    model: Any?,
+    isVisible: Boolean,
+    modifier: Modifier = Modifier
+) {
+    if (isVisible) {
+        ProfileImage(
+            model = model,
+            modifier = modifier.size(ChatBubbleDimens.avatarSize)
+        )
+    } else {
+        Spacer(modifier = modifier.size(ChatBubbleDimens.avatarSize))
+    }
+}
 
-    val animations = (0 until 5).map { index ->
+@Composable
+private fun ChattingLoadingAnimation(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "audio_bars")
+    val barScales = ChatBubbleDimens.playingBarHeights.indices.map { index ->
         infiniteTransition.animateFloat(
-            initialValue = 0.6f,
-            targetValue = maxScales[index],
+            initialValue = PLAYING_BAR_MIN_SCALE,
+            targetValue = PLAYING_BAR_MAX_SCALES[index],
             animationSpec = infiniteRepeatable(
                 animation = tween(
-                    durationMillis = 400,
+                    durationMillis = PLAYING_BAR_DURATION_MILLIS,
                     easing = LinearEasing
                 ),
                 repeatMode = RepeatMode.Reverse,
-                initialStartOffset = StartOffset(offsetMillis = index * 120)
+                initialStartOffset = StartOffset(offsetMillis = index * PLAYING_BAR_DELAY_MILLIS)
             ),
             label = "scale_${index + 1}"
         )
     }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = modifier
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        repeat(5) { index ->
+        ChatBubbleDimens.playingBarHeights.forEachIndexed { index, barHeight ->
             Box(
                 modifier = Modifier
-                    .size(
-                        width = 2.5.dp,
-                        height = baseHeights[index]
-                    )
-                    .scale(
-                        scaleX = 1f,
-                        scaleY = animations[index].value
-                    )
-                    .background(
-                        color = Color(0xFF8D4B38),
-                        shape = RoundedCornerShape(50)
-                    )
+                    .size(width = ChatBubbleDimens.playingBarWidth, height = barHeight)
+                    .scale(scaleX = 1f, scaleY = barScales[index].value)
+                    .background(PickeTheme.colors.iconPrimaryDefault, RoundedCornerShape(RadiusTokens.max))
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "왼쪽 화자 · 재생 중", showBackground = true)
 @Composable
-fun ChatBubblePreview() {
+private fun ChatBubbleLeftPreview() {
+    val scripts = DummyData.dummyScripts
+
+    PickeTheme {
+        Column(
+            modifier = Modifier.padding(SpacingTokens.s16),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+        ) {
+            ChatBubble(
+                script = scripts[1],
+                isActive = true,
+                showAvatarAndName = true,
+                onClick = {}
+            )
+            ChatBubble(
+                script = scripts[3],
+                isActive = false,
+                showAvatarAndName = false,
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "오른쪽 화자", showBackground = true)
+@Composable
+private fun ChatBubbleRightPreview() {
+    PickeTheme {
+        ChatBubble(
+            script = DummyData.dummyScripts[2],
+            isActive = true,
+            showAvatarAndName = true,
+            onClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "해설", showBackground = true)
+@Composable
+private fun ChatBubbleNarratorPreview() {
     PickeTheme {
         ChatBubble(
             script = DummyData.dummyScripts.first(),
             isActive = true,
             showAvatarAndName = true,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
         )
     }
 }

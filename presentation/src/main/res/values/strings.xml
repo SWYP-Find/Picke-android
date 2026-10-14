@@ -270,4 +270,15 @@
     <string name="class_battle_duration">%1$d분</string>
     <string name="class_battle_preview">미리듣기</string>
     <string name="class_battle_versus">VS</string>
+
+    <!-- 클래스 - AI 토론 -->
+    <string name="class_debate_round_format">ROUND %1$d · 입장에 반박해보세요</string>
+    <string name="class_debate_intro_choice">‘%1$s’</string>
+    <string name="class_debate_intro_choice_format">사전투표에서 %1$s를 선택하셨네요.</string>
+    <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
+    <string name="class_debate_intro_start_format">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_input_placeholder">내 생각을 입력해보세요</string>
+    <string name="class_debate_send">보내기</string>
+    <string name="class_debate_go_to_comment">댓글 보러가기</string>
+    <string name="class_debate_ai_badge">AI</string>
 </resources>

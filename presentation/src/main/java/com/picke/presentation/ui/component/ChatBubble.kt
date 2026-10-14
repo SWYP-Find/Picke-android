@@ -60,6 +60,7 @@ fun ChatBubble(
     modifier: Modifier = Modifier,
     isPlaying: Boolean = false,
     isDimmed: Boolean = false,
+    nameBadge: String? = null,
     onClick: (() -> Unit)? = null
 ) {
     val bubbleShape = RoundedCornerShape(RadiusTokens.default)
@@ -96,11 +97,19 @@ fun ChatBubble(
             horizontalAlignment = if (isLeft) Alignment.Start else Alignment.End
         ) {
             if (showAvatarAndName) {
-                Text(
-                    text = speakerName,
-                    color = PickeTheme.colors.textDefault,
-                    style = PickeTheme.typography.bodySmSemiBold
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = speakerName,
+                        color = PickeTheme.colors.textDefault,
+                        style = PickeTheme.typography.bodySmSemiBold
+                    )
+                    if (nameBadge != null) {
+                        ChatBubbleNameBadge(text = nameBadge)
+                    }
+                }
             }
 
             Row(
@@ -158,6 +167,21 @@ private fun ChatBubbleAvatar(
     } else {
         Spacer(modifier = modifier.size(ChatBubbleDimens.avatarSize))
     }
+}
+
+@Composable
+private fun ChatBubbleNameBadge(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .background(PickeTheme.colors.primary50, RoundedCornerShape(RadiusTokens.default))
+            .padding(horizontal = SpacingTokens.s4, vertical = SpacingTokens.s2),
+        color = PickeTheme.colors.badgeFilledText,
+        style = PickeTheme.typography.captionMdSemiBold
+    )
 }
 
 @Composable
@@ -222,6 +246,23 @@ private fun ChatBubbleLeftPreview() {
                 isDimmed = true
             )
         }
+    }
+}
+
+@Preview(name = "이름 배지", showBackground = true)
+@Composable
+private fun ChatBubbleNameBadgePreview() {
+    PickeTheme {
+        ChatBubble(
+            text = "모든 사물은 그에 걸맞은 목적과 형상을 가지고 있습니다.",
+            speakerName = "플라톤",
+            avatarUrl = null,
+            defaultAvatarRes = R.drawable.illust_mengzi,
+            isLeft = true,
+            showAvatarAndName = true,
+            modifier = Modifier.padding(SpacingTokens.s16),
+            nameBadge = "AI"
+        )
     }
 }
 

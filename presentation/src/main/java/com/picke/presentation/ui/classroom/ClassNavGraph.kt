@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
+import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
 import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classmember.ClassMemberScreen
@@ -74,7 +75,11 @@ fun NavGraphBuilder.classGraph(
     ) {
         ClassVoteScreen(
             onBackClick = { navController.popBackStack() },
-            onNavigateToDebate = { },
+            onNavigateToDebate = { classId ->
+                navController.navigate(AppRoute.ClassDebate.createRoute(classId)) {
+                    popUpTo(AppRoute.ClassVote.route) { inclusive = true }
+                }
+            },
             onNavigateToScenario = { classId, battleId ->
                 navController.navigate(AppRoute.ClassScenario.createRoute(classId, battleId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
@@ -83,6 +88,17 @@ fun NavGraphBuilder.classGraph(
             onNavigateToPerspective = { classId, battleId ->
                 navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
+                }
+            }
+        )
+    }
+
+    composable(route = AppRoute.ClassDebate.route, arguments = classIdArguments) {
+        ClassDebateScreen(
+            onBackClick = { navController.popBackStack() },
+            onNavigateToPerspective = { classId, battleId ->
+                navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId)) {
+                    popUpTo(AppRoute.ClassDebate.route) { inclusive = true }
                 }
             }
         )

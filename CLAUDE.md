@@ -447,6 +447,8 @@ fun onAction(action: ClassShareUiAction) {
   - `XxxUiState`에 넣을 값이 `DummyData`의 모델에 이미 있으면 단순 값이어도 그 모델에서 꺼내 씁니다
     (예: `val classItem = DummyData.dummyMyClasses.first()` 후 `title = classItem.title`). 실행 화면의 더미와 Preview가
     같은 값을 보여 주게 하려는 것입니다.
+- 다음 버전에 다시 켤 기능은 주석 처리하지 않고 `presentation/util/FeatureFlags.kt`의 `const val XXX_ENABLED = false`로
+  진입점(버튼, 탭 등)만 `if`로 막습니다. ViewModel·상태·화면 코드는 그대로 둡니다. 기능을 켤 때 플래그와 분기를 함께 삭제합니다.
 - 주석 처리된 죽은 코드는 남기지 않고 삭제. (예: `HomeRepositoryImpl`의
   `// return Result.success(DummyHomeData...)` 같은 줄 — 발견하면 지울 것)
 - null 안전 처리는 `?:` 로 명시적으로 (기존 `HomeRepositoryImpl` 스타일 유지).

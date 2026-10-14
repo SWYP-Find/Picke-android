@@ -1,0 +1,37 @@
+package com.picke.app
+
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.kakao.sdk.common.KakaoSdk
+import com.picke.presentation.notification.FCMService
+import com.picke.presentation.util.AppLifecycleObserver
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
+
+@HiltAndroidApp
+class PickeApplication : Application() {
+
+    @Inject
+    lateinit var appLifecycleObserver: AppLifecycleObserver
+
+    override fun onCreate() {
+        super.onCreate()
+        KakaoSdk.init(this, BuildConfig.KAKAO_DEBUG_APPKEY)
+        createNotificationChannel()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
+    }
+
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            FCMService.CHANNEL_ID,
+            "픽케 알림",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "픽케 배틀, 관점, 공지 알림"
+        }
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
+    }
+}

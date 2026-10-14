@@ -1,0 +1,113 @@
+package com.picke.data.common.network
+
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.picke.data.BuildConfig
+import com.picke.data.common.error.reportIfUnexpected
+import com.picke.data.common.local.PreferencesManager
+import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.auth.model.AuthResponseDto
+import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.Authenticator
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.Route
+import okhttp3.logging.HttpLoggingInterceptor
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class TokenAuthenticator @Inject constructor(
+    @param:ApplicationContext private val context: Context,
+    private val preferencesManager: PreferencesManager,
+    private val gson: Gson,
+    private val loggingInterceptor: HttpLoggingInterceptor
+) : Authenticator {
+
+    companion object {
+        private const val TAG = "TokenAuthenticator_Picke"
+    }
+
+    private val refreshClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Synchronized
+    override fun authenticate(route: Route?, response: Response): Request? {
+        if (responseCount(response) >= 2) {
+            Log.e(TAG, "[AUTH] 토큰 갱신 후에도 401 지속. 인증 실패 처리.")
+            return null
+        }
+
+        val refreshToken = preferencesManager.getRefreshToken()
+        if (refreshToken.isNullOrEmpty()) {
+            Log.e(TAG, "[AUTH] 저장된 리프레시 토큰 없음. 재발급 불가.")
+            return null
+        }
+
+        return try {
+            val client = refreshClient
+            val refreshRequest = Request.Builder()
+                .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
+                .post(ByteArray(0).toRequestBody(null))
+                .header("X-Refresh-Token", refreshToken)
+                .build()
+
+            val refreshResponse = client.newCall(refreshRequest).execute()
+            val body = refreshResponse.body?.string()
+
+            if (refreshResponse.isSuccessful && body != null) {
+                val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
+                val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
+                val data = parsed.data
+
+                if (parsed.statusCode == 200 && data != null) {
+                    preferencesManager.saveAccessToken(data.accessToken)
+                    preferencesManager.saveRefreshToken(data.refreshToken)
+                    if (BuildConfig.DEBUG) {
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(
+                                context,
+                                "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    response.request.newBuilder()
+                        .header("Authorization", "Bearer ${data.accessToken}")
+                        .build()
+                } else {
+                    Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                    null
+                }
+            } else {
+                Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "[AUTH] 토큰 갱신 중 예외 발생: ${e.message}", e)
+            reportIfUnexpected(e)
+            null
+        }
+    }
+
+    private fun responseCount(response: Response): Int {
+        var count = 1
+        var prior = response.priorResponse
+        while (prior != null) {
+            count++
+            prior = prior.priorResponse
+        }
+        return count
+    }
+}

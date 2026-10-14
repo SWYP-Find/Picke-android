@@ -1,0 +1,333 @@
+package com.picke.presentation.ui.my.makebattle
+
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.theme.PickeTheme
+
+@Composable
+fun MakeBattleScreen(
+    modifier: Modifier = Modifier,
+    onBackClick : ()->Unit,
+    onNavigateToExplore: () -> Unit,
+    viewModel: MakeBattleViewModel = hiltViewModel()
+) {
+    val categories = listOf("철학", "문학", "예술", "과학", "사회", "역사")
+    var selectedCategory by remember { mutableStateOf(categories[0]) }
+
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var topic by remember { mutableStateOf("") }
+    var stanceA by remember { mutableStateOf("") }
+    var stanceB by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var showPointDialog by remember { mutableStateOf(false) }
+    val maxDescLength = 200
+    val isFormValid = topic.isNotBlank() && stanceA.isNotBlank() && stanceB.isNotBlank()
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is MakeBattleEvent.Success -> {
+                    Toast.makeText(context, "배틀 제안이 완료되었습니다!", Toast.LENGTH_SHORT).show()
+                    onBackClick()
+                }
+                is MakeBattleEvent.Error -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is MakeBattleEvent.NotEnoughPoints -> {
+                    showPointDialog = true
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        containerColor = PickeTheme.colors.backgroundBeige,
+        contentWindowInsets = WindowInsets(0.dp),
+        topBar={
+            CustomTopAppBar(
+                title = "배틀 만들기",
+                centerTitle = true,
+                showLogo = false,
+                onBackClick = { onBackClick() },
+                backgroundColor = PickeTheme.colors.backgroundBeige
+            )
+        },
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .background(PickeTheme.colors.backgroundBeige)
+                    //.navigationBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+            ) {
+                CustomButton(
+                    text = "제안하기 (-30P)",
+                    onClick = {
+                        if (isFormValid && !uiState.isLoading) {
+                            viewModel.submitProposal(
+                                category = selectedCategory,
+                                topic = topic,
+                                stanceA = stanceA,
+                                stanceB = stanceB,
+                                description = description
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    backgroundColor = if (isFormValid) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
+                    textColor = Color.White
+                )
+            }
+        }
+    ) { innerPadding ->
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 1. 카테고리 설정
+                SectionTitle(title = "카테고리", isRequired = true)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .background(Color.White)
+                ) {
+                    categories.forEach { category ->
+                        CategoryTab(
+                            text = category,
+                            isSelected = selectedCategory == category,
+                            modifier = Modifier.weight(1f),
+                            onClick = { selectedCategory = category }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 2. 주제 입력
+                SectionTitle(title = "주제", isRequired = true)
+                Spacer(modifier = Modifier.height(8.dp))
+                CustomFormTextField(
+                    value = topic,
+                    onValueChange = { topic = it },
+                    placeholder = "논쟁이 될만한 주제를 한 줄로 써주세요",
+                    singleLine = true
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                // 3. 양측 입장 입력
+                SectionTitle(title = "양측 입장", isRequired = true)
+                Spacer(modifier = Modifier.height(8.dp))
+                StanceInputField(
+                    label = "A",
+                    labelColor = PickeTheme.colors.primary500,
+                    value = stanceA,
+                    onValueChange = { stanceA = it },
+                    placeholder = "첫 번째 입장을 입력하세요",
+                    isTop = true
+                )
+                StanceInputField(
+                    label = "B",
+                    labelColor = PickeTheme.colors.textDefault,
+                    value = stanceB,
+                    onValueChange = { stanceB = it },
+                    placeholder = "두 번째 입장을 입력하세요",
+                    isTop = false
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 4. 부가 설명 입력
+                SectionTitle(title = "부가 설명", isRequired = false)
+                Spacer(modifier = Modifier.height(8.dp))
+                CustomFormTextField(
+                    value = description,
+                    onValueChange = {
+                        if (it.length <= maxDescLength) {
+                            description = it
+                        }
+                    },
+                    placeholder = "이 주제를 제안하는 이유나 배경을 자유롭게 써주세요",
+                    singleLine = false,
+                    modifier = Modifier.height(92.dp),
+                    bottomRightText = "${description.length}/$maxDescLength"
+                )
+
+                Spacer(modifier = Modifier.height(80.dp))
+            }
+        }
+
+        if (showPointDialog) {
+            CustomSingleActionDialog(
+                message = "배틀 주제를 제안하기 위한\n포인트가 부족해요!",
+                subMessage = "매일 출석체크만 해도 5P를 받을 수 있어요!",
+                buttonText = "배틀 주제 구경하러 가기",
+                onDismiss = { showPointDialog = false },
+                onConfirm = {
+                    showPointDialog = false
+                    onNavigateToExplore()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun SectionTitle(title: String, isRequired: Boolean) {
+    val title = if (isRequired) "$title *" else "$title (선택)"
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = title,
+            color = PickeTheme.colors.gray400,
+            style = PickeTheme.typography.bodySmMedium
+        )
+    }
+}
+
+@Composable
+fun CategoryTab(
+    text: String,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val bgColor = if (isSelected) PickeTheme.colors.primary500 else Color.White
+    val textColor = if (isSelected) Color.White else PickeTheme.colors.textMuted
+
+    Box(
+        modifier = modifier
+            .background(bgColor)
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp, horizontal = 2.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            style = if (isSelected) PickeTheme.typography.bodySmSemiBold else PickeTheme.typography.bodySmRegular
+        )
+    }
+}
+
+@Composable
+fun CustomFormTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    singleLine: Boolean,
+    modifier: Modifier = Modifier,
+    bottomRightText: String? = null,
+    leadingContent: @Composable (() -> Unit)? = null
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault)
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (leadingContent != null) {
+                leadingContent()
+            }
+
+            Box(modifier = Modifier.weight(1f)) {
+                BasicTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    singleLine = singleLine,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
+                    modifier = Modifier.fillMaxWidth()
+                ) { innerTextField ->
+                    if (value.isEmpty()) {
+                        Text(text = placeholder, color = PickeTheme.colors.gray200, style = PickeTheme.typography.bodyXsMedium)
+                    }
+                    innerTextField()
+                }
+            }
+        }
+
+        if (bottomRightText != null) {
+            Text(
+                text = bottomRightText,
+                color = PickeTheme.colors.gray400,
+                style = PickeTheme.typography.captionSmSemiBold,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+        }
+    }
+}
+
+@Composable
+fun StanceInputField(
+    label: String,
+    labelColor: Color,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    isTop: Boolean
+) {
+    CustomFormTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = placeholder,
+        singleLine = true,
+        leadingContent = {
+            Text(
+                text = label,
+                color = labelColor,
+                style = PickeTheme.typography.bodySmSemiBold,
+                modifier = Modifier.width(28.dp)
+            )
+        }
+    )
+}

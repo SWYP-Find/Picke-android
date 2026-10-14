@@ -258,6 +258,8 @@ class HomeViewModel @Inject constructor(
     Preview에서 렌더링되지 않습니다. 상태를 받는 `XxxContent(uiState, 콜백...)`를 분리해서 그걸 Preview하고,
     트래킹 같은 사이드이펙트는 콜백으로 밖으로 뺍니다.
   - Preview용 샘플 값은 Preview 함수 안에 직접 적습니다 (`DummyData.kt`에 추가하지 않음).
+- 다음 버전에 다시 켤 기능은 주석 처리하지 않고 `presentation/util/FeatureFlags.kt`의 `const val XXX_ENABLED = false`로
+  진입점(버튼, 탭 등)만 `if`로 막습니다. ViewModel·상태·화면 코드는 그대로 둡니다. 기능을 켤 때 플래그와 분기를 함께 삭제합니다.
 - 주석 처리된 죽은 코드는 남기지 않고 삭제. (예: `HomeRepositoryImpl`의
   `// return Result.success(DummyHomeData...)` 같은 줄 — 발견하면 지울 것)
 - null 안전 처리는 `?:` 로 명시적으로 (기존 `HomeRepositoryImpl` 스타일 유지).

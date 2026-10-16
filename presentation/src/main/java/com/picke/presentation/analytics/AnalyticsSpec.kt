@@ -184,6 +184,8 @@ object AnalyticsScreen {
     const val CLASS_SCENARIO = "class_scenario"
     const val CLASS_COMMENT = "class_comment"
     const val CLASS_DEBATE = "class_debate"
+    const val CLASS_RESULT = "class_result"
+    const val CLASS_MY_OPINION = "class_my_opinion"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -214,6 +216,8 @@ object AnalyticsScreen {
         AppRoute.ClassScenario.route -> CLASS_SCENARIO
         AppRoute.ClassPerspective.route -> CLASS_COMMENT
         AppRoute.ClassDebate.route -> CLASS_DEBATE
+        AppRoute.ClassResult.route -> CLASS_RESULT
+        AppRoute.ClassMyOpinion.route -> CLASS_MY_OPINION
         else -> null
     }
 }

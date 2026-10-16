@@ -7,6 +7,11 @@ import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyReplyUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultStanceUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
@@ -778,6 +783,60 @@ object DummyData {
             4,
             LocalDateTime.of(2026, 9, 23, 18, 0),
             isOperator = false
+        )
+    )
+
+    val dummyClassResultSummary = ClassResultSummaryUiModel(
+        aiInsight = "처음에는 처벌을 강화해야 한다는 의견이 많았지만, 대화 후에는 교정과 보호를 함께 봐야 한다는 의견이 늘어났어요.",
+        memberCount = 32,
+        participatedCount = 28,
+        commentedCount = 24,
+        stances = listOf(
+            ClassResultStanceUiModel(label = "낮춰야 한다", count = 18),
+            ClassResultStanceUiModel(label = "교정이 우선이다", count = 10)
+        ),
+        bestComment = "처벌만 강화하면 아이들이 다시 사회로 돌아올 길이 더 좁아진다고 생각해요.",
+        mostDebatedComment = "피해자의 고통을 생각하면 나이와 상관없이 책임을 지게 해야 한다고 생각해요."
+    )
+
+    val dummyClassResultReport = ClassResultReportUiModel(
+        preVoteStance = "낮춰야 한다",
+        postVoteStance = "교정이 우선이다",
+        commentCount = 1,
+        replyCount = 2,
+        receivedLikeCount = 12,
+        judgmentBasis = "마지막 의견에서는 재범을 줄이는 방법으로 교육과 보호를 중요하게 봤어요.",
+        strength = "“처벌만으로는 해결되지 않는다”는 반대 의견에 그치지 않고, 교육과 보호라는 대안을 제시했어요. 해결 방법까지 논의를 이어 간 점이 좋았어요.",
+        improvement = "교육과 보호가 어떤 상황에서 효과적일지는 아직 설명되지 않았어요. 대안을 제시한 만큼, 그 대안이 효과를 낼 조건을 덧붙이면 주장이 더 분명해져요.",
+        nextThought = "교육과 보호가 재범을 줄이려면, 어떤 조건이 가장 먼저 갖춰져야 할까요?"
+    )
+
+    val dummyClassMyComments = listOf(
+        ClassMyCommentUiModel(
+            commentId = 1L,
+            stance = "낮춰야 한다",
+            content = "처벌만 강화하면 재범을 막기 어렵다고 생각해요. 교육과 보호가 함께 가야 해요.",
+            likeCount = 1340,
+            replyCount = 23
+        )
+    )
+
+    val dummyClassMyReplies = listOf(
+        ClassMyReplyUiModel(
+            replyId = 1L,
+            parentAuthorName = "김민지",
+            parentStance = "교정이 우선이다",
+            parentContent = "나이가 어리다는 이유만으로 책임을 덜어 주면 피해자는 누가 보호하나요?",
+            authorName = "공은지",
+            content = "피해자 보호도 중요하지만, 교정이 이루어져야 같은 피해가 다시 생기지 않는다고 생각해요."
+        ),
+        ClassMyReplyUiModel(
+            replyId = 2L,
+            parentAuthorName = "이서준",
+            parentStance = "낮춰야 한다",
+            parentContent = "요즘 청소년 범죄는 예전보다 훨씬 계획적이에요.",
+            authorName = "공은지",
+            content = "계획적인 범죄라면 처벌 기준을 따로 두는 방법도 함께 생각해 볼 수 있을 것 같아요."
         )
     )
 

@@ -281,4 +281,46 @@
     <string name="class_debate_send">보내기</string>
     <string name="class_debate_go_to_comment">댓글 보러가기</string>
     <string name="class_debate_ai_badge">AI</string>
+
+    <!-- 클래스 - 결과 -->
+    <string name="class_result_summary_tab">클래스 요약</string>
+    <string name="class_result_report_tab">내 리포트</string>
+    <string name="class_result_ai_insight">AI 인사이트</string>
+    <string name="class_result_participation">클래스 참여 현황</string>
+    <string name="class_result_battle_rate">배틀 참여율</string>
+    <string name="class_result_battle_members">참여한 멤버</string>
+    <string name="class_result_comment_rate">댓글 작성율</string>
+    <string name="class_result_comment_members">댓글을 남긴 멤버</string>
+    <string name="class_result_rate">%1$s%%</string>
+    <string name="class_result_member_ratio">%1$d / %2$d명</string>
+    <string name="class_result_stance">입장 분포</string>
+    <string name="class_result_people_count">%1$d명</string>
+    <string name="class_result_total_label">총 참여</string>
+    <string name="class_result_stance_percent">%1$d%%</string>
+    <string name="class_result_opinions">주요 의견</string>
+    <string name="class_result_best_comment">BEST 댓글</string>
+    <string name="class_result_most_debated_comment">가장 논쟁이 활발했던 댓글</string>
+    <string name="class_result_quote">“%1$s”</string>
+    <string name="class_result_my_vote">내 투표 결과</string>
+    <string name="class_result_pre_vote">사전 선택</string>
+    <string name="class_result_post_vote">사후 선택</string>
+    <string name="class_result_stance_changed">입장 변경</string>
+    <string name="class_result_comment_count">댓글</string>
+    <string name="class_result_reply_count">대댓글</string>
+    <string name="class_result_received_like_count">받은 추천</string>
+    <string name="class_result_ai_feedback">AI 피드백</string>
+    <string name="class_result_judgment_basis">내 판단의 기준</string>
+    <string name="class_result_strength">이번에 잘한 점</string>
+    <string name="class_result_improvement">한 가지 더 살펴볼 점</string>
+    <string name="class_result_next_thought">다음 생각 한 걸음</string>
+    <string name="class_result_my_opinion_link">내가 남긴 의견 %1$d개 보기</string>
+
+    <!-- 클래스 - 내가 남긴 의견 -->
+    <string name="class_my_opinion_title">내가 남긴 의견</string>
+    <string name="class_my_opinion_comments">남긴 댓글</string>
+    <string name="class_my_opinion_replies">남긴 대댓글</string>
+    <string name="class_my_opinion_parent_stance">· %1$s</string>
+    <string name="class_my_opinion_reply_author">%1$s의 답글</string>
+    <string name="class_my_opinion_like">추천</string>
+    <string name="class_my_opinion_reply">답글</string>
 </resources>

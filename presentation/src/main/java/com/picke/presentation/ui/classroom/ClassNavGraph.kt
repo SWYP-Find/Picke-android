@@ -11,6 +11,8 @@ import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
 import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classmember.ClassMemberScreen
+import com.picke.presentation.ui.classroom.classmyopinion.ClassMyOpinionScreen
+import com.picke.presentation.ui.classroom.classresult.ClassResultScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.classvote.ClassVoteScreen
 import com.picke.presentation.ui.classroom.component.ClassTabScaffold
@@ -69,6 +71,7 @@ fun NavGraphBuilder.classGraph(
             }
         )
     }
+
     composable(
         route = AppRoute.ClassVote.route,
         arguments = classIdArguments + navArgument(AppRoute.ARG_VOTE_TYPE) { type = NavType.StringType }
@@ -124,10 +127,15 @@ fun NavGraphBuilder.classGraph(
     composable(
         route = AppRoute.ClassPerspective.route,
         arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType }
-    ) {
+    ) { backStackEntry ->
+        val classId = backStackEntry.arguments?.getLong(AppRoute.ARG_CLASS_ID) ?: 0L
         PerspectiveScreen(
             onBackClick = { navController.popBackStack() },
-            onNextClick = { },
+            onNextClick = {
+                navController.navigate(AppRoute.ClassResult.createRoute(classId)) {
+                    popUpTo(AppRoute.ClassPerspective.route) { inclusive = true }
+                }
+            },
             onMoreClick = { itemId, firstOptionId ->
                 navController.navigate(AppRoute.Comment.createRoute(itemId, firstOptionId))
             }
@@ -162,7 +170,9 @@ fun NavGraphBuilder.classGraph(
                 onShareCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))
                 },
-                onResultClick = { },
+                onResultClick = { classId ->
+                    navController.navigate(AppRoute.ClassResult.createRoute(classId))
+                },
                 modifier = contentModifier
             )
         }
@@ -171,6 +181,27 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassMemberScreen(
+                onBackClick = { navController.popBackStack() },
+                modifier = contentModifier
+            )
+        }
+    }
+
+    composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) {
+        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+            ClassResultScreen(
+                onBackClick = { navController.popBackStack() },
+                onNavigateToMyOpinion = { classId ->
+                    navController.navigate(AppRoute.ClassMyOpinion.createRoute(classId))
+                },
+                modifier = contentModifier
+            )
+        }
+    }
+
+    composable(route = AppRoute.ClassMyOpinion.route, arguments = classIdArguments) {
+        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+            ClassMyOpinionScreen(
                 onBackClick = { navController.popBackStack() },
                 modifier = contentModifier
             )

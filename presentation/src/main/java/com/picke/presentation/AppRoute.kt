@@ -98,6 +98,14 @@ sealed class AppRoute(val route: String){
         fun createRoute(classId: Long) = "class_debate_screen/$classId"
     }
 
+    object ClassResult : AppRoute("class_result_screen/{$ARG_CLASS_ID}") {
+        fun createRoute(classId: Long) = "class_result_screen/$classId"
+    }
+
+    object ClassMyOpinion : AppRoute("class_my_opinion_screen/{$ARG_CLASS_ID}") {
+        fun createRoute(classId: Long) = "class_my_opinion_screen/$classId"
+    }
+
     object TodayBattle : AppRoute("tab_battle?battleId={battleId}") {
         fun createRoute(battleId: String) = "tab_battle?battleId=$battleId"
     }

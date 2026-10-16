@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom
 
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -30,7 +31,7 @@ fun NavGraphBuilder.classGraph(
 
     composable(BottomNavItem.Class.route) {
         ClassScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToJoin = { navController.navigate(AppRoute.ClassJoin.route) },
             onNavigateToMyClass = { navController.navigate(AppRoute.MyClass.route) },
             onNavigateToCreate = { navController.navigate(AppRoute.ClassCreate.route) },
@@ -40,7 +41,7 @@ fun NavGraphBuilder.classGraph(
 
     composable(AppRoute.ClassCreate.route) {
         ClassCreateScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToShare = { classId ->
                 navController.navigate(AppRoute.ClassShare.createRoute(classId)) {
                     popUpTo(AppRoute.ClassCreate.route) { inclusive = true }
@@ -51,7 +52,7 @@ fun NavGraphBuilder.classGraph(
 
     composable(AppRoute.ClassJoin.route) {
         ClassJoinScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToClassDetail = { classId ->
                 navController.navigate(AppRoute.ClassDetail.createRoute(classId)) {
                     popUpTo(AppRoute.ClassJoin.route) { inclusive = true }
@@ -62,7 +63,7 @@ fun NavGraphBuilder.classGraph(
 
     composable(route = AppRoute.ClassShare.route, arguments = classIdArguments) {
         ClassShareScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onShareCodeClick = { },
             onGoToClassClick = {
                 navController.navigate(AppRoute.MyClass.route) {
@@ -77,7 +78,7 @@ fun NavGraphBuilder.classGraph(
         arguments = classIdArguments + navArgument(AppRoute.ARG_VOTE_TYPE) { type = NavType.StringType }
     ) {
         ClassVoteScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToDebate = { classId ->
                 navController.navigate(AppRoute.ClassDebate.createRoute(classId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
@@ -98,7 +99,7 @@ fun NavGraphBuilder.classGraph(
 
     composable(route = AppRoute.ClassDebate.route, arguments = classIdArguments) {
         ClassDebateScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToFinalVote = { classId ->
                 navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
                     popUpTo(AppRoute.ClassDebate.route) { inclusive = true }
@@ -115,7 +116,7 @@ fun NavGraphBuilder.classGraph(
         val battleId = backStackEntry.arguments?.getLong(AppRoute.ARG_BATTLE_ID) ?: 0L
         ScenarioScreen(
             battleId = battleId.toString(),
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNextClick = {
                 navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
                     popUpTo(AppRoute.ClassScenario.route) { inclusive = true }
@@ -130,7 +131,7 @@ fun NavGraphBuilder.classGraph(
     ) { backStackEntry ->
         val classId = backStackEntry.arguments?.getLong(AppRoute.ARG_CLASS_ID) ?: 0L
         PerspectiveScreen(
-            onBackClick = { navController.popBackStack() },
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNextClick = {
                 navController.navigate(AppRoute.ClassResult.createRoute(classId)) {
                     popUpTo(AppRoute.ClassPerspective.route) { inclusive = true }
@@ -145,7 +146,7 @@ fun NavGraphBuilder.classGraph(
     composable(AppRoute.MyClass.route) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             MyClassScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassClick = { classId ->
                     navController.navigate(AppRoute.ClassDetail.createRoute(classId))
                 },
@@ -160,7 +161,7 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassDetailScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onMemberClick = { classId ->
                     navController.navigate(AppRoute.ClassMember.createRoute(classId))
                 },
@@ -181,7 +182,7 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassMemberScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
                 modifier = contentModifier
             )
         }
@@ -190,7 +191,7 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassResultScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToMyOpinion = { classId ->
                     navController.navigate(AppRoute.ClassMyOpinion.createRoute(classId))
                 },
@@ -202,7 +203,7 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassMyOpinion.route, arguments = classIdArguments) {
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassMyOpinionScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
                 modifier = contentModifier
             )
         }

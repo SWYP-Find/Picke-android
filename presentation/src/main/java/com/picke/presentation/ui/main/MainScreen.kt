@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -149,14 +150,14 @@ fun MainScreen(
 
             composable(AppRoute.Point.route) {
                 PointScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     onNavigateToMakeBattle = { mainNavController.navigate(AppRoute.MakeBattle.route) }
                 )
             }
 
             composable(AppRoute.MakeBattle.route) {
                 MakeBattleScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     onNavigateToExplore = {
                         mainNavController.navigate(BottomNavItem.Explore.route) {
                             popUpTo(mainNavController.graph.findStartDestination().id) {
@@ -171,7 +172,7 @@ fun MainScreen(
 
             composable(AppRoute.DiscussionHistory.route) {
                 DiscussionHistoryScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     onNavigateToDetail = { battleId ->
                         rootNavController.navigate(AppRoute.Perspective.createRoute(battleId))
                     }
@@ -180,7 +181,7 @@ fun MainScreen(
 
             composable(AppRoute.ContentActivity.route) {
                 ContentActivityScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     onNavigateToComment = { itemId ->
                         rootNavController.navigate(AppRoute.Comment.createRoute(itemId))
                     }
@@ -188,7 +189,7 @@ fun MainScreen(
             }
 
             composable(AppRoute.PhilosopherType.route) {
-                PhilosopherTypeScreen(onBackClick = { mainNavController.popBackStack() })
+                PhilosopherTypeScreen(onBackClick = dropUnlessResumed { mainNavController.popBackStack() })
             }
 
             composable(
@@ -199,14 +200,14 @@ fun MainScreen(
             ) { backStackEntry ->
                 val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
                 NoticeEventScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     initialNoticeId = noticeId
                 )
             }
 
             composable(AppRoute.Setting.route) {
                 SettingScreen(
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
                     onNavigateToSettingProfile = { rootNavController.navigate(AppRoute.SettingProfile.route) },
                     onNavigateToSettingAlarm = { rootNavController.navigate(AppRoute.SettingAlarm.route) },
                     onNavigateToPrivacyPolicy = { rootNavController.navigate(AppRoute.PrivacyPolicy.route) },

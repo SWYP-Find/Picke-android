@@ -230,7 +230,7 @@ fun ProfileSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = profileImage ?: R.drawable.illust_mengzi,
+            model = profileImage,
             modifier = Modifier.size(52.dp),
         )
 

@@ -228,6 +228,16 @@ fun onAction(action: ClassShareUiAction) {
   - Action으로 바뀌는 상태가 없는 화면(모든 Action이 화면 이동·공유 같은 부수 효과뿐)은 `reduce(state, action)`과
     `handleSideEffect`를 두지 않고 `onAction`의 `when`에서 바로 처리합니다 (위 `ClassShareViewModel` 예시 형태).
     불러오기 결과용 `reduce(state, mutation)`은 그대로 둡니다. 상태를 바꾸는 Action이 생기면 그때 아래 형태로 바꿉니다.
+  - 선언·분기 순서
+    - `XxxUiAction`: `sealed interface StateOnly`·`SideEffectOnly`를 가장 먼저 선언하고, 그 뒤 Action은 화면 영역(화면 본문 →
+      단계 → 시트 → 다이얼로그) 순서, 같은 영역 안은 화면 배치 순서(위 → 아래)로 둡니다. 종류(StateOnly·SideEffectOnly·직접 구현)는
+      줄 끝의 구현 타입으로 드러나므로 종류별로 모으지 않습니다.
+    - `XxxUiEvent`: 이동(`NavigateBack` 먼저, 나머지는 Action 순서) → 그 밖(토스트·공유 등) 순서로 둡니다.
+    - `reduce(state, action)`·`handleSideEffect`의 `when`은 `XxxUiAction` 선언 순서대로 씁니다
+      (`is SideEffectOnly -> state`·`is StateOnly -> Unit` 한 줄 처리가 맨 앞).
+  - 빈 줄: `XxxUiAction`·`XxxUiEvent`·`XxxMutation` 선언과 모든 `when`(reduce·handleSideEffect·Screen의 `uiEvent` 처리)은
+    항목·분기 사이마다 빈 줄을 하나씩 둡니다. 빈 줄로 묶음을 표시하지 않습니다.
+  - 상태 변경은 Reducer에 인라인으로 쓰고, private 함수로는 서버 요청·불러오기만 뺍니다(줄 길이 때문에 빼지 않음).
   - `onAction`은 아래 형태로 씁니다. 부수 효과는 상태가 바뀌기 **전** 상태로 판단합니다.
     `reduce`·`handleSideEffect`의 `when` 모두 `else`를 쓰지 않습니다.
     ```kotlin
@@ -244,8 +254,20 @@ fun onAction(action: ClassShareUiAction) {
   - `XxxUiModel.kt`: UiModel 하나당 파일 하나로 두고, 그 UiModel의 `fun XxxBoard.toUiModel()` 매퍼를 같은 파일에 둡니다
     (매퍼는 ViewModel 안에 두지 않음, 예: `classcreate/model/ClassMethodGuideUiModel.kt`).
   - `XxxTypes.kt`: `enum class`처럼 화면에서 쓰는 타입 값을 모읍니다 (예: `classcreate/model/ClassCreateTypes.kt`).
+  - 화면 안에서만 쓰는 data class(화면 변형별 스타일 값 등)도 Screen 파일에 private으로 두지 않고 `model/XxxYyy.kt`에
+    `internal`로 둡니다. 그 값을 계산하는 함수도 매퍼처럼 같은 파일에 둡니다
+    (예: `vote/model/VoteScreenStyle.kt`의 `VoteScreenStyle` + `voteScreenStyle()`).
+  - 다른 feature의 화면·컴포넌트에 넘기는 파라미터 타입은 그 화면·컴포넌트를 정의한 feature의 `model/`에 둡니다
+    (예: `ClassVoteScreen`이 `VoteScreen`에 넘기는 `vote/model/VoteClassInfoUiModel`). 정의한 쪽이 쓰는 쪽을 import하지 않게
+    하려는 것으로, Preview에서도 쓰는 쪽 feature의 매퍼·모델을 직접 import하지 않고 `DummyData` 값을 씁니다.
   - 같은 feature의 여러 화면이 같이 쓰는 UiModel은 `ui/<feature>/model/XxxUiModel.kt`에 둡니다
     (예: `classroom/model/ClassBattleUiModel.kt`).
+- 특정 화면·feature와 상관없는 범용 함수(텍스트 강조·포맷 등)는 화면 파일에 private으로 두지 않고 `presentation/util/`에 둡니다
+  (예: `util/AnnotatedStringExt.kt`의 `appendHighlighted()`, `util/StringFormatter.kt`).
+  - 숫자·시간 서식(`"%.1f"`, `"%,d"`, `"%d:%02d"` 등)은 상수로 두지 않고 `util/StringFormatter.kt`에 `formatXxx()` 함수로 두고
+    호출부는 함수만 부릅니다 (예: `formatRate()`, `formatCount()`, `formatTime()`).
+  - 서식 문자열은 `strings.xml`에 두지 않습니다. 단위·기호처럼 화면 문구가 붙는 부분만 리소스로 두고, 서식 함수 결과를 인자로 넘깁니다
+    (예: `stringResource(R.string.class_result_rate, formatRate(rate))`, 리소스 값은 `%1$s%%`).
 
 ### Presentation: Compose 화면 구조
 
@@ -276,8 +298,10 @@ fun onAction(action: ClassShareUiAction) {
   ├── myclass/       Screen, ViewModel, Reducer, component/, model/
   ├── classdetail/   Screen, ViewModel, Reducer, component/, model/
   ├── classmember/   Screen, ViewModel, Reducer, component/, model/
-  ├── classbattle/   Screen, ViewModel, Reducer, model/
-  └── classresult/   Screen, ViewModel, Reducer, model/
+  ├── classvote/     Screen, ViewModel, Reducer, model/   # AI 배틀 사전·최종 투표 (UI는 vote/VoteScreen 재사용)
+  ├── classdebate/   Screen, ViewModel, Reducer, component/, model/
+  ├── classresult/   Screen, ViewModel, Reducer, component/, model/
+  └── classmyopinion/ Screen, ViewModel, Reducer, component/, model/   # 결과의 "내가 남긴 의견"
   ```
 - 독립 화면(하위 패키지 + 자기 route·ViewModel)과 한 화면 안의 단계(`step/`)는 이렇게 구분합니다.
   - 정의: **하나의 제출(서버 요청)을 만들기 위해 값을 나눠 받는 구간은 한 화면의 단계**, **그 제출과 상관없이 키(id)만으로
@@ -293,13 +317,12 @@ fun onAction(action: ClassShareUiAction) {
   `Text` + `clickable`처럼 기존 컴포넌트와 같은 역할을 직접 다시 그리지 않습니다. 맞는 컴포넌트가 없을 때만 새로 만듭니다.
 - 컴포넌트 위치: 한 화면만 쓰면 그 화면의 `component/`, 같은 feature의 여러 화면이 쓰면 `ui/<feature>/component/`,
   다른 feature도 쓰면 `ui/component/`.
-  - 별도 파일(`component/`)로 뺄지, Screen·Step 파일 안의 `private` Composable로 둘지는 이렇게 정합니다.
-    - `component/` 파일: 자기 상태·변형이 있어 혼자 Preview할 의미가 있는 UI 조각 (카드, 칩, 탭, 입력 박스, 시트 등.
-      예: `classjoin/component/ClassCodeBox`, `classcreate/component/ClassMethodCard`)
-    - 같은 파일의 `private` Composable: 상태·변형 없이 그 Step·Section의 배치를 나누려고 뺀 조각 (스타일만 정한 제목 한 줄 등.
-      예: `ClassResultScreen`의 `ClassResultBlockTitle`). 따로 Preview를 두지 않습니다.
-    - 선택 파라미터에 따라 모양이 달라지면(버튼 문구가 있을 때만 표시 등) 변형이 있는 것으로 보고 `component/`로 뺍니다
-      (예: `classdetail/component/ClassDetailInfoRow`).
+  - Screen 파일에는 Screen·Content·Section만, Step 파일에는 Step 함수만 둡니다.
+    - Section·Step 안에서 그리는 UI 조각은 크기·변형과 상관없이 `component/` 파일로 빼고 Preview를 둡니다
+      (예: `classresult/component/ClassResultMyVoteCard`, `classroom/component/ClassTitledBlock`).
+    - `component/` 파일 안에서 그 컴포넌트만 쓰는 하위 조각(카드의 한 행, 차트 등)은 그 파일의 `private` Composable로 두고,
+      따로 Preview를 두지 않습니다 (부모 컴포넌트 Preview로 확인. 예: `ClassResultParticipationCard`의 `ClassResultParticipationRow`).
+    - Composable이 아닌 private 함수(문자열 리소스 고르기 등)는 Screen·Step 파일에 둬도 됩니다.
     - 기존 코드는 손대는 김에 맞춥니다.
   - 여러 파일로 이루어진 컴포넌트(시트 + 하위 컴포넌트 + state holder 등)는 `component/<기능>/` 하위 패키지로 묶습니다
     (예: `classcreate/component/deadline/`의 `ClassDeadlineSheet`, `ClassWheelPicker`, `ClassDeadlinePickerState`).
@@ -308,6 +331,19 @@ fun onAction(action: ClassShareUiAction) {
 - 한 화면 안에서 단계(step)가 바뀌는 화면(예: `ClassCreateScreen`)은 단계별 UI를 `step/XxxStep.kt`에 `internal`
   Composable로 나누고 단계마다 Preview를 둡니다. Screen 파일에는 Scaffold, 공통 헤더·하단 버튼, 단계 전환만 둡니다.
 - 모든 Screen은 Screen/Content를 분리합니다. Preview는 Content부터 아래 단계에 둡니다.
+- 화면 바깥 틀(Scaffold / Column)은 이렇게 고릅니다.
+  - `Scaffold`는 아래 중 하나라도 해당할 때만 씁니다.
+    - 본문과 따로 고정되는 하단 영역(다음 버튼, 입력창 등)이 있어 `bottomBar`가 필요할 때
+    - 스낵바·FAB 슬롯이 필요할 때
+    - 스크롤에 따라 상단 바가 접히는 동작(`TopAppBarScrollBehavior`)이 필요할 때
+    - 하단 탭 바를 두는 공통 틀일 때 (`MainScreen`, `ClassTabScaffold`)
+  - 위에 해당하지 않으면 `Column`에 상단 바 → 본문(`Modifier.weight(1f)` + 스크롤) 순서로 둡니다.
+    상단 바가 있다는 이유만으로 `Scaffold`를 쓰지 않습니다 (`Column`에서도 상단 바는 스크롤 영역 밖이라 고정됨).
+  - 시스템 바 여백은 한 곳에서만 처리합니다.
+    - `ClassTabScaffold`처럼 여백을 처리하는 틀 안의 화면은 받은 `modifier`만 쓰고 시스템 바 여백을 다시 주지 않습니다.
+    - 그 안에서 `Scaffold`를 쓰면 `contentWindowInsets = WindowInsets(0.dp)`로 여백 중복을 막습니다.
+    - 감싸는 틀 없이 루트에 등록된 화면은 화면이 직접 시스템 바 여백을 줍니다.
+  - 기존 화면은 일괄로 바꾸지 않고 손대는 김에 맞춥니다.
 - 바텀시트처럼 한 컴포넌트 안에서만 쓰는 임시 상태(확인 전까지 화면 UiState에 반영하지 않는 값)가 복잡하면
   `XxxState` 클래스 + `rememberXxxState()`(state holder)로 분리합니다 (예: `ClassDeadlinePickerState`).
   상태 값은 `mutableStateOf` + `private set`, 변경은 함수로만 하고, 회전 복원이 필요하면 `Saver`를 둡니다.
@@ -329,6 +365,9 @@ fun onAction(action: ClassShareUiAction) {
   - `content` 같은 Composable 람다는 맨 마지막에 둡니다.
   - 예: `Button(onClick, modifier, enabled, shape, colors, content)`
   - 기존 컴포넌트(`CustomButton`, `CustomTopAppBar` 등)는 호출부를 함께 바꿔야 하므로 별도 작업으로 정리합니다.
+- 파라미터 타입에 `Any`·`Any?`를 쓰지 않습니다. 여러 형태를 받아야 하면 구체 타입으로 나눕니다
+  (예: 이미지 `avatarUrl: String?` + `@DrawableRes defaultAvatarRes: Int`, `ui/component/ChatBubble`).
+  기존 `ProfileImage(model: Any?)`처럼 이미 `Any`를 받는 컴포넌트는 호출부를 함께 바꿔야 하므로 별도 작업으로 정리합니다.
 - 네비게이션은 기존 문자열 route + `navArgument` 방식(`AppRoute`)을 유지합니다.
   - 내비게이션 인자 이름은 `AppRoute`의 `companion object`에 `const val ARG_XXX`로 한 번만 정의하고, route 문자열
     (`"class_detail_screen/{$ARG_CLASS_ID}"`), `navArgument(AppRoute.ARG_CLASS_ID)`, ViewModel의
@@ -408,7 +447,7 @@ fun onAction(action: ClassShareUiAction) {
   손대지 않는 기존 파일은 일괄로 바꾸지 않습니다.
 - **주석은 기본적으로 달지 않습니다.** 주석 없이는 이해하기 어렵거나, 특이한 상황이거나, 특별한 이슈가 있는
   곳만 후보로 보고, **추가하기 전에 위치와 문구를 보여 주고 물어본 뒤** 승인받은 것만 한국어 `//`로 "왜"를 적습니다.
-  KDoc을 달지 않습니다. 기존 주석은 일괄로 지우지 않습니다.
+  KDoc을 달지 않습니다.
 - **타이포그래피는 `PickeTheme.typography`의 Figma 대응 토큰만 사용합니다.** (`ui/theme/Type.kt`)
   - 토큰은 Figma의 소문자 텍스트 스타일(`display/`, `heading/`, `body/`, `caption/`)과 1:1이며, 이름은 경로를
     camelCase로 옮긴 것입니다 (`body/sm/semibold` → `bodySmSemiBold`). 대문자 `Headings/`·`Body/`·`Caption/`,
@@ -420,7 +459,7 @@ fun onAction(action: ClassShareUiAction) {
     `contentDescription` 모두 해당합니다.
   - 리소스 이름은 `<화면/기능>_<용도>` 형식(`terms_sheet_title`, `policy_load_error`), 같은 화면 것은
     `<!-- 섹션 -->` 주석 아래에 모읍니다. 의미가 같으면 기존 리소스를 재사용합니다.
-  - 예외: 로그 메시지, 분석 이벤트 이름·속성 값, Preview 함수 안의 샘플 값.
+  - 예외: 로그 메시지, 분석 이벤트 이름·속성 값, Preview 함수 안의 샘플 값, 숫자·시간 서식 문자열(`util/StringFormatter.kt`).
 - **색상은 하드코딩하지 않고 `PickeTheme.colors`로만 사용합니다.** (`ui/theme/PickeColors.kt`)
   - `PickeColors` 항목 이름은 Figma 변수 경로를 camelCase로 옮긴 것으로, 생성 토큰(`tokens/`) 이름과 같습니다
     (`text/default` → `textDefault`, `border/beige/default` → `borderBeigeDefault`, `primary/500` → `primary500`).

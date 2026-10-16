@@ -3,7 +3,6 @@ package com.picke.presentation.ui.classroom.classcreate.component.deadline
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -79,9 +78,9 @@ private fun ClassDeadlineSheetContent(
         CustomButton(
             text = stringResource(R.string.class_deadline_sheet_confirm),
             onClick = { onConfirm(pickerState.selectedDeadline) },
-            modifier = Modifier.height(ComponentNumberTokens.buttonPrimaryLargeHeight),
             backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault
+            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
+            minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }
 }

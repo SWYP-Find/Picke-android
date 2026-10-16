@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,9 +56,12 @@ import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
 import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.todaybattle.component.OpinionCard
 import com.picke.presentation.ui.todaybattle.component.TodayBattleSkeleton
 import com.picke.presentation.ui.todaybattle.component.TopIndicatorBar
@@ -205,20 +207,12 @@ fun TodayBattleScreen(
         ) {
             TodayBattleSkeleton(modifier = Modifier.fillMaxSize())
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(40.dp)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+            Box(modifier = Modifier.statusBarsPadding()) {
+                CustomTopAppBar(
+                    onBackClick = onBackClick,
+                    backgroundColor = Color.Transparent,
+                    backIconColor = PickeTheme.colors.textInverse
+                )
             }
         }
 
@@ -231,19 +225,12 @@ fun TodayBattleScreen(
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(20.dp)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White
-                    )
-                }
+            Box(modifier = Modifier.statusBarsPadding()) {
+                CustomTopAppBar(
+                    onBackClick = onBackClick,
+                    backgroundColor = Color.Transparent,
+                    backIconColor = PickeTheme.colors.textInverse
+                )
             }
 
             Column(
@@ -319,44 +306,35 @@ fun TodayBattleScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
                 ) {
                     if (battleList.size > 1) {
-                        TopIndicatorBar(
-                            currentPage = pagerState.currentPage,
-                            totalPages = battleList.size
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier.padding(
+                                start = SpacingTokens.s16,
+                                top = SpacingTokens.s16,
+                                end = SpacingTokens.s16
+                            )
+                        ) {
+                            TopIndicatorBar(
+                                currentPage = pagerState.currentPage,
+                                totalPages = battleList.size
+                            )
+                        }
                     }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = onBackClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_arrow_left),
-                                contentDescription = "뒤로가기",
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
+                    CustomTopAppBar(
+                        onBackClick = onBackClick,
+                        backgroundColor = Color.Transparent,
+                        backIconColor = PickeTheme.colors.textInverse,
+                        actions = {
+                            CustomTopAppBarAction(
+                                iconRes = R.drawable.ic_share,
+                                contentDescription = stringResource(R.string.top_app_bar_share),
+                                onClick = { showShareDialog = true },
+                                tint = PickeTheme.colors.textInverse
                             )
                         }
-                        IconButton(
-                            onClick = { showShareDialog = true },
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = "공유",
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
+                    )
                 }
             }
         }

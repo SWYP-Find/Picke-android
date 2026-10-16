@@ -4,6 +4,14 @@ import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
+import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyReplyUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultStanceUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
@@ -721,7 +729,8 @@ object DummyData {
                 ClassBattleOptionUiModel(stance = "비난할 수 있다", subText = "사회적 공감도 중요하다"),
                 ClassBattleOptionUiModel(stance = "유지해야 한다", subText = "연령과 교정 가능성 고려")
             ),
-            isAiQuestion = true
+            isAiQuestion = true,
+            commentCount = 23
         ),
         ClassBattleUiModel(
             battleId = 202L,
@@ -754,7 +763,7 @@ object DummyData {
             "촉법소년 연령을 낮춰야 할까?",
             true,
             32,
-            "2026. 11. 23. 월요일 20:00까지",
+            LocalDateTime.of(2026, 11, 23, 20, 0),
             isOperator = true
         ),
         MyClassUiModel(
@@ -763,7 +772,7 @@ object DummyData {
             "인간은 본래 선한가?",
             true,
             13,
-            "2026. 10. 11. 일요일 23:59까지",
+            LocalDateTime.of(2026, 10, 11, 23, 59),
             isOperator = false
         ),
         MyClassUiModel(
@@ -772,8 +781,173 @@ object DummyData {
             "무지는 죄인가?",
             false,
             4,
-            "2026. 09. 23. 수요일 18:00까지",
+            LocalDateTime.of(2026, 9, 23, 18, 0),
             isOperator = false
         )
     )
+
+    val dummyClassResultSummary = ClassResultSummaryUiModel(
+        aiInsight = "처음에는 처벌을 강화해야 한다는 의견이 많았지만, 대화 후에는 교정과 보호를 함께 봐야 한다는 의견이 늘어났어요.",
+        memberCount = 32,
+        participatedCount = 28,
+        commentedCount = 24,
+        stances = listOf(
+            ClassResultStanceUiModel(label = "낮춰야 한다", count = 18),
+            ClassResultStanceUiModel(label = "교정이 우선이다", count = 10)
+        ),
+        bestComment = "처벌만 강화하면 아이들이 다시 사회로 돌아올 길이 더 좁아진다고 생각해요.",
+        mostDebatedComment = "피해자의 고통을 생각하면 나이와 상관없이 책임을 지게 해야 한다고 생각해요."
+    )
+
+    val dummyClassResultReport = ClassResultReportUiModel(
+        preVoteStance = "낮춰야 한다",
+        postVoteStance = "교정이 우선이다",
+        commentCount = 1,
+        replyCount = 2,
+        receivedLikeCount = 12,
+        judgmentBasis = "마지막 의견에서는 재범을 줄이는 방법으로 교육과 보호를 중요하게 봤어요.",
+        strength = "“처벌만으로는 해결되지 않는다”는 반대 의견에 그치지 않고, 교육과 보호라는 대안을 제시했어요. 해결 방법까지 논의를 이어 간 점이 좋았어요.",
+        improvement = "교육과 보호가 어떤 상황에서 효과적일지는 아직 설명되지 않았어요. 대안을 제시한 만큼, 그 대안이 효과를 낼 조건을 덧붙이면 주장이 더 분명해져요.",
+        nextThought = "교육과 보호가 재범을 줄이려면, 어떤 조건이 가장 먼저 갖춰져야 할까요?"
+    )
+
+    val dummyClassMyComments = listOf(
+        ClassMyCommentUiModel(
+            commentId = 1L,
+            stance = "낮춰야 한다",
+            content = "처벌만 강화하면 재범을 막기 어렵다고 생각해요. 교육과 보호가 함께 가야 해요.",
+            likeCount = 1340,
+            replyCount = 23
+        )
+    )
+
+    val dummyClassMyReplies = listOf(
+        ClassMyReplyUiModel(
+            replyId = 1L,
+            parentAuthorName = "김민지",
+            parentStance = "교정이 우선이다",
+            parentContent = "나이가 어리다는 이유만으로 책임을 덜어 주면 피해자는 누가 보호하나요?",
+            authorName = "공은지",
+            content = "피해자 보호도 중요하지만, 교정이 이루어져야 같은 피해가 다시 생기지 않는다고 생각해요."
+        ),
+        ClassMyReplyUiModel(
+            replyId = 2L,
+            parentAuthorName = "이서준",
+            parentStance = "낮춰야 한다",
+            parentContent = "요즘 청소년 범죄는 예전보다 훨씬 계획적이에요.",
+            authorName = "공은지",
+            content = "계획적인 범죄라면 처벌 기준을 따로 두는 방법도 함께 생각해 볼 수 있을 것 같아요."
+        )
+    )
+
+    val dummyClassAiBattleDetail = BattleDetailUiModel(
+        battleInfo = BattleInfoUiModel(
+            battleId = "201",
+            title = "슬픔을 드러내지 않은 뫼르소를 비난할 수 있을까?",
+            summary = "감정을 표현하지 않는 태도를 도덕적으로 판단할 수 있는지 이야기해요.",
+            thumbnailUrl = "",
+            viewCount = 0,
+            participantsCount = 0,
+            audioDuration = 0,
+            tags = listOf(BattleTagBoard("class_tag_1", "도덕", "CATEGORY")),
+            options = listOf(
+                BattleOptionUiModel(
+                    optionId = "201_1",
+                    title = "비난할 수 있다",
+                    stance = "PRO",
+                    representative = "사회적 공감도 중요하다",
+                    imageUrl = "",
+                    tags = emptyList()
+                ),
+                BattleOptionUiModel(
+                    optionId = "201_2",
+                    title = "유지해야 한다",
+                    stance = "CON",
+                    representative = "연령과 교정 가능성 고려",
+                    imageUrl = "",
+                    tags = emptyList()
+                )
+            )
+        ),
+        description = "감정을 표현하지 않는 태도를 도덕적으로 판단할 수 있는지 이야기해요.",
+        shareUrl = "",
+        userVoteStatus = "",
+        currentStep = "",
+        categoryTags = emptyList(),
+        philosopherTags = emptyList(),
+        valueTags = emptyList()
+    )
+
+    val dummyClassBattleByClassId = mapOf(
+        1L to dummyClassBattles[0],
+        2L to dummyClassAiQuestions[0],
+        3L to dummyClassBattles[2]
+    )
+
+    val dummyClassDebateOpponentName = "플라톤"
+
+    val dummyClassDebateOpening = listOf(
+        ClassDebateMessageUiModel(
+            messageId = 1L,
+            speaker = ClassDebateSpeaker.OPPONENT,
+            text = "감정을 겉으로 드러내지 않았다고 해서 그 사람을 비난할 수는 없습니다."
+        ),
+        ClassDebateMessageUiModel(
+            messageId = 2L,
+            speaker = ClassDebateSpeaker.OPPONENT,
+            text = "슬픔은 저마다의 방식으로 존재하고, 눈물만이 그 증거는 아닙니다."
+        ),
+        ClassDebateMessageUiModel(
+            messageId = 3L,
+            speaker = ClassDebateSpeaker.OPPONENT,
+            text = "보이는 모습만으로 마음을 판단하는 것은 진리를 놓치는 일입니다."
+        )
+    )
+
+    val dummyClassDebateMyMessage = ClassDebateMessageUiModel(
+        messageId = 4L,
+        speaker = ClassDebateSpeaker.ME,
+        text = "하지만 장례식처럼 함께 슬퍼하는 자리에서는 최소한의 공감을 보여야 하지 않을까요?"
+    )
+
+    val dummyClassDebateReplies = listOf(
+        listOf(
+            ClassDebateMessageUiModel(
+                messageId = 5L,
+                speaker = ClassDebateSpeaker.OPPONENT,
+                text = "공감을 보여야 한다는 요구는 결국 남의 눈에 맞춘 연기를 강요하는 것 아닐까요?"
+            )
+        ),
+        listOf(
+            ClassDebateMessageUiModel(
+                messageId = 6L,
+                speaker = ClassDebateSpeaker.OPPONENT,
+                text = "사회의 약속이 중요하더라도, 그 약속을 지키지 않았다는 이유로 마음까지 단정할 수는 없습니다."
+            )
+        ),
+        listOf(
+            ClassDebateMessageUiModel(
+                messageId = 7L,
+                speaker = ClassDebateSpeaker.OPPONENT,
+                text = "좋은 토론이었습니다. 이제 최종 투표로 당신의 생각을 정리해 보세요."
+            )
+        )
+    )
+
+    val dummyClassDebateQuickReplies = listOf(
+        "장례식에선 예의가 필요해요",
+        "공감은 사회의 약속이에요",
+        "태도도 하나의 표현이에요"
+    )
+
+    val dummyClassMembers = listOf(
+        ClassMemberUiModel(1L, "김선생", null, isOperator = true, isMe = true),
+        ClassMemberUiModel(2L, "공은지", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(3L, "권동현", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(4L, "김민지", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(5L, "천다올", null, isOperator = false, isMe = false),
+        ClassMemberUiModel(6L, "유시영", null, isOperator = false, isMe = false)
+    )
+
+    val dummyParticipantClassMembers = dummyClassMembers.map { member -> member.copy(isMe = member.memberId == 3L) }
 }

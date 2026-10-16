@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.FeatureFlags
 import com.picke.presentation.util.formatSpeed
 import com.picke.presentation.util.formatTime
 
@@ -128,12 +127,10 @@ fun AudioPlayerBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            if (FeatureFlags.SCENARIO_SPEED_REPLAY_ENABLED) {
-                PlaybackSpeedButton(
-                    speed = playbackSpeed,
-                    onClick = onSpeedClick
-                )
-            }
+            PlaybackSpeedButton(
+                speed = playbackSpeed,
+                onClick = onSpeedClick
+            )
 
             Row(
                 modifier = Modifier.weight(1f),
@@ -175,27 +172,25 @@ fun AudioPlayerBar(
                 )
             }
 
-            if (FeatureFlags.SCENARIO_SPEED_REPLAY_ENABLED) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { onReplayClick() }
-                        .widthIn(min = 40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_replay),
-                        contentDescription = null,
-                        tint = PickeTheme.colors.textDefault,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.scenario_audio_replay),
-                        style = PickeTheme.typography.bodyXxsMedium,
-                        color = PickeTheme.colors.textMuted,
-                        textAlign = TextAlign.Center
-                    )
-                }
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onReplayClick() }
+                    .widthIn(min = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_replay),
+                    contentDescription = null,
+                    tint = PickeTheme.colors.textDefault,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = stringResource(R.string.scenario_audio_replay),
+                    style = PickeTheme.typography.bodyXxsMedium,
+                    color = PickeTheme.colors.textMuted,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }

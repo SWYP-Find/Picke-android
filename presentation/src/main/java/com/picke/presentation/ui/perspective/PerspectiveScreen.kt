@@ -256,14 +256,14 @@ fun PerspectiveScreenContent(
                 CustomTabBar(
                     tabs = tabList,
                     selectedTab = tabList[pagerState.currentPage],
-                    isScrollable = tabList.size > 3,
                     onTabSelected = { selected ->
                         val targetIndex = tabList.indexOf(selected)
                         coroutineScope.launch { pagerState.animateScrollToPage(targetIndex) }
                         val optionId =
                             if (targetIndex == 0) null else voteOptions.getOrNull(targetIndex - 1)?.optionId
                         onSelectOption(optionId)
-                    }
+                    },
+                    isScrollable = tabList.size > 3
                 )
             }
 

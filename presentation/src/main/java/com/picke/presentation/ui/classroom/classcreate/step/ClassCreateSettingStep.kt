@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
-import com.picke.presentation.ui.classroom.component.ClassFormField
 import com.picke.presentation.ui.classroom.component.ClassTextField
+import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.CustomToggle
 import com.picke.presentation.ui.theme.PickeTheme
@@ -53,7 +53,7 @@ internal fun ClassCreateSettingStep(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32)
     ) {
-        ClassFormField(
+        ClassTitledBlock(
             title = stringResource(R.string.class_setting_name_label),
             isRequired = true,
             contentSpacing = SpacingTokens.s8
@@ -84,7 +84,7 @@ internal fun ClassCreateSettingStep(
         }
 
         uiState.selectedBattle?.let { battle ->
-            ClassFormField(title = stringResource(R.string.class_setting_selected_battle)) {
+            ClassTitledBlock(title = stringResource(R.string.class_setting_selected_battle)) {
                 ClassBattleCard(battle = battle)
             }
         }

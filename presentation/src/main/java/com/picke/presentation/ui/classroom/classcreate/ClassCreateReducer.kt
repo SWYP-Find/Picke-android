@@ -10,6 +10,8 @@ private const val MAX_CATEGORY_COUNT = 3
 
 internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): ClassCreateUiState =
     when (action) {
+        is ClassCreateUiAction.SideEffectOnly -> state
+
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
         ClassCreateUiAction.NextClick -> state.copy(step = state.nextStep ?: state.step)
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
@@ -22,7 +24,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         is ClassCreateUiAction.CategorySelect -> state.copy(selectedCategories = state.selectedCategories.toggle(action.category))
 
         is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
-        is ClassCreateUiAction.BattlePreviewClick -> state
         ClassCreateUiAction.RegenerateClick -> state.copy(selectedBattleId = null)
 
         is ClassCreateUiAction.ClassNameChange -> state.copy(className = action.name)

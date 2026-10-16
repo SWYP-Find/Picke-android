@@ -1,4 +1,4 @@
-﻿package com.picke.presentation.ui.component
+package com.picke.presentation.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,43 +16,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object CustomTabBarDimens {
+    val dividerThickness = 2.dp
+}
 
 @Composable
 fun CustomTabBar(
-    modifier: Modifier = Modifier,
     tabs: List<String>,
     selectedTab: String,
-    isScrollable: Boolean = false,
-    onTabSelected: (String) -> Unit
+    onTabSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    isScrollable: Boolean = false
 ) {
-    // 등분(비스크롤) 모드에서는 화면을 탭 개수만큼 균등 분할하므로, 탭이 많을 때(예: 탐색탭 7개)
-    // 좌우 패딩이 크면 좁은 화면에서 글자가 줄바꿈된다. 비스크롤일 때는 패딩을 줄여 모두 한 줄에 보이게 한다.
-    val tabHorizontalPadding = if (isScrollable) 16.dp else 4.dp
+    val tabHorizontalPadding = if (isScrollable) SpacingTokens.s16 else SpacingTokens.s4
     val tabContent: @Composable () -> Unit = {
         tabs.forEach { tab ->
+            val textColor =
+                if (selectedTab == tab) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted
+            val fontWeight = if (selectedTab == tab) FontWeight.Bold else FontWeight.Normal
+
             Box(
                 modifier = Modifier
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints.copy(minWidth = 0))
-                        layout(placeable.width, placeable.height) {
-                            placeable.placeRelative(0, 0)
-                        }
+                        layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
                     }
                     .selectable(
                         selected = selectedTab == tab,
                         onClick = { onTabSelected(tab) }
                     )
-                    .padding(horizontal = tabHorizontalPadding, vertical = 16.dp),
+                    .padding(horizontal = tabHorizontalPadding, vertical = SpacingTokens.s16),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = tab,
-                    style = PickeTheme.typography.bodySmMedium,
-                    color = if(selectedTab == tab) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
-                    fontWeight = if(selectedTab == tab) FontWeight.Bold else FontWeight.Normal,
-                    maxLines = 1
+                    color = textColor,
+                    fontWeight = fontWeight,
+                    maxLines = 1,
+                    style = PickeTheme.typography.bodySmMedium
                 )
             }
         }
@@ -60,34 +66,69 @@ fun CustomTabBar(
 
     if (isScrollable) {
         ScrollableTabRow(
-            modifier = modifier.fillMaxWidth(),
             selectedTabIndex = tabs.indexOf(selectedTab),
+            modifier = modifier.fillMaxWidth(),
             containerColor = Color.Transparent,
-            edgePadding = 0.dp,
+            edgePadding = SpacingTokens.s0,
             indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabs.indexOf(selectedTab)]),
-                    color = PickeTheme.colors.primary500,
+                    color = PickeTheme.colors.primary500
                 )
             },
-            divider = { HorizontalDivider(color = PickeTheme.colors.surfaceBeigeStrong, thickness = 2.dp) }
+            divider = {
+                HorizontalDivider(
+                    thickness = CustomTabBarDimens.dividerThickness,
+                    color = PickeTheme.colors.surfaceBeigeStrong
+                )
+            }
         ) {
             tabContent()
         }
     } else {
         TabRow(
-            modifier = modifier.fillMaxWidth(),
             selectedTabIndex = tabs.indexOf(selectedTab),
+            modifier = modifier.fillMaxWidth(),
             containerColor = Color.Transparent,
             indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabs.indexOf(selectedTab)]),
-                    color = PickeTheme.colors.primary500,
+                    color = PickeTheme.colors.primary500
                 )
             },
-            divider = { HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 2.dp) }
+            divider = {
+                HorizontalDivider(
+                    thickness = CustomTabBarDimens.dividerThickness,
+                    color = PickeTheme.colors.borderBeigeDefault
+                )
+            }
         ) {
             tabContent()
         }
+    }
+}
+
+@Preview(name = "고정 탭", showBackground = true)
+@Composable
+private fun CustomTabBarPreview() {
+    PickeTheme {
+        CustomTabBar(
+            tabs = listOf("클래스 요약", "내 리포트"),
+            selectedTab = "클래스 요약",
+            onTabSelected = {}
+        )
+    }
+}
+
+@Preview(name = "스크롤 탭", showBackground = true)
+@Composable
+private fun CustomTabBarScrollablePreview() {
+    PickeTheme {
+        CustomTabBar(
+            tabs = listOf("전체", "철학", "사회", "문학", "과학", "예술", "역사"),
+            selectedTab = "사회",
+            isScrollable = true,
+            onTabSelected = {}
+        )
     }
 }

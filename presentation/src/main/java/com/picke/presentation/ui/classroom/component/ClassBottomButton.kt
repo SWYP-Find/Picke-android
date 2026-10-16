@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,14 +42,14 @@ fun ClassBottomButton(
         CustomButton(
             text = text,
             onClick = onClick,
-            modifier = Modifier.height(ComponentNumberTokens.buttonPrimaryLargeHeight),
             backgroundColor = if (enabled) {
                 PickeTheme.colors.buttonPrimaryBackgroundDefault
             } else {
                 PickeTheme.colors.buttonPrimaryBackgroundDisabled
             },
             textColor = PickeTheme.colors.buttonPrimaryTextDefault,
-            enabled = enabled
+            enabled = enabled,
+            minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }
 }

@@ -78,13 +78,13 @@ fun ContentActivityScreen(
             CustomTabBar(
                 tabs = tabs,
                 selectedTab = tabs[pagerState.currentPage],
-                isScrollable = false,
                 onTabSelected = { selectedTab ->
                     val targetPage = tabs.indexOf(selectedTab)
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(targetPage)
                     }
-                }
+                },
+                isScrollable = false
             )
 
             if (uiState.isLoading) {

@@ -21,13 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.analytics.TrackScreenViews
@@ -267,7 +267,7 @@ fun AppNavigation(
                 val battleId = backStackEntry.arguments?.getString("battleId")
                 TodayBattleScreen(
                     initialBattleId = battleId,
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNavigateToScenario = { id ->
                         rootNavController.navigate(AppRoute.Scenario.createRoute(id)) {
                             popUpTo(AppRoute.TodayBattle.route) { inclusive = true }
@@ -283,7 +283,7 @@ fun AppNavigation(
 
             composable(AppRoute.Alarm.route) {
                 AlarmScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNavigateToPreVote = { battleId ->
                         rootNavController.navigate(AppRoute.PreVote.createRoute(battleId))
                     },
@@ -315,14 +315,14 @@ fun AppNavigation(
             ) { backStackEntry ->
                 val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
                 NoticeEventScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     initialNoticeId = noticeId
                 )
             }
 
             composable(AppRoute.Point.route) {
                 PointScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNavigateToMakeBattle = {
                         rootNavController.navigate(AppRoute.MakeBattle.route)
                     }
@@ -331,17 +331,17 @@ fun AppNavigation(
 
             composable(AppRoute.MakeBattle.route) {
                 MakeBattleScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
                 )
             }
 
             composable(AppRoute.SettingAlarm.route) {
-                SettingAlarmScreen(onBackClick = { rootNavController.popBackStack() })
+                SettingAlarmScreen(onBackClick = dropUnlessResumed { rootNavController.popBackStack() })
             }
 
             composable(AppRoute.SettingProfile.route) {
-                SettingProfileScreen(onBackClick = { rootNavController.popBackStack() })
+                SettingProfileScreen(onBackClick = dropUnlessResumed { rootNavController.popBackStack() })
             }
 
             composable(
@@ -351,7 +351,7 @@ fun AppNavigation(
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
                 VoteRoute(
                     voteType = VoteType.PRE,
-                    onBackClick = {
+                    onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route) {
                             rootNavController.navigate(AppRoute.Main.createRoute()) {
@@ -377,7 +377,7 @@ fun AppNavigation(
                 val contentId = backStackEntry.arguments?.getString("battleId") ?: ""
                 ScenarioScreen(
                     battleId = contentId,
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNextClick = {
                         rootNavController.navigate(AppRoute.PostVote.createRoute(contentId)) {
                             popUpTo(AppRoute.Scenario.route) { inclusive = true }
@@ -393,7 +393,7 @@ fun AppNavigation(
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
                 VoteRoute(
                     voteType = VoteType.POST,
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onVoteSubmit = { submittedBattleId ->
                         rootNavController.navigate(
                             AppRoute.Perspective.createRoute(
@@ -419,8 +419,7 @@ fun AppNavigation(
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
                 val commentId = backStackEntry.arguments?.getString("commentId")
                 PerspectiveScreen(
-                    scrollToCommentId = commentId,
-                    onBackClick = {
+                    onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
                             rootNavController.navigate(AppRoute.Main.createRoute()) {
@@ -439,7 +438,8 @@ fun AppNavigation(
                         rootNavController.navigate(
                             AppRoute.Comment.createRoute(itemId, firstOptionId)
                         )
-                    }
+                    },
+                    scrollToCommentId = commentId
                 )
             }
 
@@ -455,7 +455,7 @@ fun AppNavigation(
             ) { backStackEntry ->
                 val commentId = backStackEntry.arguments?.getString("commentId")
                 CommentScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     scrollToCommentId = commentId
                 )
             }
@@ -465,11 +465,11 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) {
                 RecommendScreen(
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onCloseClick = {
                         analyticsTracker.trackContentAction(ContentActionType.BATTLE_RECOMMEND_CLOSE)
                         rootNavController.popBackStack(AppRoute.Main.route, inclusive = false)
                     },
-                    onBackClick = { rootNavController.popBackStack() },
                     onItemClick = { clickedBattleId ->
                         analyticsTracker.trackContentAction(
                             ContentActionType.BATTLE_CARD_TAP,
@@ -488,7 +488,7 @@ fun AppNavigation(
                 PolicyWebViewScreen(
                     titleRes = R.string.policy_title_privacy,
                     url = BuildConfig.PRIVACY_POLICY_URL,
-                    onBackClick = { rootNavController.popBackStack() }
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() }
                 )
             }
 
@@ -496,7 +496,7 @@ fun AppNavigation(
                 PolicyWebViewScreen(
                     titleRes = R.string.policy_title_terms,
                     url = BuildConfig.TERMS_OF_SERVICE_URL,
-                    onBackClick = { rootNavController.popBackStack() }
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() }
                 )
             }
 
@@ -507,7 +507,7 @@ fun AppNavigation(
                 val reportId = backStackEntry.arguments?.getString("reportId") ?: ""
                 PhilosopherTypeScreen(
                     reportId = reportId,
-                    onBackClick = {
+                    onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
                             rootNavController.navigate(AppRoute.Main.createRoute()) {
@@ -527,7 +527,7 @@ fun AppNavigation(
 
             composable(AppRoute.Withdraw.route) {
                 WithdrawScreen(
-                    onBackClick = { rootNavController.popBackStack() },
+                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onNavigateToLogin = {
                         rootNavController.navigate(AppRoute.Login.route) {
                             popUpTo(0) { inclusive = true }

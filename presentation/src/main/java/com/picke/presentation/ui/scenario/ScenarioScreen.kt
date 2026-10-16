@@ -27,12 +27,17 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.AudioPlayerBar
-import com.picke.presentation.ui.scenario.component.ChatBubble
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
+import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private object ScenarioScreenDimens {
+    val speakerGroupSpacing = 14.dp
+}
 
 @Composable
 fun ScenarioScreen(
@@ -150,7 +155,7 @@ fun ScenarioScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = SpacingTokens.s16),
             contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
@@ -164,10 +169,10 @@ fun ScenarioScreen(
                 val currentAudioScriptIndex = index - uiState.pastScripts.size
 
                 if (showAvatarAndName && index > 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
                 }
 
-                ChatBubble(
+                ScenarioChatBubble(
                     script = script,
                     isActive = uiState.isPlaying && if (isPastScript) {
                         index == uiState.activePastIndex

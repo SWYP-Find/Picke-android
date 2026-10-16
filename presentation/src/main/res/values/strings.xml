@@ -64,6 +64,8 @@
     <!-- tts & 투표  -->
     <string name="prevote">사전 투표하기</string>
     <string name="postvote">최종 투표하기</string>
+    <string name="vote_comment_count">댓글 수</string>
+    <string name="vote_submit">투표하기</string>
 
     <!-- 시나리오   -->
     <string name="scenario_go_to_final_vote">최종투표 하러가기</string>
@@ -185,6 +187,8 @@
     <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
     <string name="class_setting_deadline_placeholder">마감일</string>
     <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_deadline_full_format">yyyy. MM. dd. EEEE HH:mm</string>
+    <string name="class_deadline_until">%1$s까지</string>
     <string name="class_deadline_sheet_today">오늘</string>
     <string name="class_deadline_sheet_date_format">M월 d일 (E)</string>
     <string name="class_deadline_sheet_confirm">수정하기</string>
@@ -206,8 +210,20 @@
     <string name="class_share_code_copied">참여 코드를 복사했어요</string>
 
     <!-- 클래스 - 참여 -->
+    <string name="class_join_title">클래스 참여</string>
     <string name="class_join_action">클래스 참여하기</string>
+    <string name="class_join_headline">공유받은 코드로\n클래스에 참여하세요</string>
+    <string name="class_join_description">전달받은 %1$d자리 코드를 입력해 주세요.</string>
     <string name="class_join_code_label">참여 코드</string>
+    <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
+    <string name="class_join_name_count">%1$d/%2$d</string>
+
+    <!-- 클래스 - 이름 입력 시트 -->
+    <string name="class_name_sheet_title">이름을 입력해주세요</string>
+    <string name="class_name_sheet_description">이 클래스에서만 보이는 이름이에요.\n입장 후에도 수정할 수 있어요.</string>
+    <string name="class_name_sheet_enter">입장하기</string>
+    <string name="class_name_sheet_edit">수정하기</string>
+    <string name="class_name_sheet_edit_description">이 클래스에서만 보이는 이름이에요.</string>
 
     <!-- 클래스 - 내 클래스 -->
     <string name="my_class_title">내 클래스</string>
@@ -216,6 +232,16 @@
     <string name="my_class_status_ended">종료</string>
     <string name="my_class_member_count">멤버 %1$d명</string>
     <string name="my_class_view">보기</string>
+
+    <!-- 클래스 - 상세 -->
+    <string name="class_detail_title">클래스 상세</string>
+    <string name="class_detail_member">클래스 멤버</string>
+    <string name="class_detail_member_count">총 %1$d명이 참여하고 있어요</string>
+    <string name="class_detail_this_battle">이번 클래스 배틀</string>
+    <string name="class_detail_join_battle">배틀 참여</string>
+    <string name="class_detail_view_result">결과 보기</string>
+    <string name="class_detail_deadline_passed">참여 기간이 마감되었어요.</string>
+    <string name="class_detail_edit">수정</string>
 
     <!-- 클래스 - 관리 시트 -->
     <string name="class_manage_title">클래스 관리</string>
@@ -232,8 +258,71 @@
     <string name="class_leave_confirm">클래스에서 나가면 해당 클래스의 활동과 결과를 더 이상 확인할 수 없어요.</string>
     <string name="class_leave">나가기</string>
 
+    <!-- 클래스 - 멤버 -->
+    <string name="class_member_search_placeholder">이름을 입력해주세요.</string>
+    <string name="class_member_count">멤버 %1$d</string>
+    <string name="class_member_operator">운영자</string>
+    <string name="class_member_me">나</string>
+    <string name="class_member_remove_confirm">%1$s님을 클래스에서 내보낼까요?\n한 번 내보내면 되돌릴 수 없어요.</string>
+    <string name="class_member_remove">내보내기</string>
+
     <!-- 클래스 - 배틀 -->
     <string name="class_battle_duration">%1$d분</string>
     <string name="class_battle_preview">미리듣기</string>
     <string name="class_battle_versus">VS</string>
+
+    <!-- 클래스 - AI 토론 -->
+    <string name="class_debate_round_format">ROUND %1$d · 입장에 반박해보세요</string>
+    <string name="class_debate_intro_choice">‘%1$s’</string>
+    <string name="class_debate_intro_choice_format">사전투표에서 %1$s를 선택하셨네요.</string>
+    <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
+    <string name="class_debate_intro_start_format">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_input_placeholder">내 생각을 입력해보세요</string>
+    <string name="class_debate_send">보내기</string>
+    <string name="class_debate_final_vote">최종투표하기</string>
+    <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
+    <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>
+    <string name="class_debate_ai_badge">AI</string>
+
+    <!-- 클래스 - 결과 -->
+    <string name="class_result_summary_tab">클래스 요약</string>
+    <string name="class_result_report_tab">내 리포트</string>
+    <string name="class_result_ai_insight">AI 인사이트</string>
+    <string name="class_result_participation">클래스 참여 현황</string>
+    <string name="class_result_battle_rate">배틀 참여율</string>
+    <string name="class_result_battle_members">참여한 멤버</string>
+    <string name="class_result_comment_rate">댓글 작성율</string>
+    <string name="class_result_comment_members">댓글을 남긴 멤버</string>
+    <string name="class_result_rate">%1$s%%</string>
+    <string name="class_result_member_ratio">%1$d / %2$d명</string>
+    <string name="class_result_stance">입장 분포</string>
+    <string name="class_result_people_count">%1$d명</string>
+    <string name="class_result_total_label">총 참여</string>
+    <string name="class_result_stance_percent">%1$d%%</string>
+    <string name="class_result_opinions">주요 의견</string>
+    <string name="class_result_best_comment">BEST 댓글</string>
+    <string name="class_result_most_debated_comment">가장 논쟁이 활발했던 댓글</string>
+    <string name="class_result_quote">“%1$s”</string>
+    <string name="class_result_my_vote">내 투표 결과</string>
+    <string name="class_result_pre_vote">사전 선택</string>
+    <string name="class_result_post_vote">사후 선택</string>
+    <string name="class_result_stance_changed">입장 변경</string>
+    <string name="class_result_comment_count">댓글</string>
+    <string name="class_result_reply_count">대댓글</string>
+    <string name="class_result_received_like_count">받은 추천</string>
+    <string name="class_result_ai_feedback">AI 피드백</string>
+    <string name="class_result_judgment_basis">내 판단의 기준</string>
+    <string name="class_result_strength">이번에 잘한 점</string>
+    <string name="class_result_improvement">한 가지 더 살펴볼 점</string>
+    <string name="class_result_next_thought">다음 생각 한 걸음</string>
+    <string name="class_result_my_opinion_link">내가 남긴 의견 %1$d개 보기</string>
+
+    <!-- 클래스 - 내가 남긴 의견 -->
+    <string name="class_my_opinion_title">내가 남긴 의견</string>
+    <string name="class_my_opinion_comments">남긴 댓글</string>
+    <string name="class_my_opinion_replies">남긴 대댓글</string>
+    <string name="class_my_opinion_parent_stance">· %1$s</string>
+    <string name="class_my_opinion_reply_author">%1$s의 답글</string>
+    <string name="class_my_opinion_like">추천</string>
+    <string name="class_my_opinion_reply">답글</string>
 </resources>

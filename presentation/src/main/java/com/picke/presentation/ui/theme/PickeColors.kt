@@ -59,6 +59,8 @@ data class PickeColors(
     val buttonSecondaryBackgroundDefault: Color = ComponentColorTokens.buttonSecondaryBackgroundDefault,
     val buttonSecondaryBackgroundPressed: Color = ComponentColorTokens.buttonSecondaryBackgroundPressed,
     val buttonSecondaryTextDefault: Color = ComponentColorTokens.buttonSecondaryTextDefault,
+    val buttonIconBackgroundDefault: Color = ComponentColorTokens.buttonIconBackgroundDefault,
+    val buttonIconBackgroundDisabled: Color = ComponentColorTokens.buttonIconBackgroundDisabled,
 
     // Component — Input
     val inputTextfieldBackgroundDefault: Color = ComponentColorTokens.inputTextfieldBackgroundDefault,
@@ -115,6 +117,7 @@ data class PickeColors(
     val gray800: Color = BrandColorTokens.gray800,
     val gray900: Color = BrandColorTokens.gray900,
     val beige100: Color = BrandColorTokens.beige100,
+    val beige300: Color = BrandColorTokens.beige300,
     val beige500: Color = BrandColorTokens.beige500,
     val beige600: Color = BrandColorTokens.beige600,
     val beige700: Color = BrandColorTokens.beige700,

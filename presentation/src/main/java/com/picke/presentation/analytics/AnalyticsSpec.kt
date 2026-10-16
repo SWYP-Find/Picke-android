@@ -175,8 +175,17 @@ object AnalyticsScreen {
     const val RECAP = "recap"
     const val CLASS = "class"
     const val CLASS_CREATE = "class_create"
+    const val CLASS_JOIN = "class_join"
     const val MY_CLASS = "my_class"
     const val CLASS_SHARE = "class_share"
+    const val CLASS_DETAIL = "class_detail"
+    const val CLASS_MEMBER = "class_member"
+    const val CLASS_VOTE = "class_vote"
+    const val CLASS_SCENARIO = "class_scenario"
+    const val CLASS_COMMENT = "class_comment"
+    const val CLASS_DEBATE = "class_debate"
+    const val CLASS_RESULT = "class_result"
+    const val CLASS_MY_OPINION = "class_my_opinion"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -198,8 +207,17 @@ object AnalyticsScreen {
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         BottomNavItem.Class.route -> CLASS
         AppRoute.ClassCreate.route -> CLASS_CREATE
+        AppRoute.ClassJoin.route -> CLASS_JOIN
         AppRoute.MyClass.route -> MY_CLASS
         AppRoute.ClassShare.route -> CLASS_SHARE
+        AppRoute.ClassDetail.route -> CLASS_DETAIL
+        AppRoute.ClassMember.route -> CLASS_MEMBER
+        AppRoute.ClassVote.route -> CLASS_VOTE
+        AppRoute.ClassScenario.route -> CLASS_SCENARIO
+        AppRoute.ClassPerspective.route -> CLASS_COMMENT
+        AppRoute.ClassDebate.route -> CLASS_DEBATE
+        AppRoute.ClassResult.route -> CLASS_RESULT
+        AppRoute.ClassMyOpinion.route -> CLASS_MY_OPINION
         else -> null
     }
 }

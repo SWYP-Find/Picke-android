@@ -142,12 +142,12 @@ fun ExploreScreen(
         ) {
             CustomTabBar(
                 tabs = exploreCategories,
-                isScrollable = false,
                 selectedTab = selectedCategory,
                 onTabSelected = { clickedCategory ->
                     val targetPage = exploreCategories.indexOf(clickedCategory)
                     coroutineScope.launch { pagerState.animateScrollToPage(targetPage) }
-                }
+                },
+                isScrollable = false
             )
 
             HorizontalPager(

@@ -373,6 +373,10 @@ fun onAction(action: ClassShareUiAction) {
     (`"class_detail_screen/{$ARG_CLASS_ID}"`), `navArgument(AppRoute.ARG_CLASS_ID)`, ViewModel의
     `savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)`에서 같이 씁니다. 인자 이름 문자열을 화면·ViewModel마다 다시 적지 않습니다.
   - 기존 인자(`battleId` 등)는 손대는 김에 `ARG_XXX` 상수로 옮깁니다.
+  - NavGraph에서 화면에 넘기는 뒤로가기 콜백은 `onBackClick = dropUnlessResumed { navController.popBackStack() }`처럼
+    `dropUnlessResumed`로 감쌉니다. 분기가 있는 콜백은 블록 전체를 감쌉니다.
+    - 연타하면 `popBackStack()`이 두 번 실행돼 중간 화면을 건너뛰거나 메인까지 빠져 빈 화면이 됩니다.
+      같은 화면도 진입 경로에 따라 스택 깊이가 달라서, 특정 화면만 골라 적용하지 않고 모든 뒤로가기 콜백에 둡니다.
 - 클래스(`ui/classroom`) 화면은 `ui/classroom/ClassNavGraph.kt`의 `classGraph()`로 `AppNavigation` 루트에 등록합니다
   (하단 바의 클래스 탭은 빠른배틀 탭처럼 `rootNavController`로 이동). `MainScreen` 내부에 두면 하단 바·여백이 이동 뒤에
   바뀌어 화면 전환이 어색하게 보이기 때문입니다. 하단 바가 필요한 화면(내 클래스·상세·멤버·결과)만 `ClassTabScaffold`로

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,11 +19,12 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-fun ClassFormField(
+fun ClassTitledBlock(
     title: String,
     modifier: Modifier = Modifier,
     isRequired: Boolean = false,
     contentSpacing: Dp = SpacingTokens.s12,
+    titleStyle: TextStyle = PickeTheme.typography.bodyMdSemiBold,
     content: @Composable () -> Unit
 ) {
     val requiredMark = stringResource(R.string.class_form_required_mark)
@@ -39,22 +41,36 @@ fun ClassFormField(
                 }
             },
             color = PickeTheme.colors.textDefault,
-            style = PickeTheme.typography.bodyMdSemiBold
+            style = titleStyle
         )
         content()
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "필수 표시", showBackground = true)
 @Composable
-private fun ClassFormFieldPreview() {
+private fun ClassTitledBlockPreview() {
     PickeTheme {
-        ClassFormField(
+        ClassTitledBlock(
             title = "카테고리",
             modifier = Modifier.padding(SpacingTokens.s16),
             isRequired = true
         ) {
             Text(text = "철학")
+        }
+    }
+}
+
+@Preview(name = "제목 스타일 변경", showBackground = true)
+@Composable
+private fun ClassTitledBlockTitleStylePreview() {
+    PickeTheme {
+        ClassTitledBlock(
+            title = "내 투표 결과",
+            modifier = Modifier.padding(SpacingTokens.s16),
+            titleStyle = PickeTheme.typography.bodyXsSemiBold
+        ) {
+            Text(text = "낮춰야 한다")
         }
     }
 }

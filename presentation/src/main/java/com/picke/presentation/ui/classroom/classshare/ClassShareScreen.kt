@@ -47,7 +47,7 @@ import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
-import com.picke.presentation.ui.classroom.component.ClassFormField
+import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.CustomTopAppBar
@@ -274,7 +274,7 @@ private fun ClassShareBattleSection(
     battle: ClassBattleUiModel,
     modifier: Modifier = Modifier
 ) {
-    ClassFormField(
+    ClassTitledBlock(
         title = stringResource(R.string.class_setting_selected_battle),
         modifier = modifier
     ) {

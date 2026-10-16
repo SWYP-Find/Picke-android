@@ -27,7 +27,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.analytics.TrackScreenViews
@@ -419,7 +418,6 @@ fun AppNavigation(
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
                 val commentId = backStackEntry.arguments?.getString("commentId")
                 PerspectiveScreen(
-                    scrollToCommentId = commentId,
                     onBackClick = {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
                         if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
@@ -439,7 +437,8 @@ fun AppNavigation(
                         rootNavController.navigate(
                             AppRoute.Comment.createRoute(itemId, firstOptionId)
                         )
-                    }
+                    },
+                    scrollToCommentId = commentId
                 )
             }
 
@@ -465,11 +464,11 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) {
                 RecommendScreen(
+                    onBackClick = { rootNavController.popBackStack() },
                     onCloseClick = {
                         analyticsTracker.trackContentAction(ContentActionType.BATTLE_RECOMMEND_CLOSE)
                         rootNavController.popBackStack(AppRoute.Main.route, inclusive = false)
                     },
-                    onBackClick = { rootNavController.popBackStack() },
                     onItemClick = { clickedBattleId ->
                         analyticsTracker.trackContentAction(
                             ContentActionType.BATTLE_CARD_TAP,

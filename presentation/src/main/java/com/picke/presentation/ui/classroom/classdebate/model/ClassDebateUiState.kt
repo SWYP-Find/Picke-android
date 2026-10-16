@@ -11,7 +11,8 @@ data class ClassDebateUiState(
     val messages: List<ClassDebateMessageUiModel> = emptyList(),
     val quickReplies: List<String> = emptyList(),
     val input: String = "",
-    val isReplying: Boolean = false
+    val isReplying: Boolean = false,
+    val isFinalVoteDialogVisible: Boolean = false
 ) {
     val isFinished: Boolean
         get() = currentRound > TOTAL_ROUNDS

@@ -51,8 +51,11 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.SendClick -> if (state.isSendEnabled) requestOpponentReply(state.currentRound)
 
-            ClassDebateUiAction.NextClick ->
-                sendEvent(ClassDebateUiEvent.NavigateToPerspective(state.classId, state.battleId))
+            ClassDebateUiAction.FinalVoteClick ->
+                sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))
+
+            ClassDebateUiAction.FinalVoteDialogVoteClick ->
+                sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))
         }
     }
 

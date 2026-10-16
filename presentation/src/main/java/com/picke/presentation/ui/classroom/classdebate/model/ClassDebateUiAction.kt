@@ -13,5 +13,9 @@ sealed interface ClassDebateUiAction {
 
     data object SendClick : ClassDebateUiAction
 
-    data object NextClick : SideEffectOnly
+    data object FinalVoteClick : SideEffectOnly
+
+    data object FinalVoteDialogReplayClick : StateOnly
+
+    data object FinalVoteDialogVoteClick : ClassDebateUiAction
 }

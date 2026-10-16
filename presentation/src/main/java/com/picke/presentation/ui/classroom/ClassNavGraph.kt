@@ -99,8 +99,8 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassDebate.route, arguments = classIdArguments) {
         ClassDebateScreen(
             onBackClick = { navController.popBackStack() },
-            onNavigateToPerspective = { classId, battleId ->
-                navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId)) {
+            onNavigateToFinalVote = { classId ->
+                navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
                     popUpTo(AppRoute.ClassDebate.route) { inclusive = true }
                 }
             }

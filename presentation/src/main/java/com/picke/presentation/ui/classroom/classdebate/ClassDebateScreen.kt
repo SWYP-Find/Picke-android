@@ -53,6 +53,7 @@ import com.picke.presentation.ui.classroom.component.ClassTextField
 import com.picke.presentation.ui.component.ChatBubble
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -70,7 +71,7 @@ private object ClassDebateScreenDimens {
 @Composable
 fun ClassDebateScreen(
     onBackClick: () -> Unit,
-    onNavigateToPerspective: (classId: Long, battleId: Long) -> Unit,
+    onNavigateToFinalVote: (classId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassDebateViewModel = hiltViewModel()
 ) {
@@ -81,7 +82,7 @@ fun ClassDebateScreen(
             when (event) {
                 ClassDebateUiEvent.NavigateBack -> onBackClick()
 
-                is ClassDebateUiEvent.NavigateToPerspective -> onNavigateToPerspective(event.classId, event.battleId)
+                is ClassDebateUiEvent.NavigateToFinalVote -> onNavigateToFinalVote(event.classId)
             }
         }
     }
@@ -122,7 +123,7 @@ private fun ClassDebateContent(
         },
         bottomBar = {
             if (uiState.isFinished) {
-                ClassDebateNextSection(onNextClick = { onAction(ClassDebateUiAction.NextClick) })
+                ClassDebateFinalVoteSection(onFinalVoteClick = { onAction(ClassDebateUiAction.FinalVoteClick) })
             } else {
                 ClassDebateComposerSection(
                     input = uiState.input,
@@ -143,6 +144,16 @@ private fun ClassDebateContent(
             opponentImageUrl = uiState.opponentImageUrl,
             messages = uiState.messages,
             modifier = Modifier.padding(innerPadding)
+        )
+    }
+
+    if (uiState.isFinalVoteDialogVisible) {
+        CustomConfirmDialog(
+            message = stringResource(R.string.class_debate_final_vote_dialog_message),
+            onConfirm = { onAction(ClassDebateUiAction.FinalVoteDialogReplayClick) },
+            onDismiss = { onAction(ClassDebateUiAction.FinalVoteDialogVoteClick) },
+            confirmText = stringResource(R.string.class_debate_final_vote_dialog_replay),
+            dismissText = stringResource(R.string.class_debate_final_vote)
         )
     }
 }
@@ -310,8 +321,8 @@ private fun ClassDebateComposerSection(
 }
 
 @Composable
-private fun ClassDebateNextSection(
-    onNextClick: () -> Unit,
+private fun ClassDebateFinalVoteSection(
+    onFinalVoteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -321,8 +332,8 @@ private fun ClassDebateNextSection(
             .padding(SpacingTokens.s16)
     ) {
         CustomButton(
-            text = stringResource(R.string.class_debate_go_to_comment),
-            onClick = onNextClick,
+            text = stringResource(R.string.class_debate_final_vote),
+            onClick = onFinalVoteClick,
             backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
             textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
@@ -367,6 +378,27 @@ private fun ClassDebateFinishedPreview() {
                 opponentName = DummyData.dummyClassDebateOpponentName,
                 currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
                 messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last()
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "최종 투표 다이얼로그", showBackground = true)
+@Composable
+private fun ClassDebateFinalVoteDialogPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleId = battle.battleId,
+                battleTitle = battle.title,
+                myChoice = battle.options.first().stance,
+                opponentName = DummyData.dummyClassDebateOpponentName,
+                currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
+                messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last(),
+                isFinalVoteDialogVisible = true
             ),
             onAction = {}
         )

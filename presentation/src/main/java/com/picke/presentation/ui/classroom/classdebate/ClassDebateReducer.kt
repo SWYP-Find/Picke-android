@@ -24,6 +24,10 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
         } else {
             state
         }
+
+        ClassDebateUiAction.FinalVoteDialogReplayClick -> state.copy(isFinalVoteDialogVisible = false)
+
+        ClassDebateUiAction.FinalVoteDialogVoteClick -> state.copy(isFinalVoteDialogVisible = false)
     }
 
 internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): ClassDebateUiState =
@@ -41,6 +45,7 @@ internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): C
         is ClassDebateMutation.OpponentReplied -> state.copy(
             currentRound = state.currentRound + 1,
             messages = state.messages + mutation.messages,
-            isReplying = false
+            isReplying = false,
+            isFinalVoteDialogVisible = state.currentRound + 1 > ClassDebateUiState.TOTAL_ROUNDS
         )
     }

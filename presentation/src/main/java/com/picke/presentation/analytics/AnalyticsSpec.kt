@@ -170,6 +170,9 @@ object AnalyticsScreen {
     const val COMMENT_REPLY = "comment_reply"
     const val NOTIFICATION = "notification"
     const val POINT = "point"
+    const val TICKET = "ticket"
+    const val TICKET_REGISTER = "ticket_register"
+    const val TICKET_REGISTER_COMPLETE = "ticket_register_complete"
     const val SETTINGS = "settings"
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
@@ -202,6 +205,9 @@ object AnalyticsScreen {
         AppRoute.Recommend.route -> CURATION
         AppRoute.Alarm.route -> NOTIFICATION
         AppRoute.Point.route -> POINT
+        AppRoute.Ticket.route -> TICKET
+        AppRoute.TicketRegister.route -> TICKET_REGISTER
+        AppRoute.TicketRegisterComplete.route -> TICKET_REGISTER_COMPLETE
         AppRoute.Setting.route -> SETTINGS
         AppRoute.Withdraw.route -> WITHDRAW
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP

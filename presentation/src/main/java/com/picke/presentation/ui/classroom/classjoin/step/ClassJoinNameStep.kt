@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
-import com.picke.presentation.ui.classroom.component.ClassTextField
+import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
@@ -32,7 +32,7 @@ internal fun ClassJoinNameStep(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        ClassTextField(
+        CustomTextField(
             value = name,
             onValueChange = onNameChange,
             minHeight = ClassJoinNameStepDimens.nameFieldMinHeight,

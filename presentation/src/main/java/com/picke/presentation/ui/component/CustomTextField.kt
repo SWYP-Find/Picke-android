@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.classroom.component
+package com.picke.presentation.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
@@ -29,12 +29,12 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object ClassTextFieldDimens {
+private object CustomTextFieldDimens {
     val errorBorderWidth = 2.dp
 }
 
 @Composable
-fun ClassTextField(
+fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     minHeight: Dp,
@@ -48,7 +48,7 @@ fun ClassTextField(
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
     val width =
-        if (isError) ClassTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
+        if (isError) CustomTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
     val color =
         if (isError) PickeTheme.colors.borderErrorDefault else PickeTheme.colors.inputTextfieldBorderDefault
 
@@ -97,9 +97,9 @@ fun ClassTextField(
 
 @Preview(name = "기본", showBackground = true)
 @Composable
-private fun ClassTextFieldPreview() {
+private fun CustomTextFieldPreview() {
     PickeTheme {
-        ClassTextField(
+        CustomTextField(
             value = "",
             onValueChange = {},
             minHeight = ComponentNumberTokens.inputTextfieldHeight,
@@ -111,9 +111,9 @@ private fun ClassTextFieldPreview() {
 
 @Preview(name = "오류", showBackground = true)
 @Composable
-private fun ClassTextFieldErrorPreview() {
+private fun CustomTextFieldErrorPreview() {
     PickeTheme {
-        ClassTextField(
+        CustomTextField(
             value = "권동현",
             onValueChange = {},
             minHeight = ComponentNumberTokens.inputTextfieldHeight,

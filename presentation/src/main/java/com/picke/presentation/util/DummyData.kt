@@ -21,6 +21,7 @@ import com.picke.presentation.ui.home.model.ContentUiType
 import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.home.model.PollQuizOptionStatUiModel
 import com.picke.presentation.ui.home.model.TodayPickUiModel
+import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.recommend.model.RecommendUiModel
 import com.picke.presentation.ui.scenario.model.PastChoice
@@ -32,6 +33,7 @@ import com.picke.presentation.ui.vote.model.BattleDetailUiModel
 import com.picke.presentation.ui.vote.model.BattleInfoUiModel
 import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.ui.vote.model.BattleTagUiModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 object DummyData {
@@ -950,4 +952,19 @@ object DummyData {
     )
 
     val dummyParticipantClassMembers = dummyClassMembers.map { member -> member.copy(isMe = member.memberId == 3L) }
+
+    val dummyTicket = TicketUiModel(
+        ticketId = 1L,
+        name = "클래스 30인 이용권",
+        description = "함께 생각을 나누는 모임을 시작하세요",
+        maxMemberCount = 30,
+        durationMonths = 6
+    )
+
+    val dummyRegisteredTicket = dummyTicket.copy(
+        startDate = LocalDate.of(2026, 10, 9),
+        endDate = LocalDate.of(2027, 4, 8)
+    )
+
+    val dummyRegisteredTickets = listOf(dummyRegisteredTicket)
 }

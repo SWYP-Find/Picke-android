@@ -203,6 +203,8 @@ fun onAction(action: ClassShareUiAction) {
     `state.copy(...)`만 돌려주고, 이벤트 전송·불러오기·`launch`는 넣지 않습니다.
   - 상태만 보고 계산되는 값(파생 상태, 예: `nextStep`, `previousStep`, `isNextEnabled`)은 Reducer·ViewModel이 아니라
     `XxxUiState`의 계산 프로퍼티로 둡니다. 화면이 쓰지 않는 값은 `internal`, UiState 안에서만 쓰면 `private`.
+    - `List<List<T>>`처럼 의미가 타입에 드러나지 않는 중첩 컬렉션을 만들지 않습니다. 앞 항목과 이어지는지(같은 화자 연속 등)는
+      평평한 목록을 그대로 두고 `itemsIndexed`에서 이전 항목과 비교하고, 묶음 데이터가 꼭 필요하면 `XxxGroupUiModel`처럼 이름 있는 모델을 둡니다.
   - 불러오기 결과처럼 화면이 보내지 않는 상태 변경은 `model/XxxMutation.kt`의 `internal sealed interface`로 정의하고
     `internal fun reduce(state, mutation): XxxUiState`로 반영합니다 (UI가 결과 액션을 직접 보낼 수 없게).
     이름은 불러오는 함수에 맞춰 `fetchXxx()` → `XxxLoaded`로 짓습니다 (`fetchClassDetail()` → `ClassDetailLoaded`).
@@ -315,13 +317,18 @@ fun onAction(action: ClassShareUiAction) {
 - UI를 새로 만들기 전에 같은 역할의 컴포넌트가 있는지 먼저 찾고(`ui/component/`, `ui/<feature>/component/`), 있으면 그대로 쓰거나
   파라미터를 추가해 씁니다(예: 버튼은 `CustomButton`, 상단 바는 `CustomTopAppBar`, 확인 창은 `component/dialog/`).
   `Text` + `clickable`처럼 기존 컴포넌트와 같은 역할을 직접 다시 그리지 않습니다. 맞는 컴포넌트가 없을 때만 새로 만듭니다.
+  - Compose 기본 컴포넌트(`HorizontalDivider`, `Text`, `Icon` 등)를 인자 몇 개만 고정해 감싸는 래퍼 Composable은 만들지 않습니다.
+    같은 호출이 여러 번 반복돼도 기본 컴포넌트를 직접 부릅니다. 레이아웃·상태·변형이 더해지는 경우에만 컴포넌트로 만듭니다.
 - 컴포넌트 위치: 한 화면만 쓰면 그 화면의 `component/`, 같은 feature의 여러 화면이 쓰면 `ui/<feature>/component/`,
   다른 feature도 쓰면 `ui/component/`.
   - Screen 파일에는 Screen·Content·Section만, Step 파일에는 Step 함수만 둡니다.
     - Section·Step 안에서 그리는 UI 조각은 크기·변형과 상관없이 `component/` 파일로 빼고 Preview를 둡니다
       (예: `classresult/component/ClassResultMyVoteCard`, `classroom/component/ClassTitledBlock`).
+      Compose 기본 컴포넌트(`HorizontalDivider`, `Text`, `Spacer` 등)를 직접 부르는 것은 UI 조각으로 보지 않고 Section·Step에 그대로 둡니다.
     - `component/` 파일 안에서 그 컴포넌트만 쓰는 하위 조각(카드의 한 행, 차트 등)은 그 파일의 `private` Composable로 두고,
       따로 Preview를 두지 않습니다 (부모 컴포넌트 Preview로 확인. 예: `ClassResultParticipationCard`의 `ClassResultParticipationRow`).
+    - 다른 파일(같은 `component/` 안의 다른 컴포넌트 포함)에서도 쓰는 조각은 `private`으로 두지 않고 별도 `component/` 파일로 빼고
+      Preview를 둡니다 (예: `ClassResultAiInsightCard`·`ClassResultFeedbackCard`가 같이 쓰는 `classresult/component/ClassResultAiLabel`).
     - Composable이 아닌 private 함수(문자열 리소스 고르기 등)는 Screen·Step 파일에 둬도 됩니다.
     - 기존 코드는 손대는 김에 맞춥니다.
   - 여러 파일로 이루어진 컴포넌트(시트 + 하위 컴포넌트 + state holder 등)는 `component/<기능>/` 하위 패키지로 묶습니다
@@ -358,6 +365,10 @@ fun onAction(action: ClassShareUiAction) {
   6. 오래 도는 effect에서 쓸 최신 값 (`rememberUpdatedState`)
   7. 부수 효과 (`BackHandler`, `LaunchedEffect`, `DisposableEffect`)
   8. UI
+- Composable 본문에는 아래 위치에 빈 줄을 하나씩 둡니다.
+  - 위 선언 순서의 단계가 바뀌는 곳 (같은 단계의 선언끼리는 붙여 씀)
+  - 같은 부모 안에서 `Row`·`Column`·`Box`처럼 영역을 잡는 레이아웃 Composable의 앞뒤
+  - `LazyColumn`·`LazyRow` 안의 `item { }`·`items(...) { }`·`itemsIndexed(...) { }` 블록 사이
 - 모든 Composable은 `modifier: Modifier = Modifier`를 첫 번째 선택 파라미터로 받습니다.
 - Composable 파라미터는 Compose API 가이드라인 순서로 선언합니다: **필수 → `modifier` → 선택 → Composable 람다**.
   - 필수 파라미터(기본값 없음)는 데이터·상태를 먼저, 콜백을 뒤에 두고, 값과 변경 콜백은 붙여 둡니다 (`value`, `onValueChange`).
@@ -445,7 +456,10 @@ fun onAction(action: ClassShareUiAction) {
   (`padding(start, top, end, bottom)` 등), 프로젝트 커스텀 컴포넌트, data class 생성자·`copy()` 모두 해당합니다.
   - 생략한 인자는 건너뛰고 남은 인자끼리의 순서만 맞춥니다. 예: `Text(text, modifier, color, textAlign, maxLines, overflow, style)`
   - 마지막 Composable 람다는 trailing lambda로 괄호 밖에 둡니다.
+  - 같은 타입 인자가 이어지거나(`Float`·`Offset`·`Size` 등) 인자가 4개 이상인 호출은 위치 인자로 쓰지 않고
+    이름 붙인 인자로 씁니다 (예: `drawArc(color = …, startAngle = …, sweepAngle = …)`).
   - 기존 코드는 손대는 함수 안에서만 맞춥니다.
+- deprecated API는 새 코드에 쓰지 않습니다. 손대는 함수에 deprecated 경고가 있으면 안내된 대체 API로 바꾸고, 기본값이 같은지 확인합니다.
 - trailing comma를 쓰지 않습니다. 여러 줄 파라미터·인자·리스트의 마지막 항목 뒤에 쉼표를 붙이지 않습니다.
 - 파일 끝에 줄바꿈을 넣지 않습니다. 새로 만들거나 수정하는 파일은 마지막 줄 뒤에 빈 줄 없이 끝냅니다.
   손대지 않는 기존 파일은 일괄로 바꾸지 않습니다.
@@ -475,6 +489,8 @@ fun onAction(action: ClassShareUiAction) {
   - `Color(0xFF...)`, `Color.White`/`Color.Black` 같은 직접 지정,
     `BrandColorTokens`·`SemanticColorTokens` 직접 참조를 새 코드에 쓰지 않습니다. (`Color.Transparent`는 예외)
   - 필요한 색이 `PickeColors`에 없으면 Figma 변수를 확인해 토큰을 추가합니다.
+    - Figma 변수가 `tokens/`에 아직 동기화되지 않아 `PickeColors`에 연결할 수 없으면, 값이 가까운 다른 토큰으로 바꾸지 않습니다.
+      변수 이름·값과 쓰는 위치를 보여 주고 어떻게 할지(동기화 대기 후 연결 / 임시 대체 + `// TODO: 토큰 동기화 - <변수 이름>`) 먼저 물어봅니다.
   - 기존 코드의 하드코딩 색상은 손대는 김에 토큰으로 바꿉니다.
 - **UI Composable을 만드는 파일에는 `@Preview`를 반드시 하나 이상 둡니다.** (Screen, 화면 전용 component,
   공통 component 모두 해당)

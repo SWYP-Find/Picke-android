@@ -13,26 +13,54 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         is ClassCreateUiAction.SideEffectOnly -> state
 
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
+
         ClassCreateUiAction.NextClick -> state.copy(step = state.nextStep ?: state.step)
+
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
 
         is ClassCreateUiAction.MethodSelect -> state.copy(method = action.method)
+
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
+
         ClassCreateUiAction.GuideSheetDismiss -> state.copy(guideMethod = null)
+
         is ClassCreateUiAction.TopicChange -> state.copy(topic = action.topic)
+
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)
-        is ClassCreateUiAction.CategorySelect -> state.copy(selectedCategories = state.selectedCategories.toggle(action.category))
+
+        is ClassCreateUiAction.CategorySelect -> state.copy(
+            selectedCategories = state.selectedCategories.toggle(action.category)
+        )
 
         is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
+
         ClassCreateUiAction.RegenerateClick -> state.copy(selectedBattleId = null)
 
-        is ClassCreateUiAction.ClassNameChange -> state.copy(className = action.name)
-        is ClassCreateUiAction.DeadlineToggle -> state.copy(isDeadlineEnabled = action.isEnabled)
+        is ClassCreateUiAction.ClassNameChange -> state.copy(
+            className = action.name,
+            isClassNameInvalid = false
+        )
+
+        is ClassCreateUiAction.DeadlineToggle -> state.copy(
+            isDeadlineEnabled = action.isEnabled,
+            isDeadlineOutOfRange = false
+        )
+
         ClassCreateUiAction.DeadlineFieldClick -> state.copy(isDeadlineSheetVisible = state.isDeadlineEnabled)
-        is ClassCreateUiAction.DeadlineConfirm -> state.copy(deadline = action.deadline, isDeadlineSheetVisible = false)
+
+        is ClassCreateUiAction.DeadlineConfirm -> state.copy(
+            deadline = action.deadline,
+            isDeadlineSheetVisible = false,
+            isDeadlineOutOfRange = false
+        )
+
         ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
+
         is ClassCreateUiAction.CommentRequiredToggle -> state.copy(isCommentRequired = action.isRequired)
+
         is ClassCreateUiAction.OperatorJoinToggle -> state.copy(isOperatorJoin = action.isJoined)
+
+        ClassCreateUiAction.ErrorDialogDismiss -> state.copy(errorDialog = null)
     }
 
 internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState =
@@ -42,7 +70,19 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
             selectedBattleId = null
         )
 
-        is ClassCreateMutation.DeadlineReset -> state.copy(deadline = mutation.deadline)
+        is ClassCreateMutation.DeadlineReset -> state.copy(
+            deadline = mutation.deadline,
+            isDeadlineOutOfRange = false
+        )
+
+        is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
+
+        is ClassCreateMutation.SettingInvalid -> state.copy(
+            isClassNameInvalid = mutation.isClassNameInvalid,
+            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange
+        )
+
+        is ClassCreateMutation.RequestFailed -> state.copy(errorDialog = mutation.errorDialog)
     }
 
 private fun List<ClassCategory>.toggle(category: ClassCategory): List<ClassCategory> =

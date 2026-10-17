@@ -26,7 +26,8 @@ import com.picke.presentation.ui.vote.model.VoteType
 fun NavGraphBuilder.classGraph(
     navController: NavController,
     onTabClick: (BottomNavItem) -> Unit,
-    onNavigateToTicket: () -> Unit
+    onNavigateToTicket: () -> Unit,
+    onNavigateToTicketRegister: () -> Unit
 ) {
     val classIdArguments = listOf(navArgument(AppRoute.ARG_CLASS_ID) { type = NavType.LongType })
 
@@ -36,7 +37,8 @@ fun NavGraphBuilder.classGraph(
             onNavigateToJoin = { navController.navigate(AppRoute.ClassJoin.route) },
             onNavigateToMyClass = { navController.navigate(AppRoute.MyClass.route) },
             onNavigateToCreate = { navController.navigate(AppRoute.ClassCreate.route) },
-            onNavigateToTicket = onNavigateToTicket
+            onNavigateToTicket = onNavigateToTicket,
+            onNavigateToTicketRegister = onNavigateToTicketRegister
         )
     }
 

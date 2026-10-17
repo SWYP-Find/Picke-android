@@ -29,3 +29,9 @@ enum class ClassCategory(@param:StringRes val labelRes: Int) {
     ART(R.string.class_category_art),
     HISTORY(R.string.class_category_history)
 }
+
+enum class ClassCreateErrorDialog {
+    BATTLE_SEARCH_FAILED,
+    TOPIC_GENERATION_FAILED,
+    CLASS_CREATION_FAILED
+}

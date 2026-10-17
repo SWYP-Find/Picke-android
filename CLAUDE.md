@@ -341,6 +341,12 @@ fun onAction(action: ClassShareUiAction) {
     (예: `classcreate/component/deadline/`의 `ClassDeadlineSheet`, `ClassWheelPicker`, `ClassDeadlinePickerState`).
   - 같은 종류의 독립 컴포넌트가 여러 개면 `component/<종류>/` 하위 패키지로 묶습니다
     (예: `ui/component/dialog/`의 `CustomConfirmDialog`, `CustomReverseConfirmDialog`, `CustomSingleActionDialog`, `ShareDialog`).
+- 가시성(`public` / `internal` / `private`)은 쓰임새로 정합니다.
+  - `public`: 다른 파일·화면이 가져다 쓰도록 만든 것. Screen, ViewModel, `component/`의 Composable, `XxxUiState`·`XxxUiAction`·`XxxUiEvent`·`XxxUiModel`·`XxxTypes`.
+  - `internal`: 한 화면의 내부 구현. `step/XxxStep`, `reduce`, `XxxMutation`, 화면 안에서만 쓰는 `model/` 값.
+  - `private`: 한 파일 안에서만 쓰는 것. Content·Section, `XxxDimens`, 컴포넌트의 하위 조각, 문자열 리소스를 고르는 보조 함수.
+  - `:presentation` 화면 코드는 한 모듈 안에서만 쓰여 `internal`의 본래 의미(모듈 경계)로는 막는 효과가 없습니다.
+    여기서는 "한 화면의 내부 구현"이라는 표시로만 씁니다. 이미 머지된 코드의 가시성만 바꾸는 수정은 따로 하지 않습니다.
 - 한 화면 안에서 단계(step)가 바뀌는 화면(예: `ClassCreateScreen`)은 단계별 UI를 `step/XxxStep.kt`에 `internal`
   Composable로 나누고 단계마다 Preview를 둡니다. Screen 파일에는 Scaffold, 공통 헤더·하단 버튼, 단계 전환만 둡니다.
 - 모든 Screen은 Screen/Content를 분리합니다. Preview는 Content부터 아래 단계에 둡니다.

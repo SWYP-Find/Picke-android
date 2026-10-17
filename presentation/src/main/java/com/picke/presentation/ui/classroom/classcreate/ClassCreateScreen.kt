@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassMethodGuideSheet
 import com.picke.presentation.ui.classroom.classcreate.component.deadline.ClassDeadlineSheet
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
@@ -42,6 +43,7 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelection
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
@@ -219,6 +221,16 @@ private fun ClassCreateContent(
             onDismiss = { onAction(ClassCreateUiAction.GuideSheetDismiss) }
         )
     }
+
+    val errorDialog = uiState.errorDialog
+    if (errorDialog != null) {
+        CustomSingleActionDialog(
+            message = stringResource(errorDialog.messageRes()),
+            buttonText = stringResource(R.string.dialog_ok),
+            onConfirm = { onAction(ClassCreateUiAction.ErrorDialogDismiss) },
+            onDismiss = { onAction(ClassCreateUiAction.ErrorDialogDismiss) }
+        )
+    }
 }
 
 @Composable
@@ -278,12 +290,62 @@ private fun ClassCreateUiState.nextButtonRes(): Int = when (step) {
     ClassCreateStep.SETTING -> R.string.class_setting_create
 }
 
+@StringRes
+private fun ClassCreateErrorDialog.messageRes(): Int = when (this) {
+    ClassCreateErrorDialog.BATTLE_SEARCH_FAILED -> R.string.class_create_dialog_battle_search_failed
+    ClassCreateErrorDialog.TOPIC_GENERATION_FAILED -> R.string.class_create_dialog_topic_generation_failed
+    ClassCreateErrorDialog.CLASS_CREATION_FAILED -> R.string.class_create_dialog_class_creation_failed
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ClassCreateScreenPreview() {
     PickeTheme {
         ClassCreateContent(
             uiState = ClassCreateUiState(),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "배틀 검색 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentBattleSearchFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                errorDialog = ClassCreateErrorDialog.BATTLE_SEARCH_FAILED
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주제 생성 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentTopicGenerationFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.AI_TOPIC,
+                errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "클래스 개설 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentClassCreationFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SETTING,
+                errorDialog = ClassCreateErrorDialog.CLASS_CREATION_FAILED
+            ),
             onAction = {}
         )
     }

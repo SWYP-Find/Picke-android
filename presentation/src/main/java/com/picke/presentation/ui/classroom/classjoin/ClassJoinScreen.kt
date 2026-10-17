@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinDialog
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinStep
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiAction
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiEvent
@@ -30,6 +31,7 @@ import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinCodeStep
 import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinNameStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -115,6 +117,16 @@ private fun ClassJoinContent(
             }
         }
     }
+
+    val dialog = uiState.dialog
+    if (dialog != null) {
+        CustomSingleActionDialog(
+            message = stringResource(dialog.messageRes()),
+            buttonText = stringResource(R.string.dialog_ok),
+            onConfirm = { onAction(ClassJoinUiAction.DialogDismiss) },
+            onDismiss = { onAction(ClassJoinUiAction.DialogDismiss) }
+        )
+    }
 }
 
 @Composable
@@ -158,6 +170,15 @@ private fun ClassJoinStep.nextButtonRes(): Int = when (this) {
     ClassJoinStep.NAME -> R.string.class_name_sheet_enter
 }
 
+@StringRes
+private fun ClassJoinDialog.messageRes(): Int = when (this) {
+    ClassJoinDialog.INVALID_CODE -> R.string.class_join_dialog_invalid_code
+    ClassJoinDialog.CLASS_FULL -> R.string.class_join_dialog_class_full
+    ClassJoinDialog.CLASS_CLOSED -> R.string.class_join_dialog_class_closed
+    ClassJoinDialog.CLASS_DELETED -> R.string.class_join_dialog_class_deleted
+    ClassJoinDialog.ALREADY_JOINED -> R.string.class_join_dialog_already_joined
+}
+
 @Preview(name = "코드 입력", showBackground = true)
 @Composable
 private fun ClassJoinContentCodePreview() {
@@ -175,6 +196,65 @@ private fun ClassJoinContentNamePreview() {
     PickeTheme {
         ClassJoinContent(
             uiState = ClassJoinUiState(step = ClassJoinStep.NAME, code = DummyData.dummyClassCode),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "없는 코드", showBackground = true)
+@Composable
+private fun ClassJoinContentInvalidCodePreview() {
+    PickeTheme {
+        ClassJoinContent(
+            uiState = ClassJoinUiState(
+                code = DummyData.dummyClassCode,
+                isCodeInvalid = true,
+                dialog = ClassJoinDialog.INVALID_CODE
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "인원 초과", showBackground = true)
+@Composable
+private fun ClassJoinContentClassFullPreview() {
+    PickeTheme {
+        ClassJoinContent(
+            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_FULL),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "마감된 클래스", showBackground = true)
+@Composable
+private fun ClassJoinContentClassClosedPreview() {
+    PickeTheme {
+        ClassJoinContent(
+            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_CLOSED),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "삭제된 클래스", showBackground = true)
+@Composable
+private fun ClassJoinContentClassDeletedPreview() {
+    PickeTheme {
+        ClassJoinContent(
+            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_DELETED),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "이미 참여 중", showBackground = true)
+@Composable
+private fun ClassJoinContentAlreadyJoinedPreview() {
+    PickeTheme {
+        ClassJoinContent(
+            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.ALREADY_JOINED),
             onAction = {}
         )
     }

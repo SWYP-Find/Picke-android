@@ -18,6 +18,8 @@
     <!-- 다이얼로그 -->
     <string name="dialog_confirm">네, 확인합니다</string>
     <string name="dialog_dismiss">뒤로가기</string>
+    <string name="dialog_ok">확인</string>
+    <string name="dialog_register">등록하기</string>
     <string name="share_dialog_title">공유하기</string>
     <string name="share_dialog_close">닫기</string>
     <string name="share_dialog_kakao">카카오톡</string>
@@ -159,11 +161,14 @@
 
     <!-- 클래스 - 탭 -->
     <string name="class_title">클래스</string>
-    <string name="class_intro_title">함께 생각을 나누는\n클래스를 시작해 보세요</string>
+    <string name="class_intro_title">우리끼리 생각을 나누는\n클래스를 시작해 보세요</string>
     <string name="class_intro_description">콘텐츠를 직접 만들고 사람들을 초대하세요.</string>
     <string name="class_join_code_description">참여 코드 입력</string>
     <string name="class_my_class_description">참여중인 클래스</string>
     <string name="class_ticket_register">이용권 등록하기</string>
+    <string name="class_create_dialog_no_permission">클래스를 열려면 이용권이 필요해요\n클래스 기능을 먼저 알아보세요!</string>
+    <string name="class_create_dialog_unregistered">등록된 이용권이 없습니다\n이용권 등록 먼저 해주세요!</string>
+    <string name="class_create_dialog_expired">사용 중이던 이용권이 종료되었습니다\n새로운 이용권을 등록해주세요!</string>
 
     <!-- 클래스 - 만들기 -->
     <string name="class_create_title">새 클래스 만들기</string>
@@ -204,6 +209,9 @@
     <string name="class_create_regenerate">다시 추천</string>
     <string name="class_create_select_battle">배틀 선택하기</string>
     <string name="class_create_select_question">질문 선택하기</string>
+    <string name="class_create_dialog_battle_search_failed">배틀 검색에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
+    <string name="class_create_dialog_topic_generation_failed">주제 생성에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
+    <string name="class_create_dialog_class_creation_failed">클래스 개설이 완료되지 않았습니다\n네트워크 확인 후 다시 시도해주세요</string>
 
     <!-- 클래스 - 만들기 방식 가이드 시트 -->
     <string name="class_guide_content_title">Pické 배틀 이용 가이드</string>
@@ -227,10 +235,12 @@
     <string name="class_setting_headline">거의 다 왔어요!\n클래스 정보를 입력해 주세요</string>
     <string name="class_setting_name_label">클래스 명</string>
     <string name="class_setting_name_placeholder">ex) 2학년 3반 1학기 토론</string>
+    <string name="class_setting_name_blank_error">공백만으로는 클래스를 만들 수 없어요</string>
     <string name="class_setting_deadline_label">참여 마감일</string>
     <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
     <string name="class_setting_deadline_placeholder">마감일</string>
     <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_setting_deadline_range_error">현재 시각 이후부터 이용권 종료일까지 선택할 수 있어요</string>
     <string name="class_deadline_full_format">yyyy. MM. dd. EEEE HH:mm</string>
     <string name="class_deadline_until">%1$s까지</string>
     <string name="class_deadline_sheet_today">오늘</string>
@@ -261,6 +271,11 @@
     <string name="class_join_code_label">참여 코드</string>
     <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
     <string name="class_join_name_count">%1$d/%2$d</string>
+    <string name="class_join_dialog_invalid_code">코드와 일치하는 클래스를 찾지 못했어요\n참여 코드를 한 번 더 확인해 주세요</string>
+    <string name="class_join_dialog_class_full">해당 클래스의 참여 인원이 모두 찼어요\n모임 주최자에게 확인해 주세요</string>
+    <string name="class_join_dialog_class_closed">참여가 마감된 클래스예요\n다른 코드를 입력해 주세요</string>
+    <string name="class_join_dialog_class_deleted">더 이상 이용할 수 없는 클래스예요\n이 클래스는 삭제되어 입장할 수 없어요</string>
+    <string name="class_join_dialog_already_joined">이미 참여 중인 클래스예요</string>
 
     <!-- 클래스 - 이름 입력 시트 -->
     <string name="class_name_sheet_title">이름을 입력해주세요</string>

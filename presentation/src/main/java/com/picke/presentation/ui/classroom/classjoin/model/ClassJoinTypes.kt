@@ -11,3 +11,11 @@ enum class ClassCodeBoxState {
     ERROR,
     EMPTY
 }
+
+enum class ClassJoinDialog {
+    INVALID_CODE,
+    CLASS_FULL,
+    CLASS_CLOSED,
+    CLASS_DELETED,
+    ALREADY_JOINED
+}

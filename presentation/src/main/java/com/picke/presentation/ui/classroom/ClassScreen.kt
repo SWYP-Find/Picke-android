@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,13 +27,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassShortcutCard
+import com.picke.presentation.ui.classroom.model.ClassTicketDialog
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
+import com.picke.presentation.ui.classroom.model.ClassUiAction
+import com.picke.presentation.ui.classroom.model.ClassUiEvent
+import com.picke.presentation.ui.classroom.model.ClassUiState
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
+import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
+import com.picke.presentation.util.DummyData
 
 private object ClassScreenDimens {
     val introTitleLetterSpacing = (-0.6).sp
@@ -51,25 +64,41 @@ fun ClassScreen(
     onNavigateToMyClass: () -> Unit,
     onNavigateToCreate: () -> Unit,
     onNavigateToTicket: () -> Unit,
-    modifier: Modifier = Modifier
+    onNavigateToTicketRegister: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: ClassViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                ClassUiEvent.NavigateBack -> onBackClick()
+
+                ClassUiEvent.NavigateToJoin -> onNavigateToJoin()
+
+                ClassUiEvent.NavigateToMyClass -> onNavigateToMyClass()
+
+                ClassUiEvent.NavigateToCreate -> onNavigateToCreate()
+
+                ClassUiEvent.NavigateToTicket -> onNavigateToTicket()
+
+                ClassUiEvent.NavigateToTicketRegister -> onNavigateToTicketRegister()
+            }
+        }
+    }
+
     ClassContent(
-        onBackClick = onBackClick,
-        onJoinClick = onNavigateToJoin,
-        onMyClassClick = onNavigateToMyClass,
-        onCreateClick = onNavigateToCreate,
-        onTicketClick = onNavigateToTicket,
+        uiState = uiState,
+        onAction = viewModel::onAction,
         modifier = modifier
     )
 }
 
 @Composable
 private fun ClassContent(
-    onBackClick: () -> Unit,
-    onJoinClick: () -> Unit,
-    onMyClassClick: () -> Unit,
-    onCreateClick: () -> Unit,
-    onTicketClick: () -> Unit,
+    uiState: ClassUiState,
+    onAction: (ClassUiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -93,7 +122,7 @@ private fun ClassContent(
         ) {
             CustomTopAppBar(
                 title = stringResource(R.string.class_title),
-                onBackClick = onBackClick,
+                onBackClick = { onAction(ClassUiAction.BackClick) },
                 backgroundColor = Color.Transparent,
                 backIconColor = PickeTheme.colors.textInverse,
                 titleColor = PickeTheme.colors.textInverse
@@ -115,12 +144,32 @@ private fun ClassContent(
                 ClassIntroSection()
 
                 ClassMenuSection(
-                    onJoinClick = onJoinClick,
-                    onMyClassClick = onMyClassClick,
-                    onCreateClick = onCreateClick,
-                    onTicketClick = onTicketClick
+                    onJoinClick = { onAction(ClassUiAction.JoinClick) },
+                    onMyClassClick = { onAction(ClassUiAction.MyClassClick) },
+                    onCreateClick = { onAction(ClassUiAction.CreateClick) },
+                    onTicketClick = { onAction(ClassUiAction.TicketClick) }
                 )
             }
+        }
+    }
+
+    val ticketDialog = uiState.ticketDialog
+    if (ticketDialog != null) {
+        when (ticketDialog) {
+            ClassTicketDialog.NO_PERMISSION -> CustomSingleActionDialog(
+                message = stringResource(ticketDialog.messageRes()),
+                buttonText = stringResource(R.string.dialog_dismiss),
+                onConfirm = { onAction(ClassUiAction.TicketDialogDismiss) },
+                onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) }
+            )
+
+            ClassTicketDialog.UNREGISTERED,
+            ClassTicketDialog.EXPIRED -> CustomReverseConfirmDialog(
+                message = stringResource(ticketDialog.messageRes()),
+                onConfirm = { onAction(ClassUiAction.TicketDialogRegisterClick) },
+                onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) },
+                confirmText = stringResource(R.string.dialog_register)
+            )
         }
     }
 }
@@ -204,16 +253,62 @@ private fun ClassMenuSection(
     }
 }
 
+@StringRes
+private fun ClassTicketDialog.messageRes(): Int = when (this) {
+    ClassTicketDialog.NO_PERMISSION -> R.string.class_create_dialog_no_permission
+    ClassTicketDialog.UNREGISTERED -> R.string.class_create_dialog_unregistered
+    ClassTicketDialog.EXPIRED -> R.string.class_create_dialog_expired
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ClassContentPreview() {
     PickeTheme {
         ClassContent(
-            onBackClick = {},
-            onJoinClick = {},
-            onMyClassClick = {},
-            onCreateClick = {},
-            onTicketClick = {}
+            uiState = ClassUiState(ticketStatus = DummyData.dummyClassTicketStatus),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "생성 권한 없음", showBackground = true)
+@Composable
+private fun ClassContentNoPermissionPreview() {
+    PickeTheme {
+        ClassContent(
+            uiState = ClassUiState(
+                ticketStatus = ClassTicketStatus.NONE,
+                ticketDialog = ClassTicketDialog.NO_PERMISSION
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "이용권 미등록", showBackground = true)
+@Composable
+private fun ClassContentUnregisteredPreview() {
+    PickeTheme {
+        ClassContent(
+            uiState = ClassUiState(
+                ticketStatus = ClassTicketStatus.UNREGISTERED,
+                ticketDialog = ClassTicketDialog.UNREGISTERED
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "이용권 종료", showBackground = true)
+@Composable
+private fun ClassContentExpiredPreview() {
+    PickeTheme {
+        ClassContent(
+            uiState = ClassUiState(
+                ticketStatus = ClassTicketStatus.EXPIRED,
+                ticketDialog = ClassTicketDialog.EXPIRED
+            ),
+            onAction = {}
         )
     }
 }

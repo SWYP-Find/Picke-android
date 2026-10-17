@@ -14,6 +14,7 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultStanceUi
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
@@ -967,4 +968,6 @@ object DummyData {
     )
 
     val dummyRegisteredTickets = listOf(dummyRegisteredTicket)
+
+    val dummyClassTicketStatus = ClassTicketStatus.ACTIVE
 }

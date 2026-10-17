@@ -305,6 +305,8 @@ fun onAction(action: ClassShareUiAction) {
   ├── classresult/   Screen, ViewModel, Reducer, component/, model/
   └── classmyopinion/ Screen, ViewModel, Reducer, component/, model/   # 결과의 "내가 남긴 의견"
   ```
+- 마이 메뉴에서 들어가는 기능은 `ui/my/` 아래에 둡니다. 화면이 여러 개인 기능은 `ui/my/<기능>/`을 위 feature 루트처럼 쓰고
+  화면별 하위 패키지로 나눕니다 (예: `ui/my/ticket/`의 `ticketregister/`, `ticketregistercomplete/`, 공용 `component/`).
 - 독립 화면(하위 패키지 + 자기 route·ViewModel)과 한 화면 안의 단계(`step/`)는 이렇게 구분합니다.
   - 정의: **하나의 제출(서버 요청)을 만들기 위해 값을 나눠 받는 구간은 한 화면의 단계**, **그 제출과 상관없이 키(id)만으로
     스스로 열릴 수 있는 화면은 독립 화면**입니다.

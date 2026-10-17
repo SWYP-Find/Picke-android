@@ -198,6 +198,10 @@ fun onAction(action: ClassShareUiAction) {
 - Content는 `XxxContent(uiState, onAction, modifier)` 형태이고, 바텀시트·다이얼로그도 Content 안에서 `uiState`로 그립니다.
   Section·Step·Component는 지금처럼 구체적인 콜백(`onClick`, `onValueChange`)을 받고, Content에서 Action으로 연결합니다
   (재사용 컴포넌트가 특정 화면의 Action에 묶이지 않게).
+- 그 컴포넌트 하나만 읽고 바꾸는 표시 상태(안내 펼침, 메뉴 열림 등)는 UiState·Action으로 만들지 않고 컴포넌트 안에
+  `rememberSaveable { mutableStateOf(...) }`로 둡니다 (예: `TicketCodeGuideItem`의 펼침).
+  - 다른 UI가 읽거나 서버 요청·화면 이동·분석 이벤트에 쓰이는 상태는 UiState에 둡니다 (입력값, 선택값, 다이얼로그·시트 열림 등).
+  - Preview에서 다른 상태를 보여야 하면 `initiallyExpanded`처럼 초기값 파라미터를 둡니다.
 - 상태 변경은 순수 함수 `reduce`로 모읍니다 (현재 `ui/classroom`의 모든 화면에 적용).
   - `XxxReducer.kt`(Screen과 같은 패키지)에 순수 함수 `internal fun reduce(state, action): XxxUiState`를 둡니다.
     `state.copy(...)`만 돌려주고, 이벤트 전송·불러오기·`launch`는 넣지 않습니다.

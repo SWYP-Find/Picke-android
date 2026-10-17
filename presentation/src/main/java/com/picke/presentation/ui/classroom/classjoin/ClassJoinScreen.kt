@@ -122,7 +122,7 @@ private fun ClassJoinContent(
     if (dialog != null) {
         CustomSingleActionDialog(
             message = stringResource(dialog.messageRes()),
-            buttonText = stringResource(R.string.ticket_register_dialog_confirm),
+            buttonText = stringResource(R.string.dialog_ok),
             onConfirm = { onAction(ClassJoinUiAction.DialogDismiss) },
             onDismiss = { onAction(ClassJoinUiAction.DialogDismiss) }
         )

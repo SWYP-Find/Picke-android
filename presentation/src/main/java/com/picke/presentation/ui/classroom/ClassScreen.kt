@@ -168,7 +168,7 @@ private fun ClassContent(
                 message = stringResource(ticketDialog.messageRes()),
                 onConfirm = { onAction(ClassUiAction.TicketDialogRegisterClick) },
                 onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) },
-                confirmText = stringResource(R.string.ticket_register_dialog_register)
+                confirmText = stringResource(R.string.dialog_register)
             )
         }
     }

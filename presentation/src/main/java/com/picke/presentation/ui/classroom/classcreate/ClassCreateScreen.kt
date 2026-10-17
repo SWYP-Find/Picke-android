@@ -226,7 +226,7 @@ private fun ClassCreateContent(
     if (errorDialog != null) {
         CustomSingleActionDialog(
             message = stringResource(errorDialog.messageRes()),
-            buttonText = stringResource(R.string.ticket_register_dialog_confirm),
+            buttonText = stringResource(R.string.dialog_ok),
             onConfirm = { onAction(ClassCreateUiAction.ErrorDialogDismiss) },
             onDismiss = { onAction(ClassCreateUiAction.ErrorDialogDismiss) }
         )

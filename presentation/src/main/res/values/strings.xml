@@ -18,6 +18,8 @@
     <!-- 다이얼로그 -->
     <string name="dialog_confirm">네, 확인합니다</string>
     <string name="dialog_dismiss">뒤로가기</string>
+    <string name="dialog_ok">확인</string>
+    <string name="dialog_register">등록하기</string>
     <string name="share_dialog_title">공유하기</string>
     <string name="share_dialog_close">닫기</string>
     <string name="share_dialog_kakao">카카오톡</string>

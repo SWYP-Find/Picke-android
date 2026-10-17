@@ -26,8 +26,6 @@ class MyViewModel @Inject constructor(
     val uiState: StateFlow<MyUiState> = _uiState.asStateFlow()
 
     fun fetchMyInfo() {
-        _uiState.update { it.copy(isLoading = true) }
-
         viewModelScope.launch {
             myPageUseCases.getMyPageInfoUseCase()
                 .onSuccess { infoBoard ->
@@ -48,8 +46,6 @@ class MyViewModel @Inject constructor(
     }
 
     fun fetchUnreadAlarmStatus() {
-        _uiState.update { it.copy(isAlarmStatusLoading = true) }
-
         viewModelScope.launch {
             alarmUseCases.getUnreadAlarmStatusUseCase()
                 .onSuccess { hasUnread ->

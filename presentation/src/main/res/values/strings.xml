@@ -159,11 +159,14 @@
 
     <!-- 클래스 - 탭 -->
     <string name="class_title">클래스</string>
-    <string name="class_intro_title">함께 생각을 나누는\n클래스를 시작해 보세요</string>
+    <string name="class_intro_title">우리끼리 생각을 나누는\n클래스를 시작해 보세요</string>
     <string name="class_intro_description">콘텐츠를 직접 만들고 사람들을 초대하세요.</string>
     <string name="class_join_code_description">참여 코드 입력</string>
     <string name="class_my_class_description">참여중인 클래스</string>
     <string name="class_ticket_register">이용권 등록하기</string>
+    <string name="class_create_dialog_no_permission">클래스를 열려면 이용권이 필요해요\n클래스 기능을 먼저 알아보세요!</string>
+    <string name="class_create_dialog_unregistered">등록된 이용권이 없습니다\n이용권 등록 먼저 해주세요!</string>
+    <string name="class_create_dialog_expired">사용 중이던 이용권이 종료되었습니다\n새로운 이용권을 등록해주세요!</string>
 
     <!-- 클래스 - 만들기 -->
     <string name="class_create_title">새 클래스 만들기</string>

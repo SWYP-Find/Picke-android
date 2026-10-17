@@ -241,6 +241,10 @@ fun AppNavigation(
                 onNavigateToTicket = {
                     requestedMainRoute = AppRoute.Ticket.route
                     navigateToTab(BottomNavItem.My)
+                },
+                onNavigateToTicketRegister = {
+                    requestedMainRoute = AppRoute.TicketRegister.route
+                    navigateToTab(BottomNavItem.My)
                 }
             )
 

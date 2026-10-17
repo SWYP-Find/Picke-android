@@ -1,0 +1,71 @@
+package com.picke.presentation.ui.classroom
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.picke.presentation.ui.classroom.model.ClassMutation
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
+import com.picke.presentation.ui.classroom.model.ClassUiAction
+import com.picke.presentation.ui.classroom.model.ClassUiEvent
+import com.picke.presentation.ui.classroom.model.ClassUiState
+import com.picke.presentation.util.DummyData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ClassViewModel @Inject constructor() : ViewModel() {
+
+    private val _uiState = MutableStateFlow(ClassUiState())
+    val uiState: StateFlow<ClassUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<ClassUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<ClassUiEvent> = _uiEvent.receiveAsFlow()
+
+    init {
+        fetchTicketStatus()
+    }
+
+    fun onAction(action: ClassUiAction) {
+        val previousState = _uiState.value
+        _uiState.update { reduce(it, action) }
+        handleSideEffect(previousState, action)
+    }
+
+    private fun handleSideEffect(state: ClassUiState, action: ClassUiAction) {
+        when (action) {
+            is ClassUiAction.StateOnly -> Unit
+
+            ClassUiAction.BackClick -> sendEvent(ClassUiEvent.NavigateBack)
+
+            ClassUiAction.JoinClick -> sendEvent(ClassUiEvent.NavigateToJoin)
+
+            ClassUiAction.MyClassClick -> sendEvent(ClassUiEvent.NavigateToMyClass)
+
+            ClassUiAction.CreateClick -> if (state.ticketStatus == ClassTicketStatus.ACTIVE) {
+                sendEvent(ClassUiEvent.NavigateToCreate)
+            }
+
+            ClassUiAction.TicketClick -> sendEvent(ClassUiEvent.NavigateToTicket)
+
+            ClassUiAction.CreateDialogRegisterClick -> sendEvent(ClassUiEvent.NavigateToTicketRegister)
+        }
+    }
+
+    private fun sendEvent(event: ClassUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    private fun fetchTicketStatus() {
+        // TODO: API 연동 - 내 이용권 상태 조회로 교체
+        _uiState.update {
+            reduce(it, ClassMutation.TicketStatusLoaded(DummyData.dummyClassTicketStatus))
+        }
+    }
+}

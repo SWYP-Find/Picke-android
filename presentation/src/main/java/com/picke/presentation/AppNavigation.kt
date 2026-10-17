@@ -81,6 +81,7 @@ fun AppNavigation(
     var showNotificationSheet by remember { mutableStateOf(false) }
     var showTermsSheet by remember { mutableStateOf(false) }
     var requestedMainTab by remember { mutableStateOf<BottomNavItem?>(null) }
+    var requestedMainRoute by remember { mutableStateOf<String?>(null) }
 
     val navigateToTab: (BottomNavItem) -> Unit = { item ->
         rootNavController.navigateToTab(item = item, onMainTabRequest = { requestedMainTab = it })
@@ -223,8 +224,10 @@ fun AppNavigation(
                 MainScreen(
                     rootNavController = rootNavController,
                     requestedTab = requestedMainTab,
+                    requestedRoute = requestedMainRoute,
                     onRootTabClick = navigateToTab,
                     onRequestedTabOpened = { requestedMainTab = null },
+                    onRequestedRouteOpened = { requestedMainRoute = null },
                     isNotificationSheetPending = showNotificationSheet
                 )
             }
@@ -234,6 +237,10 @@ fun AppNavigation(
                 onTabClick = { item ->
                     analyticsTracker.trackUiAction(item.toTabAction())
                     navigateToTab(item)
+                },
+                onNavigateToTicketRegister = {
+                    requestedMainRoute = AppRoute.TicketRegister.route
+                    navigateToTab(BottomNavItem.My)
                 }
             )
 

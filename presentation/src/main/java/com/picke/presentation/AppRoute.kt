@@ -68,6 +68,11 @@ sealed class AppRoute(val route: String) {
     object TermsOfService : AppRoute("terms_of_service_screen")
     object Withdraw : AppRoute("withdraw_screen")
     object Point : AppRoute("point_screen")
+    object TicketRegister : AppRoute("ticket_register_screen")
+    object TicketRegisterComplete : AppRoute("ticket_register_complete_screen/{$ARG_TICKET_ID}") {
+        fun createRoute(ticketId: Long) = "ticket_register_complete_screen/$ticketId"
+    }
+
     object MakeBattle : AppRoute("makebattle_screen")
 
     object ClassCreate : AppRoute("class_create_screen")
@@ -120,5 +125,6 @@ sealed class AppRoute(val route: String) {
         const val ARG_CLASS_ID = "classId"
         const val ARG_VOTE_TYPE = "voteType"
         const val ARG_BATTLE_ID = "battleId"
+        const val ARG_TICKET_ID = "ticketId"
     }
 }

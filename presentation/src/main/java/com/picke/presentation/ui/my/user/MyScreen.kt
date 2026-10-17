@@ -60,6 +60,7 @@ fun MyScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
+    onNavigateToTicket: () -> Unit,
     viewModel: MyViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -90,6 +91,7 @@ fun MyScreen(
         onNavigateToContent = onNavigateToContent,
         onNavigateToNotice = onNavigateToNotice,
         onNavigateToPoint = onNavigateToPoint,
+        onNavigateToTicket = onNavigateToTicket
     )
 }
 
@@ -103,6 +105,7 @@ fun MyScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
+    onNavigateToTicket: () -> Unit
 ) {
 
     Scaffold(
@@ -204,6 +207,10 @@ fun MyScreen(
                 MyPageMenuItem(
                     title = stringResource(R.string.my_menu_notice),
                     onClick = { onNavigateToNotice() }
+                )
+                MyPageMenuItem(
+                    title = stringResource(R.string.my_menu_ticket),
+                    onClick = onNavigateToTicket
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -309,7 +316,8 @@ fun MyScreenPreview() {
             onNavigateToPhilosopher = { },
             onNavigateToContent = { },
             onNavigateToNotice = { },
-            onNavigateToPoint = { }
+            onNavigateToPoint = { },
+            onNavigateToTicket = { }
         )
     }
 }

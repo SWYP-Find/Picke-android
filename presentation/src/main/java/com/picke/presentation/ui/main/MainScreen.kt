@@ -35,6 +35,8 @@ import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
 import com.picke.presentation.ui.my.point.PointScreen
 import com.picke.presentation.ui.my.setting.SettingScreen
+import com.picke.presentation.ui.my.ticket.ticketregister.TicketRegisterScreen
+import com.picke.presentation.ui.my.ticket.ticketregistercomplete.TicketRegisterCompleteScreen
 import com.picke.presentation.ui.my.user.MyScreen
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -42,8 +44,10 @@ import com.picke.presentation.ui.theme.PickeTheme
 fun MainScreen(
     rootNavController: NavController,
     requestedTab: BottomNavItem?,
+    requestedRoute: String?,
     onRootTabClick: (BottomNavItem) -> Unit,
     onRequestedTabOpened: () -> Unit,
+    onRequestedRouteOpened: () -> Unit,
     isNotificationSheetPending: Boolean = false
 ) {
     val mainNavController = rememberNavController()
@@ -65,6 +69,12 @@ fun MainScreen(
             restoreState = true
         }
         onRequestedTabOpened()
+    }
+
+    LaunchedEffect(requestedRoute) {
+        val route = requestedRoute ?: return@LaunchedEffect
+        mainNavController.navigate(route) { launchSingleTop = true }
+        onRequestedRouteOpened()
     }
 
     Scaffold(
@@ -144,7 +154,31 @@ fun MainScreen(
                     },
                     onNavigateToPoint = {
                         mainNavController.navigate(AppRoute.Point.route)
+                    },
+                    onNavigateToTicket = {
+                        mainNavController.navigate(AppRoute.TicketRegister.route)
                     }
+                )
+            }
+
+            composable(AppRoute.TicketRegister.route) {
+                TicketRegisterScreen(
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
+                    onNavigateToRegisterComplete = { ticketId ->
+                        mainNavController.navigate(AppRoute.TicketRegisterComplete.createRoute(ticketId)) {
+                            popUpTo(AppRoute.TicketRegister.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(
+                route = AppRoute.TicketRegisterComplete.route,
+                arguments = listOf(navArgument(AppRoute.ARG_TICKET_ID) { type = NavType.LongType })
+            ) {
+                TicketRegisterCompleteScreen(
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
+                    onNavigateToTicket = dropUnlessResumed { mainNavController.popBackStack() }
                 )
             }
 

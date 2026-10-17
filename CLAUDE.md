@@ -394,6 +394,10 @@ fun onAction(action: ClassShareUiAction) {
     `dropUnlessResumed`로 감쌉니다. 분기가 있는 콜백은 블록 전체를 감쌉니다.
     - 연타하면 `popBackStack()`이 두 번 실행돼 중간 화면을 건너뛰거나 메인까지 빠져 빈 화면이 됩니다.
       같은 화면도 진입 경로에 따라 스택 깊이가 달라서, 특정 화면만 골라 적용하지 않고 모든 뒤로가기 콜백에 둡니다.
+  - 불러온 데이터에 따라 다른 화면을 보여 줘야 하는 진입(예: 등록된 이용권이 없으면 등록 화면)은 진입 화면이 직접 불러와
+    판단합니다. 다른 화면을 보여 줘야 하면 진입 화면을 스택에서 빼고(`popUpTo(자기 route) { inclusive = true }`) 그 화면으로
+    이동해, 뒤로가기에 진입 화면이 남지 않게 합니다 (예: `TicketScreen`).
+    - 이 이동 콜백은 화면이 RESUMED 되기 전에 불릴 수 있어 `dropUnlessResumed`로 감싸지 않습니다.
 - 클래스(`ui/classroom`) 화면은 `ui/classroom/ClassNavGraph.kt`의 `classGraph()`로 `AppNavigation` 루트에 등록합니다
   (하단 바의 클래스 탭은 빠른배틀 탭처럼 `rootNavController`로 이동). `MainScreen` 내부에 두면 하단 바·여백이 이동 뒤에
   바뀌어 화면 전환이 어색하게 보이기 때문입니다. 하단 바가 필요한 화면(내 클래스·상세·멤버·결과)만 `ClassTabScaffold`로

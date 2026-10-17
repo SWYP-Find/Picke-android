@@ -35,6 +35,7 @@ import com.picke.presentation.ui.my.notice.NoticeEventScreen
 import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
 import com.picke.presentation.ui.my.point.PointScreen
 import com.picke.presentation.ui.my.setting.SettingScreen
+import com.picke.presentation.ui.my.ticket.TicketScreen
 import com.picke.presentation.ui.my.ticket.ticketregister.TicketRegisterScreen
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.TicketRegisterCompleteScreen
 import com.picke.presentation.ui.my.user.MyScreen
@@ -156,7 +157,19 @@ fun MainScreen(
                         mainNavController.navigate(AppRoute.Point.route)
                     },
                     onNavigateToTicket = {
-                        mainNavController.navigate(AppRoute.TicketRegister.route)
+                        mainNavController.navigate(AppRoute.Ticket.route)
+                    }
+                )
+            }
+
+            composable(AppRoute.Ticket.route) {
+                TicketScreen(
+                    onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
+                    onNavigateToRegister = { mainNavController.navigate(AppRoute.TicketRegister.route) },
+                    onReplaceWithRegister = {
+                        mainNavController.navigate(AppRoute.TicketRegister.route) {
+                            popUpTo(AppRoute.Ticket.route) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -178,7 +191,11 @@ fun MainScreen(
             ) {
                 TicketRegisterCompleteScreen(
                     onBackClick = dropUnlessResumed { mainNavController.popBackStack() },
-                    onNavigateToTicket = dropUnlessResumed { mainNavController.popBackStack() }
+                    onNavigateToTicket = dropUnlessResumed {
+                        mainNavController.navigate(AppRoute.Ticket.route) {
+                            popUpTo(BottomNavItem.My.route)
+                        }
+                    }
                 )
             }
 

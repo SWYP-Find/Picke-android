@@ -68,6 +68,7 @@ sealed class AppRoute(val route: String) {
     object TermsOfService : AppRoute("terms_of_service_screen")
     object Withdraw : AppRoute("withdraw_screen")
     object Point : AppRoute("point_screen")
+    object Ticket : AppRoute("ticket_screen")
     object TicketRegister : AppRoute("ticket_register_screen")
     object TicketRegisterComplete : AppRoute("ticket_register_complete_screen/{$ARG_TICKET_ID}") {
         fun createRoute(ticketId: Long) = "ticket_register_complete_screen/$ticketId"

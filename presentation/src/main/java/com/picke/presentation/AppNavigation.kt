@@ -238,8 +238,8 @@ fun AppNavigation(
                     analyticsTracker.trackUiAction(item.toTabAction())
                     navigateToTab(item)
                 },
-                onNavigateToTicketRegister = {
-                    requestedMainRoute = AppRoute.TicketRegister.route
+                onNavigateToTicket = {
+                    requestedMainRoute = AppRoute.Ticket.route
                     navigateToTab(BottomNavItem.My)
                 }
             )

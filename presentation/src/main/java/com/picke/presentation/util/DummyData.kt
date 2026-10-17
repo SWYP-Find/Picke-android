@@ -965,4 +965,6 @@ object DummyData {
         startDate = LocalDate.of(2026, 10, 9),
         endDate = LocalDate.of(2027, 4, 8)
     )
+
+    val dummyRegisteredTickets = listOf(dummyRegisteredTicket)
 }

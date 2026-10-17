@@ -55,6 +55,11 @@
     <string name="ticket_info_class_creation_value">이용 기간 내 무제한</string>
     <string name="ticket_check_in_my_page">등록 후 마이페이지에서 이용권을 확인할 수 있어요</string>
 
+    <!-- 클래스 이용권 -->
+    <string name="ticket_title">클래스 이용권</string>
+    <string name="ticket_in_use">사용 중인 이용권</string>
+    <string name="ticket_add_register">이용권 추가등록하기</string>
+
     <!-- 이용권 등록 -->
     <string name="ticket_register_title">이용권 등록하기</string>
     <string name="ticket_register_code_headline">클래스 이용권을 등록하세요</string>

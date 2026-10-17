@@ -17,7 +17,8 @@ data class ClassCreateUiState(
     val deadline: LocalDateTime? = null,
     val isDeadlineSheetVisible: Boolean = false,
     val isCommentRequired: Boolean = false,
-    val isOperatorJoin: Boolean = false
+    val isOperatorJoin: Boolean = false,
+    val errorDialog: ClassCreateErrorDialog? = null
 ) {
     val selectedBattle: ClassBattleUiModel?
         get() = battles.firstOrNull { it.battleId == selectedBattleId }

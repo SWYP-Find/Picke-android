@@ -43,8 +43,8 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
 
     private fun handleSideEffect(state: ClassCreateUiState, action: ClassCreateUiAction) {
         when (action) {
-            ClassCreateUiAction.BackClick -> {
-                if (state.previousStep == null) sendEvent(ClassCreateUiEvent.NavigateBack)
+            ClassCreateUiAction.BackClick -> if (state.previousStep == null) {
+                sendEvent(ClassCreateUiEvent.NavigateBack)
             }
 
             ClassCreateUiAction.NextClick -> {
@@ -60,9 +60,7 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
 
             ClassCreateUiAction.RegenerateClick -> fetchRecommendedBattles()
 
-            is ClassCreateUiAction.DeadlineToggle -> {
-                if (action.isEnabled) resetDeadline()
-            }
+            is ClassCreateUiAction.DeadlineToggle -> if (action.isEnabled) resetDeadline()
 
             is ClassCreateUiAction.StateOnly -> Unit
         }
@@ -73,7 +71,7 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchRecommendedBattles() {
-        // TODO: API 연동 - 조건 기반 추천 배틀 / AI 질문 생성으로 교체
+        // TODO: API 연동 - 조건 기반 추천 배틀 / AI 질문 생성으로 교체, 실패 시 BATTLE_SEARCH_FAILED / TOPIC_GENERATION_FAILED로 RequestFailed 반영
         val battles = if (_uiState.value.method == ClassCreateMethod.AI_TOPIC) {
             DummyData.dummyClassAiQuestions
         } else {
@@ -88,7 +86,7 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun createClass() {
-        // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동
+        // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동, 실패 시 CLASS_CREATION_FAILED로 RequestFailed 반영
         sendEvent(ClassCreateUiEvent.NavigateToShare(DummyData.dummyMyClasses.first().id))
     }
 }

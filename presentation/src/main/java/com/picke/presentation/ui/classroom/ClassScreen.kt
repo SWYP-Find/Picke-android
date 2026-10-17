@@ -38,7 +38,7 @@ import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -164,12 +164,11 @@ private fun ClassContent(
             )
 
             ClassCreateDialog.UNREGISTERED,
-            ClassCreateDialog.EXPIRED -> CustomConfirmDialog(
+            ClassCreateDialog.EXPIRED -> CustomReverseConfirmDialog(
                 message = stringResource(createDialog.messageRes()),
-                onConfirm = { onAction(ClassUiAction.CreateDialogDismiss) },
-                onDismiss = { onAction(ClassUiAction.CreateDialogRegisterClick) },
-                confirmText = stringResource(R.string.dialog_dismiss),
-                dismissText = stringResource(R.string.ticket_register_dialog_register)
+                onConfirm = { onAction(ClassUiAction.CreateDialogRegisterClick) },
+                onDismiss = { onAction(ClassUiAction.CreateDialogDismiss) },
+                confirmText = stringResource(R.string.ticket_register_dialog_register)
             )
         }
     }

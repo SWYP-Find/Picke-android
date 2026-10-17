@@ -14,7 +14,7 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-internal fun ClassSettingErrorText(
+fun ClassSettingErrorText(
     text: String,
     isVisible: Boolean,
     modifier: Modifier = Modifier

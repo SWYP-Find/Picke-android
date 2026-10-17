@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -32,6 +33,7 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
     val uiEvent: Flow<ClassCreateUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
+        fetchTicketEndDate()
         resetDeadline()
     }
 
@@ -70,6 +72,13 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
+    private fun fetchTicketEndDate() {
+        // TODO: API 연동 - 내 이용권 종료일 조회로 교체
+        _uiState.update {
+            reduce(it, ClassCreateMutation.TicketEndDateLoaded(DummyData.dummyRegisteredTicket.endDate))
+        }
+    }
+
     private fun fetchRecommendedBattles() {
         // TODO: API 연동 - 조건 기반 추천 배틀 / AI 질문 생성으로 교체, 실패 시 BATTLE_SEARCH_FAILED / TOPIC_GENERATION_FAILED로 RequestFailed 반영
         val battles = if (_uiState.value.method == ClassCreateMethod.AI_TOPIC) {
@@ -86,6 +95,18 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun createClass() {
+        val state = _uiState.value
+        val deadline = state.deadline
+        val isClassNameInvalid = state.className.isBlank()
+        val isDeadlineOutOfRange = state.isDeadlineEnabled && deadline != null &&
+            (deadline.isBefore(LocalDateTime.now()) || deadline.toLocalDate().isAfter(state.ticketEndDate ?: LocalDate.MAX))
+        if (isClassNameInvalid || isDeadlineOutOfRange) {
+            _uiState.update {
+                reduce(it, ClassCreateMutation.SettingInvalid(isClassNameInvalid, isDeadlineOutOfRange))
+            }
+            return
+        }
+
         // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동, 실패 시 CLASS_CREATION_FAILED로 RequestFailed 반영
         sendEvent(ClassCreateUiEvent.NavigateToShare(DummyData.dummyMyClasses.first().id))
     }

@@ -233,10 +233,12 @@
     <string name="class_setting_headline">거의 다 왔어요!\n클래스 정보를 입력해 주세요</string>
     <string name="class_setting_name_label">클래스 명</string>
     <string name="class_setting_name_placeholder">ex) 2학년 3반 1학기 토론</string>
+    <string name="class_setting_name_blank_error">공백만으로는 클래스를 만들 수 없어요</string>
     <string name="class_setting_deadline_label">참여 마감일</string>
     <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
     <string name="class_setting_deadline_placeholder">마감일</string>
     <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_setting_deadline_range_error">현재 시각 이후부터 이용권 종료일까지 선택할 수 있어요</string>
     <string name="class_deadline_full_format">yyyy. MM. dd. EEEE HH:mm</string>
     <string name="class_deadline_until">%1$s까지</string>
     <string name="class_deadline_sheet_today">오늘</string>

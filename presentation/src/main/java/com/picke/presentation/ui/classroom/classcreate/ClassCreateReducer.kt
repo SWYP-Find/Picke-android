@@ -36,15 +36,22 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.RegenerateClick -> state.copy(selectedBattleId = null)
 
-        is ClassCreateUiAction.ClassNameChange -> state.copy(className = action.name)
+        is ClassCreateUiAction.ClassNameChange -> state.copy(
+            className = action.name,
+            isClassNameInvalid = false
+        )
 
-        is ClassCreateUiAction.DeadlineToggle -> state.copy(isDeadlineEnabled = action.isEnabled)
+        is ClassCreateUiAction.DeadlineToggle -> state.copy(
+            isDeadlineEnabled = action.isEnabled,
+            isDeadlineOutOfRange = false
+        )
 
         ClassCreateUiAction.DeadlineFieldClick -> state.copy(isDeadlineSheetVisible = state.isDeadlineEnabled)
 
         is ClassCreateUiAction.DeadlineConfirm -> state.copy(
             deadline = action.deadline,
-            isDeadlineSheetVisible = false
+            isDeadlineSheetVisible = false,
+            isDeadlineOutOfRange = false
         )
 
         ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
@@ -63,7 +70,17 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
             selectedBattleId = null
         )
 
-        is ClassCreateMutation.DeadlineReset -> state.copy(deadline = mutation.deadline)
+        is ClassCreateMutation.DeadlineReset -> state.copy(
+            deadline = mutation.deadline,
+            isDeadlineOutOfRange = false
+        )
+
+        is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
+
+        is ClassCreateMutation.SettingInvalid -> state.copy(
+            isClassNameInvalid = mutation.isClassNameInvalid,
+            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange
+        )
 
         is ClassCreateMutation.RequestFailed -> state.copy(errorDialog = mutation.errorDialog)
     }

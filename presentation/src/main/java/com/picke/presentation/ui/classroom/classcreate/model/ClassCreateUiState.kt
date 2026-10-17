@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.classroom.classcreate.model
 
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class ClassCreateUiState(
@@ -13,9 +14,12 @@ data class ClassCreateUiState(
     val battles: List<ClassBattleUiModel> = emptyList(),
     val selectedBattleId: Long? = null,
     val className: String = "",
+    val isClassNameInvalid: Boolean = false,
     val isDeadlineEnabled: Boolean = true,
     val deadline: LocalDateTime? = null,
     val isDeadlineSheetVisible: Boolean = false,
+    val isDeadlineOutOfRange: Boolean = false,
+    val ticketEndDate: LocalDate? = null,
     val isCommentRequired: Boolean = false,
     val isOperatorJoin: Boolean = false,
     val errorDialog: ClassCreateErrorDialog? = null
@@ -25,10 +29,9 @@ data class ClassCreateUiState(
 
     val isNextEnabled: Boolean
         get() = when (step) {
-            ClassCreateStep.METHOD -> true
+            ClassCreateStep.METHOD, ClassCreateStep.SETTING -> true
             ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty()
             ClassCreateStep.SELECTION -> selectedBattleId != null
-            ClassCreateStep.SETTING -> className.isNotBlank()
         }
 
     internal val nextStep: ClassCreateStep?

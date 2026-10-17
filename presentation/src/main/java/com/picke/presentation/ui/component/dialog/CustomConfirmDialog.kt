@@ -70,7 +70,10 @@ fun CustomConfirmDialog(
                     )
                 }
 
-                HorizontalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = pointColor)
+                HorizontalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = pointColor
+                )
 
                 Row(
                     modifier = Modifier
@@ -91,7 +94,10 @@ fun CustomConfirmDialog(
                         )
                     }
 
-                    VerticalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = pointColor)
+                    VerticalDivider(
+                        thickness = ComponentNumberTokens.borderWidthRegular,
+                        color = pointColor
+                    )
 
                     Box(
                         modifier = Modifier

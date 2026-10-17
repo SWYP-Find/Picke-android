@@ -76,7 +76,10 @@ fun CustomSingleActionDialog(
                     }
                 }
 
-                HorizontalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = pointColor)
+                HorizontalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = pointColor
+                )
 
                 Box(
                     modifier = Modifier

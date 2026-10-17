@@ -292,7 +292,7 @@ fun onAction(action: ClassShareUiAction) {
   ui/classroom/
   ├── ClassScreen.kt                 # 진입(탭) 화면
   ├── ClassNavGraph.kt               # classGraph()
-  ├── component/                     # feature 공용 (ClassBattleCard, ClassTextField 등) + 진입 화면 전용 (ClassShortcutCard)
+  ├── component/                     # feature 공용 (ClassBattleCard, ClassBottomButton 등) + 진입 화면 전용 (ClassShortcutCard)
   ├── model/                         # feature 공용 UiModel (ClassBattleUiModel)
   ├── classcreate/   Screen, ViewModel, Reducer, component/(deadline/), model/, step/
   ├── classjoin/     Screen, ViewModel, Reducer, component/, model/, step/

@@ -49,9 +49,9 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
-import com.picke.presentation.ui.classroom.component.ClassTextField
 import com.picke.presentation.ui.component.ChatBubble
 import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -293,7 +293,7 @@ private fun ClassDebateComposerSection(
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ClassTextField(
+                CustomTextField(
                     value = input,
                     onValueChange = onInputChange,
                     minHeight = ComponentNumberTokens.inputTextfieldHeight,

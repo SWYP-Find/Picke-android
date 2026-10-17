@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
-import com.picke.presentation.ui.classroom.component.ClassTextField
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
+import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.CustomToggle
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -58,7 +58,7 @@ internal fun ClassCreateSettingStep(
             isRequired = true,
             contentSpacing = SpacingTokens.s8
         ) {
-            ClassTextField(
+            CustomTextField(
                 value = uiState.className,
                 onValueChange = onClassNameChange,
                 minHeight = ComponentNumberTokens.inputTextfieldHeight,

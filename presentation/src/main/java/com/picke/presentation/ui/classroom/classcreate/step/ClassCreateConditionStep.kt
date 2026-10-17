@@ -14,8 +14,8 @@ import com.picke.presentation.ui.classroom.classcreate.component.ClassOptionChip
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
-import com.picke.presentation.ui.classroom.component.ClassTextField
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
+import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -35,7 +35,7 @@ internal fun ClassCreateConditionStep(
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
     ) {
         ClassTitledBlock(title = stringResource(R.string.class_create_topic_label)) {
-            ClassTextField(
+            CustomTextField(
                 value = uiState.topic,
                 onValueChange = onTopicChange,
                 minHeight = ComponentNumberTokens.inputTextfieldHeight,

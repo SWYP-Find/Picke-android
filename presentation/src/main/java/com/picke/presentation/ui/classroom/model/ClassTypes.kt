@@ -7,7 +7,7 @@ enum class ClassTicketStatus {
     EXPIRED
 }
 
-enum class ClassCreateDialog {
+enum class ClassTicketDialog {
     NO_PERMISSION,
     UNREGISTERED,
     EXPIRED

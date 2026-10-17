@@ -1,7 +1,7 @@
 package com.picke.presentation.ui.classroom
 
-import com.picke.presentation.ui.classroom.model.ClassCreateDialog
 import com.picke.presentation.ui.classroom.model.ClassMutation
+import com.picke.presentation.ui.classroom.model.ClassTicketDialog
 import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiState
@@ -11,17 +11,17 @@ internal fun reduce(state: ClassUiState, action: ClassUiAction): ClassUiState =
         is ClassUiAction.SideEffectOnly -> state
 
         ClassUiAction.CreateClick -> state.copy(
-            createDialog = when (state.ticketStatus) {
-                ClassTicketStatus.NONE -> ClassCreateDialog.NO_PERMISSION
-                ClassTicketStatus.UNREGISTERED -> ClassCreateDialog.UNREGISTERED
-                ClassTicketStatus.EXPIRED -> ClassCreateDialog.EXPIRED
+            ticketDialog = when (state.ticketStatus) {
+                ClassTicketStatus.NONE -> ClassTicketDialog.NO_PERMISSION
+                ClassTicketStatus.UNREGISTERED -> ClassTicketDialog.UNREGISTERED
+                ClassTicketStatus.EXPIRED -> ClassTicketDialog.EXPIRED
                 ClassTicketStatus.ACTIVE, null -> null
             }
         )
 
-        ClassUiAction.CreateDialogRegisterClick -> state.copy(createDialog = null)
+        ClassUiAction.TicketDialogRegisterClick -> state.copy(ticketDialog = null)
 
-        ClassUiAction.CreateDialogDismiss -> state.copy(createDialog = null)
+        ClassUiAction.TicketDialogDismiss -> state.copy(ticketDialog = null)
     }
 
 internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState =

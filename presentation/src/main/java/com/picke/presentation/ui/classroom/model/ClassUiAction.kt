@@ -16,7 +16,7 @@ sealed interface ClassUiAction {
 
     data object TicketClick : SideEffectOnly
 
-    data object CreateDialogRegisterClick : ClassUiAction
+    data object TicketDialogRegisterClick : ClassUiAction
 
-    data object CreateDialogDismiss : StateOnly
+    data object TicketDialogDismiss : StateOnly
 }

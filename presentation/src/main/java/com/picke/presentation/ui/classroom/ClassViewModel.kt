@@ -54,7 +54,7 @@ class ClassViewModel @Inject constructor() : ViewModel() {
 
             ClassUiAction.TicketClick -> sendEvent(ClassUiEvent.NavigateToTicket)
 
-            ClassUiAction.CreateDialogRegisterClick -> sendEvent(ClassUiEvent.NavigateToTicketRegister)
+            ClassUiAction.TicketDialogRegisterClick -> sendEvent(ClassUiEvent.NavigateToTicketRegister)
         }
     }
 

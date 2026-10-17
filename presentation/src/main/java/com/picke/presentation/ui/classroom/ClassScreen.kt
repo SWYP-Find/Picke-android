@@ -31,7 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassShortcutCard
-import com.picke.presentation.ui.classroom.model.ClassCreateDialog
+import com.picke.presentation.ui.classroom.model.ClassTicketDialog
 import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
@@ -153,21 +153,21 @@ private fun ClassContent(
         }
     }
 
-    val createDialog = uiState.createDialog
-    if (createDialog != null) {
-        when (createDialog) {
-            ClassCreateDialog.NO_PERMISSION -> CustomSingleActionDialog(
-                message = stringResource(createDialog.messageRes()),
+    val ticketDialog = uiState.ticketDialog
+    if (ticketDialog != null) {
+        when (ticketDialog) {
+            ClassTicketDialog.NO_PERMISSION -> CustomSingleActionDialog(
+                message = stringResource(ticketDialog.messageRes()),
                 buttonText = stringResource(R.string.dialog_dismiss),
-                onConfirm = { onAction(ClassUiAction.CreateDialogDismiss) },
-                onDismiss = { onAction(ClassUiAction.CreateDialogDismiss) }
+                onConfirm = { onAction(ClassUiAction.TicketDialogDismiss) },
+                onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) }
             )
 
-            ClassCreateDialog.UNREGISTERED,
-            ClassCreateDialog.EXPIRED -> CustomReverseConfirmDialog(
-                message = stringResource(createDialog.messageRes()),
-                onConfirm = { onAction(ClassUiAction.CreateDialogRegisterClick) },
-                onDismiss = { onAction(ClassUiAction.CreateDialogDismiss) },
+            ClassTicketDialog.UNREGISTERED,
+            ClassTicketDialog.EXPIRED -> CustomReverseConfirmDialog(
+                message = stringResource(ticketDialog.messageRes()),
+                onConfirm = { onAction(ClassUiAction.TicketDialogRegisterClick) },
+                onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) },
                 confirmText = stringResource(R.string.ticket_register_dialog_register)
             )
         }
@@ -254,10 +254,10 @@ private fun ClassMenuSection(
 }
 
 @StringRes
-private fun ClassCreateDialog.messageRes(): Int = when (this) {
-    ClassCreateDialog.NO_PERMISSION -> R.string.class_create_dialog_no_permission
-    ClassCreateDialog.UNREGISTERED -> R.string.class_create_dialog_unregistered
-    ClassCreateDialog.EXPIRED -> R.string.class_create_dialog_expired
+private fun ClassTicketDialog.messageRes(): Int = when (this) {
+    ClassTicketDialog.NO_PERMISSION -> R.string.class_create_dialog_no_permission
+    ClassTicketDialog.UNREGISTERED -> R.string.class_create_dialog_unregistered
+    ClassTicketDialog.EXPIRED -> R.string.class_create_dialog_expired
 }
 
 @Preview(showBackground = true)
@@ -278,7 +278,7 @@ private fun ClassContentNoPermissionPreview() {
         ClassContent(
             uiState = ClassUiState(
                 ticketStatus = ClassTicketStatus.NONE,
-                createDialog = ClassCreateDialog.NO_PERMISSION
+                ticketDialog = ClassTicketDialog.NO_PERMISSION
             ),
             onAction = {}
         )
@@ -292,7 +292,7 @@ private fun ClassContentUnregisteredPreview() {
         ClassContent(
             uiState = ClassUiState(
                 ticketStatus = ClassTicketStatus.UNREGISTERED,
-                createDialog = ClassCreateDialog.UNREGISTERED
+                ticketDialog = ClassTicketDialog.UNREGISTERED
             ),
             onAction = {}
         )
@@ -306,7 +306,7 @@ private fun ClassContentExpiredPreview() {
         ClassContent(
             uiState = ClassUiState(
                 ticketStatus = ClassTicketStatus.EXPIRED,
-                createDialog = ClassCreateDialog.EXPIRED
+                ticketDialog = ClassTicketDialog.EXPIRED
             ),
             onAction = {}
         )

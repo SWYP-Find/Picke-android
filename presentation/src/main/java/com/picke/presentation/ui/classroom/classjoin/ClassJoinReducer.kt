@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classjoin
 
+import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinDialog
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinMutation
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinStep
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiAction
@@ -20,11 +21,18 @@ internal fun reduce(state: ClassJoinUiState, action: ClassJoinUiAction): ClassJo
             name = action.name.take(ClassJoinUiState.NAME_MAX_LENGTH),
             isNameDuplicated = false
         )
+
+        ClassJoinUiAction.DialogDismiss -> state.copy(dialog = null)
     }
 
 internal fun reduce(state: ClassJoinUiState, mutation: ClassJoinMutation): ClassJoinUiState =
     when (mutation) {
         ClassJoinMutation.CodeVerified -> state.copy(step = ClassJoinStep.NAME)
+
+        is ClassJoinMutation.JoinFailed -> state.copy(
+            isCodeInvalid = mutation.dialog == ClassJoinDialog.INVALID_CODE,
+            dialog = mutation.dialog
+        )
     }
 
 private fun String.toClassCode(): String =

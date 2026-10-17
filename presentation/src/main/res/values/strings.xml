@@ -264,6 +264,11 @@
     <string name="class_join_code_label">참여 코드</string>
     <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
     <string name="class_join_name_count">%1$d/%2$d</string>
+    <string name="class_join_dialog_invalid_code">코드와 일치하는 클래스를 찾지 못했어요\n참여 코드를 한 번 더 확인해 주세요</string>
+    <string name="class_join_dialog_class_full">해당 클래스의 참여 인원이 모두 찼어요\n모임 주최자에게 확인해 주세요</string>
+    <string name="class_join_dialog_class_closed">참여가 마감된 클래스예요\n다른 코드를 입력해 주세요</string>
+    <string name="class_join_dialog_class_deleted">더 이상 이용할 수 없는 클래스예요\n이 클래스는 삭제되어 입장할 수 없어요</string>
+    <string name="class_join_dialog_already_joined">이미 참여 중인 클래스예요</string>
 
     <!-- 클래스 - 이름 입력 시트 -->
     <string name="class_name_sheet_title">이름을 입력해주세요</string>

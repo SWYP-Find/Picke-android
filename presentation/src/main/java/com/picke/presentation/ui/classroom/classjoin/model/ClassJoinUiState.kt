@@ -5,7 +5,8 @@ data class ClassJoinUiState(
     val code: String = "",
     val isCodeInvalid: Boolean = false,
     val name: String = "",
-    val isNameDuplicated: Boolean = false
+    val isNameDuplicated: Boolean = false,
+    val dialog: ClassJoinDialog? = null
 ) {
     val isNextEnabled: Boolean
         get() = when (step) {

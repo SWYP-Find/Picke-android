@@ -56,12 +56,12 @@ class ClassJoinViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun verifyCode() {
-        // TODO: API 연동 - 참여 코드 검증 요청 성공 시 반영, 실패 시 isCodeInvalid 표시
+        // TODO: API 연동 - 참여 코드 검증 요청 성공 시 반영, 실패 시 오류 종류에 맞는 JoinFailed 반영
         _uiState.update { reduce(it, ClassJoinMutation.CodeVerified) }
     }
 
     private fun enterClass() {
-        // TODO: API 연동 - 클래스 참여 요청 후 응답 classId로 이동, 이름 중복 시 isNameDuplicated 표시
+        // TODO: API 연동 - 클래스 참여 요청 후 응답 classId로 이동, 이름 중복 시 isNameDuplicated 표시, 그 밖의 실패는 JoinFailed 반영
         sendEvent(ClassJoinUiEvent.NavigateToClassDetail(DummyData.dummyMyClasses[1].id))
     }
 }

@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.scenario.component
+package com.picke.presentation.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +34,12 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.formatSpeed
 import com.picke.presentation.util.formatTime
+
+object AudioPlayerDefaults {
+    val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
+    const val SKIP_INTERVAL_MS = 15_000L
+    const val SYNC_INTERVAL_MS = 100L
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

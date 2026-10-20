@@ -57,8 +57,8 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
                 }
             }
 
-            // TODO: API 연동 - 배틀 미리듣기 재생 연결
-            is ClassCreateUiAction.BattlePreviewClick -> Unit
+            is ClassCreateUiAction.BattlePreviewClick ->
+                sendEvent(ClassCreateUiEvent.NavigateToBattlePreview(action.battleId))
 
             ClassCreateUiAction.RegenerateClick -> fetchRecommendedBattles()
 

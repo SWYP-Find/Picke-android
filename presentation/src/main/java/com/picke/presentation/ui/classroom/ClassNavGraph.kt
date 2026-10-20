@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.picke.presentation.AppRoute
+import com.picke.presentation.ui.classroom.classbattlepreview.ClassBattlePreviewScreen
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
 import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
@@ -49,8 +50,18 @@ fun NavGraphBuilder.classGraph(
                 navController.navigate(AppRoute.ClassShare.createRoute(classId)) {
                     popUpTo(AppRoute.ClassCreate.route) { inclusive = true }
                 }
+            },
+            onNavigateToBattlePreview = { battleId ->
+                navController.navigate(AppRoute.ClassBattlePreview.createRoute(battleId))
             }
         )
+    }
+
+    composable(
+        route = AppRoute.ClassBattlePreview.route,
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.LongType })
+    ) {
+        ClassBattlePreviewScreen(onBackClick = dropUnlessResumed { navController.popBackStack() })
     }
 
     composable(AppRoute.ClassJoin.route) {

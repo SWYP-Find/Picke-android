@@ -26,8 +26,10 @@ import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.recommend.model.RecommendUiModel
 import com.picke.presentation.ui.scenario.model.PastChoice
+import com.picke.presentation.ui.scenario.model.ScenarioNodeUiModel
 import com.picke.presentation.ui.scenario.model.ScenarioOptionUiModel
 import com.picke.presentation.ui.scenario.model.ScenarioScriptUiModel
+import com.picke.presentation.ui.scenario.model.ScenarioUiModel
 import com.picke.presentation.ui.todaybattle.model.TodayBattleOptionUiModel
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiModel
 import com.picke.presentation.ui.vote.model.BattleDetailUiModel
@@ -879,6 +881,207 @@ object DummyData {
         categoryTags = emptyList(),
         philosopherTags = emptyList(),
         valueTags = emptyList()
+    )
+
+    val dummyClassBattlePreviewScenarios = mapOf(
+        101L to ScenarioUiModel(
+            battleId = "101",
+            isInteractive = false,
+            startNodeId = "node_opening",
+            audios = emptyMap(),
+            nodes = mapOf(
+                "node_opening" to ScenarioNodeUiModel(
+                    nodeId = "node_opening",
+                    nodeName = "opening",
+                    audioDuration = 75,
+                    autoNextNodeId = null,
+                    scripts = listOf(
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_1",
+                                startTimeMs = 0L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "칸트",
+                                displayText = "범죄는 나이와 상관없이 도덕 법칙을 어긴 행위입니다. 스스로 판단할 수 있다면 그 결과에도 책임을 져야 합니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_2",
+                                startTimeMs = 9000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "벤담",
+                                displayText = "책임을 묻는 것과 처벌을 늘리는 것은 다릅니다. 처벌은 사회 전체의 고통을 줄일 때만 정당합니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_3",
+                                startTimeMs = 19000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "칸트",
+                                displayText = "그렇다면 피해자의 고통은 누가 갚습니까? 처벌은 계산이 아니라 정의의 요구입니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_4",
+                                startTimeMs = 29000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "벤담",
+                                displayText = "청소년을 교정하면 앞으로 생길 범죄를 줄일 수 있습니다. 그것이 더 많은 사람을 지키는 길입니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_5",
+                                startTimeMs = 40000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "칸트",
+                                displayText = "사람을 결과를 위한 수단으로 다루면 안 됩니다. 소년도 이성을 가진 존재로 존중해야 합니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_6",
+                                startTimeMs = 51000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "벤담",
+                                displayText = "존중한다면 다시 설 기회를 주어야지요. 처벌만으로는 아무도 행복해지지 않습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_101_7",
+                                startTimeMs = 62000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "칸트",
+                                displayText = "기회는 책임을 인정한 뒤에야 의미가 있습니다."
+                            )
+                    ),
+                    interactiveOptions = emptyList()
+                )
+            )
+        ),
+        102L to ScenarioUiModel(
+            battleId = "102",
+            isInteractive = false,
+            startNodeId = "node_opening",
+            audios = emptyMap(),
+            nodes = mapOf(
+                "node_opening" to ScenarioNodeUiModel(
+                    nodeId = "node_opening",
+                    nodeName = "opening",
+                    audioDuration = 75,
+                    autoNextNodeId = null,
+                    scripts = listOf(
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_1",
+                                startTimeMs = 0L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "순자",
+                                displayText = "사람은 태어날 때부터 이익을 좋아하고 시기하는 마음을 가지고 있습니다. 그래서 예와 교육으로 바로잡아야 합니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_2",
+                                startTimeMs = 9000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "노자",
+                                displayText = "억지로 바로잡으려 할수록 사람은 본래의 모습을 잃습니다. 갓난아이의 마음은 꾸밈이 없고 부드럽습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_3",
+                                startTimeMs = 19000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "순자",
+                                displayText = "꾸밈이 없다고 선한 것은 아닙니다. 배우지 않은 아이는 다툼부터 배웁니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_4",
+                                startTimeMs = 29000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "노자",
+                                displayText = "다툼은 욕심을 부추기는 세상이 만든 것입니다. 물처럼 낮은 곳으로 흐르면 다툴 일이 없습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_5",
+                                startTimeMs = 40000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "순자",
+                                displayText = "세상이 저절로 바로 선 적은 없습니다. 성인이 예를 만들었기에 질서가 생긴 것입니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_6",
+                                startTimeMs = 51000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "노자",
+                                displayText = "예가 생긴 것은 이미 도를 잃었기 때문입니다. 규칙이 많아질수록 사람은 더 영리하게 어깁니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_102_7",
+                                startTimeMs = 62000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "순자",
+                                displayText = "그렇다면 규칙 없는 세상에서 약한 사람은 누가 지킵니까?"
+                            )
+                    ),
+                    interactiveOptions = emptyList()
+                )
+            )
+        ),
+        103L to ScenarioUiModel(
+            battleId = "103",
+            isInteractive = false,
+            startNodeId = "node_opening",
+            audios = emptyMap(),
+            nodes = mapOf(
+                "node_opening" to ScenarioNodeUiModel(
+                    nodeId = "node_opening",
+                    nodeName = "opening",
+                    audioDuration = 75,
+                    autoNextNodeId = null,
+                    scripts = listOf(
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_1",
+                                startTimeMs = 0L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "마르크스",
+                                displayText = "불매운동은 소비자가 자본에 맞설 수 있는 몇 안 되는 수단입니다. 지갑을 닫는 것은 정치적 행동입니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_2",
+                                startTimeMs = 9000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "니체",
+                                displayText = "정말 그럴까요? 많은 불매는 남보다 도덕적이라고 느끼고 싶은 마음에서 나옵니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_3",
+                                startTimeMs = 19000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "마르크스",
+                                displayText = "동기가 무엇이든 노동자를 착취하는 기업에 손실을 준다면 의미가 있습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_4",
+                                startTimeMs = 29000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "니체",
+                                displayText = "남을 심판하며 얻는 쾌감은 약자의 원한에서 나옵니다. 그것은 강해지는 길이 아닙니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_5",
+                                startTimeMs = 40000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "마르크스",
+                                displayText = "원한이 아니라 연대입니다. 혼자서는 약해도 함께하면 구조를 바꿀 수 있습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_6",
+                                startTimeMs = 51000L,
+                                speakerType = SpeakerType.B,
+                                speakerName = "니체",
+                                displayText = "무리를 따르는 것을 연대라고 부르는군요. 스스로 가치를 만드는 사람은 군중 뒤에 숨지 않습니다."
+                            ),
+                            ScenarioScriptUiModel(
+                                scriptId = "preview_103_7",
+                                startTimeMs = 62000L,
+                                speakerType = SpeakerType.A,
+                                speakerName = "마르크스",
+                                displayText = "구조를 보지 않는 개인주의야말로 자본이 바라는 것입니다."
+                            )
+                    ),
+                    interactiveOptions = emptyList()
+                )
+            )
+        )
     )
 
     val dummyClassBattleByClassId = mapOf(

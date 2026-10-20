@@ -55,6 +55,7 @@ private object ClassCreateScreenDimens {
 fun ClassCreateScreen(
     onBackClick: () -> Unit,
     onNavigateToShare: (classId: Long) -> Unit,
+    onNavigateToBattlePreview: (battleId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassCreateViewModel = hiltViewModel()
 ) {
@@ -66,7 +67,10 @@ fun ClassCreateScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassCreateUiEvent.NavigateBack -> onBackClick()
+
                 is ClassCreateUiEvent.NavigateToShare -> onNavigateToShare(event.classId)
+
+                is ClassCreateUiEvent.NavigateToBattlePreview -> onNavigateToBattlePreview(event.battleId)
             }
         }
     }

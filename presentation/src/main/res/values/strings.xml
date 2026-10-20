@@ -213,6 +213,9 @@
     <string name="class_create_dialog_topic_generation_failed">주제 생성에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
     <string name="class_create_dialog_class_creation_failed">클래스 개설이 완료되지 않았습니다\n네트워크 확인 후 다시 시도해주세요</string>
 
+    <!-- 클래스 - 배틀 미리듣기 -->
+    <string name="class_battle_preview_badge">1분 미리 듣기 중</string>
+
     <!-- 클래스 - 만들기 방식 가이드 시트 -->
     <string name="class_guide_content_title">Pické 배틀 이용 가이드</string>
     <string name="class_guide_content_headline">준비된 콘텐츠와 오디오로 바로 토론해요</string>

@@ -15,16 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.comment.model.CommentUiModel
+import com.picke.presentation.ui.component.PickeMoreMenu
+import com.picke.presentation.ui.component.PickeMoreMenuItem
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -48,7 +45,6 @@ fun CommentItemCard(
     onLikeClick: () -> Unit = {},
     onReportClick: () -> Unit = {}
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -77,41 +73,30 @@ fun CommentItemCard(
             }
 
             if (!isMainContent) {
-                Box {
-                    IconButton(
-                        onClick = { isMenuExpanded = true },
-                        modifier = Modifier.size(16.dp)
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_more),
-                            "더보기",
-                            tint = PickeTheme.colors.textMuted
+                PickeMoreMenu(
+                    items = if (item.isMine) {
+                        listOf(
+                            PickeMoreMenuItem(
+                                iconRes = R.drawable.ic_trash,
+                                textRes = R.string.comment_menu_delete,
+                                onClick = onDeleteClick
+                            ),
+                            PickeMoreMenuItem(
+                                iconRes = R.drawable.ic_edit,
+                                textRes = R.string.comment_menu_edit,
+                                onClick = { onEditClick(item.content) }
+                            )
+                        )
+                    } else {
+                        listOf(
+                            PickeMoreMenuItem(
+                                iconRes = R.drawable.ic_bell,
+                                textRes = R.string.comment_menu_report,
+                                onClick = onReportClick
+                            )
                         )
                     }
-                    DropdownMenu(
-                        expanded = isMenuExpanded,
-                        onDismissRequest = { isMenuExpanded = false },
-                        modifier = Modifier
-                            .background(PickeTheme.colors.primary600)
-                            .clip(RoundedCornerShape(8.dp))
-                    ) {
-                        if (item.isMine) {
-                            CommentMenuItem(iconRes = R.drawable.ic_trash, text = "삭제") {
-                                isMenuExpanded = false
-                                onDeleteClick()
-                            }
-                            CommentMenuItem(iconRes = R.drawable.ic_edit, text = "수정") {
-                                isMenuExpanded = false
-                                onEditClick(item.content)
-                            }
-                        } else {
-                            CommentMenuItem(iconRes = R.drawable.ic_bell, text = "신고") {
-                                isMenuExpanded = false
-                                onReportClick()
-                            }
-                        }
-                    }
-                }
+                )
             }
         }
 
@@ -179,33 +164,9 @@ fun CommentItemCard(
     }
 }
 
-@Composable
-fun CommentMenuItem(
-    iconRes: Int,
-    text: String,
-    onClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = text,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, style = PickeTheme.typography.bodySmMedium, color = Color.White)
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-private fun CommentMenuItemPreview() {
+private fun CommentItemCardPreview() {
     PickeTheme {
         CommentItemCard(item = DummyData.dummyComments.first())
     }

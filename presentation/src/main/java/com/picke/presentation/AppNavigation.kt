@@ -442,7 +442,7 @@ fun AppNavigation(
                     },
                     onNextClick = { itemId ->
                         rootNavController.navigate(
-                            AppRoute.Recommend.createRoute(itemId)
+                            AppRoute.Recommend.createRoute(itemId.toString())
                         )
                     },
                     onMoreClick = { itemId, firstOptionId ->

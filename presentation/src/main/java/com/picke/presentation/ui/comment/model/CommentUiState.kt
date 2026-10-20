@@ -1,7 +1,7 @@
 package com.picke.presentation.ui.comment.model
 
 data class CommentUiState(
-    val targetId: String = "",
+    val targetId: Long = 0L,
     val firstOptionId: Long = 0L,
     val mainPerspective: CommentUiModel? = null,
     val comments: List<CommentUiModel> = emptyList(),

@@ -34,12 +34,12 @@ class CommentViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<CommentUiEvent>()
     val uiEvent: SharedFlow<CommentUiEvent> = _uiEvent.asSharedFlow()
 
-    private val receivedTargetId: String = checkNotNull(savedStateHandle["itemId"])
+    private val targetId: Long = savedStateHandle.get<String>("itemId")?.toLongOrNull() ?: 0L
     private val receivedFirstOptionId: Long = savedStateHandle["firstOptionId"] ?: 0L
 
     private val _uiState = MutableStateFlow(
         CommentUiState(
-            targetId = receivedTargetId,
+            targetId = targetId,
             firstOptionId = receivedFirstOptionId,
             comments = emptyList(),
             hasNext = true
@@ -55,9 +55,7 @@ class CommentViewModel @Inject constructor(
     // 해당 댓글 단건 조회
     fun loadMainPerspective() {
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            perspectiveUseCases.loadMainPerspectiveUseCase(targetIdLong)
+            perspectiveUseCases.loadMainPerspectiveUseCase(targetId)
                 .onSuccess { perspective ->
                     _uiState.update { state ->
                         state.copy(
@@ -88,9 +86,7 @@ class CommentViewModel @Inject constructor(
 
         viewModelScope.launch {
             val cursor = if (isRefresh) null else state.nextCursor
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.loadCommentsUseCase(targetIdLong, cursor, size = 10)
+            commentUseCases.loadCommentsUseCase(targetId, cursor, size = 10)
                 .onSuccess { page ->
                     val newItems = page.items.map { it.toUiModel() }
 
@@ -112,17 +108,16 @@ class CommentViewModel @Inject constructor(
     fun submitComment(content: String, onSuccess: () -> Unit) {
         if (content.isBlank()) return
 
-        val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
         val editId = _uiState.value.editingCommentId
         val isEditMode = editId != null
 
         _uiState.update { it.copy(editingCommentId = null) }
 
         viewModelScope.launch {
-            commentUseCases.submitCommentUseCase(targetIdLong, editId, content)
+            commentUseCases.submitCommentUseCase(targetId, editId, content)
                 .onSuccess {
                     if (!isEditMode) {
-                        analyticsTracker.trackCommunityAction(receivedTargetId, content.length)
+                        analyticsTracker.trackCommunityAction(targetId.toString(), content.length)
                     }
                     onSuccess()
                     loadComments(isRefresh = true)
@@ -138,9 +133,7 @@ class CommentViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.deleteCommentUseCase(targetIdLong, commentId)
+            commentUseCases.deleteCommentUseCase(targetId, commentId)
                 .onSuccess {
                     loadMainPerspective()
                 }
@@ -173,9 +166,7 @@ class CommentViewModel @Inject constructor(
     fun toggleMainPerspectiveLike() {
         val mainItem = _uiState.value.mainPerspective ?: return
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            perspectiveUseCases.togglePerspectiveLikeUseCase(targetIdLong, mainItem.isLiked)
+            perspectiveUseCases.togglePerspectiveLikeUseCase(targetId, mainItem.isLiked)
                 .onSuccess { toggleData ->
                     _uiState.update { state ->
                         state.copy(
@@ -195,9 +186,7 @@ class CommentViewModel @Inject constructor(
 
     fun reportComment(commentId: Long) {
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.reportCommentUseCase(targetIdLong, commentId)
+            commentUseCases.reportCommentUseCase(targetId, commentId)
                 .onSuccess { result ->
                     when (result) {
                         is ReportCommentResult.Reported -> {

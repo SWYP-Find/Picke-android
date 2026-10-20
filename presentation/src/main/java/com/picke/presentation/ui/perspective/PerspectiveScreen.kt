@@ -84,7 +84,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PerspectiveScreen(
     onBackClick: () -> Unit,
-    onNextClick: (String) -> Unit,
+    onNextClick: (Long) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
     scrollToPerspectiveId: Long? = null,
     modifier: Modifier = Modifier,
@@ -149,7 +149,7 @@ fun PerspectiveScreen(
 fun PerspectiveScreenContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
-    onNextClick: (String) -> Unit,
+    onNextClick: (Long) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
     scrollToPerspectiveId: Long? = null,
     modifier: Modifier = Modifier,

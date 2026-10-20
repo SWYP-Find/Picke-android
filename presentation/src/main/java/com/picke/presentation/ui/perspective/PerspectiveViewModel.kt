@@ -29,11 +29,11 @@ class PerspectiveViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    private val receivedBattleId: String = checkNotNull(savedStateHandle["battleId"])
+    private val battleId: Long = savedStateHandle.get<String>("battleId")?.toLongOrNull() ?: 0L
 
     private val _uiState = MutableStateFlow(
         PerspectiveUiState(
-            battleId = receivedBattleId,
+            battleId = battleId,
             perspectives = emptyList(),
             hasNext = true
         )
@@ -52,8 +52,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun loadMyVoteHistory() {
         viewModelScope.launch {
-            val battleIdLong = receivedBattleId.toLongOrNull() ?: 0L
-            voteUseCases.getMyVoteHistoryUseCase(battleIdLong)
+            voteUseCases.getMyVoteHistoryUseCase(battleId)
                 .onSuccess { voteHistory ->
                     _uiState.update {
                         it.copy(
@@ -70,8 +69,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun loadMyPerspective() {
         viewModelScope.launch {
-            val battleIdLong = receivedBattleId.toLongOrNull() ?: 0L
-            perspectiveUseCases.getMyPerspectiveUseCase(battleIdLong)
+            perspectiveUseCases.getMyPerspectiveUseCase(battleId)
                 .onSuccess { myData ->
                     _uiState.update { it.copy(myPerspective = myData) }
                 }
@@ -117,10 +115,8 @@ class PerspectiveViewModel @Inject constructor(
 
         viewModelScope.launch {
             val cursor = if (isRefresh) null else state.nextCursor
-            val battleIdLong = receivedBattleId.toLongOrNull() ?: 0L
-
             perspectiveUseCases.loadPerspectivesUseCase(
-                battleId = battleIdLong,
+                battleId = battleId,
                 cursor = cursor,
                 size = 10,
                 optionId = state.selectedOptionId,
@@ -147,7 +143,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun loadVoteStats() {
         viewModelScope.launch {
-            voteUseCases.getVoteStatsUseCase(receivedBattleId.toLong())
+            voteUseCases.getVoteStatsUseCase(battleId)
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options) }
                 }
@@ -161,16 +157,15 @@ class PerspectiveViewModel @Inject constructor(
     fun submitPerspective(content: String, onSuccess: () -> Unit) {
         if (content.isBlank()) return
 
-        val battleIdLong = receivedBattleId.toLongOrNull() ?: 0L
         val editId = _uiState.value.editingPerspectiveId
 
         _uiState.update { it.copy(editingPerspectiveId = null) }
 
         viewModelScope.launch {
-            perspectiveUseCases.submitPerspectiveUseCase(battleIdLong, editId, content)
+            perspectiveUseCases.submitPerspectiveUseCase(battleId, editId, content)
                 .onSuccess {
                     if (editId == null) {
-                        analyticsTracker.trackCommunityAction(receivedBattleId, content.length)
+                        analyticsTracker.trackCommunityAction(battleId.toString(), content.length)
                     }
                     onSuccess()
                     loadMyPerspective()

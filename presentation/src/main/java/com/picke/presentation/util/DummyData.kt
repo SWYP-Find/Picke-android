@@ -3,7 +3,6 @@ package com.picke.presentation.util
 import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
-import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
@@ -24,6 +23,7 @@ import com.picke.presentation.ui.home.model.PollQuizOptionStatUiModel
 import com.picke.presentation.ui.home.model.TodayPickUiModel
 import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
+import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.recommend.model.RecommendUiModel
 import com.picke.presentation.ui.scenario.model.PastChoice
 import com.picke.presentation.ui.scenario.model.ScenarioNodeUiModel
@@ -269,23 +269,17 @@ object DummyData {
     )
 
     val dummyVoteOptions = listOf(
-        VoteStatsOptionBoard(
+        PerspectiveVoteOptionUiModel(
             optionId = 1L,
-            title = "민초 극호",
+            title = "변기는 변기다",
             imageUrl = "",
-            isCorrect = false,
-            voteCount = 1520,
-            ratio = 65.0f,
-            stance = "PRO"
+            ratio = 59.5f
         ),
-        VoteStatsOptionBoard(
+        PerspectiveVoteOptionUiModel(
             optionId = 2L,
-            title = "민초 극불호",
+            title = "예술이다",
             imageUrl = "",
-            isCorrect = false,
-            voteCount = 818,
-            ratio = 35.0f,
-            stance = "CON"
+            ratio = 40.5f
         )
     )
 

@@ -58,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
@@ -76,6 +75,7 @@ import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
+import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
@@ -504,7 +504,7 @@ fun PerspectiveScreenContent(
 
 @Composable
 fun PerspectiveHeader(
-    voteOptions: List<VoteStatsOptionBoard>,
+    voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
     modifier: Modifier = Modifier
 ) {

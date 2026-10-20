@@ -242,7 +242,7 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             voteUseCases.getVoteStatsUseCase(battleId)
                 .onSuccess { statsBoard ->
-                    _uiState.update { it.copy(voteOptions = statsBoard.options) }
+                    _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
                 }
         }
     }

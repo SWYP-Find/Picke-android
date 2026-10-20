@@ -456,8 +456,12 @@ fun AppNavigation(
             composable(
                 route = AppRoute.Comment.route,
                 arguments = listOf(
-                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) { type = NavType.StringType },
-                    navArgument(AppRoute.ARG_FIRST_OPTION_ID) { type = NavType.LongType; defaultValue = 0L },
+                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoute.ARG_FIRST_OPTION_ID) {
+                        type = NavType.LongType; defaultValue = 0L
+                    },
                     navArgument(AppRoute.ARG_COMMENT_ID) {
                         type = NavType.StringType; nullable = true; defaultValue = null
                     }

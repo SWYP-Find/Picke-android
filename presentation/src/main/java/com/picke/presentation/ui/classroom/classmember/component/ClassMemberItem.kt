@@ -56,7 +56,7 @@ fun ClassMemberItem(
     ) {
         ProfileImage(
             model = member.imageUrl,
-            modifier = Modifier.size(ClassMemberItemDimens.profileImageSize)
+            size = ClassMemberItemDimens.profileImageSize
         )
 
         Row(

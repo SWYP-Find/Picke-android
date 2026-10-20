@@ -185,7 +185,7 @@ fun ContentActivityCard(
             // 프로필 이미지
             ProfileImage(
                 model = item.author.characterImageUrl,
-                modifier = Modifier.size(36.dp),
+                size = 36.dp
             )
 
             Spacer(modifier = Modifier.width(10.dp))

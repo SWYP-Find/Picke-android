@@ -525,7 +525,7 @@ private fun PerspectiveHeaderSection(
         ) {
             ProfileImage(
                 model = leftOption?.imageUrl,
-                modifier = Modifier.size(40.dp)
+                size = 40.dp
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
@@ -599,7 +599,7 @@ private fun PerspectiveHeaderSection(
         ) {
             ProfileImage(
                 model = rightOption?.imageUrl,
-                modifier = Modifier.size(40.dp)
+                size = 40.dp
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(

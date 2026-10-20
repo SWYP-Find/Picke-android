@@ -59,9 +59,7 @@ fun CommentItemCard(
         Row(verticalAlignment = Alignment.CenterVertically) {
             ProfileImage(
                 model = item.profileImageUrl,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
+                size = 32.dp
             )
             Spacer(modifier = Modifier.width(8.dp))
 

@@ -238,7 +238,7 @@ fun ProfileSection(
     ) {
         ProfileImage(
             model = profileImage,
-            modifier = Modifier.size(52.dp),
+            size = 52.dp
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -276,7 +276,7 @@ fun PhilosopherTypeSection(
     ) {
         ProfileImage(
             model = displayImage,
-            modifier = Modifier.size(40.dp),
+            size = 40.dp
         )
 
         Spacer(modifier = Modifier.width(12.dp))

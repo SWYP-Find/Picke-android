@@ -4,7 +4,7 @@ import com.picke.domain.feature.perspective.model.PerspectiveBoard
 import com.picke.presentation.util.toRelativeTimeText
 
 data class PerspectiveUiModel(
-    val commentId: String,
+    val commentId: Long,
     val profileImageUrl: String,
     val nickname: String,
     val optionTitle: String,

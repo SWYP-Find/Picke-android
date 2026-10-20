@@ -7,7 +7,7 @@ data class PerspectivePage(
 )
 
 data class PerspectiveBoard(
-    val commentId: String,
+    val commentId: Long,
     val nickname: String,
     val characterType: String,
     val characterImageUrl: String,

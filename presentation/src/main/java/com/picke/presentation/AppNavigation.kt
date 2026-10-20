@@ -447,10 +447,10 @@ fun AppNavigation(
                     },
                     onMoreClick = { itemId, firstOptionId ->
                         rootNavController.navigate(
-                            AppRoute.Comment.createRoute(itemId, firstOptionId)
+                            AppRoute.Comment.createRoute(itemId.toString(), firstOptionId)
                         )
                     },
-                    scrollToCommentId = commentId
+                    scrollToCommentId = commentId?.toLongOrNull()
                 )
             }
 
@@ -467,7 +467,7 @@ fun AppNavigation(
                 val commentId = backStackEntry.arguments?.getString("commentId")
                 CommentScreen(
                     onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    scrollToCommentId = commentId
+                    scrollToCommentId = commentId?.toLongOrNull()
                 )
             }
 

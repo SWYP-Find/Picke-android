@@ -53,7 +53,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CommentScreen(
     onBackClick: () -> Unit,
-    scrollToCommentId: String? = null,
+    scrollToCommentId: Long? = null,
     modifier: Modifier = Modifier,
     viewModel: CommentViewModel = hiltViewModel()
 ) {
@@ -144,7 +144,7 @@ fun CommentScreen(
 @Composable
 fun CommentScreenContent(
     uiState: CommentUiState,
-    scrollToCommentId: String?,
+    scrollToCommentId: Long?,
     modifier: Modifier = Modifier,
     inputFieldState: TextFieldState,
     isRefreshing: Boolean,
@@ -237,20 +237,19 @@ fun CommentScreenContent(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(uiState.comments) { comment ->
-                            val commentIdLong = comment.commentId.toLongOrNull() ?: 0L
                             CommentItemCard(
                                 item = comment,
                                 onEditClick = { content ->
-                                    onEditComment(commentIdLong, content)
+                                    onEditComment(comment.commentId, content)
                                 },
                                 onDeleteClick = {
-                                    onRequestDelete(commentIdLong)
+                                    onRequestDelete(comment.commentId)
                                 },
                                 onReportClick = {
-                                    onRequestReport(commentIdLong)
+                                    onRequestReport(comment.commentId)
                                 },
                                 onLikeClick = {
-                                    onLikeComment(commentIdLong, comment.isLiked, comment.isMine)
+                                    onLikeComment(comment.commentId, comment.isLiked, comment.isMine)
                                 }
                             )
                             HorizontalDivider(

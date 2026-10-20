@@ -96,7 +96,7 @@ fun PerspectivePageDto.toDomainModel() = PerspectivePage(
 )
 
 fun PerspectiveDto.toDomainModel() = PerspectiveBoard(
-    commentId = this.perspectiveId?.toString() ?: "",
+    commentId = this.perspectiveId ?: 0L,
     nickname = this.user?.nickname ?: "알 수 없음",
     characterType = this.user?.characterType ?: "",
     characterImageUrl = this.user?.characterImageUrl ?: "",

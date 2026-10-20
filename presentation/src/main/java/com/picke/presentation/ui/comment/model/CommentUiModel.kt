@@ -4,7 +4,7 @@ import com.picke.domain.feature.comment.model.CommentBoard
 import com.picke.presentation.util.toRelativeTimeText
 
 data class CommentUiModel(
-    val commentId: String,
+    val commentId: Long,
     val profileImageUrl: String,
     val nickname: String,
     val stance: String,
@@ -18,7 +18,7 @@ data class CommentUiModel(
 )
 
 fun CommentBoard.toUiModel() = CommentUiModel(
-    commentId = commentId.toString(),
+    commentId = commentId,
     profileImageUrl = user.characterImageUrl,
     nickname = user.nickname,
     stance = stance,

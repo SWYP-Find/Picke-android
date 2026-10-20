@@ -79,7 +79,7 @@ object DummyData {
 
     val dummyComments = listOf(
         CommentUiModel(
-            commentId = "",
+            commentId = 0L,
             profileImageUrl = "",
             nickname = "",
             stance = "",
@@ -90,7 +90,7 @@ object DummyData {
             isMine = false
         ),
         CommentUiModel(
-            commentId = "",
+            commentId = 0L,
             profileImageUrl = "",
             nickname = "",
             stance = "",
@@ -101,7 +101,7 @@ object DummyData {
             isMine = false
         ),
         CommentUiModel(
-            commentId = "",
+            commentId = 0L,
             profileImageUrl = "",
             nickname = "",
             stance = "",
@@ -112,7 +112,7 @@ object DummyData {
             isMine = false
         ),
         CommentUiModel(
-            commentId = "",
+            commentId = 0L,
             profileImageUrl = "",
             nickname = "",
             stance = "",
@@ -123,7 +123,7 @@ object DummyData {
             isMine = true
         ),
         CommentUiModel(
-            commentId = "",
+            commentId = 0L,
             profileImageUrl = "",
             nickname = "",
             stance = "",
@@ -298,7 +298,7 @@ object DummyData {
 
     val dummyPerspectives = listOf(
         PerspectiveUiModel(
-            commentId = "101",
+            commentId = 101L,
             profileImageUrl = "",
             nickname = "나",
             optionTitle = "민초 극호",
@@ -311,7 +311,7 @@ object DummyData {
             isMine = true
         ),
         PerspectiveUiModel(
-            commentId = "102",
+            commentId = 102L,
             profileImageUrl = "",
             nickname = "반민초협회장",
             optionTitle = "민초 극불호",
@@ -324,7 +324,7 @@ object DummyData {
             isMine = false
         ),
         PerspectiveUiModel(
-            commentId = "103",
+            commentId = 103L,
             profileImageUrl = "",
             nickname = "쩝쩝박사",
             optionTitle = "민초 극호",
@@ -337,7 +337,7 @@ object DummyData {
             isMine = false
         ),
         PerspectiveUiModel(
-            commentId = "104",
+            commentId = 104L,
             profileImageUrl = "",
             nickname = "초코파이",
             optionTitle = "민초 극불호",

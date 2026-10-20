@@ -62,7 +62,7 @@ class CommentViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             mainPerspective = CommentUiModel(
-                                commentId = perspective.perspectiveId.toString(),
+                                commentId = perspective.perspectiveId,
                                 profileImageUrl = perspective.characterImageUrl,
                                 nickname = perspective.nickname,
                                 stance = perspective.optionTitle,
@@ -133,7 +133,7 @@ class CommentViewModel @Inject constructor(
     fun deleteComment(commentId: Long) {
         _uiState.update { state ->
             state.copy(
-                comments = state.comments.filter { it.commentId != commentId.toString() }
+                comments = state.comments.filter { it.commentId != commentId }
             )
         }
 
@@ -157,7 +157,7 @@ class CommentViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             comments = state.comments.map { item ->
-                                if (item.commentId == commentId.toString()) {
+                                if (item.commentId == commentId) {
                                     item.copy(
                                         likeCount = toggleData.likeCount,
                                         isLiked = toggleData.isLiked

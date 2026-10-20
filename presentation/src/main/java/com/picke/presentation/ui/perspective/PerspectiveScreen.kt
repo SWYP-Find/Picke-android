@@ -85,8 +85,8 @@ import kotlinx.coroutines.launch
 fun PerspectiveScreen(
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit,
-    onMoreClick: (String, Long) -> Unit,
-    scrollToCommentId: String? = null,
+    onMoreClick: (Long, Long) -> Unit,
+    scrollToCommentId: Long? = null,
     modifier: Modifier = Modifier,
     viewModel: PerspectiveViewModel = hiltViewModel()
 ) {
@@ -150,8 +150,8 @@ fun PerspectiveScreenContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit,
-    onMoreClick: (String, Long) -> Unit,
-    scrollToCommentId: String? = null,
+    onMoreClick: (Long, Long) -> Unit,
+    scrollToCommentId: Long? = null,
     modifier: Modifier = Modifier,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
@@ -366,7 +366,7 @@ fun PerspectiveScreenContent(
                                         item {
                                             PerspectiveItemCard(
                                                 item = PerspectiveUiModel(
-                                                    commentId = myView.perspectiveId.toString(),
+                                                    commentId = myView.perspectiveId,
                                                     profileImageUrl = myView.characterImageUrl,
                                                     nickname = "나",
                                                     optionTitle = myView.optionTitle,
@@ -428,15 +428,13 @@ fun PerspectiveScreenContent(
                                             },
                                             onEditClick = { content ->
                                                 inputFieldState.setTextAndPlaceCursorAtEnd(content)
-                                                onSetEditMode(item.commentId.toLongOrNull() ?: 0L)
+                                                onSetEditMode(item.commentId)
                                             },
                                             onDeleteClick = {
-                                                perspectiveToDelete =
-                                                    item.commentId.toLongOrNull() ?: 0L
+                                                perspectiveToDelete = item.commentId
                                             },
                                             onReportClick = {
-                                                perspectiveToReport =
-                                                    item.commentId.toLongOrNull() ?: 0L
+                                                perspectiveToReport = item.commentId
                                             },
                                             onLikeClick = {
                                                 if (item.isMine) {
@@ -447,7 +445,7 @@ fun PerspectiveScreenContent(
                                                     ).show()
                                                 } else {
                                                     onToggleLike(
-                                                        item.commentId.toLongOrNull() ?: 0L,
+                                                        item.commentId,
                                                         item.isLiked
                                                     )
                                                 }

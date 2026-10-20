@@ -185,7 +185,7 @@ class PerspectiveViewModel @Inject constructor(
     fun deletePerspective(perspectiveId: Long) {
         _uiState.update { state ->
             state.copy(
-                perspectives = state.perspectives.filter { it.commentId != perspectiveId.toString() },
+                perspectives = state.perspectives.filter { it.commentId != perspectiveId },
                 myPerspective = if (state.myPerspective?.perspectiveId == perspectiveId) null else state.myPerspective
             )
         }
@@ -206,7 +206,7 @@ class PerspectiveViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             perspectives = state.perspectives.map { item ->
-                                if (item.commentId == perspectiveId.toString()) {
+                                if (item.commentId == perspectiveId) {
                                     item.copy(
                                         likeCount = toggleData.likeCount,
                                         isLiked = toggleData.isLiked

@@ -421,14 +421,13 @@ fun AppNavigation(
             composable(
                 route = AppRoute.Perspective.route,
                 arguments = listOf(
-                    navArgument("battleId") { type = NavType.StringType },
-                    navArgument("commentId") {
+                    navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType },
+                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) {
                         type = NavType.StringType; nullable = true; defaultValue = null
                     }
                 )
             ) { backStackEntry ->
-                val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                val commentId = backStackEntry.arguments?.getString("commentId")
+                val perspectiveId = backStackEntry.arguments?.getString(AppRoute.ARG_PERSPECTIVE_ID)
                 PerspectiveScreen(
                     onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
@@ -450,21 +449,21 @@ fun AppNavigation(
                             AppRoute.Comment.createRoute(itemId.toString(), firstOptionId)
                         )
                     },
-                    scrollToPerspectiveId = commentId?.toLongOrNull()
+                    scrollToPerspectiveId = perspectiveId?.toLongOrNull()
                 )
             }
 
             composable(
                 route = AppRoute.Comment.route,
                 arguments = listOf(
-                    navArgument("itemId") { type = NavType.StringType },
-                    navArgument("firstOptionId") { type = NavType.LongType; defaultValue = 0L },
-                    navArgument("commentId") {
+                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) { type = NavType.StringType },
+                    navArgument(AppRoute.ARG_FIRST_OPTION_ID) { type = NavType.LongType; defaultValue = 0L },
+                    navArgument(AppRoute.ARG_COMMENT_ID) {
                         type = NavType.StringType; nullable = true; defaultValue = null
                     }
                 )
             ) { backStackEntry ->
-                val commentId = backStackEntry.arguments?.getString("commentId")
+                val commentId = backStackEntry.arguments?.getString(AppRoute.ARG_COMMENT_ID)
                 CommentScreen(
                     onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     scrollToCommentId = commentId?.toLongOrNull()

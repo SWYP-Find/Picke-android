@@ -1,5 +1,7 @@
 package com.picke.presentation.ui.comment.model
 
-sealed class CommentUiEvent {
-    data class ShowToast(val message: String) : CommentUiEvent()
+import androidx.annotation.StringRes
+
+sealed interface CommentUiEvent {
+    data class ShowToast(@param:StringRes val messageResId: Int) : CommentUiEvent
 }

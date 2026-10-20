@@ -387,4 +387,8 @@
     <string name="class_my_opinion_reply_author">%1$s의 답글</string>
     <string name="class_my_opinion_like">추천</string>
     <string name="class_my_opinion_reply">답글</string>
+
+    <!-- 댓글 -->
+    <string name="comment_report_success">신고가 정상 접수되었습니다.</string>
+    <string name="comment_report_duplicate">이미 신고한 사용자입니다.</string>
 </resources>

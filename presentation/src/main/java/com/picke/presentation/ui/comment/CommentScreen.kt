@@ -75,7 +75,7 @@ fun CommentScreen(
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
                 is CommentUiEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(event.messageResId), Toast.LENGTH_SHORT).show()
                 }
             }
         }

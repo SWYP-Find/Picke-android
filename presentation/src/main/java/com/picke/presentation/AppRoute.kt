@@ -44,20 +44,21 @@ sealed class AppRoute(val route: String) {
         fun createRoute(battleId: String) = "post_vote_screen/$battleId"
     }
 
-    object Perspective : AppRoute("perspective_screen/{battleId}?commentId={commentId}") {
+    object Perspective :
+        AppRoute("perspective_screen/{$ARG_BATTLE_ID}?$ARG_PERSPECTIVE_ID={$ARG_PERSPECTIVE_ID}") {
         fun createRoute(battleId: String) = "perspective_screen/$battleId"
-        fun createRoute(battleId: String, commentId: String) =
-            "perspective_screen/$battleId?commentId=$commentId"
+        fun createRoute(battleId: String, perspectiveId: String) =
+            "perspective_screen/$battleId?$ARG_PERSPECTIVE_ID=$perspectiveId"
     }
 
     object Comment :
-        AppRoute("comment_screen/{itemId}?firstOptionId={firstOptionId}&commentId={commentId}") {
-        fun createRoute(itemId: String) = "comment_screen/$itemId"
-        fun createRoute(itemId: String, firstOptionId: Long) =
-            "comment_screen/$itemId?firstOptionId=$firstOptionId"
+        AppRoute("comment_screen/{$ARG_PERSPECTIVE_ID}?$ARG_FIRST_OPTION_ID={$ARG_FIRST_OPTION_ID}&$ARG_COMMENT_ID={$ARG_COMMENT_ID}") {
+        fun createRoute(perspectiveId: String) = "comment_screen/$perspectiveId"
+        fun createRoute(perspectiveId: String, firstOptionId: Long) =
+            "comment_screen/$perspectiveId?$ARG_FIRST_OPTION_ID=$firstOptionId"
 
-        fun createRoute(itemId: String, commentId: String) =
-            "comment_screen/$itemId?commentId=$commentId"
+        fun createRoute(perspectiveId: String, commentId: String) =
+            "comment_screen/$perspectiveId?$ARG_COMMENT_ID=$commentId"
     }
 
     object Recommend : AppRoute("recommend_screen/{battleId}") {
@@ -131,5 +132,8 @@ sealed class AppRoute(val route: String) {
         const val ARG_VOTE_TYPE = "voteType"
         const val ARG_BATTLE_ID = "battleId"
         const val ARG_TICKET_ID = "ticketId"
+        const val ARG_PERSPECTIVE_ID = "perspectiveId"
+        const val ARG_FIRST_OPTION_ID = "firstOptionId"
+        const val ARG_COMMENT_ID = "commentId"
     }
 }

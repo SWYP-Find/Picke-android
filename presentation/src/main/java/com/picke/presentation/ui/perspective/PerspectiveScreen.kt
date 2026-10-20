@@ -100,7 +100,7 @@ fun PerspectiveScreen(
                 is PerspectiveUiEvent.ShowToast -> {
                     Toast.makeText(
                         context,
-                        event.message,
+                        context.getString(event.messageResId),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -140,7 +140,7 @@ fun PerspectiveScreen(
             viewModel.toggleLike(id, isLiked)
         },
         onLoadPerspectives = {
-            viewModel.loadPerspectives()
+            viewModel.fetchPerspectives()
         }
     )
 }

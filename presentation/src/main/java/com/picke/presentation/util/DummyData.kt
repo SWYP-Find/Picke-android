@@ -79,58 +79,51 @@ object DummyData {
 
     val dummyComments = listOf(
         CommentUiModel(
-            commentId = 0L,
+            commentId = 201L,
             profileImageUrl = "",
-            nickname = "",
-            stance = "",
-            content = "test comment1",
-            timeAgo = "",
-            likeCount = 10,
-            isLiked = true,
-            isMine = false
-        ),
-        CommentUiModel(
-            commentId = 0L,
-            profileImageUrl = "",
-            nickname = "",
-            stance = "",
-            content = "test comment2",
-            timeAgo = "",
-            likeCount = 123,
-            isLiked = true,
-            isMine = false
-        ),
-        CommentUiModel(
-            commentId = 0L,
-            profileImageUrl = "",
-            nickname = "",
-            stance = "",
-            content = "test comment3 test comment3 test comment3",
-            timeAgo = "",
-            likeCount = 3000,
+            nickname = "사색하는 사슴",
+            stance = "변기는 변기다",
+            optionId = 1L,
+            content = "네덜란드 사례를 일반화하기엔 무리가 있지 않나요? 한국의 사회문화적 맥락은 다릅니다.",
+            timeAgo = "2분 전",
+            likeCount = 1340,
             isLiked = false,
             isMine = false
         ),
         CommentUiModel(
-            commentId = 0L,
+            commentId = 202L,
             profileImageUrl = "",
-            nickname = "",
-            stance = "",
-            content = "test comment4",
-            timeAgo = "",
-            likeCount = 100,
-            isLiked = false,
-            isMine = true
+            nickname = "질문하는 부엉이",
+            stance = "예술이다",
+            optionId = 2L,
+            content = "원가만 보면 그렇지만, 디자인과 브랜드가 쌓아 온 시간까지 원가에 넣어야 하지 않을까요?",
+            timeAgo = "15분 전",
+            likeCount = 87,
+            isLiked = true,
+            isMine = false
         ),
         CommentUiModel(
-            commentId = 0L,
+            commentId = 203L,
             profileImageUrl = "",
-            nickname = "",
-            stance = "",
-            content = "test comment5 test comment5 test comment5 test comment5 test comment5",
-            timeAgo = "",
-            likeCount = 0,
-            isLiked = true,
+            nickname = "고민하는 고양이",
+            stance = "변기는 변기다",
+            optionId = 1L,
+            content = "결국 쓰임새가 같다면 가격 차이는 허영이라고 생각해요.",
+            timeAgo = "1시간 전",
+            likeCount = 12,
+            isLiked = false,
+            isMine = false
+        ),
+        CommentUiModel(
+            commentId = 204L,
+            profileImageUrl = "",
+            nickname = "사유하는 라쿤",
+            stance = "변기는 변기다",
+            optionId = 1L,
+            content = "맞아요. 저도 처음엔 같은 생각이었는데, 직접 써 보고 나서 생각이 조금 바뀌었어요.",
+            timeAgo = "3시간 전",
+            likeCount = 3,
+            isLiked = false,
             isMine = true
         )
     )
@@ -300,25 +293,25 @@ object DummyData {
         PerspectiveUiModel(
             commentId = 101L,
             profileImageUrl = "",
-            nickname = "나",
-            optionTitle = "민초 극호",
+            nickname = "사유하는 라쿤",
+            optionTitle = "변기는 변기다",
             optionId = 1L,
-            content = "솔직히 민초만큼 완벽한 디저트가 어디 있나요? 달콤함과 상쾌함을 동시에 느낄 수 있는 궁극의 맛입니다. 반박 안 받습니다.",
-            timeAgo = "방금 전",
-            replyCount = 5,
-            likeCount = 12,
+            content = "제도화가 무서운 건, 사회적 압력이 '선택'을 '의무'로 바꿀 수 있다는 거예요. 네덜란드 사례를 보면 우려가 현실이 되고 있죠. 제도화가 진행될수록 개인의 판단보다 사회의 기준이 앞서게 됩니다.",
+            timeAgo = "2분 전",
+            replyCount = 23,
+            likeCount = 1340,
             isLiked = true,
-            isMine = true
+            isMine = false
         ),
         PerspectiveUiModel(
             commentId = 102L,
             profileImageUrl = "",
-            nickname = "반민초협회장",
-            optionTitle = "민초 극불호",
+            nickname = "질문하는 부엉이",
+            optionTitle = "예술이다",
             optionId = 2L,
-            content = "초콜릿에 치약을 섞어 먹는 기분입니다. 돈 주고 사먹는 사람들의 미각이 의심됩니다... 양치를 두 번 하세요 그냥.",
+            content = "뒤샹의 '샘'이 미술관에 놓인 순간 변기는 더 이상 변기가 아니었어요. 가격은 물건이 아니라 그 물건이 던지는 질문에 붙는 거라고 봅니다.",
             timeAgo = "10분 전",
-            replyCount = 24,
+            replyCount = 8,
             likeCount = 842,
             isLiked = false,
             isMine = false
@@ -326,10 +319,10 @@ object DummyData {
         PerspectiveUiModel(
             commentId = 103L,
             profileImageUrl = "",
-            nickname = "쩝쩝박사",
-            optionTitle = "민초 극호",
+            nickname = "사색하는 사슴",
+            optionTitle = "변기는 변기다",
             optionId = 1L,
-            content = "아이스크림 가게 가면 무조건 파인트 첫 번째 맛은 민트초코칩 고정이지 ㅋㅋㅋ",
+            content = "원가 18만 원짜리를 수백만 원에 사는 건 결국 이름값을 사는 거죠.",
             timeAgo = "1시간 전",
             replyCount = 0,
             likeCount = 45,
@@ -339,15 +332,15 @@ object DummyData {
         PerspectiveUiModel(
             commentId = 104L,
             profileImageUrl = "",
-            nickname = "초코파이",
-            optionTitle = "민초 극불호",
+            nickname = "고민하는 고양이",
+            optionTitle = "예술이다",
             optionId = 2L,
-            content = "민초단들은 제발 조용히 해주세요.",
+            content = "쓰임새만 따지면 모든 디자인 제품이 사기가 됩니다. 아름다움에도 값이 있어요.",
             timeAgo = "3시간 전",
             replyCount = 2,
             likeCount = 15,
-            isLiked = true,
-            isMine = false
+            isLiked = false,
+            isMine = true
         )
     )
 

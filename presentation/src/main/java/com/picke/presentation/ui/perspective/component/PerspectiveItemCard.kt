@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -45,7 +46,6 @@ import com.picke.presentation.util.DummyData
 fun PerspectiveItemCard(
     item: PerspectiveUiModel,
     modifier: Modifier = Modifier,
-    status: String? = null,
     isDetail: Boolean = false,
     onMoreClick: () -> Unit = {},
     clickable: Boolean = true,
@@ -55,14 +55,15 @@ fun PerspectiveItemCard(
     onReportClick: () -> Unit = {},
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
+    val status = item.status
     val cardBgColor = when (status) {
-        "REJECTED" -> Color(0xFFFFF9F9)
-        "PENDING" -> PickeTheme.colors.secondary50
+        PerspectiveStatus.REJECTED -> Color(0xFFFFF9F9)
+        PerspectiveStatus.PENDING -> PickeTheme.colors.secondary50
         else -> Color.White
     }
     val borderBadgeColor = when (status) {
-        "REJECTED" -> Color(0xFFA64D47)
-        "PENDING" -> PickeTheme.colors.secondary500
+        PerspectiveStatus.REJECTED -> Color(0xFFA64D47)
+        PerspectiveStatus.PENDING -> PickeTheme.colors.secondary500
         else -> PickeTheme.colors.borderBeigeDefault
     }
 
@@ -98,7 +99,7 @@ fun PerspectiveItemCard(
                     )
                 }
 
-                if (status != "PENDING") {
+                if (status != PerspectiveStatus.PENDING) {
                     Box {
                         IconButton(
                             onClick = { isMenuExpanded = true },
@@ -119,7 +120,7 @@ fun PerspectiveItemCard(
                                 .clip(RoundedCornerShape(8.dp))
                         ) {
                             if (item.isMine) {
-                                if (status != "REJECTED") {
+                                if (status != PerspectiveStatus.REJECTED) {
                                     PerspectiveMenuItem(
                                         iconRes = R.drawable.ic_trash,
                                         text = "삭제"
@@ -144,13 +145,13 @@ fun PerspectiveItemCard(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            if (status == "PENDING" || status == "REJECTED") {
+            if (status == PerspectiveStatus.PENDING || status == PerspectiveStatus.REJECTED) {
                 Surface(
                     color = borderBadgeColor,
                     shape = RoundedCornerShape(2.dp)
                 ) {
                     Text(
-                        text = if (status == "PENDING") "검수중" else "거절됨",
+                        text = if (status == PerspectiveStatus.PENDING) "검수중" else "거절됨",
                         style = PickeTheme.typography.bodyXxsMedium,
                         color = Color.White,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -182,7 +183,7 @@ fun PerspectiveItemCard(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-            if (status != "PENDING" && status != "REJECTED") {
+            if (status != PerspectiveStatus.PENDING && status != PerspectiveStatus.REJECTED) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()

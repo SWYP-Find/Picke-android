@@ -72,8 +72,9 @@ import com.picke.presentation.ui.perspective.component.PerspectiveInputField
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
 import com.picke.presentation.ui.perspective.component.PerspectiveListSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveTabBarSkeleton
+import com.picke.presentation.ui.perspective.model.PerspectiveSort
+import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
-import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -155,7 +156,7 @@ fun PerspectiveScreenContent(
     modifier: Modifier = Modifier,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
-    onUpdateSort: (String) -> Unit,
+    onUpdateSort: (PerspectiveSort) -> Unit,
     onRefreshAllData: () -> Unit,
     onSetEditMode: (Long) -> Unit,
     onDeletePerspective: (Long) -> Unit,
@@ -184,7 +185,7 @@ fun PerspectiveScreenContent(
     var hasScrolledToComment by remember { mutableStateOf(false) }
 
     val isShowingMyPendingOrRejected =
-        uiState.myPerspective?.let { it.status != "PUBLISHED" } ?: false
+        uiState.myPerspective?.let { it.status != PerspectiveStatus.PUBLISHED } ?: false
 
     BackHandler {
         onBackClick()
@@ -311,21 +312,21 @@ fun PerspectiveScreenContent(
                     ) {
                         SortFilterChip(
                             text = "인기순",
-                            isSelected = uiState.sort == "popular",
+                            isSelected = uiState.sort == PerspectiveSort.POPULAR,
                             onClick = {
-                                if (uiState.sort != "popular") {
+                                if (uiState.sort != PerspectiveSort.POPULAR) {
                                     isSorting = true
-                                    onUpdateSort("popular")
+                                    onUpdateSort(PerspectiveSort.POPULAR)
                                 }
                             }
                         )
                         SortFilterChip(
                             text = "최신순",
-                            isSelected = uiState.sort == "latest",
+                            isSelected = uiState.sort == PerspectiveSort.LATEST,
                             onClick = {
-                                if (uiState.sort != "latest") {
+                                if (uiState.sort != PerspectiveSort.LATEST) {
                                     isSorting = true
-                                    onUpdateSort("latest")
+                                    onUpdateSort(PerspectiveSort.LATEST)
                                 }
                             }
                         )
@@ -362,23 +363,10 @@ fun PerspectiveScreenContent(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 uiState.myPerspective?.let { myView ->
-                                    if (myView.status != "PUBLISHED") {
+                                    if (myView.status != PerspectiveStatus.PUBLISHED) {
                                         item {
                                             PerspectiveItemCard(
-                                                item = PerspectiveUiModel(
-                                                    perspectiveId = myView.perspectiveId,
-                                                    profileImageUrl = myView.characterImageUrl,
-                                                    nickname = "나",
-                                                    optionTitle = myView.optionTitle,
-                                                    optionId = myView.optionId,
-                                                    content = myView.content,
-                                                    timeAgo = "방금 전",
-                                                    replyCount = 0,
-                                                    likeCount = 0,
-                                                    isLiked = false,
-                                                    isMine = true
-                                                ),
-                                                status = myView.status,
+                                                item = myView,
                                                 clickable = false,
                                                 onEditClick = {
                                                     inputFieldState.setTextAndPlaceCursorAtEnd(it)

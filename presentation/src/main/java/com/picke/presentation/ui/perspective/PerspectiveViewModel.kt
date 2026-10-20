@@ -7,6 +7,7 @@ import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.toUiModel
@@ -71,7 +72,7 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             perspectiveUseCases.getMyPerspectiveUseCase(battleId)
                 .onSuccess { myData ->
-                    _uiState.update { it.copy(myPerspective = myData) }
+                    _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
                 }
                 .onFailure {
                     _uiState.update { it.copy(myPerspective = null) }
@@ -79,7 +80,7 @@ class PerspectiveViewModel @Inject constructor(
         }
     }
 
-    fun updateSort(newSort: String) {
+    fun updateSort(newSort: PerspectiveSort) {
         if (_uiState.value.sort == newSort) return
 
         _uiState.update {
@@ -120,7 +121,7 @@ class PerspectiveViewModel @Inject constructor(
                 cursor = cursor,
                 size = 10,
                 optionId = state.selectedOptionId,
-                sort = state.sort
+                sort = state.sort.apiValue
             ).onSuccess { page ->
                 val newItems = page.items.map { it.toUiModel() }
                 val actualHasNext = page.hasNext && page.nextCursor != null && newItems.isNotEmpty()

@@ -291,7 +291,7 @@ object DummyData {
 
     val dummyPerspectives = listOf(
         PerspectiveUiModel(
-            commentId = 101L,
+            perspectiveId = 101L,
             profileImageUrl = "",
             nickname = "사유하는 라쿤",
             optionTitle = "변기는 변기다",
@@ -304,7 +304,7 @@ object DummyData {
             isMine = false
         ),
         PerspectiveUiModel(
-            commentId = 102L,
+            perspectiveId = 102L,
             profileImageUrl = "",
             nickname = "질문하는 부엉이",
             optionTitle = "예술이다",
@@ -317,7 +317,7 @@ object DummyData {
             isMine = false
         ),
         PerspectiveUiModel(
-            commentId = 103L,
+            perspectiveId = 103L,
             profileImageUrl = "",
             nickname = "사색하는 사슴",
             optionTitle = "변기는 변기다",
@@ -330,7 +330,7 @@ object DummyData {
             isMine = false
         ),
         PerspectiveUiModel(
-            commentId = 104L,
+            perspectiveId = 104L,
             profileImageUrl = "",
             nickname = "고민하는 고양이",
             optionTitle = "예술이다",

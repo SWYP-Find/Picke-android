@@ -450,7 +450,7 @@ fun AppNavigation(
                             AppRoute.Comment.createRoute(itemId.toString(), firstOptionId)
                         )
                     },
-                    scrollToCommentId = commentId?.toLongOrNull()
+                    scrollToPerspectiveId = commentId?.toLongOrNull()
                 )
             }
 

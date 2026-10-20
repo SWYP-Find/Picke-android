@@ -131,7 +131,7 @@ class PerspectiveViewModel @Inject constructor(
 
                 _uiState.update { currentState ->
                     val mergedList =
-                        if (isRefresh) newItems else (currentState.perspectives + newItems).distinctBy { it.commentId }
+                        if (isRefresh) newItems else (currentState.perspectives + newItems).distinctBy { it.perspectiveId }
                     currentState.copy(
                         perspectives = mergedList,
                         nextCursor = page.nextCursor,
@@ -185,7 +185,7 @@ class PerspectiveViewModel @Inject constructor(
     fun deletePerspective(perspectiveId: Long) {
         _uiState.update { state ->
             state.copy(
-                perspectives = state.perspectives.filter { it.commentId != perspectiveId },
+                perspectives = state.perspectives.filter { it.perspectiveId != perspectiveId },
                 myPerspective = if (state.myPerspective?.perspectiveId == perspectiveId) null else state.myPerspective
             )
         }
@@ -206,7 +206,7 @@ class PerspectiveViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             perspectives = state.perspectives.map { item ->
-                                if (item.commentId == perspectiveId) {
+                                if (item.perspectiveId == perspectiveId) {
                                     item.copy(
                                         likeCount = toggleData.likeCount,
                                         isLiked = toggleData.isLiked

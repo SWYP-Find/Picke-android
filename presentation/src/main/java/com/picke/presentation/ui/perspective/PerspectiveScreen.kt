@@ -86,7 +86,7 @@ fun PerspectiveScreen(
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
-    scrollToCommentId: Long? = null,
+    scrollToPerspectiveId: Long? = null,
     modifier: Modifier = Modifier,
     viewModel: PerspectiveViewModel = hiltViewModel()
 ) {
@@ -112,7 +112,7 @@ fun PerspectiveScreen(
         onBackClick = onBackClick,
         onNextClick = onNextClick,
         onMoreClick = onMoreClick,
-        scrollToCommentId = scrollToCommentId,
+        scrollToPerspectiveId = scrollToPerspectiveId,
         modifier = modifier,
         onSubmitPerspective = { content, onSuccess ->
             viewModel.submitPerspective(content, onSuccess)
@@ -151,7 +151,7 @@ fun PerspectiveScreenContent(
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
-    scrollToCommentId: Long? = null,
+    scrollToPerspectiveId: Long? = null,
     modifier: Modifier = Modifier,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
@@ -288,11 +288,11 @@ fun PerspectiveScreenContent(
                     }
                 }
 
-                if (pageIndex == 0 && scrollToCommentId != null) {
+                if (pageIndex == 0 && scrollToPerspectiveId != null) {
                     LaunchedEffect(uiState.perspectives) {
                         if (!hasScrolledToComment && uiState.perspectives.isNotEmpty() && !uiState.isLoading) {
                             val targetIndex =
-                                uiState.perspectives.indexOfFirst { it.commentId == scrollToCommentId }
+                                uiState.perspectives.indexOfFirst { it.perspectiveId == scrollToPerspectiveId }
                             if (targetIndex >= 0) {
                                 val offset = if (isShowingMyPendingOrRejected) 1 else 0
                                 listState.animateScrollToItem(targetIndex + offset)
@@ -366,7 +366,7 @@ fun PerspectiveScreenContent(
                                         item {
                                             PerspectiveItemCard(
                                                 item = PerspectiveUiModel(
-                                                    commentId = myView.perspectiveId,
+                                                    perspectiveId = myView.perspectiveId,
                                                     profileImageUrl = myView.characterImageUrl,
                                                     nickname = "나",
                                                     optionTitle = myView.optionTitle,
@@ -415,26 +415,26 @@ fun PerspectiveScreenContent(
                                 } else {
                                     itemsIndexed(
                                         items = filteredList,
-                                        key = { _, item -> item.commentId }
+                                        key = { _, item -> item.perspectiveId }
                                     ) { index, item ->
                                         PerspectiveItemCard(
                                             item = item,
                                             onMoreClick = {
                                                 onMoreClick(
-                                                    item.commentId,
+                                                    item.perspectiveId,
                                                     uiState.voteOptions.firstOrNull()
                                                         ?.optionId ?: 0L
                                                 )
                                             },
                                             onEditClick = { content ->
                                                 inputFieldState.setTextAndPlaceCursorAtEnd(content)
-                                                onSetEditMode(item.commentId)
+                                                onSetEditMode(item.perspectiveId)
                                             },
                                             onDeleteClick = {
-                                                perspectiveToDelete = item.commentId
+                                                perspectiveToDelete = item.perspectiveId
                                             },
                                             onReportClick = {
-                                                perspectiveToReport = item.commentId
+                                                perspectiveToReport = item.perspectiveId
                                             },
                                             onLikeClick = {
                                                 if (item.isMine) {
@@ -445,7 +445,7 @@ fun PerspectiveScreenContent(
                                                     ).show()
                                                 } else {
                                                     onToggleLike(
-                                                        item.commentId,
+                                                        item.perspectiveId,
                                                         item.isLiked
                                                     )
                                                 }
@@ -456,7 +456,7 @@ fun PerspectiveScreenContent(
                                         val hasMorePages = uiState.hasNext
 
                                         if (isAtEnd && isNotLoading && hasMorePages) {
-                                            LaunchedEffect(item.commentId) {
+                                            LaunchedEffect(item.perspectiveId) {
                                                 onLoadPerspectives()
                                             }
                                         }
@@ -642,7 +642,7 @@ fun PerspectiveScreenPreview() {
             onBackClick = {},
             onNextClick = {},
             onMoreClick = { _, _ -> },
-            scrollToCommentId = null,
+            scrollToPerspectiveId = null,
             onSubmitPerspective = { _, _ -> },
             onSelectOption = {},
             onUpdateSort = {},

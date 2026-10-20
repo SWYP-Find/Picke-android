@@ -170,7 +170,7 @@ fun AppNavigation(
                                 AppRoute.Comment.createRoute(event.perspectiveId, event.commentId)
                             )
                         } else {
-                            rootNavController.navigate(AppRoute.Perspective.createRoute(event.perspectiveId))
+                            rootNavController.navigate(AppRoute.Comment.createRoute(event.perspectiveId))
                         }
                     }
                 }

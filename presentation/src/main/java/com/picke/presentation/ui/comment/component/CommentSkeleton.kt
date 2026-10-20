@@ -92,6 +92,6 @@ private fun CommentItemCardSkeleton(showContentTwoLines: Boolean = false) {
 
 @Preview(showBackground = true)
 @Composable
-fun CommentSkeletonPreview() {
+private fun CommentSkeletonPreview() {
     CommentSkeleton()
 }

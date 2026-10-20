@@ -87,8 +87,8 @@ fun PerspectiveScreen(
     onBackClick: () -> Unit,
     onNextClick: (Long) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
-    scrollToPerspectiveId: Long? = null,
     modifier: Modifier = Modifier,
+    scrollToPerspectiveId: Long? = null,
     viewModel: PerspectiveViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -108,13 +108,11 @@ fun PerspectiveScreen(
         }
     }
 
-    PerspectiveScreenContent(
+    PerspectiveContent(
         uiState = uiState,
         onBackClick = onBackClick,
         onNextClick = onNextClick,
         onMoreClick = onMoreClick,
-        scrollToPerspectiveId = scrollToPerspectiveId,
-        modifier = modifier,
         onSubmitPerspective = { content, onSuccess ->
             viewModel.submitPerspective(content, onSuccess)
         },
@@ -141,19 +139,19 @@ fun PerspectiveScreen(
         },
         onLoadPerspectives = {
             viewModel.fetchPerspectives()
-        }
+        },
+        modifier = modifier,
+        scrollToPerspectiveId = scrollToPerspectiveId
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PerspectiveScreenContent(
+fun PerspectiveContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
     onNextClick: (Long) -> Unit,
     onMoreClick: (Long, Long) -> Unit,
-    scrollToPerspectiveId: Long? = null,
-    modifier: Modifier = Modifier,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
     onUpdateSort: (PerspectiveSort) -> Unit,
@@ -162,7 +160,9 @@ fun PerspectiveScreenContent(
     onDeletePerspective: (Long) -> Unit,
     onReportPerspective: (Long) -> Unit,
     onToggleLike: (Long, Boolean) -> Unit,
-    onLoadPerspectives: () -> Unit
+    onLoadPerspectives: () -> Unit,
+    modifier: Modifier = Modifier,
+    scrollToPerspectiveId: Long? = null
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -236,7 +236,7 @@ fun PerspectiveScreenContent(
                     }
                 },
                 hintText = inputHint,
-                editingKey = uiState.editingPerspectiveId,
+                editingId = uiState.editingPerspectiveId
             )
         }
     ) { innerPadding ->
@@ -249,7 +249,7 @@ fun PerspectiveScreenContent(
                 PerspectiveHeaderSkeleton()
                 PerspectiveTabBarSkeleton()
             } else {
-                PerspectiveHeader(
+                PerspectiveHeaderSection(
                     voteOptions = uiState.voteOptions,
                     opinionChanged = uiState.opinionChanged
                 )
@@ -437,7 +437,7 @@ fun PerspectiveScreenContent(
                                                         item.isLiked
                                                     )
                                                 }
-                                            },
+                                            }
                                         )
                                         val isAtEnd = index == filteredList.lastIndex
                                         val isNotLoading = !uiState.isLoading
@@ -503,7 +503,7 @@ fun PerspectiveScreenContent(
 }
 
 @Composable
-fun PerspectiveHeader(
+private fun PerspectiveHeaderSection(
     voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
     modifier: Modifier = Modifier
@@ -620,9 +620,9 @@ fun PerspectiveHeader(
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveScreenPreview() {
+private fun PerspectiveContentPreview() {
     PickeTheme {
-        PerspectiveScreenContent(
+        PerspectiveContent(
             uiState = PerspectiveUiState(
                 voteOptions = DummyData.dummyVoteOptions,
                 perspectives = DummyData.dummyPerspectives
@@ -630,7 +630,6 @@ fun PerspectiveScreenPreview() {
             onBackClick = {},
             onNextClick = {},
             onMoreClick = { _, _ -> },
-            scrollToPerspectiveId = null,
             onSubmitPerspective = { _, _ -> },
             onSelectOption = {},
             onUpdateSort = {},

@@ -44,7 +44,7 @@ fun PerspectiveEmptyState(
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveEmptyStatePreview() {
+private fun PerspectiveEmptyStatePreview() {
     PickeTheme {
         PerspectiveEmptyState(message = "test message")
     }

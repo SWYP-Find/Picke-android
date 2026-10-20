@@ -44,13 +44,13 @@ fun PerspectiveInputField(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     hintText: String = "의견을 남겨보세요...",
-    editingKey: Any? = null,
+    editingId: Long? = null
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(editingKey) {
-        if (editingKey != null) {
+    LaunchedEffect(editingId) {
+        if (editingId != null) {
             focusRequester.requestFocus()
             keyboardController?.show()
         }
@@ -125,7 +125,7 @@ fun PerspectiveInputField(
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveInputFieldPreview() {
+private fun PerspectiveInputFieldPreview() {
     val inputFieldState = rememberTextFieldState()
 
     PickeTheme {

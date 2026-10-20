@@ -52,7 +52,7 @@ fun PerspectiveItemCard(
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
     onLikeClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
+    onReportClick: () -> Unit = {}
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
     val status = item.status
@@ -82,7 +82,7 @@ fun PerspectiveItemCard(
                     model = item.profileImageUrl,
                     modifier = Modifier
                         .size(32.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -303,7 +303,7 @@ private fun PerspectiveMenuItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveItemCardPreview() {
+private fun PerspectiveItemCardPreview() {
     PickeTheme {
         PerspectiveItemCard(item = DummyData.dummyPerspectives.first())
     }

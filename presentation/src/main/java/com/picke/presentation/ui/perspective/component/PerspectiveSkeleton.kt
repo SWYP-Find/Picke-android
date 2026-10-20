@@ -153,18 +153,18 @@ private fun PerspectiveItemCardSkeleton() {
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveHeaderSkeletonPreview() {
+private fun PerspectiveHeaderSkeletonPreview() {
     PickeTheme { PerspectiveHeaderSkeleton() }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveTabBarSkeletonPreview() {
+private fun PerspectiveTabBarSkeletonPreview() {
     PickeTheme { PerspectiveTabBarSkeleton() }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveListSkeletonPreview() {
+private fun PerspectiveListSkeletonPreview() {
     PickeTheme { PerspectiveListSkeleton() }
 }

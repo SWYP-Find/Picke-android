@@ -53,8 +53,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CommentScreen(
     onBackClick: () -> Unit,
-    scrollToCommentId: Long? = null,
     modifier: Modifier = Modifier,
+    scrollToCommentId: Long? = null,
     viewModel: CommentViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -81,10 +81,9 @@ fun CommentScreen(
         }
     }
 
-    CommentScreenContent(
+    CommentContent(
         uiState = uiState,
         scrollToCommentId = scrollToCommentId,
-        modifier = modifier,
         inputFieldState = inputFieldState,
         isRefreshing = isRefreshing,
         commentToDelete = commentToDelete,
@@ -136,16 +135,16 @@ fun CommentScreen(
         },
         onDismissReport = {
             commentToReport = null
-        }
+        },
+        modifier = modifier
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenContent(
+private fun CommentContent(
     uiState: CommentUiState,
     scrollToCommentId: Long?,
-    modifier: Modifier = Modifier,
     inputFieldState: TextFieldState,
     isRefreshing: Boolean,
     commentToDelete: Long?,
@@ -161,7 +160,8 @@ fun CommentScreenContent(
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
     onConfirmReport: () -> Unit,
-    onDismissReport: () -> Unit
+    onDismissReport: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     val pullToRefreshState = rememberPullToRefreshState()
@@ -195,7 +195,7 @@ fun CommentScreenContent(
                 textFieldState = inputFieldState,
                 onSubmit = onSubmit,
                 hintText = inputHint,
-                editingKey = uiState.editingCommentId
+                editingId = uiState.editingCommentId
             )
         }
     ) { innerPadding ->
@@ -254,7 +254,7 @@ fun CommentScreenContent(
                             )
                             HorizontalDivider(
                                 thickness = 1.dp,
-                                color = PickeTheme.colors.borderBeigeDefault,
+                                color = PickeTheme.colors.borderBeigeDefault
                             )
                         }
                     }
@@ -285,9 +285,12 @@ fun CommentScreenContent(
 }
 
 @Composable
-fun CommentHeaderSection(count: Int) {
+private fun CommentHeaderSection(
+    count: Int,
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(Color(0xFFF9F8F6))
             .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -302,9 +305,9 @@ fun CommentHeaderSection(count: Int) {
 
 @Preview(showBackground = true)
 @Composable
-fun CommentScreenPreview() {
+private fun CommentContentPreview() {
     PickeTheme {
-        CommentScreenContent(
+        CommentContent(
             uiState = CommentUiState(comments = DummyData.dummyComments),
             scrollToCommentId = null,
             inputFieldState = rememberTextFieldState(),

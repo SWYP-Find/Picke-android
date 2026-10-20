@@ -44,13 +44,13 @@ fun CommentInputField(
     isEnabled: Boolean = true,
     hintText: String = "댓글을 남겨보세요...",
     modifier: Modifier = Modifier,
-    editingKey: Any? = null,
+    editingId: Long? = null
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(editingKey) {
-        if (editingKey != null) {
+    LaunchedEffect(editingId) {
+        if (editingId != null) {
             focusRequester.requestFocus()
             keyboardController?.show()
         }
@@ -126,7 +126,7 @@ fun CommentInputField(
 
 @Preview(showBackground = true)
 @Composable
-fun CommentInputFieldPreview() {
+private fun CommentInputFieldPreview() {
     val inputFieldState = rememberTextFieldState()
 
     PickeTheme {

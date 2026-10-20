@@ -61,7 +61,7 @@ fun CommentItemCard(
                 model = item.profileImageUrl,
                 modifier = Modifier
                     .size(32.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
             )
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -207,7 +207,7 @@ fun CommentMenuItem(
 
 @Preview(showBackground = true)
 @Composable
-fun CommentMenuItemPreview() {
+private fun CommentMenuItemPreview() {
     PickeTheme {
         CommentItemCard(item = DummyData.dummyComments.first())
     }

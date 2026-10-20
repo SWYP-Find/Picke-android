@@ -27,7 +27,6 @@ import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfo
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
-import com.picke.presentation.ui.classroom.component.ClassBadge
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
@@ -35,6 +34,7 @@ import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -182,7 +182,7 @@ private fun ClassDetailHeaderSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        ClassBadge(
+        PickeBadge(
             text = stringResource(statusTextRes),
             isMuted = !isInProgress
         )

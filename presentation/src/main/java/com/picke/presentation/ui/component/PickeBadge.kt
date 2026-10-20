@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.classroom.component
+package com.picke.presentation.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,7 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-fun ClassBadge(
+fun PickeBadge(
     text: String,
     modifier: Modifier = Modifier,
     isMuted: Boolean = false
@@ -34,16 +34,16 @@ fun ClassBadge(
 
 @Preview(showBackground = true)
 @Composable
-private fun ClassBadgePreview() {
+private fun PickeBadgePreview() {
     PickeTheme {
         Row(
             modifier = Modifier.padding(SpacingTokens.s16),
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
-            ClassBadge(text = "진행 중")
-            ClassBadge(text = "종료", isMuted = true)
-            ClassBadge(text = "운영자")
-            ClassBadge(text = "나")
+            PickeBadge(text = "진행 중")
+            PickeBadge(text = "종료", isMuted = true)
+            PickeBadge(text = "운영자")
+            PickeBadge(text = "나")
         }
     }
 }

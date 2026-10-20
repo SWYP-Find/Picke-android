@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
-import com.picke.presentation.ui.classroom.component.ClassBadge
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -48,7 +48,7 @@ fun ClassMyCommentCard(
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        ClassBadge(text = comment.stance)
+        PickeBadge(text = comment.stance)
         Text(
             text = comment.content,
             modifier = Modifier.padding(horizontal = SpacingTokens.s2),

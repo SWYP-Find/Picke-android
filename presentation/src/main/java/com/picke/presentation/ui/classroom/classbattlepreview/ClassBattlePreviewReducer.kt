@@ -3,8 +3,7 @@ package com.picke.presentation.ui.classroom.classbattlepreview
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewMutation
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
-
-private val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
+import com.picke.presentation.ui.component.AudioPlayerDefaults.PLAYBACK_SPEEDS
 
 internal fun reduce(
     state: ClassBattlePreviewUiState,

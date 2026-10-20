@@ -8,6 +8,8 @@ import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattleP
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiEvent
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
+import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
+import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
 import com.picke.presentation.ui.scenario.AudioPlayerManager
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.splitScriptsBySentence
@@ -183,7 +185,5 @@ class ClassBattlePreviewViewModel @Inject constructor(
 
     companion object {
         private const val PREVIEW_DURATION_MS = 60_000L
-        private const val SYNC_INTERVAL_MS = 100L
-        private const val SKIP_INTERVAL_MS = 15_000L
     }
 }

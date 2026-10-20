@@ -6,6 +6,9 @@ import com.picke.domain.feature.scenario.usecase.ScenarioUseCases
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
+import com.picke.presentation.ui.component.AudioPlayerDefaults.PLAYBACK_SPEEDS
+import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
+import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
 import com.picke.presentation.ui.scenario.model.PastChoice
 import com.picke.presentation.ui.scenario.model.ScenarioUiModel
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
@@ -275,11 +278,5 @@ class ScenarioViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         audioPlayerManager.release()
-    }
-
-    companion object {
-        private val PLAYBACK_SPEEDS = listOf(1.0f, 1.5f, 2.0f, 3.0f)
-        private const val SYNC_INTERVAL_MS = 100L
-        private const val SKIP_INTERVAL_MS = 15_000L
     }
 }

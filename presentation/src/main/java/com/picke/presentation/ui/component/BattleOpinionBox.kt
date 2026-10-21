@@ -35,7 +35,7 @@ fun BattleOpinionBox(
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ProfileImage(model = imageUrl, modifier = Modifier.size(40.dp))
+        ProfileImage(model = imageUrl, size = 40.dp)
         Spacer(modifier = Modifier.width(4.dp))
 
         Column(modifier = Modifier.weight(1f)) {

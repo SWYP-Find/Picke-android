@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.component.ClassBadge
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -66,7 +66,7 @@ private fun ClassResultOpinionItem(
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        ClassBadge(text = label)
+        PickeBadge(text = label)
         Text(
             text = stringResource(R.string.class_result_quote, comment),
             modifier = Modifier.padding(horizontal = SpacingTokens.s2),

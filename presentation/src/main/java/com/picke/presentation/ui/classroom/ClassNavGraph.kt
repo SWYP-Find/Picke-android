@@ -152,7 +152,7 @@ fun NavGraphBuilder.classGraph(
                 }
             },
             onMoreClick = { itemId, firstOptionId ->
-                navController.navigate(AppRoute.Comment.createRoute(itemId, firstOptionId))
+                navController.navigate(AppRoute.Comment.createRoute(itemId.toString(), firstOptionId))
             }
         )
     }

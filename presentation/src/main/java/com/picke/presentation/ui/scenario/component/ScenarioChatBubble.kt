@@ -43,7 +43,11 @@ fun ScenarioChatBubble(
         ) {
             Text(
                 text = formattedText,
-                modifier = Modifier.clickable(onClick = onClick),
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = onClick
+                ),
                 color = if (isActive) PickeTheme.colors.textSubtle else PickeTheme.colors.textMuted,
                 textAlign = TextAlign.Center,
                 style = PickeTheme.typography.captionLgMedium.copy(fontStyle = FontStyle.Italic)

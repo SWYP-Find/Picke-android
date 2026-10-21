@@ -7,6 +7,7 @@ data class PerspectiveUseCases(
     val loadPerspectivesUseCase: LoadPerspectivesUseCase,
     val reportPerspectiveUseCase: ReportPerspectiveUseCase,
     val retryModerationUseCase: RetryModerationUseCase,
-    val submitPerspectiveUseCase: SubmitPerspectiveUseCase,
-    val togglePerspectiveLikeUseCase: TogglePerspectiveLikeUseCase
+    val createPerspectiveUseCase: CreatePerspectiveUseCase,
+    val togglePerspectiveLikeUseCase: TogglePerspectiveLikeUseCase,
+    val updatePerspectiveUseCase: UpdatePerspectiveUseCase
 )

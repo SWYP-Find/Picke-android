@@ -243,7 +243,7 @@ private fun ClassMenuSection(
                 text = stringResource(R.string.class_ticket_register),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onTicketClick)
+                    .clickable(interactionSource = null, indication = null, onClick = onTicketClick)
                     .padding(vertical = ClassScreenDimens.ticketVerticalPadding),
                 color = PickeTheme.colors.textMuted,
                 textAlign = TextAlign.Center,

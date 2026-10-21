@@ -28,9 +28,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.component.ClassBadge
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -71,7 +71,7 @@ fun MyClassCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                ClassBadge(
+                PickeBadge(
                     text = stringResource(statusTextRes),
                     isMuted = !item.isInProgress
                 )

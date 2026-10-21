@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
-import com.picke.presentation.ui.classroom.component.ClassBadge
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -56,7 +56,7 @@ fun ClassMemberItem(
     ) {
         ProfileImage(
             model = member.imageUrl,
-            modifier = Modifier.size(ClassMemberItemDimens.profileImageSize)
+            size = ClassMemberItemDimens.profileImageSize
         )
 
         Row(
@@ -78,14 +78,19 @@ fun ClassMemberItem(
                     contentDescription = stringResource(R.string.class_name_sheet_edit),
                     modifier = Modifier
                         .size(ComponentNumberTokens.iconSm)
-                        .clickable(role = Role.Button, onClick = onEditNameClick),
+                        .clickable(
+                            interactionSource = null,
+                            indication = null,
+                            role = Role.Button,
+                            onClick = onEditNameClick
+                        ),
                     tint = PickeTheme.colors.textDefault
                 )
             }
         }
 
         when {
-            badgeText != null -> ClassBadge(text = badgeText)
+            badgeText != null -> PickeBadge(text = badgeText)
             canRemove -> {
                 IconButton(
                     onClick = onRemoveClick,

@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -34,6 +35,7 @@ private object ClassBottomSheetDimens {
 fun ClassBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    contentHorizontalPadding: Dp = SpacingTokens.s16,
     content: @Composable ColumnScope.() -> Unit
 ) {
     ModalBottomSheet(
@@ -44,7 +46,10 @@ fun ClassBottomSheet(
         containerColor = PickeTheme.colors.surfaceBeigeDefault,
         dragHandle = { ClassBottomSheetHandle() }
     ) {
-        ClassBottomSheetBody(content = content)
+        ClassBottomSheetBody(
+            horizontalPadding = contentHorizontalPadding,
+            content = content
+        )
     }
 }
 
@@ -66,13 +71,14 @@ private fun ClassBottomSheetHandle(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ClassBottomSheetBody(
+    horizontalPadding: Dp,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = SpacingTokens.s16)
+            .padding(horizontal = horizontalPadding)
             .navigationBarsPadding()
             .padding(bottom = SpacingTokens.s16),
         content = content
@@ -85,7 +91,7 @@ private fun ClassBottomSheetBodyPreview() {
     PickeTheme {
         Column(modifier = Modifier.background(PickeTheme.colors.surfaceBeigeDefault)) {
             ClassBottomSheetHandle()
-            ClassBottomSheetBody {
+            ClassBottomSheetBody(horizontalPadding = SpacingTokens.s16) {
                 Text(text = "바텀시트 내용", style = PickeTheme.typography.headingMd)
             }
         }

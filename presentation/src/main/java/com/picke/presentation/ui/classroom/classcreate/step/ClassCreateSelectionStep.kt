@@ -185,7 +185,11 @@ private fun ClassCreateSelectionHeader(
 
         if (showsRegenerate) {
             Row(
-                modifier = Modifier.clickable(onClick = onRegenerateClick),
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = onRegenerateClick
+                ),
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
                 verticalAlignment = Alignment.CenterVertically
             ) {

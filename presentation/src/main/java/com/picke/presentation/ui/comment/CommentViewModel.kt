@@ -6,19 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
+import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
+import com.picke.presentation.AppRoute
+import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.comment.model.CommentUiEvent
-import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.comment.model.toUiModel
-import com.picke.presentation.util.toRelativeTimeText
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,101 +32,52 @@ class CommentViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    private val _uiEvent = MutableSharedFlow<CommentUiEvent>()
-    val uiEvent: SharedFlow<CommentUiEvent> = _uiEvent.asSharedFlow()
-
-    private val receivedTargetId: String = checkNotNull(savedStateHandle["itemId"])
-    private val receivedFirstOptionId: Long = savedStateHandle["firstOptionId"] ?: 0L
+    private val targetId: Long = savedStateHandle.get<String>(AppRoute.ARG_PERSPECTIVE_ID)?.toLongOrNull() ?: 0L
+    private val firstOptionId: Long = savedStateHandle[AppRoute.ARG_FIRST_OPTION_ID] ?: 0L
 
     private val _uiState = MutableStateFlow(
         CommentUiState(
-            targetId = receivedTargetId,
-            firstOptionId = receivedFirstOptionId,
+            targetId = targetId,
+            firstOptionId = firstOptionId,
             comments = emptyList(),
             hasNext = true
         )
     )
     val uiState: StateFlow<CommentUiState> = _uiState.asStateFlow()
 
+    private val _uiEvent = Channel<CommentUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<CommentUiEvent> = _uiEvent.receiveAsFlow()
+
     init {
-        loadMainPerspective()
-        loadComments()
-    }
-
-    // 해당 댓글 단건 조회
-    fun loadMainPerspective() {
-        viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            perspectiveUseCases.loadMainPerspectiveUseCase(targetIdLong)
-                .onSuccess { perspective ->
-                    _uiState.update { state ->
-                        state.copy(
-                            mainPerspective = CommentUiModel(
-                                commentId = perspective.perspectiveId.toString(),
-                                profileImageUrl = perspective.characterImageUrl,
-                                nickname = perspective.nickname,
-                                stance = perspective.optionTitle,
-                                optionId = perspective.optionId,
-                                content = perspective.content,
-                                timeAgo = perspective.createdAt.toRelativeTimeText(),
-                                likeCount = perspective.likeCount,
-                                isLiked = perspective.isLiked,
-                                isMine = perspective.isMine,
-                                replyCount = perspective.commentCount
-                            )
-                        )
-                    }
-                }
-        }
-    }
-
-    fun loadComments(isRefresh: Boolean = false) {
-        val state = _uiState.value
-        if (state.isLoading || (!isRefresh && !state.hasNext)) return
-
-        _uiState.update { it.copy(isLoading = true) }
-
-        viewModelScope.launch {
-            val cursor = if (isRefresh) null else state.nextCursor
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.loadCommentsUseCase(targetIdLong, cursor, size = 10)
-                .onSuccess { page ->
-                    val newItems = page.items.map { it.toUiModel() }
-
-                    _uiState.update {
-                        it.copy(
-                            comments = if (isRefresh) newItems else it.comments + newItems,
-                            nextCursor = page.nextCursor,
-                            hasNext = page.hasNext,
-                            isLoading = false
-                        )
-                    }
-                }
-                .onFailure { error ->
-                    _uiState.update { it.copy(isLoading = false) }
-                }
-        }
+        fetchMainPerspective()
+        fetchComments()
     }
 
     fun submitComment(content: String, onSuccess: () -> Unit) {
         if (content.isBlank()) return
+        if (_uiState.value.isEditingMainPerspective) {
+            updateMainPerspective(content, onSuccess)
+            return
+        }
 
-        val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
         val editId = _uiState.value.editingCommentId
         val isEditMode = editId != null
 
         _uiState.update { it.copy(editingCommentId = null) }
 
         viewModelScope.launch {
-            commentUseCases.submitCommentUseCase(targetIdLong, editId, content)
+            val result = if (editId != null) {
+                commentUseCases.updateCommentUseCase(targetId, editId, content)
+            } else {
+                commentUseCases.createCommentUseCase(targetId, content)
+            }
+            result
                 .onSuccess {
                     if (!isEditMode) {
-                        analyticsTracker.trackCommunityAction(receivedTargetId, content.length)
+                        analyticsTracker.trackCommunityAction(targetId.toString(), content.length)
                     }
                     onSuccess()
-                    loadComments(isRefresh = true)
+                    fetchComments(isRefresh = true)
                 }
         }
     }
@@ -133,19 +85,17 @@ class CommentViewModel @Inject constructor(
     fun deleteComment(commentId: Long) {
         _uiState.update { state ->
             state.copy(
-                comments = state.comments.filter { it.commentId != commentId.toString() }
+                comments = state.comments.filter { it.commentId != commentId }
             )
         }
 
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.deleteCommentUseCase(targetIdLong, commentId)
+            commentUseCases.deleteCommentUseCase(targetId, commentId)
                 .onSuccess {
-                    loadMainPerspective()
+                    fetchMainPerspective()
                 }
-                .onFailure { error ->
-                    loadComments(isRefresh = true)
+                .onFailure {
+                    fetchComments(isRefresh = true)
                 }
         }
     }
@@ -157,7 +107,7 @@ class CommentViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             comments = state.comments.map { item ->
-                                if (item.commentId == commentId.toString()) {
+                                if (item.commentId == commentId) {
                                     item.copy(
                                         likeCount = toggleData.likeCount,
                                         isLiked = toggleData.isLiked
@@ -173,9 +123,7 @@ class CommentViewModel @Inject constructor(
     fun toggleMainPerspectiveLike() {
         val mainItem = _uiState.value.mainPerspective ?: return
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            perspectiveUseCases.togglePerspectiveLikeUseCase(targetIdLong, mainItem.isLiked)
+            perspectiveUseCases.togglePerspectiveLikeUseCase(targetId, mainItem.isLiked)
                 .onSuccess { toggleData ->
                     _uiState.update { state ->
                         state.copy(
@@ -190,22 +138,50 @@ class CommentViewModel @Inject constructor(
     }
 
     fun setEditMode(commentId: Long?) {
-        _uiState.update { it.copy(editingCommentId = commentId) }
+        _uiState.update { it.copy(editingCommentId = commentId, isEditingMainPerspective = false) }
+    }
+
+    fun setMainPerspectiveEditMode() {
+        _uiState.update { it.copy(editingCommentId = null, isEditingMainPerspective = true) }
+    }
+
+    fun deleteMainPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.deletePerspectiveUseCase(targetId)
+                .onSuccess {
+                    sendEvent(CommentUiEvent.NavigateBack)
+                }
+        }
+    }
+
+    fun reportMainPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.reportPerspectiveUseCase(targetId)
+                .onSuccess { result ->
+                    when (result) {
+                        is ReportPerspectiveResult.Reported -> {
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                        }
+
+                        is ReportPerspectiveResult.AlreadyReported -> {
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                        }
+                    }
+                }
+        }
     }
 
     fun reportComment(commentId: Long) {
         viewModelScope.launch {
-            val targetIdLong = receivedTargetId.toLongOrNull() ?: 0L
-
-            commentUseCases.reportCommentUseCase(targetIdLong, commentId)
+            commentUseCases.reportCommentUseCase(targetId, commentId)
                 .onSuccess { result ->
                     when (result) {
                         is ReportCommentResult.Reported -> {
-                            _uiEvent.emit(CommentUiEvent.ShowToast("신고가 정상 접수되었습니다."))
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
                         }
 
                         is ReportCommentResult.AlreadyReported -> {
-                            _uiEvent.emit(CommentUiEvent.ShowToast("이미 신고한 사용자입니다."))
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
                         }
                     }
                 }
@@ -213,7 +189,63 @@ class CommentViewModel @Inject constructor(
     }
 
     fun refreshAllData() {
-        loadMainPerspective()
-        loadComments(isRefresh = true)
+        fetchMainPerspective()
+        fetchComments(isRefresh = true)
+    }
+
+    private fun sendEvent(event: CommentUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    private fun fetchComments(isRefresh: Boolean = false) {
+        val state = _uiState.value
+        if (state.isLoading || (!isRefresh && !state.hasNext)) return
+
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            val cursor = if (isRefresh) null else state.nextCursor
+            commentUseCases.loadCommentsUseCase(targetId, cursor, size = 10)
+                .onSuccess { page ->
+                    val newItems = page.items.map { it.toUiModel() }
+
+                    _uiState.update {
+                        it.copy(
+                            comments = if (isRefresh) newItems else it.comments + newItems,
+                            nextCursor = page.nextCursor,
+                            hasNext = page.hasNext,
+                            isLoading = false
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+        }
+    }
+
+    private fun fetchMainPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.loadMainPerspectiveUseCase(targetId)
+                .onSuccess { perspective ->
+                    _uiState.update { state ->
+                        state.copy(
+                            mainPerspective = perspective.toUiModel()
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun updateMainPerspective(content: String, onSuccess: () -> Unit) {
+        _uiState.update { it.copy(isEditingMainPerspective = false) }
+
+        viewModelScope.launch {
+            perspectiveUseCases.updatePerspectiveUseCase(targetId, content)
+                .onSuccess {
+                    onSuccess()
+                    fetchMainPerspective()
+                }
+        }
     }
 }

@@ -240,7 +240,7 @@ private fun ControlSkipButton(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .clickable { onClick() },
+            .clickable(interactionSource = null, indication = null, onClick = onClick),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -255,7 +255,7 @@ private fun ControlSkipButton(
         Text(
             text = label,
             style = PickeTheme.typography.bodyXxsMedium,
-            color = PickeTheme.colors.textMuted,
+            color = PickeTheme.colors.textMuted
         )
     }
 }

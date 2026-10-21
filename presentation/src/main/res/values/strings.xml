@@ -387,4 +387,45 @@
     <string name="class_my_opinion_reply_author">%1$s의 답글</string>
     <string name="class_my_opinion_like">추천</string>
     <string name="class_my_opinion_reply">답글</string>
+
+    <!-- 댓글 -->
+    <string name="comment_report_success">신고가 정상 접수되었습니다.</string>
+    <string name="comment_report_duplicate">이미 신고한 사용자입니다.</string>
+    <string name="comment_me">나</string>
+    <string name="comment_status_pending">검수중</string>
+    <string name="comment_status_rejected">거절됨</string>
+    <string name="comment_read_more">자세히 보기</string>
+    <string name="comment_like">좋아요</string>
+    <string name="comment_reply">댓글</string>
+    <string name="comment_menu_delete">삭제</string>
+    <string name="comment_menu_edit">수정</string>
+    <string name="comment_menu_report">신고</string>
+    <string name="comment_report_title">신고사유</string>
+    <string name="comment_report_confirm">신고하기</string>
+    <string name="comment_perspective_delete_message">관점을 삭제하시겠습니까?</string>
+    <string name="comment_delete_confirm">삭제하기</string>
+    <string name="comment_input_hint_perspective">의견을 남겨보세요...</string>
+    <string name="comment_input_hint_reply">댓글을 남겨보세요...</string>
+    <string name="comment_input_hint_edit">수정할 내용을 입력해주세요...</string>
+    <string name="comment_submit">등록</string>
+    <string name="comment_vote_rate">%1$s%%</string>
+    <string name="comment_opinion_changed">생각이 바뀌었어요</string>
+    <string name="comment_opinion_same">생각이 동일해요</string>
+    <string name="comment_tab_all">전체</string>
+    <string name="comment_perspective_title">관점 남기기</string>
+    <string name="comment_sort_popular">인기순</string>
+    <string name="comment_sort_latest">최신순</string>
+    <string name="comment_like_own_perspective">본인이 쓴 관점에는 좋아요를 누를 수 없습니다.</string>
+    <string name="comment_like_own_reply">본인이 쓴 댓글에는 좋아요를 누를 수 없습니다.</string>
+    <string name="comment_empty_all">아직 작성된 관점이 없습니다</string>
+    <string name="comment_empty_option">아직 작성된 \"%1$s\" 관점이 없습니다</string>
+    <string name="comment_empty_image">빈 화면 로고</string>
+    <string name="comment_reply_title">댓글</string>
+    <string name="comment_reply_delete_message">댓글을 삭제하시겠습니까?</string>
+    <string name="comment_reply_count">답글 %1$d개</string>
+    <string name="comment_report_reason_promotion">영리목적/홍보성</string>
+    <string name="comment_report_reason_spam">같은 내용 반복 게시</string>
+    <string name="comment_report_reason_obscene">음란성/선정성</string>
+    <string name="comment_report_reason_abuse">욕설/인신공격</string>
+    <string name="comment_report_reason_etc">기타</string>
 </resources>

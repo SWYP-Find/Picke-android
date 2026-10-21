@@ -1,41 +1,17 @@
 package com.picke.presentation.ui.comment.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.comment.model.CommentUiModel
-import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeCommentCard
+import com.picke.presentation.ui.component.PickeMoreMenuItem
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
 @Composable
@@ -48,167 +24,71 @@ fun CommentItemCard(
     onLikeClick: () -> Unit = {},
     onReportClick: () -> Unit = {}
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(16.dp)
+    PickeCommentCard(
+        profileImageUrl = item.profileImageUrl,
+        nickname = if (item.isMine) stringResource(R.string.comment_me) else item.nickname,
+        timeAgo = item.timeAgo,
+        content = item.content,
+        modifier = modifier,
+        contentColor = PickeTheme.colors.textBody,
+        isContentExpanded = true,
+        likeCount = item.likeCount,
+        isLiked = item.isLiked,
+        replyCount = item.replyCount.takeIf { isMainContent },
+        menuItems = commentMenuItems(
+            isMine = item.isMine,
+            onEditClick = { onEditClick(item.content) },
+            onDeleteClick = onDeleteClick,
+            onReportClick = onReportClick
+        ),
+        onLikeClick = onLikeClick
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            ProfileImage(
-                model = item.profileImageUrl,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape),
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = if (item.isMine) "나" else item.nickname,
-                    style = PickeTheme.typography.bodySmMedium,
-                    color = PickeTheme.colors.textSubtle
-                )
-                Text(
-                    text = item.timeAgo,
-                    style = PickeTheme.typography.captionSmSemiBold,
-                    color = PickeTheme.colors.textMuted
-                )
-            }
-
-            if (!isMainContent) {
-                Box {
-                    IconButton(
-                        onClick = { isMenuExpanded = true },
-                        modifier = Modifier.size(16.dp)
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_more),
-                            "더보기",
-                            tint = PickeTheme.colors.textMuted
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = isMenuExpanded,
-                        onDismissRequest = { isMenuExpanded = false },
-                        modifier = Modifier
-                            .background(PickeTheme.colors.primary600)
-                            .clip(RoundedCornerShape(8.dp))
-                    ) {
-                        if (item.isMine) {
-                            CommentMenuItem(iconRes = R.drawable.ic_trash, text = "삭제") {
-                                isMenuExpanded = false
-                                onDeleteClick()
-                            }
-                            CommentMenuItem(iconRes = R.drawable.ic_edit, text = "수정") {
-                                isMenuExpanded = false
-                                onEditClick(item.content)
-                            }
-                        } else {
-                            CommentMenuItem(iconRes = R.drawable.ic_bell, text = "신고") {
-                                isMenuExpanded = false
-                                onReportClick()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Surface(
-            color = PickeTheme.colors.badgeFilledBackground,
-            shape = RoundedCornerShape(2.dp)
-        ) {
-            Text(
-                text = item.stance,
-                style = PickeTheme.typography.bodyXxsMedium,
-                color = PickeTheme.colors.badgeFilledText,
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = item.content,
-            style = PickeTheme.typography.bodyXsRegular,
-            color = PickeTheme.colors.gray600
+        PickeBadge(
+            text = item.stance,
+            horizontalPadding = SpacingTokens.s4
         )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    onLikeClick()
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .clickable { onLikeClick() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_heart_plus),
-                        contentDescription = "좋아요",
-                        modifier = Modifier.size(16.dp),
-                        tint = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted
-                    )
-                }
-
-                Text(
-                    text = "${item.likeCount}",
-                    style = PickeTheme.typography.bodyXxsMedium,
-                    color = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-            }
-        }
     }
 }
 
-@Composable
-fun CommentMenuItem(
-    iconRes: Int,
-    text: String,
-    onClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = text,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
+private fun commentMenuItems(
+    isMine: Boolean,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onReportClick: () -> Unit
+): List<PickeMoreMenuItem> = if (isMine) {
+    listOf(
+        PickeMoreMenuItem(
+            iconRes = R.drawable.ic_trash,
+            textRes = R.string.comment_menu_delete,
+            onClick = onDeleteClick
+        ),
+        PickeMoreMenuItem(
+            iconRes = R.drawable.ic_edit,
+            textRes = R.string.comment_menu_edit,
+            onClick = onEditClick
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, style = PickeTheme.typography.bodySmMedium, color = Color.White)
-    }
+    )
+} else {
+    listOf(
+        PickeMoreMenuItem(
+            iconRes = R.drawable.ic_bell,
+            textRes = R.string.comment_menu_report,
+            onClick = onReportClick
+        )
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun CommentMenuItemPreview() {
+private fun CommentItemCardPreview() {
     PickeTheme {
-        CommentItemCard(item = DummyData.dummyComments.first())
+        Column {
+            CommentItemCard(
+                item = DummyData.dummyMainPerspective,
+                isMainContent = true
+            )
+            CommentItemCard(item = DummyData.dummyComments.first())
+            CommentItemCard(item = DummyData.dummyComments.last())
+        }
     }
 }

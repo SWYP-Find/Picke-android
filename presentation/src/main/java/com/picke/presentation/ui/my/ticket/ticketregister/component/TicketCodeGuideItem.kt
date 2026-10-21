@@ -44,7 +44,11 @@ fun TicketCodeGuideItem(
         verticalArrangement = Arrangement.spacedBy(TicketCodeGuideItemDimens.answerTopSpacing)
     ) {
         Row(
-            modifier = Modifier.clickable { isExpanded = !isExpanded },
+            modifier = Modifier.clickable(
+                interactionSource = null,
+                indication = null,
+                onClick = { isExpanded = !isExpanded }
+            ),
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
             verticalAlignment = Alignment.CenterVertically
         ) {

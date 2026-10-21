@@ -434,7 +434,7 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
             // 프로필 이미지
             ProfileImage(
                 model = philosopher.imageUrl ?: R.drawable.illust_mengzi, // profile.profileImg,
-                modifier = Modifier.size(68.dp),
+                size = 68.dp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -747,7 +747,7 @@ fun ChemistryCard(
 
         ProfileImage(
             model = imageUrl ?: R.drawable.illust_mengzi,
-            modifier = Modifier.size(56.dp),
+            size = 56.dp
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(

@@ -32,11 +32,11 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultTab
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiAction
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiEvent
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiState
-import com.picke.presentation.ui.classroom.component.ClassBadge
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -162,11 +162,11 @@ private fun ClassResultHeaderSection(
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)) {
-            ClassBadge(
+            PickeBadge(
                 text = stringResource(statusTextRes),
                 isMuted = !isInProgress
             )
-            if (tag.isNotEmpty()) ClassBadge(text = tag)
+            if (tag.isNotEmpty()) PickeBadge(text = tag)
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {

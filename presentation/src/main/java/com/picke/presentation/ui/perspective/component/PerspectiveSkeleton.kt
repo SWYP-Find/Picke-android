@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.SkeletonLine
@@ -108,7 +107,7 @@ fun PerspectiveListSkeleton(modifier: Modifier = Modifier) {
 private fun PerspectiveItemCardSkeleton() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = PickeTheme.colors.surfaceBeigeDefault),
         shape = RoundedCornerShape(2.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = BorderStroke(width = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
@@ -153,18 +152,18 @@ private fun PerspectiveItemCardSkeleton() {
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveHeaderSkeletonPreview() {
+private fun PerspectiveHeaderSkeletonPreview() {
     PickeTheme { PerspectiveHeaderSkeleton() }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveTabBarSkeletonPreview() {
+private fun PerspectiveTabBarSkeletonPreview() {
     PickeTheme { PerspectiveTabBarSkeleton() }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveListSkeletonPreview() {
+private fun PerspectiveListSkeletonPreview() {
     PickeTheme { PerspectiveListSkeleton() }
 }

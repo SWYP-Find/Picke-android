@@ -35,6 +35,7 @@ import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun SettingScreen(
@@ -84,7 +85,6 @@ fun SettingScreen(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
             ) {
                 SettingMenuItem(
                     title = stringResource(R.string.my_setting_alarm),
@@ -163,17 +163,17 @@ fun SettingScreen(
 @Composable
 fun SettingMenuItem(
     title: String,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .clickable { onClick() }
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s20),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -189,6 +189,10 @@ fun SettingMenuItem(
                 tint = PickeTheme.colors.textDefault
             )
         }
-        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+            color = PickeTheme.colors.borderBeigeDefault,
+            thickness = 1.dp
+        )
     }
 }

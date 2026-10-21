@@ -2,38 +2,27 @@ package com.picke.presentation.ui.perspective
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -47,47 +36,54 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
-import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
-import com.picke.presentation.ui.perspective.component.PerspectiveInputField
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
 import com.picke.presentation.ui.perspective.component.PerspectiveListSkeleton
+import com.picke.presentation.ui.perspective.component.PerspectiveOpinionBadge
+import com.picke.presentation.ui.perspective.component.PerspectiveRatioBar
+import com.picke.presentation.ui.perspective.component.PerspectiveStatsOption
 import com.picke.presentation.ui.perspective.component.PerspectiveTabBarSkeleton
+import com.picke.presentation.ui.perspective.model.PerspectiveSort
+import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
-import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
+import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
+private object PerspectiveScreenDimens {
+    val statsBadgeTopPadding = 10.dp
+}
+
+private const val DEFAULT_VOTE_RATIO = 50f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerspectiveScreen(
     onBackClick: () -> Unit,
-    onNextClick: (String) -> Unit,
-    onMoreClick: (String, Long) -> Unit,
-    scrollToCommentId: String? = null,
+    onNextClick: (Long) -> Unit,
+    onMoreClick: (Long, Long) -> Unit,
     modifier: Modifier = Modifier,
+    scrollToPerspectiveId: Long? = null,
     viewModel: PerspectiveViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -99,7 +95,7 @@ fun PerspectiveScreen(
                 is PerspectiveUiEvent.ShowToast -> {
                     Toast.makeText(
                         context,
-                        event.message,
+                        context.getString(event.messageResId),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -107,13 +103,11 @@ fun PerspectiveScreen(
         }
     }
 
-    PerspectiveScreenContent(
+    PerspectiveContent(
         uiState = uiState,
         onBackClick = onBackClick,
         onNextClick = onNextClick,
         onMoreClick = onMoreClick,
-        scrollToCommentId = scrollToCommentId,
-        modifier = modifier,
         onSubmitPerspective = { content, onSuccess ->
             viewModel.submitPerspective(content, onSuccess)
         },
@@ -139,36 +133,39 @@ fun PerspectiveScreen(
             viewModel.toggleLike(id, isLiked)
         },
         onLoadPerspectives = {
-            viewModel.loadPerspectives()
-        }
+            viewModel.fetchPerspectives()
+        },
+        modifier = modifier,
+        scrollToPerspectiveId = scrollToPerspectiveId
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PerspectiveScreenContent(
+fun PerspectiveContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
-    onNextClick: (String) -> Unit,
-    onMoreClick: (String, Long) -> Unit,
-    scrollToCommentId: String? = null,
-    modifier: Modifier = Modifier,
+    onNextClick: (Long) -> Unit,
+    onMoreClick: (Long, Long) -> Unit,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
-    onUpdateSort: (String) -> Unit,
+    onUpdateSort: (PerspectiveSort) -> Unit,
     onRefreshAllData: () -> Unit,
     onSetEditMode: (Long) -> Unit,
     onDeletePerspective: (Long) -> Unit,
     onReportPerspective: (Long) -> Unit,
     onToggleLike: (Long, Boolean) -> Unit,
-    onLoadPerspectives: () -> Unit
+    onLoadPerspectives: () -> Unit,
+    modifier: Modifier = Modifier,
+    scrollToPerspectiveId: Long? = null
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     val voteOptions = uiState.voteOptions
-    val tabList = remember(voteOptions) {
-        listOf("전체") + voteOptions.map { it.title }
+    val allTabTitle = stringResource(R.string.comment_tab_all)
+    val tabList = remember(voteOptions, allTabTitle) {
+        listOf(allTabTitle) + voteOptions.map { it.title }
     }
 
     val inputFieldState = rememberTextFieldState()
@@ -184,7 +181,7 @@ fun PerspectiveScreenContent(
     var hasScrolledToComment by remember { mutableStateOf(false) }
 
     val isShowingMyPendingOrRejected =
-        uiState.myPerspective?.let { it.status != "PUBLISHED" } ?: false
+        uiState.myPerspective?.let { it.status != PerspectiveStatus.PUBLISHED } ?: false
 
     BackHandler {
         onBackClick()
@@ -206,7 +203,7 @@ fun PerspectiveScreenContent(
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
-                    title = uiState.battleTitle.ifBlank { "관점 남기기" },
+                    title = uiState.battleTitle.ifBlank { stringResource(R.string.comment_perspective_title) },
                     centerTitle = true,
                     showLogo = false,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -223,10 +220,13 @@ fun PerspectiveScreenContent(
         },
         bottomBar = {
             val isEditing = uiState.editingPerspectiveId != null
-            val inputHint = if (isEditing) "수정할 내용을 입력해주세요..." else "의견을 남겨보세요..."
+            val inputHint = stringResource(
+                if (isEditing) R.string.comment_input_hint_edit else R.string.comment_input_hint_perspective
+            )
 
-            PerspectiveInputField(
+            PickeCommentInput(
                 textFieldState = inputFieldState,
+                hintText = inputHint,
                 onSubmit = {
                     onSubmitPerspective(inputFieldState.text.toString()) {
                         inputFieldState.clearText()
@@ -234,8 +234,7 @@ fun PerspectiveScreenContent(
                         scrollToTopTrigger++
                     }
                 },
-                hintText = inputHint,
-                editingKey = uiState.editingPerspectiveId,
+                editingId = uiState.editingPerspectiveId
             )
         }
     ) { innerPadding ->
@@ -248,7 +247,7 @@ fun PerspectiveScreenContent(
                 PerspectiveHeaderSkeleton()
                 PerspectiveTabBarSkeleton()
             } else {
-                PerspectiveHeader(
+                PerspectiveStatsSection(
                     voteOptions = uiState.voteOptions,
                     opinionChanged = uiState.opinionChanged
                 )
@@ -288,11 +287,11 @@ fun PerspectiveScreenContent(
                     }
                 }
 
-                if (pageIndex == 0 && scrollToCommentId != null) {
+                if (pageIndex == 0 && scrollToPerspectiveId != null) {
                     LaunchedEffect(uiState.perspectives) {
                         if (!hasScrolledToComment && uiState.perspectives.isNotEmpty() && !uiState.isLoading) {
                             val targetIndex =
-                                uiState.perspectives.indexOfFirst { it.commentId == scrollToCommentId }
+                                uiState.perspectives.indexOfFirst { it.perspectiveId == scrollToPerspectiveId }
                             if (targetIndex >= 0) {
                                 val offset = if (isShowingMyPendingOrRejected) 1 else 0
                                 listState.animateScrollToItem(targetIndex + offset)
@@ -306,29 +305,26 @@ fun PerspectiveScreenContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .padding(
+                                start = SpacingTokens.s16,
+                                top = SpacingTokens.s16,
+                                end = SpacingTokens.s16,
+                                bottom = SpacingTokens.s6
+                            ),
+                        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
                     ) {
-                        SortFilterChip(
-                            text = "인기순",
-                            isSelected = uiState.sort == "popular",
-                            onClick = {
-                                if (uiState.sort != "popular") {
-                                    isSorting = true
-                                    onUpdateSort("popular")
+                        PerspectiveSort.entries.forEach { sort ->
+                            SortFilterChip(
+                                text = stringResource(sort.labelRes()),
+                                isSelected = uiState.sort == sort,
+                                onClick = {
+                                    if (uiState.sort != sort) {
+                                        isSorting = true
+                                        onUpdateSort(sort)
+                                    }
                                 }
-                            }
-                        )
-                        SortFilterChip(
-                            text = "최신순",
-                            isSelected = uiState.sort == "latest",
-                            onClick = {
-                                if (uiState.sort != "latest") {
-                                    isSorting = true
-                                    onUpdateSort("latest")
-                                }
-                            }
-                        )
+                            )
+                        }
                     }
 
                     if (uiState.isLoading && uiState.perspectives.isEmpty()) {
@@ -346,7 +342,7 @@ fun PerspectiveScreenContent(
                                 PullToRefreshDefaults.Indicator(
                                     state = pullToRefreshState,
                                     isRefreshing = isRefreshing,
-                                    containerColor = Color.White,
+                                    containerColor = PickeTheme.colors.surfaceBeigeDefault,
                                     color = PickeTheme.colors.primary500,
                                     modifier = Modifier.align(Alignment.TopCenter)
                                 )
@@ -354,31 +350,13 @@ fun PerspectiveScreenContent(
                         ) {
                             LazyColumn(
                                 state = listState,
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(
-                                    horizontal = 16.dp,
-                                    vertical = 12.dp
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                modifier = Modifier.fillMaxSize()
                             ) {
                                 uiState.myPerspective?.let { myView ->
-                                    if (myView.status != "PUBLISHED") {
+                                    if (myView.status != PerspectiveStatus.PUBLISHED) {
                                         item {
                                             PerspectiveItemCard(
-                                                item = PerspectiveUiModel(
-                                                    commentId = myView.perspectiveId.toString(),
-                                                    profileImageUrl = myView.characterImageUrl,
-                                                    nickname = "나",
-                                                    optionTitle = myView.optionTitle,
-                                                    optionId = myView.optionId,
-                                                    content = myView.content,
-                                                    timeAgo = "방금 전",
-                                                    replyCount = 0,
-                                                    likeCount = 0,
-                                                    isLiked = false,
-                                                    isMine = true
-                                                ),
-                                                status = myView.status,
+                                                item = myView,
                                                 clickable = false,
                                                 onEditClick = {
                                                     inputFieldState.setTextAndPlaceCursorAtEnd(it)
@@ -390,7 +368,7 @@ fun PerspectiveScreenContent(
                                                 onLikeClick = {
                                                     Toast.makeText(
                                                         context,
-                                                        "본인이 쓴 관점에는 좋아요를 누를 수 없습니다.",
+                                                        context.getString(R.string.comment_like_own_perspective),
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                 }
@@ -402,9 +380,9 @@ fun PerspectiveScreenContent(
                                 if (filteredList.isEmpty() && !uiState.isLoading && !isShowingMyPendingOrRejected) {
                                     item {
                                         val emptyMsg = if (pageIndex == 0) {
-                                            "아직 작성된 관점이 없습니다"
+                                            stringResource(R.string.comment_empty_all)
                                         } else {
-                                            "아직 작성된 \"${tabList.getOrElse(pageIndex) { "" }}\" 관점이 없습니다"
+                                            stringResource(R.string.comment_empty_option, tabList.getOrElse(pageIndex) { "" })
                                         }
 
                                         PerspectiveEmptyState(
@@ -415,50 +393,48 @@ fun PerspectiveScreenContent(
                                 } else {
                                     itemsIndexed(
                                         items = filteredList,
-                                        key = { _, item -> item.commentId }
+                                        key = { _, item -> item.perspectiveId }
                                     ) { index, item ->
                                         PerspectiveItemCard(
                                             item = item,
                                             onMoreClick = {
                                                 onMoreClick(
-                                                    item.commentId,
+                                                    item.perspectiveId,
                                                     uiState.voteOptions.firstOrNull()
                                                         ?.optionId ?: 0L
                                                 )
                                             },
                                             onEditClick = { content ->
                                                 inputFieldState.setTextAndPlaceCursorAtEnd(content)
-                                                onSetEditMode(item.commentId.toLongOrNull() ?: 0L)
+                                                onSetEditMode(item.perspectiveId)
                                             },
                                             onDeleteClick = {
-                                                perspectiveToDelete =
-                                                    item.commentId.toLongOrNull() ?: 0L
+                                                perspectiveToDelete = item.perspectiveId
                                             },
                                             onReportClick = {
-                                                perspectiveToReport =
-                                                    item.commentId.toLongOrNull() ?: 0L
+                                                perspectiveToReport = item.perspectiveId
                                             },
                                             onLikeClick = {
                                                 if (item.isMine) {
                                                     Toast.makeText(
                                                         context,
-                                                        "본인이 쓴 관점에는 좋아요를 누를 수 없습니다.",
+                                                        context.getString(R.string.comment_like_own_perspective),
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                 } else {
                                                     onToggleLike(
-                                                        item.commentId.toLongOrNull() ?: 0L,
+                                                        item.perspectiveId,
                                                         item.isLiked
                                                     )
                                                 }
-                                            },
+                                            }
                                         )
                                         val isAtEnd = index == filteredList.lastIndex
                                         val isNotLoading = !uiState.isLoading
                                         val hasMorePages = uiState.hasNext
 
                                         if (isAtEnd && isNotLoading && hasMorePages) {
-                                            LaunchedEffect(item.commentId) {
+                                            LaunchedEffect(item.perspectiveId) {
                                                 onLoadPerspectives()
                                             }
                                         }
@@ -486,25 +462,22 @@ fun PerspectiveScreenContent(
 
         if (perspectiveToDelete != null) {
             CustomConfirmDialog(
-                message = "관점을 삭제하시겠습니까?",
-                confirmText = "삭제하기",
-                dismissText = "뒤로가기",
+                message = stringResource(R.string.comment_perspective_delete_message),
                 onConfirm = {
                     onDeletePerspective(perspectiveToDelete!!)
                     perspectiveToDelete = null
                 },
                 onDismiss = {
                     perspectiveToDelete = null
-                }
+                },
+                confirmText = stringResource(R.string.comment_delete_confirm)
             )
         }
 
         if (perspectiveToReport != null) {
-            CustomConfirmDialog(
-                message = "관점을 신고하시겠습니까?",
-                confirmText = "신고하기",
-                dismissText = "뒤로가기",
-                onConfirm = {
+            PickeReportDialog(
+                onConfirm = { _ ->
+                    // TODO: API 연동 - 신고 사유 전송 (신고 API에 사유 필드 없음)
                     onReportPerspective(perspectiveToReport!!)
                     perspectiveToReport = null
                 },
@@ -517,126 +490,56 @@ fun PerspectiveScreenContent(
 }
 
 @Composable
-fun PerspectiveHeader(
-    voteOptions: List<VoteStatsOptionBoard>,
+private fun PerspectiveStatsSection(
+    voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
     modifier: Modifier = Modifier
 ) {
     val leftOption = voteOptions.getOrNull(0)
     val rightOption = voteOptions.getOrNull(1)
-    val proRatio = leftOption?.ratio ?: 50f
-    val conRatio = rightOption?.ratio ?: 50f
+    val leftRatio = leftOption?.ratio ?: DEFAULT_VOTE_RATIO
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s4),
+        verticalAlignment = Alignment.Bottom
     ) {
+        PerspectiveStatsOption(
+            imageUrl = leftOption?.imageUrl,
+            title = leftOption?.title.orEmpty(),
+            ratio = leftRatio
+        )
+
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(64.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = PerspectiveScreenDimens.statsBadgeTopPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileImage(
-                model = leftOption?.imageUrl,
-                modifier = Modifier.size(40.dp)
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = leftOption?.title ?: "",
-                style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSubtle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "${proRatio.toInt()}%",
-                style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.gray600
-            )
+            PerspectiveOpinionBadge(opinionChanged = opinionChanged)
+            PerspectiveRatioBar(ratio = leftRatio)
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ) {
-            Surface(
-                color = PickeTheme.colors.primary50,
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_think),
-                        contentDescription = "생각 변경",
-                        tint = PickeTheme.colors.primary500,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = if (opinionChanged) "생각이 바뀌었어요" else "생각이 동일해요",
-                        style = PickeTheme.typography.captionMdSemiBold,
-                        color = PickeTheme.colors.primary500
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(CircleShape)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(if (proRatio > 0) proRatio else 0.1f)
-                        .fillMaxHeight()
-                        .background(Color(0xFFA64D47))
-                )
-                Box(
-                    modifier = Modifier
-                        .weight(if (conRatio > 0) conRatio else 0.1f)
-                        .fillMaxHeight()
-                        .background(PickeTheme.colors.backgroundSubtler)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(64.dp)
-        ) {
-            ProfileImage(
-                model = rightOption?.imageUrl,
-                modifier = Modifier.size(40.dp)
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = rightOption?.title ?: "",
-                style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSubtle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "${conRatio.toInt()}%",
-                style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.gray600
-            )
-        }
+        PerspectiveStatsOption(
+            imageUrl = rightOption?.imageUrl,
+            title = rightOption?.title.orEmpty(),
+            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO
+        )
     }
+}
+
+@StringRes
+private fun PerspectiveSort.labelRes(): Int = when (this) {
+    PerspectiveSort.POPULAR -> R.string.comment_sort_popular
+    PerspectiveSort.LATEST -> R.string.comment_sort_latest
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PerspectiveScreenPreview() {
+private fun PerspectiveContentPreview() {
     PickeTheme {
-        PerspectiveScreenContent(
+        PerspectiveContent(
             uiState = PerspectiveUiState(
                 voteOptions = DummyData.dummyVoteOptions,
                 perspectives = DummyData.dummyPerspectives
@@ -644,7 +547,6 @@ fun PerspectiveScreenPreview() {
             onBackClick = {},
             onNextClick = {},
             onMoreClick = { _, _ -> },
-            scrollToCommentId = null,
             onSubmitPerspective = { _, _ -> },
             onSelectOption = {},
             onUpdateSort = {},

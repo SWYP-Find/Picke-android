@@ -48,7 +48,12 @@ fun ClassDetailInfoRow(
         if (actionText != null) {
             Text(
                 text = actionText,
-                modifier = Modifier.clickable(role = Role.Button, onClick = onActionClick),
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    role = Role.Button,
+                    onClick = onActionClick
+                ),
                 color = PickeTheme.colors.textPrimary,
                 style = PickeTheme.typography.captionLgBold
             )

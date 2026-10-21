@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun MyPageMenuItem(
@@ -32,7 +33,7 @@ fun MyPageMenuItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s20),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -48,7 +49,11 @@ fun MyPageMenuItem(
                 tint = PickeTheme.colors.textDefault
             )
         }
-        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+            color = PickeTheme.colors.borderBeigeDefault,
+            thickness = 1.dp
+        )
     }
 }
 

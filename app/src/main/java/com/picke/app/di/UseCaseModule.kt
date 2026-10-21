@@ -36,11 +36,12 @@ import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
+import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
 import com.picke.domain.feature.comment.usecase.DeleteCommentUseCase
 import com.picke.domain.feature.comment.usecase.LoadCommentsUseCase
 import com.picke.domain.feature.comment.usecase.ReportCommentUseCase
-import com.picke.domain.feature.comment.usecase.SubmitCommentUseCase
 import com.picke.domain.feature.comment.usecase.ToggleCommentLikeUseCase
+import com.picke.domain.feature.comment.usecase.UpdateCommentUseCase
 import com.picke.domain.feature.device.usecase.DeviceUseCases
 import com.picke.domain.feature.device.usecase.RegisterDeviceUseCase
 import com.picke.domain.feature.explore.usecase.ExploreUseCases
@@ -74,6 +75,7 @@ import com.picke.domain.feature.mypage.usecase.GetMyRecapUseCase
 import com.picke.domain.feature.mypage.usecase.GetNotificationSettingsUseCase
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
 import com.picke.domain.feature.mypage.usecase.UpdateNotificationSettingsUseCase
+import com.picke.domain.feature.perspective.usecase.CreatePerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.DeletePerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.GetMyPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.LoadMainPerspectiveUseCase
@@ -81,8 +83,8 @@ import com.picke.domain.feature.perspective.usecase.LoadPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.RetryModerationUseCase
-import com.picke.domain.feature.perspective.usecase.SubmitPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.TogglePerspectiveLikeUseCase
+import com.picke.domain.feature.perspective.usecase.UpdatePerspectiveUseCase
 import com.picke.domain.feature.pollquiz.usecase.GetTodayPickVoteUseCase
 import com.picke.domain.feature.pollquiz.usecase.PollQuizUseCases
 import com.picke.domain.feature.pollquiz.usecase.SubmitTodayPickVoteUseCase
@@ -165,8 +167,9 @@ object UseCaseModule {
             loadCommentsUseCase = LoadCommentsUseCase(commentRepository),
             deleteCommentUseCase = DeleteCommentUseCase(commentRepository),
             reportCommentUseCase = ReportCommentUseCase(commentRepository),
-            submitCommentUseCase = SubmitCommentUseCase(commentRepository),
-            toggleCommentLikeUseCase = ToggleCommentLikeUseCase(commentRepository)
+            createCommentUseCase = CreateCommentUseCase(commentRepository),
+            toggleCommentLikeUseCase = ToggleCommentLikeUseCase(commentRepository),
+            updateCommentUseCase = UpdateCommentUseCase(commentRepository)
         )
     }
 
@@ -223,8 +226,9 @@ object UseCaseModule {
             loadPerspectivesUseCase = LoadPerspectivesUseCase(perspectiveRepository),
             reportPerspectiveUseCase = ReportPerspectiveUseCase(perspectiveRepository),
             retryModerationUseCase = RetryModerationUseCase(perspectiveRepository),
-            submitPerspectiveUseCase = SubmitPerspectiveUseCase(perspectiveRepository),
-            togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository)
+            createPerspectiveUseCase = CreatePerspectiveUseCase(perspectiveRepository),
+            togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository),
+            updatePerspectiveUseCase = UpdatePerspectiveUseCase(perspectiveRepository)
         )
     }
 

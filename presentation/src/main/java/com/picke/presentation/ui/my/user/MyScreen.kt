@@ -50,6 +50,7 @@ import com.picke.presentation.ui.my.user.componenet.MySkeleton
 import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
 import com.picke.presentation.ui.my.user.model.MyUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun MyScreen(
@@ -161,7 +162,7 @@ fun MyScreen(
                     }
                 }
             )
-        },
+        }
     ) { innerPadding ->
         if (uiState.isLoading) {
             MySkeleton(
@@ -174,26 +175,27 @@ fun MyScreen(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-                ProfileSection(
-                    nickname = uiState.profile?.nickname ?: "사용자",
-                    userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
-                    profileImage = uiState.profile?.characterImageUrl
-                )
+                Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    ProfileSection(
+                        nickname = uiState.profile?.nickname ?: "사용자",
+                        userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
+                        profileImage = uiState.profile?.characterImageUrl
+                    )
 
-                Spacer(modifier = Modifier.height(20.dp))
-                CreditCard(
-                    credit = uiState.tier?.currentPoint ?: 0,
-                    onClick = onNavigateToPoint
-                )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CreditCard(
+                        credit = uiState.tier?.currentPoint ?: 0,
+                        onClick = onNavigateToPoint
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
-                PhilosopherTypeSection(
-                    philosopher = uiState.philosopher,
-                    onClick = { onNavigateToPhilosopher() }
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    PhilosopherTypeSection(
+                        philosopher = uiState.philosopher,
+                        onClick = { onNavigateToPhilosopher() }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
                 MyPageMenuItem(
@@ -215,7 +217,9 @@ fun MyScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Box(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SpacingTokens.s16),
                     contentAlignment = Alignment.Center
                 ) {
                     AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_MY)
@@ -238,7 +242,7 @@ fun ProfileSection(
     ) {
         ProfileImage(
             model = profileImage,
-            modifier = Modifier.size(52.dp),
+            size = 52.dp
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -276,7 +280,7 @@ fun PhilosopherTypeSection(
     ) {
         ProfileImage(
             model = displayImage,
-            modifier = Modifier.size(40.dp),
+            size = 40.dp
         )
 
         Spacer(modifier = Modifier.width(12.dp))

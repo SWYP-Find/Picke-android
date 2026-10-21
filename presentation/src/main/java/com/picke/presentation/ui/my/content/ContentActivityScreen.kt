@@ -39,6 +39,7 @@ import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeIconCount
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.toRelativeTimeText
@@ -185,7 +186,7 @@ fun ContentActivityCard(
             // 프로필 이미지
             ProfileImage(
                 model = item.author.characterImageUrl,
-                modifier = Modifier.size(36.dp),
+                size = 36.dp
             )
 
             Spacer(modifier = Modifier.width(10.dp))
@@ -242,17 +243,10 @@ fun ContentActivityCard(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_heart_plus),
-                contentDescription = "좋아요",
-                modifier = Modifier.size(16.dp),
-                tint = PickeTheme.colors.textMuted
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = item.likeCount.toString(),
-                style = PickeTheme.typography.bodySmMedium,
-                color = PickeTheme.colors.textMuted
+            PickeIconCount(
+                iconRes = R.drawable.ic_heart_plus,
+                contentDescription = stringResource(R.string.comment_like),
+                count = item.likeCount
             )
         }
     }

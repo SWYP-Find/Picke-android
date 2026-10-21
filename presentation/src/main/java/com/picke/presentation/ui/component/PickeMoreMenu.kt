@@ -4,13 +4,14 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +36,9 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 private object PickeMoreMenuDimens {
-    val menuCornerRadius = 8.dp
-    val itemVerticalPadding = 10.dp
+    val itemMinWidth = 70.dp
+    val itemMinHeight = 34.dp
+    val itemCornerRadius = 24.dp
 }
 
 data class PickeMoreMenuItem(
@@ -66,60 +69,77 @@ fun PickeMoreMenu(
         DropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false },
-            modifier = Modifier
-                .background(PickeTheme.colors.primary600)
-                .clip(RoundedCornerShape(PickeMoreMenuDimens.menuCornerRadius))
+            containerColor = Color.Transparent,
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp
         ) {
-            items.forEach { item ->
-                PickeMoreMenuRow(
-                    item = item,
-                    onClick = {
-                        isExpanded = false
-                        item.onClick()
-                    }
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
+                items.forEach { item ->
+                    PickeMoreMenuButton(
+                        item = item,
+                        onClick = {
+                            isExpanded = false
+                            item.onClick()
+                        }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun PickeMoreMenuRow(
+private fun PickeMoreMenuButton(
     item: PickeMoreMenuItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val shape = RoundedCornerShape(PickeMoreMenuDimens.itemCornerRadius)
+
     Row(
         modifier = modifier
-            .fillMaxWidth()
+            .widthIn(min = PickeMoreMenuDimens.itemMinWidth)
+            .heightIn(min = PickeMoreMenuDimens.itemMinHeight)
+            .clip(shape)
+            .background(PickeTheme.colors.buttonIconBackgroundDefault)
             .clickable { onClick() }
-            .padding(horizontal = SpacingTokens.s16, vertical = PickeMoreMenuDimens.itemVerticalPadding),
+            .padding(horizontal = SpacingTokens.s6),
+        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(item.iconRes),
             contentDescription = null,
-            modifier = Modifier.size(ComponentNumberTokens.iconSm),
-            tint = PickeTheme.colors.textInverse
+            tint = PickeTheme.colors.iconGrayInverse
         )
-        Spacer(modifier = Modifier.width(SpacingTokens.s8))
         Text(
             text = stringResource(item.textRes),
-            color = PickeTheme.colors.textInverse,
-            style = PickeTheme.typography.bodySmMedium
+            color = PickeTheme.colors.iconGrayInverse,
+            style = PickeTheme.typography.bodyXsMedium
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PickeMoreMenuPreview() {
+private fun PickeMoreMenuButtonPreview() {
     PickeTheme {
-        PickeMoreMenu(
-            items = listOf(
-                PickeMoreMenuItem(iconRes = R.drawable.ic_trash, textRes = R.string.comment_menu_delete, onClick = {}),
-                PickeMoreMenuItem(iconRes = R.drawable.ic_edit, textRes = R.string.comment_menu_edit, onClick = {})
+        Column(
+            modifier = Modifier.padding(SpacingTokens.s16),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)
+        ) {
+            PickeMoreMenuButton(
+                item = PickeMoreMenuItem(iconRes = R.drawable.ic_trash, textRes = R.string.comment_menu_delete, onClick = {}),
+                onClick = {}
             )
-        )
+            PickeMoreMenuButton(
+                item = PickeMoreMenuItem(iconRes = R.drawable.ic_edit, textRes = R.string.comment_menu_edit, onClick = {}),
+                onClick = {}
+            )
+            PickeMoreMenuButton(
+                item = PickeMoreMenuItem(iconRes = R.drawable.ic_bell, textRes = R.string.comment_menu_report, onClick = {}),
+                onClick = {}
+            )
+        }
     }
 }

@@ -61,7 +61,12 @@ class CommentViewModel @Inject constructor(
         _uiState.update { it.copy(editingCommentId = null) }
 
         viewModelScope.launch {
-            commentUseCases.submitCommentUseCase(targetId, editId, content)
+            val result = if (editId != null) {
+                commentUseCases.updateCommentUseCase(targetId, editId, content)
+            } else {
+                commentUseCases.createCommentUseCase(targetId, content)
+            }
+            result
                 .onSuccess {
                     if (!isEditMode) {
                         analyticsTracker.trackCommunityAction(targetId.toString(), content.length)

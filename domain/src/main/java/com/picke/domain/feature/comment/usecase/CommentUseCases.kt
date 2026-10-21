@@ -4,6 +4,7 @@ data class CommentUseCases(
     val loadCommentsUseCase: LoadCommentsUseCase,
     val deleteCommentUseCase: DeleteCommentUseCase,
     val reportCommentUseCase: ReportCommentUseCase,
-    val submitCommentUseCase: SubmitCommentUseCase,
-    val toggleCommentLikeUseCase: ToggleCommentLikeUseCase
+    val createCommentUseCase: CreateCommentUseCase,
+    val toggleCommentLikeUseCase: ToggleCommentLikeUseCase,
+    val updateCommentUseCase: UpdateCommentUseCase
 )

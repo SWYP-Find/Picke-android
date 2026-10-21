@@ -93,7 +93,12 @@ class PerspectiveViewModel @Inject constructor(
         _uiState.update { it.copy(editingPerspectiveId = null) }
 
         viewModelScope.launch {
-            perspectiveUseCases.submitPerspectiveUseCase(battleId, editId, content)
+            val result = if (editId != null) {
+                perspectiveUseCases.updatePerspectiveUseCase(editId, content)
+            } else {
+                perspectiveUseCases.createPerspectiveUseCase(battleId, content)
+            }
+            result
                 .onSuccess {
                     if (editId == null) {
                         analyticsTracker.trackCommunityAction(battleId.toString(), content.length)

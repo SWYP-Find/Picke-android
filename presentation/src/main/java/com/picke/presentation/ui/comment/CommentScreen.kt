@@ -17,7 +17,6 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -252,10 +251,6 @@ private fun CommentContent(
                                     onLikeComment(comment.commentId, comment.isLiked, comment.isMine)
                                 }
                             )
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = PickeTheme.colors.borderBeigeDefault
-                            )
                         }
                     }
                 }
@@ -308,7 +303,10 @@ private fun CommentHeaderSection(
 private fun CommentContentPreview() {
     PickeTheme {
         CommentContent(
-            uiState = CommentUiState(comments = DummyData.dummyComments),
+            uiState = CommentUiState(
+                mainPerspective = DummyData.dummyMainPerspective,
+                comments = DummyData.dummyComments
+            ),
             scrollToCommentId = null,
             inputFieldState = rememberTextFieldState(),
             isRefreshing = false,

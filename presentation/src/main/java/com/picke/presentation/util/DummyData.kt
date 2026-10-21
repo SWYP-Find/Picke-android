@@ -77,6 +77,20 @@ object DummyData {
         )
     )
 
+    val dummyMainPerspective = CommentUiModel(
+        commentId = 101L,
+        profileImageUrl = "",
+        nickname = "사유하는 라쿤",
+        stance = "변기는 변기다",
+        optionId = 1L,
+        content = "제도화가 무서운 건, 사회적 압력이 '선택'을 '의무'로 바꿀 수 있다는 거예요. 네덜란드 사례를 보면 우려가 현실이 되고 있죠.\n\n처음에는 말기 환자만을 위한 제도였지만, 시간이 지나면서 대상이 점점 확대되었고, '합리적 선택'이라는 이름 아래 사회적으로 취약한 사람들이 스스로 짐이 된다고 느끼는 상황이 만들어지고 있습니다.",
+        timeAgo = "2분 전",
+        likeCount = 1340,
+        isLiked = false,
+        isMine = false,
+        replyCount = 23
+    )
+
     val dummyComments = listOf(
         CommentUiModel(
             commentId = 201L,

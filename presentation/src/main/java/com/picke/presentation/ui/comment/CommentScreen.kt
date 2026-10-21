@@ -45,6 +45,8 @@ import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeReportDialog
+import com.picke.presentation.ui.component.dialog.ReportReason
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
@@ -128,7 +130,8 @@ fun CommentScreen(
         onDismissDelete = {
             commentToDelete = null
         },
-        onConfirmReport = {
+        onConfirmReport = { _ ->
+            // TODO: API 연동 - 신고 사유 전송 (신고 API에 사유 필드 없음)
             commentToReport?.let { viewModel.reportComment(it) }
             commentToReport = null
         },
@@ -158,7 +161,7 @@ private fun CommentContent(
     onLikeComment: (Long, Boolean, Boolean) -> Unit,
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
-    onConfirmReport: () -> Unit,
+    onConfirmReport: (ReportReason) -> Unit,
     onDismissReport: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -268,10 +271,7 @@ private fun CommentContent(
         }
 
         if (commentToReport != null) {
-            CustomConfirmDialog(
-                message = "댓글을 신고하시겠습니까?",
-                confirmText = "신고하기",
-                dismissText = "뒤로가기",
+            PickeReportDialog(
                 onConfirm = onConfirmReport,
                 onDismiss = onDismissReport
             )

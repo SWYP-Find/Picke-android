@@ -64,6 +64,7 @@ import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveInputField
@@ -486,11 +487,9 @@ fun PerspectiveContent(
         }
 
         if (perspectiveToReport != null) {
-            CustomConfirmDialog(
-                message = "관점을 신고하시겠습니까?",
-                confirmText = "신고하기",
-                dismissText = "뒤로가기",
-                onConfirm = {
+            PickeReportDialog(
+                onConfirm = { _ ->
+                    // TODO: API 연동 - 신고 사유 전송 (신고 API에 사유 필드 없음)
                     onReportPerspective(perspectiveToReport!!)
                     perspectiveToReport = null
                 },

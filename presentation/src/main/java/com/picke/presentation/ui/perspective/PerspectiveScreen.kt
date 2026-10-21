@@ -2,37 +2,26 @@ package com.picke.presentation.ui.perspective
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -46,13 +35,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,7 +48,6 @@ import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.PickeCommentInput
-import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
@@ -70,6 +55,9 @@ import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
 import com.picke.presentation.ui.perspective.component.PerspectiveListSkeleton
+import com.picke.presentation.ui.perspective.component.PerspectiveOpinionBadge
+import com.picke.presentation.ui.perspective.component.PerspectiveRatioBar
+import com.picke.presentation.ui.perspective.component.PerspectiveStatsOption
 import com.picke.presentation.ui.perspective.component.PerspectiveTabBarSkeleton
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveStatus
@@ -81,6 +69,12 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
+private object PerspectiveScreenDimens {
+    val statsBadgeTopPadding = 10.dp
+}
+
+private const val DEFAULT_VOTE_RATIO = 50f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -252,7 +246,7 @@ fun PerspectiveContent(
                 PerspectiveHeaderSkeleton()
                 PerspectiveTabBarSkeleton()
             } else {
-                PerspectiveHeaderSection(
+                PerspectiveStatsSection(
                     voteOptions = uiState.voteOptions,
                     opinionChanged = uiState.opinionChanged
                 )
@@ -504,118 +498,42 @@ fun PerspectiveContent(
 }
 
 @Composable
-private fun PerspectiveHeaderSection(
+private fun PerspectiveStatsSection(
     voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
     modifier: Modifier = Modifier
 ) {
     val leftOption = voteOptions.getOrNull(0)
     val rightOption = voteOptions.getOrNull(1)
-    val proRatio = leftOption?.ratio ?: 50f
-    val conRatio = rightOption?.ratio ?: 50f
+    val leftRatio = leftOption?.ratio ?: DEFAULT_VOTE_RATIO
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s4),
+        verticalAlignment = Alignment.Bottom
     ) {
+        PerspectiveStatsOption(
+            imageUrl = leftOption?.imageUrl,
+            title = leftOption?.title.orEmpty(),
+            ratio = leftRatio
+        )
+
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(64.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = PerspectiveScreenDimens.statsBadgeTopPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileImage(
-                model = leftOption?.imageUrl,
-                size = 40.dp
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = leftOption?.title ?: "",
-                style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSubtle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "${proRatio.toInt()}%",
-                style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.gray600
-            )
+            PerspectiveOpinionBadge(opinionChanged = opinionChanged)
+            PerspectiveRatioBar(ratio = leftRatio)
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ) {
-            Surface(
-                color = PickeTheme.colors.primary50,
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_think),
-                        contentDescription = "생각 변경",
-                        tint = PickeTheme.colors.primary500,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = if (opinionChanged) "생각이 바뀌었어요" else "생각이 동일해요",
-                        style = PickeTheme.typography.captionMdSemiBold,
-                        color = PickeTheme.colors.primary500
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(CircleShape)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(if (proRatio > 0) proRatio else 0.1f)
-                        .fillMaxHeight()
-                        .background(Color(0xFFA64D47))
-                )
-                Box(
-                    modifier = Modifier
-                        .weight(if (conRatio > 0) conRatio else 0.1f)
-                        .fillMaxHeight()
-                        .background(PickeTheme.colors.backgroundSubtler)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(64.dp)
-        ) {
-            ProfileImage(
-                model = rightOption?.imageUrl,
-                size = 40.dp
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = rightOption?.title ?: "",
-                style = PickeTheme.typography.captionSmSemiBold,
-                color = PickeTheme.colors.textSubtle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "${conRatio.toInt()}%",
-                style = PickeTheme.typography.captionLgMedium,
-                color = PickeTheme.colors.gray600
-            )
-        }
+        PerspectiveStatsOption(
+            imageUrl = rightOption?.imageUrl,
+            title = rightOption?.title.orEmpty(),
+            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO
+        )
     }
 }
 

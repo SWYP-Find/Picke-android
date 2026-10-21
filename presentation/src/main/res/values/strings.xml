@@ -408,6 +408,9 @@
     <string name="comment_input_hint_reply">댓글을 남겨보세요...</string>
     <string name="comment_input_hint_edit">수정할 내용을 입력해주세요...</string>
     <string name="comment_submit">등록</string>
+    <string name="comment_vote_rate">%1$s%%</string>
+    <string name="comment_opinion_changed">생각이 바뀌었어요</string>
+    <string name="comment_opinion_same">생각이 동일해요</string>
     <string name="comment_report_reason_promotion">영리목적/홍보성</string>
     <string name="comment_report_reason_spam">같은 내용 반복 게시</string>
     <string name="comment_report_reason_obscene">음란성/선정성</string>

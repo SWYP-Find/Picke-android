@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
+import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
@@ -54,6 +55,10 @@ class CommentViewModel @Inject constructor(
 
     fun submitComment(content: String, onSuccess: () -> Unit) {
         if (content.isBlank()) return
+        if (_uiState.value.isEditingMainPerspective) {
+            updateMainPerspective(content, onSuccess)
+            return
+        }
 
         val editId = _uiState.value.editingCommentId
         val isEditMode = editId != null
@@ -133,7 +138,37 @@ class CommentViewModel @Inject constructor(
     }
 
     fun setEditMode(commentId: Long?) {
-        _uiState.update { it.copy(editingCommentId = commentId) }
+        _uiState.update { it.copy(editingCommentId = commentId, isEditingMainPerspective = false) }
+    }
+
+    fun setMainPerspectiveEditMode() {
+        _uiState.update { it.copy(editingCommentId = null, isEditingMainPerspective = true) }
+    }
+
+    fun deleteMainPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.deletePerspectiveUseCase(targetId)
+                .onSuccess {
+                    sendEvent(CommentUiEvent.NavigateBack)
+                }
+        }
+    }
+
+    fun reportMainPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.reportPerspectiveUseCase(targetId)
+                .onSuccess { result ->
+                    when (result) {
+                        is ReportPerspectiveResult.Reported -> {
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                        }
+
+                        is ReportPerspectiveResult.AlreadyReported -> {
+                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                        }
+                    }
+                }
+        }
     }
 
     fun reportComment(commentId: Long) {
@@ -198,6 +233,18 @@ class CommentViewModel @Inject constructor(
                             mainPerspective = perspective.toUiModel()
                         )
                     }
+                }
+        }
+    }
+
+    private fun updateMainPerspective(content: String, onSuccess: () -> Unit) {
+        _uiState.update { it.copy(isEditingMainPerspective = false) }
+
+        viewModelScope.launch {
+            perspectiveUseCases.updatePerspectiveUseCase(targetId, content)
+                .onSuccess {
+                    onSuccess()
+                    fetchMainPerspective()
                 }
         }
     }

@@ -35,16 +35,12 @@ fun CommentItemCard(
         likeCount = item.likeCount,
         isLiked = item.isLiked,
         replyCount = item.replyCount.takeIf { isMainContent },
-        menuItems = if (isMainContent) {
-            emptyList()
-        } else {
-            commentMenuItems(
-                isMine = item.isMine,
-                onEditClick = { onEditClick(item.content) },
-                onDeleteClick = onDeleteClick,
-                onReportClick = onReportClick
-            )
-        },
+        menuItems = commentMenuItems(
+            isMine = item.isMine,
+            onEditClick = { onEditClick(item.content) },
+            onDeleteClick = onDeleteClick,
+            onReportClick = onReportClick
+        ),
         onLikeClick = onLikeClick
     ) {
         PickeBadge(

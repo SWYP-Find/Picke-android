@@ -8,5 +8,6 @@ data class CommentUiState(
     val nextCursor: String? = null,
     val hasNext: Boolean = true,
     val isLoading: Boolean = false,
-    val editingCommentId: Long? = null
+    val editingCommentId: Long? = null,
+    val isEditingMainPerspective: Boolean = false
 )

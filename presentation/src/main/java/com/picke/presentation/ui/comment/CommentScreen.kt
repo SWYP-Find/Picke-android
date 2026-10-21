@@ -32,11 +32,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.R
 import com.picke.presentation.ui.comment.component.CommentInputField
 import com.picke.presentation.ui.comment.component.CommentItemCard
 import com.picke.presentation.ui.comment.component.CommentSkeleton
@@ -64,6 +66,8 @@ fun CommentScreen(
 
     var commentToDelete by remember { mutableStateOf<Long?>(null) }
     var commentToReport by remember { mutableStateOf<Long?>(null) }
+    var isMainDeleteDialogVisible by remember { mutableStateOf(false) }
+    var isMainReportDialogVisible by remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.isLoading) {
@@ -75,6 +79,8 @@ fun CommentScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
+                CommentUiEvent.NavigateBack -> onBackClick()
+
                 is CommentUiEvent.ShowToast -> {
                     Toast.makeText(context, context.getString(event.messageResId), Toast.LENGTH_SHORT).show()
                 }
@@ -89,6 +95,8 @@ fun CommentScreen(
         isRefreshing = isRefreshing,
         commentToDelete = commentToDelete,
         commentToReport = commentToReport,
+        isMainDeleteDialogVisible = isMainDeleteDialogVisible,
+        isMainReportDialogVisible = isMainReportDialogVisible,
         onBackClick = onBackClick,
         onRefresh = {
             isRefreshing = true
@@ -105,6 +113,16 @@ fun CommentScreen(
             } else {
                 viewModel.toggleMainPerspectiveLike()
             }
+        },
+        onEditMainPerspective = { content ->
+            inputFieldState.setTextAndPlaceCursorAtEnd(content)
+            viewModel.setMainPerspectiveEditMode()
+        },
+        onRequestDeleteMainPerspective = {
+            isMainDeleteDialogVisible = true
+        },
+        onRequestReportMainPerspective = {
+            isMainReportDialogVisible = true
         },
         onEditComment = { commentId, content ->
             inputFieldState.setTextAndPlaceCursorAtEnd(content)
@@ -138,6 +156,21 @@ fun CommentScreen(
         onDismissReport = {
             commentToReport = null
         },
+        onConfirmDeleteMainPerspective = {
+            viewModel.deleteMainPerspective()
+            isMainDeleteDialogVisible = false
+        },
+        onDismissDeleteMainPerspective = {
+            isMainDeleteDialogVisible = false
+        },
+        onConfirmReportMainPerspective = { _ ->
+            // TODO: API 연동 - 신고 사유 전송 (신고 API에 사유 필드 없음)
+            viewModel.reportMainPerspective()
+            isMainReportDialogVisible = false
+        },
+        onDismissReportMainPerspective = {
+            isMainReportDialogVisible = false
+        },
         modifier = modifier
     )
 }
@@ -151,10 +184,15 @@ private fun CommentContent(
     isRefreshing: Boolean,
     commentToDelete: Long?,
     commentToReport: Long?,
+    isMainDeleteDialogVisible: Boolean,
+    isMainReportDialogVisible: Boolean,
     onBackClick: () -> Unit,
     onRefresh: () -> Unit,
     onSubmit: () -> Unit,
     onMainLikeClick: (CommentUiModel) -> Unit,
+    onEditMainPerspective: (String) -> Unit,
+    onRequestDeleteMainPerspective: () -> Unit,
+    onRequestReportMainPerspective: () -> Unit,
     onEditComment: (Long, String) -> Unit,
     onRequestDelete: (Long) -> Unit,
     onRequestReport: (Long) -> Unit,
@@ -163,6 +201,10 @@ private fun CommentContent(
     onDismissDelete: () -> Unit,
     onConfirmReport: (ReportReason) -> Unit,
     onDismissReport: () -> Unit,
+    onConfirmDeleteMainPerspective: () -> Unit,
+    onDismissDeleteMainPerspective: () -> Unit,
+    onConfirmReportMainPerspective: (ReportReason) -> Unit,
+    onDismissReportMainPerspective: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -190,14 +232,14 @@ private fun CommentContent(
             }
         },
         bottomBar = {
-            val isEditing = uiState.editingCommentId != null
+            val isEditing = uiState.editingCommentId != null || uiState.isEditingMainPerspective
             val inputHint = if (isEditing) "수정할 내용을 입력해주세요..." else "댓글을 남겨보세요..."
 
             CommentInputField(
                 textFieldState = inputFieldState,
                 onSubmit = onSubmit,
                 hintText = inputHint,
-                editingId = uiState.editingCommentId
+                editingId = uiState.editingCommentId ?: uiState.targetId.takeIf { uiState.isEditingMainPerspective }
             )
         }
     ) { innerPadding ->
@@ -213,7 +255,10 @@ private fun CommentContent(
                     CommentItemCard(
                         item = mainContent,
                         isMainContent = true,
-                        onLikeClick = { onMainLikeClick(mainContent) }
+                        onEditClick = onEditMainPerspective,
+                        onDeleteClick = onRequestDeleteMainPerspective,
+                        onLikeClick = { onMainLikeClick(mainContent) },
+                        onReportClick = onRequestReportMainPerspective
                     )
                 }
 
@@ -270,6 +315,22 @@ private fun CommentContent(
             )
         }
 
+        if (isMainDeleteDialogVisible) {
+            CustomConfirmDialog(
+                message = stringResource(R.string.comment_perspective_delete_message),
+                onConfirm = onConfirmDeleteMainPerspective,
+                onDismiss = onDismissDeleteMainPerspective,
+                confirmText = stringResource(R.string.comment_delete_confirm)
+            )
+        }
+
+        if (isMainReportDialogVisible) {
+            PickeReportDialog(
+                onConfirm = onConfirmReportMainPerspective,
+                onDismiss = onDismissReportMainPerspective
+            )
+        }
+
         if (commentToReport != null) {
             PickeReportDialog(
                 onConfirm = onConfirmReport,
@@ -312,10 +373,15 @@ private fun CommentContentPreview() {
             isRefreshing = false,
             commentToDelete = null,
             commentToReport = null,
+            isMainDeleteDialogVisible = false,
+            isMainReportDialogVisible = false,
             onBackClick = {},
             onRefresh = {},
             onSubmit = {},
             onMainLikeClick = {},
+            onEditMainPerspective = {},
+            onRequestDeleteMainPerspective = {},
+            onRequestReportMainPerspective = {},
             onEditComment = { _, _ -> },
             onRequestDelete = {},
             onRequestReport = {},
@@ -323,7 +389,11 @@ private fun CommentContentPreview() {
             onConfirmDelete = {},
             onDismissDelete = {},
             onConfirmReport = {},
-            onDismissReport = {}
+            onDismissReport = {},
+            onConfirmDeleteMainPerspective = {},
+            onDismissDeleteMainPerspective = {},
+            onConfirmReportMainPerspective = {},
+            onDismissReportMainPerspective = {}
         )
     }
 }

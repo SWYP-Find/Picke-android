@@ -402,6 +402,8 @@
     <string name="comment_menu_report">신고</string>
     <string name="comment_report_title">신고사유</string>
     <string name="comment_report_confirm">신고하기</string>
+    <string name="comment_perspective_delete_message">관점을 삭제하시겠습니까?</string>
+    <string name="comment_delete_confirm">삭제하기</string>
     <string name="comment_report_reason_promotion">영리목적/홍보성</string>
     <string name="comment_report_reason_spam">같은 내용 반복 게시</string>
     <string name="comment_report_reason_obscene">음란성/선정성</string>

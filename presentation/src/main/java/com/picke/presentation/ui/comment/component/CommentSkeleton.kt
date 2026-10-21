@@ -33,6 +33,7 @@ fun CommentSkeleton(modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                // TODO: 토큰 동기화 - 답글 헤더 배경 (Figma 디자인 없음)
                 .background(Color(0xFFF9F8F6))
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
@@ -51,7 +52,7 @@ private fun CommentItemCardSkeleton(showContentTwoLines: Boolean = false) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(PickeTheme.colors.surfaceBeigeDefault)
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

@@ -50,6 +50,7 @@ import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.component.dialog.ReportReason
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
 
@@ -109,7 +110,7 @@ fun CommentScreen(
         },
         onMainLikeClick = { mainContent ->
             if (mainContent.isMine) {
-                Toast.makeText(context, "본인이 쓴 관점에는 좋아요를 누를 수 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.comment_like_own_perspective), Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.toggleMainPerspectiveLike()
             }
@@ -136,7 +137,7 @@ fun CommentScreen(
         },
         onLikeComment = { commentId, isLiked, isMine ->
             if (isMine) {
-                Toast.makeText(context, "본인이 쓴 댓글에는 좋아요를 누를 수 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.comment_like_own_reply), Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.toggleLike(commentId = commentId, isCurrentlyLiked = isLiked)
             }
@@ -223,7 +224,7 @@ private fun CommentContent(
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
-                    title = "댓글",
+                    title = stringResource(R.string.comment_reply_title),
                     centerTitle = true,
                     showLogo = false,
                     onBackClick = onBackClick,
@@ -275,7 +276,7 @@ private fun CommentContent(
                         PullToRefreshDefaults.Indicator(
                             state = pullToRefreshState,
                             isRefreshing = isRefreshing,
-                            containerColor = Color.White,
+                            containerColor = PickeTheme.colors.surfaceBeigeDefault,
                             color = PickeTheme.colors.primary500,
                             modifier = Modifier.align(Alignment.TopCenter)
                         )
@@ -309,11 +310,10 @@ private fun CommentContent(
 
         if (commentToDelete != null) {
             CustomConfirmDialog(
-                message = "댓글을 삭제하시겠습니까?",
-                confirmText = "삭제하기",
-                dismissText = "뒤로가기",
+                message = stringResource(R.string.comment_reply_delete_message),
                 onConfirm = onConfirmDelete,
-                onDismiss = onDismissDelete
+                onDismiss = onDismissDelete,
+                confirmText = stringResource(R.string.comment_delete_confirm)
             )
         }
 
@@ -350,11 +350,12 @@ private fun CommentHeaderSection(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            // TODO: 토큰 동기화 - 답글 헤더 배경 (Figma 디자인 없음)
             .background(Color(0xFFF9F8F6))
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12)
     ) {
         Text(
-            text = "답글 ${count}개",
+            text = stringResource(R.string.comment_reply_count, count),
             style = PickeTheme.typography.bodyXsSemiBold,
             color = PickeTheme.colors.gray600
         )

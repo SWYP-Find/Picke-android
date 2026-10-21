@@ -2,6 +2,7 @@ package com.picke.presentation.ui.perspective
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -163,8 +163,9 @@ fun PerspectiveContent(
     val focusManager = LocalFocusManager.current
 
     val voteOptions = uiState.voteOptions
-    val tabList = remember(voteOptions) {
-        listOf("전체") + voteOptions.map { it.title }
+    val allTabTitle = stringResource(R.string.comment_tab_all)
+    val tabList = remember(voteOptions, allTabTitle) {
+        listOf(allTabTitle) + voteOptions.map { it.title }
     }
 
     val inputFieldState = rememberTextFieldState()
@@ -202,7 +203,7 @@ fun PerspectiveContent(
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
                 CustomTopAppBar(
-                    title = uiState.battleTitle.ifBlank { "관점 남기기" },
+                    title = uiState.battleTitle.ifBlank { stringResource(R.string.comment_perspective_title) },
                     centerTitle = true,
                     showLogo = false,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -312,26 +313,18 @@ fun PerspectiveContent(
                             ),
                         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
                     ) {
-                        SortFilterChip(
-                            text = "인기순",
-                            isSelected = uiState.sort == PerspectiveSort.POPULAR,
-                            onClick = {
-                                if (uiState.sort != PerspectiveSort.POPULAR) {
-                                    isSorting = true
-                                    onUpdateSort(PerspectiveSort.POPULAR)
+                        PerspectiveSort.entries.forEach { sort ->
+                            SortFilterChip(
+                                text = stringResource(sort.labelRes()),
+                                isSelected = uiState.sort == sort,
+                                onClick = {
+                                    if (uiState.sort != sort) {
+                                        isSorting = true
+                                        onUpdateSort(sort)
+                                    }
                                 }
-                            }
-                        )
-                        SortFilterChip(
-                            text = "최신순",
-                            isSelected = uiState.sort == PerspectiveSort.LATEST,
-                            onClick = {
-                                if (uiState.sort != PerspectiveSort.LATEST) {
-                                    isSorting = true
-                                    onUpdateSort(PerspectiveSort.LATEST)
-                                }
-                            }
-                        )
+                            )
+                        }
                     }
 
                     if (uiState.isLoading && uiState.perspectives.isEmpty()) {
@@ -349,7 +342,7 @@ fun PerspectiveContent(
                                 PullToRefreshDefaults.Indicator(
                                     state = pullToRefreshState,
                                     isRefreshing = isRefreshing,
-                                    containerColor = Color.White,
+                                    containerColor = PickeTheme.colors.surfaceBeigeDefault,
                                     color = PickeTheme.colors.primary500,
                                     modifier = Modifier.align(Alignment.TopCenter)
                                 )
@@ -375,7 +368,7 @@ fun PerspectiveContent(
                                                 onLikeClick = {
                                                     Toast.makeText(
                                                         context,
-                                                        "본인이 쓴 관점에는 좋아요를 누를 수 없습니다.",
+                                                        context.getString(R.string.comment_like_own_perspective),
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                 }
@@ -387,9 +380,9 @@ fun PerspectiveContent(
                                 if (filteredList.isEmpty() && !uiState.isLoading && !isShowingMyPendingOrRejected) {
                                     item {
                                         val emptyMsg = if (pageIndex == 0) {
-                                            "아직 작성된 관점이 없습니다"
+                                            stringResource(R.string.comment_empty_all)
                                         } else {
-                                            "아직 작성된 \"${tabList.getOrElse(pageIndex) { "" }}\" 관점이 없습니다"
+                                            stringResource(R.string.comment_empty_option, tabList.getOrElse(pageIndex) { "" })
                                         }
 
                                         PerspectiveEmptyState(
@@ -425,7 +418,7 @@ fun PerspectiveContent(
                                                 if (item.isMine) {
                                                     Toast.makeText(
                                                         context,
-                                                        "본인이 쓴 관점에는 좋아요를 누를 수 없습니다.",
+                                                        context.getString(R.string.comment_like_own_perspective),
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                 } else {
@@ -469,16 +462,15 @@ fun PerspectiveContent(
 
         if (perspectiveToDelete != null) {
             CustomConfirmDialog(
-                message = "관점을 삭제하시겠습니까?",
-                confirmText = "삭제하기",
-                dismissText = "뒤로가기",
+                message = stringResource(R.string.comment_perspective_delete_message),
                 onConfirm = {
                     onDeletePerspective(perspectiveToDelete!!)
                     perspectiveToDelete = null
                 },
                 onDismiss = {
                     perspectiveToDelete = null
-                }
+                },
+                confirmText = stringResource(R.string.comment_delete_confirm)
             )
         }
 
@@ -535,6 +527,12 @@ private fun PerspectiveStatsSection(
             ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO
         )
     }
+}
+
+@StringRes
+private fun PerspectiveSort.labelRes(): Int = when (this) {
+    PerspectiveSort.POPULAR -> R.string.comment_sort_popular
+    PerspectiveSort.LATEST -> R.string.comment_sort_latest
 }
 
 @Preview(showBackground = true)

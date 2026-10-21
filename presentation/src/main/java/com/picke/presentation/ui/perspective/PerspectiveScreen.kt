@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -77,6 +76,7 @@ import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -307,8 +307,13 @@ fun PerspectiveContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .padding(
+                                start = SpacingTokens.s16,
+                                top = SpacingTokens.s16,
+                                end = SpacingTokens.s16,
+                                bottom = SpacingTokens.s6
+                            ),
+                        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
                     ) {
                         SortFilterChip(
                             text = "인기순",
@@ -355,12 +360,7 @@ fun PerspectiveContent(
                         ) {
                             LazyColumn(
                                 state = listState,
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(
-                                    horizontal = 16.dp,
-                                    vertical = 12.dp
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                modifier = Modifier.fillMaxSize()
                             ) {
                                 uiState.myPerspective?.let { myView ->
                                     if (myView.status != PerspectiveStatus.PUBLISHED) {

@@ -51,6 +51,9 @@ data class PickeColors(
     // Action
     val actionPrimaryDisabled: Color = SemanticColorTokens.actionPrimaryDisabled,
 
+    // Component — Avatar
+    val avatarBackround: Color = ComponentColorTokens.avatarBackround,
+
     // Component — Button
     val buttonPrimaryBackgroundDefault: Color = ComponentColorTokens.buttonPrimaryBackgroundDefault,
     val buttonPrimaryBackgroundPressed: Color = ComponentColorTokens.buttonPrimaryBackgroundPressed,

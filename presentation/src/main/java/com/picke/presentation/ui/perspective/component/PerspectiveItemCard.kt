@@ -1,308 +1,248 @@
 package com.picke.presentation.ui.perspective.component
 
-import androidx.compose.foundation.BorderStroke
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeIconCount
+import com.picke.presentation.ui.component.PickeMoreMenu
+import com.picke.presentation.ui.component.PickeMoreMenuItem
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private const val CONTENT_MAX_LINES = 3
 
 @Composable
 fun PerspectiveItemCard(
     item: PerspectiveUiModel,
     modifier: Modifier = Modifier,
     isDetail: Boolean = false,
-    onMoreClick: () -> Unit = {},
     clickable: Boolean = true,
+    onMoreClick: () -> Unit = {},
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
     onLikeClick: () -> Unit = {},
     onReportClick: () -> Unit = {}
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
     val status = item.status
-    val cardBgColor = when (status) {
-        PerspectiveStatus.REJECTED -> Color(0xFFFFF9F9)
+    val isReviewing = status != PerspectiveStatus.PUBLISHED
+    // TODO: 토큰 동기화 - color/surface/white, 거절 상태 배경 (Figma 디자인 없음)
+    val backgroundColor = when (status) {
+        PerspectiveStatus.PUBLISHED -> PickeTheme.colors.surfaceBeigeDefault
         PerspectiveStatus.PENDING -> PickeTheme.colors.secondary50
-        else -> Color.White
-    }
-    val borderBadgeColor = when (status) {
-        PerspectiveStatus.REJECTED -> Color(0xFFA64D47)
-        PerspectiveStatus.PENDING -> PickeTheme.colors.secondary500
-        else -> PickeTheme.colors.borderBeigeDefault
+        PerspectiveStatus.REJECTED -> Color(0xFFFFF9F9)
     }
 
-    Card(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(enabled = clickable && !isDetail) { onMoreClick() },
-        colors = CardDefaults.cardColors(containerColor = cardBgColor),
-        shape = RoundedCornerShape(2.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = if (isDetail) null else BorderStroke(width = 1.dp, color = borderBadgeColor)
+            .background(backgroundColor)
+            .clickable(enabled = clickable && !isDetail) { onMoreClick() }
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            modifier = Modifier.padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // TODO: 토큰 동기화 - color/surface/beige-darker
                 ProfileImage(
                     model = item.profileImageUrl,
-                    size = 32.dp
+                    size = ComponentNumberTokens.avatarSm,
+                    backgroundColor = PickeTheme.colors.avatarBackround
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
+                    // TODO: 토큰 동기화 - color/text/basic
                     Text(
-                        text = if (item.isMine) "나" else item.nickname,
-                        style = PickeTheme.typography.bodySmMedium,
-                        color = PickeTheme.colors.textSubtle
+                        text = if (item.isMine) stringResource(R.string.comment_me) else item.nickname,
+                        color = PickeTheme.colors.textDefault,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = PickeTheme.typography.bodyXxsSemiBold
                     )
                     Text(
                         text = item.timeAgo,
-                        style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.textMuted
-                    )
-                }
-
-                if (status != PerspectiveStatus.PENDING) {
-                    Box {
-                        IconButton(
-                            onClick = { isMenuExpanded = true },
-                            modifier = Modifier.size(16.dp)
-                        ) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_more),
-                                "더보기",
-                                tint = PickeTheme.colors.textMuted
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = isMenuExpanded,
-                            onDismissRequest = { isMenuExpanded = false },
-                            modifier = Modifier
-                                .background(PickeTheme.colors.primary600)
-                                .clip(RoundedCornerShape(8.dp))
-                        ) {
-                            if (item.isMine) {
-                                if (status != PerspectiveStatus.REJECTED) {
-                                    PerspectiveMenuItem(
-                                        iconRes = R.drawable.ic_trash,
-                                        text = "삭제"
-                                    ) {
-                                        isMenuExpanded = false
-                                        onDeleteClick()
-                                    }
-                                }
-                                PerspectiveMenuItem(iconRes = R.drawable.ic_edit, text = "수정") {
-                                    isMenuExpanded = false
-                                    onEditClick(item.content)
-                                }
-                            } else {
-                                PerspectiveMenuItem(iconRes = R.drawable.ic_bell, text = "신고") {
-                                    isMenuExpanded = false
-                                    onReportClick()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-            if (status == PerspectiveStatus.PENDING || status == PerspectiveStatus.REJECTED) {
-                Surface(
-                    color = borderBadgeColor,
-                    shape = RoundedCornerShape(2.dp)
-                ) {
-                    Text(
-                        text = if (status == PerspectiveStatus.PENDING) "검수중" else "거절됨",
-                        style = PickeTheme.typography.bodyXxsMedium,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
-            } else {
-                Surface(
-                    color = PickeTheme.colors.badgeFilledBackground,
-                    shape = RoundedCornerShape(2.dp)
-                ) {
-                    Text(
-                        text = item.optionTitle,
-                        style = PickeTheme.typography.bodyXxsMedium,
-                        color = PickeTheme.colors.badgeFilledText,
+                        color = PickeTheme.colors.textMuted,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        style = PickeTheme.typography.captionSmSemiBold
+                    )
+                }
+
+                if (isReviewing) {
+                    PerspectiveStatusBadge(status = status)
+                } else {
+                    PickeBadge(
+                        text = item.optionTitle,
+                        horizontalPadding = SpacingTokens.s4
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = item.content,
-                style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.gray600,
-                maxLines = if (isDetail) Int.MAX_VALUE else 3,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
+                Text(
+                    text = item.content,
+                    modifier = Modifier.padding(horizontal = SpacingTokens.s2),
+                    color = PickeTheme.colors.textMuted,
+                    maxLines = if (isDetail) Int.MAX_VALUE else CONTENT_MAX_LINES,
+                    overflow = TextOverflow.Ellipsis,
+                    style = PickeTheme.typography.bodyXsRegular
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
-            if (status != PerspectiveStatus.PENDING && status != PerspectiveStatus.REJECTED) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (!isDetail) {
-                        Text(
-                            text = "더보기",
-                            style = PickeTheme.typography.bodyXxsMedium,
-                            color = PickeTheme.colors.textMuted,
-                            modifier = Modifier.clickable(
+                if (!isDetail && !isReviewing) {
+                    // TODO: 토큰 동기화 - color/text/faint
+                    Text(
+                        text = stringResource(R.string.comment_read_more),
+                        modifier = Modifier
+                            .padding(horizontal = SpacingTokens.s2)
+                            .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                if (clickable) onMoreClick()
-                            }
+                                indication = null,
+                                enabled = clickable
+                            ) { onMoreClick() },
+                        color = PickeTheme.colors.gray200,
+                        style = PickeTheme.typography.captionLgMedium
+                    )
+                }
+            }
+
+            if (status != PerspectiveStatus.PENDING) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!isReviewing) {
+                        PickeIconCount(
+                            iconRes = R.drawable.ic_heart_plus,
+                            contentDescription = stringResource(R.string.comment_like),
+                            count = item.likeCount,
+                            contentColor = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
+                            onClick = onLikeClick
+                        )
+                    }
+
+                    if (!isReviewing && !isDetail) {
+                        PickeIconCount(
+                            iconRes = R.drawable.ic_message,
+                            contentDescription = stringResource(R.string.comment_reply),
+                            count = item.replyCount,
+                            onClick = onMoreClick
                         )
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
-                    if (!isDetail) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                onMoreClick()
-                            }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(CircleShape)
-                                    .clickable { onMoreClick() },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_message),
-                                    contentDescription = "댓글",
-                                    modifier = Modifier.size(12.dp),
-                                    tint = PickeTheme.colors.textMuted
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                text = "${item.replyCount}",
-                                style = PickeTheme.typography.bodyXxsMedium,
-                                color = PickeTheme.colors.textMuted
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                    }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            onLikeClick()
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .clickable { onLikeClick() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_heart_plus),
-                                contentDescription = "좋아요",
-                                modifier = Modifier.size(12.dp),
-                                tint = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted
-                            )
-                        }
-                        Text(
-                            text = "${item.likeCount}",
-                            style = PickeTheme.typography.bodyXxsMedium,
-                            color = if (item.isLiked) PickeTheme.colors.primary500 else PickeTheme.colors.textMuted,
-                            modifier = Modifier.padding(start = 2.dp)
+                    PickeMoreMenu(
+                        items = perspectiveMenuItems(
+                            isMine = item.isMine,
+                            isRejected = status == PerspectiveStatus.REJECTED,
+                            onEditClick = { onEditClick(item.content) },
+                            onDeleteClick = onDeleteClick,
+                            onReportClick = onReportClick
                         )
-                    }
+                    )
                 }
             }
         }
+
+        // TODO: 토큰 동기화 - color/divider/beige
+        HorizontalDivider(
+            thickness = ComponentNumberTokens.borderWidthRegular,
+            color = PickeTheme.colors.borderBeigeDefault
+        )
     }
 }
 
 @Composable
-private fun PerspectiveMenuItem(
-    iconRes: Int,
-    text: String,
-    onClick: () -> Unit
+private fun PerspectiveStatusBadge(
+    status: PerspectiveStatus,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = text,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            style = PickeTheme.typography.bodySmMedium,
-            color = Color.White
-        )
+    // TODO: 토큰 동기화 - 거절 상태 배지 (Figma 디자인 없음)
+    val badgeColor = if (status == PerspectiveStatus.REJECTED) Color(0xFFA64D47) else PickeTheme.colors.secondary500
+
+    Text(
+        text = stringResource(status.reviewLabelRes()),
+        modifier = modifier
+            .background(badgeColor, RoundedCornerShape(RadiusTokens.default))
+            .padding(
+                horizontal = ComponentNumberTokens.paddingBadgeHorizontal,
+                vertical = ComponentNumberTokens.paddingBadgeVertical
+            ),
+        color = PickeTheme.colors.textInverse,
+        style = PickeTheme.typography.bodyXxsMedium
+    )
+}
+
+private fun perspectiveMenuItems(
+    isMine: Boolean,
+    isRejected: Boolean,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onReportClick: () -> Unit
+): List<PickeMoreMenuItem> {
+    val editItem = PickeMoreMenuItem(
+        iconRes = R.drawable.ic_edit,
+        textRes = R.string.comment_menu_edit,
+        onClick = onEditClick
+    )
+    val deleteItem = PickeMoreMenuItem(
+        iconRes = R.drawable.ic_trash,
+        textRes = R.string.comment_menu_delete,
+        onClick = onDeleteClick
+    )
+    val reportItem = PickeMoreMenuItem(
+        iconRes = R.drawable.ic_bell,
+        textRes = R.string.comment_menu_report,
+        onClick = onReportClick
+    )
+    return when {
+        !isMine -> listOf(reportItem)
+        isRejected -> listOf(editItem)
+        else -> listOf(deleteItem, editItem)
     }
 }
+
+@StringRes
+private fun PerspectiveStatus.reviewLabelRes(): Int =
+    if (this == PerspectiveStatus.REJECTED) R.string.comment_status_rejected else R.string.comment_status_pending
 
 @Preview(showBackground = true)
 @Composable
 private fun PerspectiveItemCardPreview() {
     PickeTheme {
-        PerspectiveItemCard(item = DummyData.dummyPerspectives.first())
+        Column {
+            PerspectiveItemCard(item = DummyData.dummyPerspectives.first())
+            PerspectiveItemCard(item = DummyData.dummyPerspectives.last().copy(status = PerspectiveStatus.PENDING))
+            PerspectiveItemCard(item = DummyData.dummyPerspectives.last().copy(status = PerspectiveStatus.REJECTED))
+        }
     }
 }

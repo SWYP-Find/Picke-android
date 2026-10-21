@@ -98,7 +98,11 @@ fun ClassResultFeedbackCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onMyOpinionClick)
+                    .clickable(
+                        interactionSource = null,
+                        indication = null,
+                        onClick = onMyOpinionClick
+                    )
                     .padding(vertical = SpacingTokens.s6),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically

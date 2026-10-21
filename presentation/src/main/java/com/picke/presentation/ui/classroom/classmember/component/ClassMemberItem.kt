@@ -78,7 +78,12 @@ fun ClassMemberItem(
                     contentDescription = stringResource(R.string.class_name_sheet_edit),
                     modifier = Modifier
                         .size(ComponentNumberTokens.iconSm)
-                        .clickable(role = Role.Button, onClick = onEditNameClick),
+                        .clickable(
+                            interactionSource = null,
+                            indication = null,
+                            role = Role.Button,
+                            onClick = onEditNameClick
+                        ),
                     tint = PickeTheme.colors.textDefault
                 )
             }

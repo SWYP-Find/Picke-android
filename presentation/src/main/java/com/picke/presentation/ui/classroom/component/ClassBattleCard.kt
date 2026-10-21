@@ -148,7 +148,11 @@ private fun ClassBattleCardHeader(
                     text = stringResource(R.string.class_battle_preview),
                     color = PickeTheme.colors.textPrimary,
                     style = PickeTheme.typography.bodyXxsSemiBold,
-                    modifier = Modifier.clickable(onClick = onPreviewClick)
+                    modifier = Modifier.clickable(
+                        interactionSource = null,
+                        indication = null,
+                        onClick = onPreviewClick
+                    )
                 )
             }
 

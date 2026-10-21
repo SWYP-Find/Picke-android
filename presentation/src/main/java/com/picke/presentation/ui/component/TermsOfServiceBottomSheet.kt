@@ -135,13 +135,19 @@ fun TermsOfServiceBottomSheet(
                     text = stringResource(R.string.terms_sheet_required_terms),
                     isAgreed = isServiceTermsAgreed,
                     onToggle = { isServiceTermsAgreed = !isServiceTermsAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_terms to BuildConfig.TERMS_OF_SERVICE_URL }
+                    onViewDetail = {
+                        openedPolicy =
+                            R.string.policy_title_terms to BuildConfig.TERMS_OF_SERVICE_URL
+                    }
                 )
                 TermsItem(
                     text = stringResource(R.string.terms_sheet_required_privacy),
                     isAgreed = isPrivacyPolicyAgreed,
                     onToggle = { isPrivacyPolicyAgreed = !isPrivacyPolicyAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_privacy to BuildConfig.PRIVACY_POLICY_URL }
+                    onViewDetail = {
+                        openedPolicy =
+                            R.string.policy_title_privacy to BuildConfig.PRIVACY_POLICY_URL
+                    }
                 )
             }
 
@@ -226,7 +232,7 @@ private fun TermsItem(
             tint = PickeTheme.colors.textDefault,
             modifier = Modifier
                 .size(20.dp)
-                .clickable { onViewDetail() }
+                .clickable(interactionSource = null, indication = null, onClick = onViewDetail)
         )
     }
 }

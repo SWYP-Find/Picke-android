@@ -126,7 +126,11 @@ fun AlarmScreen(
                         style = PickeTheme.typography.bodyXsMedium,
                         color = PickeTheme.colors.textSubtler,
                         modifier = Modifier
-                            .clickable { onReadAllClick() }
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = onReadAllClick
+                            )
                             .padding(end = 12.dp, top = 8.dp, bottom = 8.dp)
                     )
                 }

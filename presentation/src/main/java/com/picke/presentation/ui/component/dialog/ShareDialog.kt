@@ -73,12 +73,19 @@ fun ShareDialog(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .size(ComponentNumberTokens.iconXs)
-                        .clickable(onClick = onDismiss),
+                        .clickable(
+                            interactionSource = null,
+                            indication = null,
+                            onClick = onDismiss
+                        ),
                     tint = PickeTheme.colors.textDefault
                 )
             }
 
-            HorizontalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = PickeTheme.colors.textDefault)
+            HorizontalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.textDefault
+            )
 
             Row(
                 modifier = Modifier

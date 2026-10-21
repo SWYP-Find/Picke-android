@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -191,13 +190,11 @@ fun WithdrawReasonItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable(
-                interactionSource = interactionSource,
+                interactionSource = null,
                 indication = null,
                 onClick = onClick
             )

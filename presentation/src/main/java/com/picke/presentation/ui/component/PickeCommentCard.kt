@@ -2,7 +2,6 @@ package com.picke.presentation.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,7 +55,10 @@ fun PickeCommentCard(
             .then(clickModifier)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12),
+            modifier = Modifier.padding(
+                horizontal = SpacingTokens.s16,
+                vertical = SpacingTokens.s12
+            ),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
             Row(
@@ -108,7 +109,7 @@ fun PickeCommentCard(
                         modifier = Modifier
                             .padding(horizontal = SpacingTokens.s2)
                             .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = null,
                                 indication = null,
                                 onClick = onReadMoreClick
                             ),
@@ -172,7 +173,10 @@ private fun PickeCommentCardPreview() {
                 likeCount = 1340,
                 replyCount = 23,
                 menuItems = listOf(
-                    PickeMoreMenuItem(iconRes = R.drawable.ic_bell, textRes = R.string.comment_menu_report, onClick = {})
+                    PickeMoreMenuItem(
+                        iconRes = R.drawable.ic_bell,
+                        textRes = R.string.comment_menu_report,
+                        onClick = {})
                 ),
                 onClick = {},
                 onReadMoreClick = {},

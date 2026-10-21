@@ -240,7 +240,7 @@ private fun ControlSkipButton(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .clickable { onClick() },
+            .clickable(interactionSource = null, indication = null, onClick = onClick),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

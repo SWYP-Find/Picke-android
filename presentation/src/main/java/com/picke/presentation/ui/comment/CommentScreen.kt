@@ -39,13 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.comment.component.CommentInputField
 import com.picke.presentation.ui.comment.component.CommentItemCard
 import com.picke.presentation.ui.comment.component.CommentSkeleton
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.component.dialog.ReportReason
@@ -233,12 +233,14 @@ private fun CommentContent(
         },
         bottomBar = {
             val isEditing = uiState.editingCommentId != null || uiState.isEditingMainPerspective
-            val inputHint = if (isEditing) "수정할 내용을 입력해주세요..." else "댓글을 남겨보세요..."
+            val inputHint = stringResource(
+                if (isEditing) R.string.comment_input_hint_edit else R.string.comment_input_hint_reply
+            )
 
-            CommentInputField(
+            PickeCommentInput(
                 textFieldState = inputFieldState,
-                onSubmit = onSubmit,
                 hintText = inputHint,
+                onSubmit = onSubmit,
                 editingId = uiState.editingCommentId ?: uiState.targetId.takeIf { uiState.isEditingMainPerspective }
             )
         }

@@ -61,13 +61,13 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
-import com.picke.presentation.ui.perspective.component.PerspectiveInputField
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
 import com.picke.presentation.ui.perspective.component.PerspectiveListSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveTabBarSkeleton
@@ -225,10 +225,13 @@ fun PerspectiveContent(
         },
         bottomBar = {
             val isEditing = uiState.editingPerspectiveId != null
-            val inputHint = if (isEditing) "수정할 내용을 입력해주세요..." else "의견을 남겨보세요..."
+            val inputHint = stringResource(
+                if (isEditing) R.string.comment_input_hint_edit else R.string.comment_input_hint_perspective
+            )
 
-            PerspectiveInputField(
+            PickeCommentInput(
                 textFieldState = inputFieldState,
+                hintText = inputHint,
                 onSubmit = {
                     onSubmitPerspective(inputFieldState.text.toString()) {
                         inputFieldState.clearText()
@@ -236,7 +239,6 @@ fun PerspectiveContent(
                         scrollToTopTrigger++
                     }
                 },
-                hintText = inputHint,
                 editingId = uiState.editingPerspectiveId
             )
         }

@@ -163,12 +163,12 @@ fun SettingScreen(
 @Composable
 fun SettingMenuItem(
     title: String,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .clickable { onClick() }
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier

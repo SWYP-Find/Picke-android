@@ -255,7 +255,7 @@ private fun ControlSkipButton(
         Text(
             text = label,
             style = PickeTheme.typography.bodyXxsMedium,
-            color = PickeTheme.colors.textMuted,
+            color = PickeTheme.colors.textMuted
         )
     }
 }

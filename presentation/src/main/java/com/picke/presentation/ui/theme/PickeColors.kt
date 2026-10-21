@@ -127,7 +127,7 @@ data class PickeColors(
     val beige800: Color = BrandColorTokens.beige800,
     val beige900: Color = BrandColorTokens.beige900,
     val errorDefault: Color = BrandColorTokens.errorDefault,
-    val warningDefault: Color = BrandColorTokens.warningDefault,
+    val warningDefault: Color = BrandColorTokens.warningDefault
 )
 
 val LocalPickeColors = staticCompositionLocalOf { PickeColors() }

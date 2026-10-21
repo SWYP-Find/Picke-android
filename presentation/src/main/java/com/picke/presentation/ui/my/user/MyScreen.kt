@@ -162,7 +162,7 @@ fun MyScreen(
                     }
                 }
             )
-        },
+        }
     ) { innerPadding ->
         if (uiState.isLoading) {
             MySkeleton(

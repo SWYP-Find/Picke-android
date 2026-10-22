@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.my.setting.SettingViewModel
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
@@ -49,6 +51,7 @@ fun WithdrawScreen(
     modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val reasons = listOf(
         "자주 이용하지 않아요",
@@ -77,92 +80,105 @@ fun WithdrawScreen(
         }
     }
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = PickeTheme.colors.backgroundBeige,
-        bottomBar = {
-            Box(modifier = Modifier.navigationBarsPadding()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                ) {
-                    // 1. 제출하기 버튼
-                    Button(
-                        onClick = {
-                            if (selectedReason != null) {
-                                showWithdrawDialog = true
-                            } else {
-                                Toast.makeText(context, "탈퇴 사유를 선택해주세요.", Toast.LENGTH_SHORT).show()
-                            }
-                        },
+    Box(modifier = modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = PickeTheme.colors.backgroundBeige,
+            bottomBar = {
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.backgroundBeige)
+                            .fillMaxWidth()
+                            .height(80.dp)
                     ) {
-                        Text(
-                            text = "제출하기",
-                            color = PickeTheme.colors.primary800,
-                            style = PickeTheme.typography.headingSm
-                        )
+                        // 1. 제출하기 버튼
+                        Button(
+                            onClick = {
+                                if (selectedReason != null) {
+                                    showWithdrawDialog = true
+                                } else {
+                                    Toast.makeText(context, "탈퇴 사유를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.backgroundBeige)
+                        ) {
+                            Text(
+                                text = "제출하기",
+                                color = PickeTheme.colors.primary800,
+                                style = PickeTheme.typography.headingSm
+                            )
+                        }
+                        // 2. 돌아가기 버튼
+                        Button(
+                            onClick = onBackClick,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.primary500)
+                        ) {
+                            Text(
+                                text = "픽케로 다시 돌아가기",
+                                color = Color.White,
+                                style = PickeTheme.typography.headingSm
+                            )
+                        }
                     }
-                    // 2. 돌아가기 버튼
-                    Button(
-                        onClick = onBackClick,
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = PickeTheme.colors.primary500)
-                    ) {
-                        Text(
-                            text = "픽케로 다시 돌아가기",
-                            color = Color.White,
-                            style = PickeTheme.typography.headingSm
+                }
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ) {
+                Spacer(modifier = Modifier.height(60.dp))
+
+                // 타이틀
+                Text(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    text = "정말 떠나시나요? 아쉬워요 😢",
+                    style = PickeTheme.typography.headingMd,
+                    color = PickeTheme.colors.primary800
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 서브 타이틀
+                Text(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    text = "지금까지 픽케를 이용해주셔서 감사합니다.\n더 나은 서비스를 만들기 위해, 탈퇴 이유를 알려주세요.",
+                    color = PickeTheme.colors.gray400,
+                    style = PickeTheme.typography.bodySmMedium
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // 탈퇴 사유 리스트
+                LazyColumn {
+                    items(reasons) { reason ->
+                        WithdrawReasonItem(
+                            text = reason,
+                            isSelected = selectedReason == reason,
+                            onClick = { selectedReason = reason }
                         )
                     }
                 }
             }
         }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
-            Spacer(modifier = Modifier.height(60.dp))
 
-            // 타이틀
-            Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                text = "정말 떠나시나요? 아쉬워요 😢",
-                style = PickeTheme.typography.headingMd,
-                color = PickeTheme.colors.primary800
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 서브 타이틀
-            Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                text = "지금까지 픽케를 이용해주셔서 감사합니다.\n더 나은 서비스를 만들기 위해, 탈퇴 이유를 알려주세요.",
-                color = PickeTheme.colors.gray400,
-                style = PickeTheme.typography.bodySmMedium
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 탈퇴 사유 리스트
-            LazyColumn {
-                items(reasons) { reason ->
-                    WithdrawReasonItem(
-                        text = reason,
-                        isSelected = selectedReason == reason,
-                        onClick = { selectedReason = reason }
-                    )
-                }
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(enabled = false) {},
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = PickeTheme.colors.primary900)
             }
         }
     }

@@ -87,7 +87,7 @@ fun ScenarioScreen(
     onSelectOption: (String) -> Unit,
     onDismissFinalDialog: () -> Unit,
     onRestartCurrentAudio: () -> Unit,
-    onNextClick: () -> Unit,
+    onNextClick: () -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -148,7 +148,7 @@ fun ScenarioScreen(
                 onRewindClick = onRewindClick,
                 onForwardClick = onForwardClick,
                 onSpeedClick = onSpeedClick,
-                onReplayClick = onReplayClick,
+                onReplayClick = onReplayClick
             )
         }
     ) { innerPadding ->

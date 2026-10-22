@@ -4,6 +4,7 @@ import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
+import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -23,4 +24,7 @@ interface ClassroomApi {
     suspend fun registerClassTicket(
         @Body request: ClassTicketRegisterRequestDto
     ): BaseResponse<ClassTicketResponseDto>
+
+    @GET("/api/v1/classes")
+    suspend fun getMyClasses(): BaseResponse<List<MyClassResponseDto>>
 }

@@ -7,6 +7,7 @@ import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
+import com.picke.domain.feature.classroom.model.MyClassBoard
 import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import javax.inject.Inject
 
@@ -30,5 +31,11 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.registerClassTicket(ClassTicketRegisterRequestDto(code))
             .toResult("이용권을 등록하지 못했습니다.")
             .map { it.toDomainModel() }
+    }
+
+    override suspend fun getMyClasses(): Result<List<MyClassBoard>> = apiCall {
+        classroomApi.getMyClasses()
+            .toResult("내 클래스 목록을 불러오지 못했습니다.")
+            .map { classes -> classes.map { it.toDomainModel() } }
     }
 }

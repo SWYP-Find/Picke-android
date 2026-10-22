@@ -9,6 +9,15 @@ enum class ClassTicketStatus {
     EXPIRED
 }
 
+enum class ClassRole {
+    OWNER,
+    MEMBER;
+
+    companion object {
+        fun from(value: String): ClassRole = entries.find { it.name == value } ?: MEMBER
+    }
+}
+
 enum class ClassTicketDialog {
     NO_PERMISSION,
     UNREGISTERED,

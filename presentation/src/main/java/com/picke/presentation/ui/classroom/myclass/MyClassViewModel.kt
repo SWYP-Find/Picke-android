@@ -2,11 +2,12 @@ package com.picke.presentation.ui.classroom.myclass
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.ui.classroom.myclass.model.MyClassMutation
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.myclass.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyClassViewModel @Inject constructor() : ViewModel() {
+class MyClassViewModel @Inject constructor(
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MyClassUiState())
     val uiState: StateFlow<MyClassUiState> = _uiState.asStateFlow()
@@ -58,8 +61,14 @@ class MyClassViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchClasses() {
-        // TODO: API 연동 - 내 클래스 목록 조회로 교체
-        _uiState.update { reduce(it, MyClassMutation.ClassesLoaded(DummyData.dummyMyClasses)) }
+        viewModelScope.launch {
+            classroomUseCases.getMyClassesUseCase()
+                .onSuccess { classes ->
+                    val classUiModels = classes.map { it.toUiModel() }
+                    _uiState.update { reduce(it, MyClassMutation.ClassesLoaded(classUiModels)) }
+                }
+                .onFailure { sendEvent(MyClassUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun deleteClass(classId: Long) {

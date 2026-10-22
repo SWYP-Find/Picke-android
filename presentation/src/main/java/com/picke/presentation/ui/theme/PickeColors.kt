@@ -119,6 +119,7 @@ data class PickeColors(
     val gray600: Color = BrandColorTokens.gray600,
     val gray800: Color = BrandColorTokens.gray800,
     val gray900: Color = BrandColorTokens.gray900,
+    val beige50: Color = BrandColorTokens.beige50,
     val beige100: Color = BrandColorTokens.beige100,
     val beige300: Color = BrandColorTokens.beige300,
     val beige500: Color = BrandColorTokens.beige500,

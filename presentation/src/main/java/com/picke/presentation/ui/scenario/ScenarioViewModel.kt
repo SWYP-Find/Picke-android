@@ -45,12 +45,8 @@ class ScenarioViewModel @Inject constructor(
 
     init {
         audioPlayerManager.onPlaybackEnded = { handleNodeEnd() }
-        viewModelScope.launch {
-            audioPlayerManager.isPlaying.collect { isPlaying ->
-                _uiState.update { it.copy(isPlaying = isPlaying) }
-                if (isPlaying) startSync() else stopSync()
-            }
-        }
+        observePlayingState()
+        observePlaybackError()
     }
 
     fun loadScenario(battleId: String) {
@@ -70,6 +66,23 @@ class ScenarioViewModel @Inject constructor(
                     val firstNodeId = fullScenario?.startNodeId ?: return@onSuccess
                     loadNode(firstNodeId)
                 }
+        }
+    }
+
+    private fun observePlayingState() {
+        viewModelScope.launch {
+            audioPlayerManager.isPlaying.collect { isPlaying ->
+                _uiState.update { it.copy(isPlaying = isPlaying) }
+                if (isPlaying) startSync() else stopSync()
+            }
+        }
+    }
+
+    private fun observePlaybackError() {
+        viewModelScope.launch {
+            audioPlayerManager.hasPlaybackError.collect { hasError ->
+                _uiState.update { it.copy(showAudioError = hasError) }
+            }
         }
     }
 

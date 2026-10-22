@@ -126,6 +126,7 @@
     <string name="scenario_audio_pause">일시정지</string>
     <string name="scenario_audio_replay">다시듣기</string>
     <string name="scenario_audio_playback_speed">배속</string>
+    <string name="scenario_audio_load_error">오디오를 불러오는 중 문제가 발생했어요</string>
 
     <!-- 설정   -->
     <string name="setting_alarm_category_function">기능별 알림 설정</string>

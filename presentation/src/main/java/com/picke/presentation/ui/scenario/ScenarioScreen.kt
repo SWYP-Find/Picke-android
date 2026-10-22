@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +27,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.AudioPlayerBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeErrorBanner
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
@@ -150,75 +152,89 @@ fun ScenarioScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            state = listState,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = SpacingTokens.s16),
-            contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            itemsIndexed(allDisplayScripts) { index, script ->
-                val isNewSpeaker =
-                    index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
-                val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
-                val showAvatarAndName = isNewSpeaker || isNewNode
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = SpacingTokens.s16),
+                contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                itemsIndexed(allDisplayScripts) { index, script ->
+                    val isNewSpeaker =
+                        index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
+                    val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
+                    val showAvatarAndName = isNewSpeaker || isNewNode
 
-                val isPastScript = index < uiState.pastScripts.size
-                val currentAudioScriptIndex = index - uiState.pastScripts.size
+                    val isPastScript = index < uiState.pastScripts.size
+                    val currentAudioScriptIndex = index - uiState.pastScripts.size
 
-                if (showAvatarAndName && index > 0) {
-                    Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
-                }
-
-                ScenarioChatBubble(
-                    script = script,
-                    isActive = uiState.isPlaying && if (isPastScript) {
-                        index == uiState.activePastIndex
-                    } else {
-                        currentAudioScriptIndex == uiState.activeIndex
-                    },
-                    showAvatarAndName = showAvatarAndName,
-                    onClick = {
-                        if (!isPastScript && uiState.totalDurationMs > 0) {
-                            val targetRatio =
-                                script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
-                            onSeekToPosition(targetRatio)
-                        }
+                    if (showAvatarAndName && index > 0) {
+                        Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
                     }
+
+                    ScenarioChatBubble(
+                        script = script,
+                        isActive = uiState.isPlaying && if (isPastScript) {
+                            index == uiState.activePastIndex
+                        } else {
+                            currentAudioScriptIndex == uiState.activeIndex
+                        },
+                        showAvatarAndName = showAvatarAndName,
+                        onClick = {
+                            if (!isPastScript && uiState.totalDurationMs > 0) {
+                                val targetRatio =
+                                    script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
+                                onSeekToPosition(targetRatio)
+                            }
+                        }
+                    )
+
+                    val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
+                    if (pastChoice != null) {
+                        InteractiveOptionsUI(
+                            options = pastChoice.options,
+                            selectedNodeId = pastChoice.selectedNextNodeId,
+                            onOptionClick = {}
+                        )
+                    }
+                }
+
+                if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
+                    item {
+                        InteractiveOptionsUI(
+                            options = uiState.interactiveOptions,
+                            selectedNodeId = null,
+                            onOptionClick = onSelectOption
+                        )
+                    }
+                }
+                if (uiState.isReviewing) {
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        OptionConfirmButton(
+                            text = stringResource(R.string.scenario_go_to_final_vote),
+                            isEnabled = true,
+                            onClick = onNextClick
+                        )
+                    }
+                }
+
+            }
+
+            if (uiState.showAudioError) {
+                PickeErrorBanner(
+                    message = stringResource(R.string.scenario_audio_load_error),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = SpacingTokens.s16)
                 )
-
-                val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
-                if (pastChoice != null) {
-                    InteractiveOptionsUI(
-                        options = pastChoice.options,
-                        selectedNodeId = pastChoice.selectedNextNodeId,
-                        onOptionClick = {}
-                    )
-                }
             }
-
-            if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
-                item {
-                    InteractiveOptionsUI(
-                        options = uiState.interactiveOptions,
-                        selectedNodeId = null,
-                        onOptionClick = onSelectOption
-                    )
-                }
-            }
-            if (uiState.isReviewing) {
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    OptionConfirmButton(
-                        text = stringResource(R.string.scenario_go_to_final_vote),
-                        isEnabled = true,
-                        onClick = onNextClick
-                    )
-                }
-            }
-
         }
 
         if (uiState.showFinalVoteDialog) {

@@ -87,8 +87,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun fetchUnreadAlarmStatus() {
-        _uiState.update { it.copy(isAlarmStatusLoading = true) }
-
         viewModelScope.launch {
             alarmUseCases.getUnreadAlarmStatusUseCase()
                 .onSuccess { hasUnread ->

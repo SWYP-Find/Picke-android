@@ -6,6 +6,7 @@ import com.picke.domain.feature.scenario.usecase.ScenarioUseCases
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
+import com.picke.presentation.audio.AudioPlayerManager
 import com.picke.presentation.ui.component.AudioPlayerDefaults.PLAYBACK_SPEEDS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
@@ -45,10 +46,23 @@ class ScenarioViewModel @Inject constructor(
 
     init {
         audioPlayerManager.onPlaybackEnded = { handleNodeEnd() }
+        observePlayingState()
+        observePlaybackError()
+    }
+
+    private fun observePlayingState() {
         viewModelScope.launch {
             audioPlayerManager.isPlaying.collect { isPlaying ->
                 _uiState.update { it.copy(isPlaying = isPlaying) }
                 if (isPlaying) startSync() else stopSync()
+            }
+        }
+    }
+
+    private fun observePlaybackError() {
+        viewModelScope.launch {
+            audioPlayerManager.hasPlaybackError.collect { hasError ->
+                _uiState.update { it.copy(showAudioError = hasError) }
             }
         }
     }
@@ -71,6 +85,80 @@ class ScenarioViewModel @Inject constructor(
                     loadNode(firstNodeId)
                 }
         }
+    }
+
+    fun dismissFinalDialog() {
+        _uiState.update { it.copy(showFinalVoteDialog = false) }
+    }
+
+    fun restartCurrentAudio() {
+        val allScripts = _uiState.value.pastScripts + _uiState.value.scripts
+
+        _uiState.update {
+            it.copy(
+                showFinalVoteDialog = false,
+                isReviewing = true,
+                pastScripts = emptyList(),
+                scripts = allScripts,
+                maxRevealedIndex = allScripts.size - 1
+            )
+        }
+
+        seekAndPlay(0)
+    }
+
+    fun togglePlayPause() {
+        if (audioPlayerManager.isPlaying.value) pauseAudio() else playAudio()
+    }
+
+    fun onScreenStopped() {
+        pauseAudio()
+    }
+
+    fun seekRewind() {
+        seekAndPlay(maxOf(0, audioPlayerManager.currentPosition - SKIP_INTERVAL_MS))
+    }
+
+    fun seekToPosition(ratio: Float) {
+        val newPos = (_uiState.value.totalDurationMs * ratio).toLong()
+        val safePos =
+            minOf(newPos, _uiState.value.nodeEndTimeMs, _uiState.value.maxListenedPositionMs)
+        seekAndPlay(safePos)
+    }
+
+    fun seekForward() {
+        if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
+        val safePos = minOf(
+            audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
+            _uiState.value.nodeEndTimeMs
+        )
+        seekAndPlay(safePos)
+    }
+
+    fun cyclePlaybackSpeed() {
+        val nextIndex =
+            (PLAYBACK_SPEEDS.indexOf(_uiState.value.playbackSpeed) + 1).mod(PLAYBACK_SPEEDS.size)
+        val nextSpeed = PLAYBACK_SPEEDS[nextIndex]
+        _uiState.update { it.copy(playbackSpeed = nextSpeed) }
+        audioPlayerManager.setPlaybackSpeed(nextSpeed)
+    }
+
+    fun replayFromStart() {
+        seekAndPlay(0)
+    }
+
+    fun selectOption(nextNodeId: String) {
+        val currentOptions = _uiState.value.interactiveOptions
+        val totalScriptsSize = _uiState.value.pastScripts.size + _uiState.value.scripts.size
+
+        val newChoice = PastChoice(
+            scriptIndex = totalScriptsSize - 1,
+            options = currentOptions,
+            selectedNextNodeId = nextNodeId
+        )
+
+        _uiState.update { it.copy(pastChoices = it.pastChoices + newChoice) }
+        loadNode(nextNodeId)
     }
 
     private fun loadNode(nodeId: String) {
@@ -172,34 +260,6 @@ class ScenarioViewModel @Inject constructor(
         }
     }
 
-    fun dismissFinalDialog() {
-        _uiState.update { it.copy(showFinalVoteDialog = false) }
-    }
-
-    fun restartCurrentAudio() {
-        val allScripts = _uiState.value.pastScripts + _uiState.value.scripts
-
-        _uiState.update {
-            it.copy(
-                showFinalVoteDialog = false,
-                isReviewing = true,
-                pastScripts = emptyList(),
-                scripts = allScripts,
-                maxRevealedIndex = allScripts.size - 1
-            )
-        }
-
-        seekAndPlay(0)
-    }
-
-    fun togglePlayPause() {
-        if (audioPlayerManager.isPlaying.value) pauseAudio() else playAudio()
-    }
-
-    fun onScreenStopped() {
-        pauseAudio()
-    }
-
     private fun playAudio() {
         audioPlayerManager.play()
     }
@@ -227,52 +287,6 @@ class ScenarioViewModel @Inject constructor(
         audioPlayerManager.seekTo(positionMs)
         updateSync(positionMs)
         playAudio()
-    }
-
-    fun seekRewind() {
-        seekAndPlay(maxOf(0, audioPlayerManager.currentPosition - SKIP_INTERVAL_MS))
-    }
-
-    fun seekToPosition(ratio: Float) {
-        val newPos = (_uiState.value.totalDurationMs * ratio).toLong()
-        val safePos =
-            minOf(newPos, _uiState.value.nodeEndTimeMs, _uiState.value.maxListenedPositionMs)
-        seekAndPlay(safePos)
-    }
-
-    fun seekForward() {
-        if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
-        val safePos = minOf(
-            audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
-            _uiState.value.nodeEndTimeMs
-        )
-        seekAndPlay(safePos)
-    }
-
-    fun cyclePlaybackSpeed() {
-        val nextIndex =
-            (PLAYBACK_SPEEDS.indexOf(_uiState.value.playbackSpeed) + 1).mod(PLAYBACK_SPEEDS.size)
-        val nextSpeed = PLAYBACK_SPEEDS[nextIndex]
-        _uiState.update { it.copy(playbackSpeed = nextSpeed) }
-        audioPlayerManager.setPlaybackSpeed(nextSpeed)
-    }
-
-    fun replayFromStart() {
-        seekAndPlay(0)
-    }
-
-    fun selectOption(nextNodeId: String) {
-        val currentOptions = _uiState.value.interactiveOptions
-        val totalScriptsSize = _uiState.value.pastScripts.size + _uiState.value.scripts.size
-
-        val newChoice = PastChoice(
-            scriptIndex = totalScriptsSize - 1,
-            options = currentOptions,
-            selectedNextNodeId = nextNodeId
-        )
-
-        _uiState.update { it.copy(pastChoices = it.pastChoices + newChoice) }
-        loadNode(nextNodeId)
     }
 
     override fun onCleared() {

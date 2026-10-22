@@ -4,13 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.presentation.AppRoute
+import com.picke.presentation.audio.AudioPlayerManager
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewMutation
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiEvent
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
-import com.picke.presentation.ui.scenario.AudioPlayerManager
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.splitScriptsBySentence
 import dagger.hilt.android.lifecycle.HiltViewModel

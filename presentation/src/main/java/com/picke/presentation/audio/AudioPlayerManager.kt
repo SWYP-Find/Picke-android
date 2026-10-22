@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.scenario
+package com.picke.presentation.audio
 
 import android.content.Context
 import androidx.media3.common.AudioAttributes
@@ -11,6 +11,7 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,12 +27,16 @@ class AudioPlayerManager @Inject constructor(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
+    private val _hasPlaybackError = MutableStateFlow(false)
+    val hasPlaybackError: StateFlow<Boolean> = _hasPlaybackError.asStateFlow()
+
     private val playerListener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             _isPlaying.value = player.playWhenReady &&
                     player.playbackState != Player.STATE_IDLE &&
                     player.playbackState != Player.STATE_ENDED &&
                     player.playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE
+            if (_isPlaying.value) _hasPlaybackError.value = false
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
@@ -41,7 +46,10 @@ class AudioPlayerManager @Inject constructor(
         }
 
         override fun onPlayerError(error: PlaybackException) {
-            //
+            _hasPlaybackError.value = true
+            if (error.errorCode !in PlaybackException.ERROR_CODE_IO_UNSPECIFIED..<PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED) {
+                Sentry.captureException(error)
+            }
         }
     }
 

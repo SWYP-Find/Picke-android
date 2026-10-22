@@ -7,4 +7,6 @@ sealed interface TicketUiEvent {
     data object NavigateToRegister : TicketUiEvent
 
     data object ReplaceWithRegister : TicketUiEvent
+
+    data object ShowLoadFailedToast : TicketUiEvent
 }

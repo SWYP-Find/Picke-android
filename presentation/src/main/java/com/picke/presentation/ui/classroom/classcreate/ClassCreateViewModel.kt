@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classcreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMutation
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
@@ -9,6 +10,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiEvent
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.util.DummyData
+import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +20,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class ClassCreateViewModel @Inject constructor() : ViewModel() {
+class ClassCreateViewModel @Inject constructor(
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassCreateUiState())
     val uiState: StateFlow<ClassCreateUiState> = _uiState.asStateFlow()
@@ -73,9 +76,14 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchTicketEndDate() {
-        // TODO: API 연동 - 내 이용권 종료일 조회로 교체
-        _uiState.update {
-            reduce(it, ClassCreateMutation.TicketEndDateLoaded(DummyData.dummyRegisteredTicket.endDate))
+        viewModelScope.launch {
+            classroomUseCases.getMyClassTicketUseCase()
+                .onSuccess { ticket ->
+                    val ticketEndDate = parseServerDateTime(ticket.expiresAt)?.toLocalDate()
+                    _uiState.update {
+                        reduce(it, ClassCreateMutation.TicketEndDateLoaded(ticketEndDate))
+                    }
+                }
         }
     }
 
@@ -98,11 +106,17 @@ class ClassCreateViewModel @Inject constructor() : ViewModel() {
         val state = _uiState.value
         val deadline = state.deadline
         val isClassNameInvalid = state.className.isBlank()
-        val isDeadlineOutOfRange = state.isDeadlineEnabled && deadline != null &&
-            (deadline.isBefore(LocalDateTime.now()) || deadline.toLocalDate().isAfter(state.ticketEndDate ?: LocalDate.MAX))
+        val ticketEndDate = state.ticketEndDate
+        val isDeadlinePassed = deadline != null && deadline.isBefore(LocalDateTime.now())
+        val isAfterTicketEnd = deadline != null && ticketEndDate != null
+                && deadline.toLocalDate().isAfter(ticketEndDate)
+        val isDeadlineOutOfRange = state.isDeadlineEnabled && (isDeadlinePassed || isAfterTicketEnd)
         if (isClassNameInvalid || isDeadlineOutOfRange) {
             _uiState.update {
-                reduce(it, ClassCreateMutation.SettingInvalid(isClassNameInvalid, isDeadlineOutOfRange))
+                reduce(
+                    it,
+                    ClassCreateMutation.SettingInvalid(isClassNameInvalid, isDeadlineOutOfRange)
+                )
             }
             return
         }

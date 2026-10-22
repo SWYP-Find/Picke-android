@@ -4,6 +4,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import com.picke.domain.feature.auth.repository.AuthRepository
 import com.picke.domain.feature.battle.repository.BattleRepository
+import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import com.picke.domain.feature.comment.repository.CommentRepository
 import com.picke.domain.feature.device.repository.DeviceRepository
 import com.picke.domain.feature.explore.repository.ExploreRepository
@@ -35,6 +36,8 @@ import com.picke.domain.feature.auth.usecase.WithdrawUseCase
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
 import com.picke.domain.feature.comment.usecase.DeleteCommentUseCase
@@ -156,6 +159,15 @@ object UseCaseModule {
         return BattleUseCases(
             getBattleDetailUseCase = GetBattleDetailUseCase(battleRepository),
             getBattleStatusUseCase = GetBattleStatusUseCase(battleRepository)
+        )
+    }
+
+    @Provides
+    fun provideClassroomUseCases(
+        classroomRepository: ClassroomRepository
+    ): ClassroomUseCases {
+        return ClassroomUseCases(
+            getMyClassTicketUseCase = GetMyClassTicketUseCase(classroomRepository)
         )
     }
 

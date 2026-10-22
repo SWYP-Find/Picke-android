@@ -39,7 +39,7 @@ fun String.toRelativeTimeText(): String {
     }
 }
 
-private fun parseServerDateTime(raw: String): LocalDateTime? {
+internal fun parseServerDateTime(raw: String): LocalDateTime? {
     if (raw.isBlank()) return null
     return try {
         LocalDateTime.parse(raw)

@@ -12,7 +12,7 @@ sealed interface ClassUiAction {
 
     data object MyClassClick : SideEffectOnly
 
-    data object CreateClick : ClassUiAction
+    data object CreateClick : SideEffectOnly
 
     data object TicketClick : SideEffectOnly
 

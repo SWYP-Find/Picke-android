@@ -26,6 +26,9 @@
     <string name="share_dialog_instagram">인스타그램</string>
     <string name="share_dialog_copy_link">링크 복사</string>
 
+    <!-- 토스트 -->
+    <string name="toast_load_failed">정보를 불러오지 못했어요</string>
+
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
     <string name="my_charge_free">무료 충전</string>
@@ -48,6 +51,8 @@
     <string name="my_best">BEST</string>
 
     <!-- 이용권 -->
+    <string name="ticket_name">클래스 %1$d인 이용권</string>
+    <string name="ticket_description">함께 생각을 나누는 모임을 시작하세요</string>
     <string name="ticket_info_member">참여 인원</string>
     <string name="ticket_info_member_value">클래스당 최대 %1$d명</string>
     <string name="ticket_info_period">이용 기간</string>

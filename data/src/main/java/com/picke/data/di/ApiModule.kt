@@ -4,6 +4,7 @@ import com.picke.data.feature.alarm.datasource.AlarmApi
 import com.picke.data.feature.attendance.datasource.AttendanceApi
 import com.picke.data.feature.auth.datasource.AuthApi
 import com.picke.data.feature.battle.datasource.BattleApi
+import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.comment.datasource.CommentApi
 import com.picke.data.feature.device.datasource.DeviceApi
 import com.picke.data.feature.explore.datasource.ExploreApi
@@ -127,5 +128,11 @@ object ApiModule {
     @Singleton
     fun provideAttendanceApi(retrofit: Retrofit): AttendanceApi {
         return retrofit.create(AttendanceApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClassroomApi(retrofit: Retrofit): ClassroomApi {
+        return retrofit.create(ClassroomApi::class.java)
     }
 }

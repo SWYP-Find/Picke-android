@@ -71,14 +71,14 @@ fun TicketCard(
                     tint = PickeTheme.colors.textDefault
                 )
                 Text(
-                    text = ticket.name,
+                    text = stringResource(R.string.ticket_name, ticket.maxMemberCount),
                     color = PickeTheme.colors.textDefault,
                     style = PickeTheme.typography.bodyLgBold
                 )
             }
 
             Text(
-                text = ticket.description,
+                text = stringResource(R.string.ticket_description),
                 color = PickeTheme.colors.textPrimary,
                 style = PickeTheme.typography.bodyXxsRegular
             )

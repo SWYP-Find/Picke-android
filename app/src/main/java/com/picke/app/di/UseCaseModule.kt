@@ -38,6 +38,8 @@ import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
 import com.picke.domain.feature.comment.usecase.DeleteCommentUseCase
@@ -167,7 +169,9 @@ object UseCaseModule {
         classroomRepository: ClassroomRepository
     ): ClassroomUseCases {
         return ClassroomUseCases(
-            getMyClassTicketUseCase = GetMyClassTicketUseCase(classroomRepository)
+            getMyClassTicketUseCase = GetMyClassTicketUseCase(classroomRepository),
+            previewClassTicketUseCase = PreviewClassTicketUseCase(classroomRepository),
+            registerClassTicketUseCase = RegisterClassTicketUseCase(classroomRepository)
         )
     }
 

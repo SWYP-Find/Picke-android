@@ -1158,7 +1158,6 @@ object DummyData {
     val dummyParticipantClassMembers = dummyClassMembers.map { member -> member.copy(isMe = member.memberId == 3L) }
 
     val dummyTicket = TicketUiModel(
-        ticketId = 1L,
         maxMemberCount = 30,
         durationMonths = 6
     )

@@ -35,6 +35,8 @@ internal fun reduce(
             step = TicketRegisterStep.CONFIRM,
             ticket = mutation.ticket
         )
+
+        is TicketRegisterMutation.RequestFailed -> state.copy(dialog = mutation.dialog)
     }
 
 private fun String.toTicketCode(): String =

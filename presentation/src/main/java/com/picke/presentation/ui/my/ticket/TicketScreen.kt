@@ -77,14 +77,14 @@ private fun TicketContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
-            title = stringResource(R.string.ticket_title),
-            onBackClick = { onAction(TicketUiAction.BackClick) },
-            backgroundColor = PickeTheme.colors.backgroundBeige,
-            titleColor = PickeTheme.colors.textSubtler
-        )
-
         if (!uiState.isLoading) {
+            CustomTopAppBar(
+                title = stringResource(R.string.ticket_title),
+                onBackClick = { onAction(TicketUiAction.BackClick) },
+                backgroundColor = PickeTheme.colors.backgroundBeige,
+                titleColor = PickeTheme.colors.textSubtler
+            )
+
             Column(
                 modifier = Modifier
                     .weight(1f)

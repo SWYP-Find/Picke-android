@@ -181,6 +181,11 @@ fun MainScreen(
                         mainNavController.navigate(AppRoute.TicketRegisterComplete.createRoute(ticketId)) {
                             popUpTo(AppRoute.TicketRegister.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToTicket = {
+                        mainNavController.navigate(AppRoute.Ticket.route) {
+                            popUpTo(BottomNavItem.My.route)
+                        }
                     }
                 )
             }

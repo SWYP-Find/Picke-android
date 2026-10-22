@@ -9,3 +9,10 @@ data class ClassTicketBoard(
     val remainingDays: Int,
     val readGraceEndsAt: String
 )
+
+data class ClassTicketPreviewBoard(
+    val capacity: Int,
+    val registerBy: String,
+    val usageMonths: Int,
+    val registeredByMe: Boolean
+)

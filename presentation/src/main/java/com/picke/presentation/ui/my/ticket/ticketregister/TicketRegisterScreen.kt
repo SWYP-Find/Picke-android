@@ -35,6 +35,7 @@ import com.picke.presentation.util.DummyData
 fun TicketRegisterScreen(
     onBackClick: () -> Unit,
     onNavigateToRegisterComplete: (ticketId: Long) -> Unit,
+    onNavigateToTicket: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TicketRegisterViewModel = hiltViewModel()
 ) {
@@ -49,6 +50,8 @@ fun TicketRegisterScreen(
 
                 is TicketRegisterUiEvent.NavigateToRegisterComplete ->
                     onNavigateToRegisterComplete(event.ticketId)
+
+                TicketRegisterUiEvent.NavigateToTicket -> onNavigateToTicket()
             }
         }
     }

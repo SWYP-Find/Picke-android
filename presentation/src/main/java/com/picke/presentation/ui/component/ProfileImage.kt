@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -16,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -38,19 +37,11 @@ fun ProfileImage(
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        SubcomposeAsyncImage(
+        AsyncImage(
             model = model,
             contentDescription = null,
             modifier = Modifier.size(size * IMAGE_SIZE_RATIO),
-            contentScale = ContentScale.Fit,
-            loading = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .shimmer()
-                )
-            }
+            contentScale = ContentScale.Fit
         )
     }
 }

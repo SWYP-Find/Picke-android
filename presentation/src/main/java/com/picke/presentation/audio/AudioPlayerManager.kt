@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.scenario
+package com.picke.presentation.audio
 
 import android.content.Context
 import androidx.media3.common.AudioAttributes

@@ -1,3 +1,3 @@
 package com.picke.domain.common.exception
 
-class ApiErrorException(message: String) : Exception(message)
+class ApiErrorException(message: String, val code: String? = null) : Exception(message)

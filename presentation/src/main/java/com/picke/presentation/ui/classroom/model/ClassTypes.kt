@@ -1,12 +1,14 @@
 package com.picke.presentation.ui.classroom.model
 
-import com.picke.domain.feature.classroom.model.ClassTicketBoard
-
 enum class ClassTicketStatus {
     NONE,
     UNREGISTERED,
     ACTIVE,
-    EXPIRED
+    EXPIRED;
+
+    companion object {
+        fun from(value: String): ClassTicketStatus = entries.find { it.name == value } ?: EXPIRED
+    }
 }
 
 enum class ClassRole {
@@ -23,6 +25,3 @@ enum class ClassTicketDialog {
     UNREGISTERED,
     EXPIRED
 }
-
-internal fun ClassTicketBoard.toClassTicketStatus(): ClassTicketStatus =
-    if (status == "ACTIVE") ClassTicketStatus.ACTIVE else ClassTicketStatus.EXPIRED

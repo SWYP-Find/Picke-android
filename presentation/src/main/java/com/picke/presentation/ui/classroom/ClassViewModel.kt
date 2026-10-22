@@ -10,7 +10,6 @@ import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
-import com.picke.presentation.ui.classroom.model.toClassTicketStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -69,7 +68,7 @@ class ClassViewModel @Inject constructor(
         ticketCheckJob = viewModelScope.launch {
             classroomUseCases.getMyClassTicketUseCase()
                 .onSuccess { ticket ->
-                    applyTicketStatus(ticket.toClassTicketStatus())
+                    applyTicketStatus(ClassTicketStatus.from(ticket.status))
                 }
                 .onFailure { exception ->
                     if ((exception as? ApiErrorException)?.code == ClassErrorCode.TICKET_404) {

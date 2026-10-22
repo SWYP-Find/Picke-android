@@ -6,7 +6,6 @@ import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.classroom.model.ClassTicketStatus
-import com.picke.presentation.ui.classroom.model.toClassTicketStatus
 import com.picke.presentation.ui.my.ticket.model.TicketMutation
 import com.picke.presentation.ui.my.ticket.model.TicketUiAction
 import com.picke.presentation.ui.my.ticket.model.TicketUiEvent
@@ -54,7 +53,7 @@ class TicketViewModel @Inject constructor(
         viewModelScope.launch {
             classroomUseCases.getMyClassTicketUseCase()
                 .onSuccess { ticket ->
-                    if (ticket.toClassTicketStatus() == ClassTicketStatus.ACTIVE) {
+                    if (ClassTicketStatus.from(ticket.status) == ClassTicketStatus.ACTIVE) {
                         _uiState.update {
                             reduce(it, TicketMutation.TicketsLoaded(listOf(ticket.toUiModel())))
                         }

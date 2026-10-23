@@ -14,4 +14,6 @@ internal sealed interface ClassDetailMutation {
     ) : ClassDetailMutation
 
     data class BattleLoaded(val battle: ClassBattleUiModel) : ClassDetailMutation
+
+    data object RequestFailed : ClassDetailMutation
 }

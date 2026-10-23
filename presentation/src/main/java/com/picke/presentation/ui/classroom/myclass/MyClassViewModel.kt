@@ -57,7 +57,7 @@ class MyClassViewModel @Inject constructor(
                 sendEvent(MyClassUiEvent.NavigateToShare(classId))
             }
 
-            MyClassUiAction.DeleteConfirm -> state.managingClassId?.let(::deleteClass)
+            MyClassUiAction.DeleteConfirm -> if (!state.isRequesting) state.managingClassId?.let(::deleteClass)
             MyClassUiAction.LeaveConfirm -> state.managingClassId?.let(::leaveClass)
             is MyClassUiAction.StateOnly -> Unit
         }
@@ -95,7 +95,10 @@ class MyClassViewModel @Inject constructor(
         viewModelScope.launch {
             classroomUseCases.deleteClassUseCase(classId)
                 .onSuccess { _uiState.update { reduce(it, MyClassMutation.ClassDeleted(classId)) } }
-                .onFailure { sendEvent(MyClassUiEvent.ShowActionFailedToast) }
+                .onFailure {
+                    _uiState.update { reduce(it, MyClassMutation.RequestFailed) }
+                    sendEvent(MyClassUiEvent.ShowActionFailedToast)
+                }
         }
     }
 

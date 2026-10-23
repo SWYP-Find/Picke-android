@@ -6,7 +6,8 @@ data class MyClassUiState(
     val classes: List<MyClassUiModel> = emptyList(),
     val managingClassId: Long? = null,
     val isDeleteDialogVisible: Boolean = false,
-    val isLeaveDialogVisible: Boolean = false
+    val isLeaveDialogVisible: Boolean = false,
+    val isRequesting: Boolean = false
 ) {
     val managingClass: MyClassUiModel?
         get() = classes.firstOrNull { it.id == managingClassId }

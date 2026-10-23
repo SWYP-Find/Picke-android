@@ -9,4 +9,6 @@ internal sealed interface MyClassMutation {
     data class ClassLeft(val classId: Long) : MyClassMutation
 
     data class ClassDeleted(val classId: Long) : MyClassMutation
+
+    data object RequestFailed : MyClassMutation
 }

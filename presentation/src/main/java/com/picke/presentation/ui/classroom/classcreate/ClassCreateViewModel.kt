@@ -3,12 +3,15 @@ package com.picke.presentation.ui.classroom.classcreate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.explore.usecase.ExploreUseCases
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMutation
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiEvent
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
+import com.picke.presentation.ui.classroom.model.toClassBattleUiModel
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassCreateViewModel @Inject constructor(
-    private val classroomUseCases: ClassroomUseCases
+    private val classroomUseCases: ClassroomUseCases,
+    private val exploreUseCases: ExploreUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassCreateUiState())
@@ -88,13 +92,37 @@ class ClassCreateViewModel @Inject constructor(
     }
 
     private fun fetchRecommendedBattles() {
-        // TODO: API 연동 - 조건 기반 추천 배틀 / AI 질문 생성으로 교체, 실패 시 BATTLE_SEARCH_FAILED / TOPIC_GENERATION_FAILED로 RequestFailed 반영
-        val battles = if (_uiState.value.method == ClassCreateMethod.AI_TOPIC) {
-            DummyData.dummyClassAiQuestions
-        } else {
-            DummyData.dummyClassBattles
+        if (_uiState.value.method == ClassCreateMethod.AI_TOPIC) {
+            // TODO: API 연동 - AI 질문 생성으로 교체, 실패 시 TOPIC_GENERATION_FAILED로 RequestFailed 반영
+            _uiState.update {
+                reduce(
+                    it,
+                    ClassCreateMutation.BattlesLoaded(DummyData.dummyClassAiQuestions)
+                )
+            }
+            return
         }
-        _uiState.update { reduce(it, ClassCreateMutation.BattlesLoaded(battles)) }
+        viewModelScope.launch {
+            // TODO: API 연동 - 클래스 배틀 추천 API(GET /class-battle-recommendations)가 배포되면 조건 기반 추천으로 교체
+            exploreUseCases.searchBattlesUseCase(
+                category = null,
+                sort = RECOMMENDED_BATTLE_SORT,
+                offset = null,
+                size = RECOMMENDED_BATTLE_COUNT
+            )
+                .onSuccess { page ->
+                    val battles = page.items.map { it.toClassBattleUiModel() }
+                    _uiState.update { reduce(it, ClassCreateMutation.BattlesLoaded(battles)) }
+                }
+                .onFailure {
+                    _uiState.update {
+                        reduce(
+                            it,
+                            ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.BATTLE_SEARCH_FAILED)
+                        )
+                    }
+                }
+        }
     }
 
     private fun resetDeadline() {
@@ -123,5 +151,10 @@ class ClassCreateViewModel @Inject constructor(
 
         // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동, 실패 시 CLASS_CREATION_FAILED로 RequestFailed 반영
         sendEvent(ClassCreateUiEvent.NavigateToShare(DummyData.dummyMyClasses.first().id))
+    }
+
+    companion object {
+        private const val RECOMMENDED_BATTLE_SORT = "POPULAR"
+        private const val RECOMMENDED_BATTLE_COUNT = 3
     }
 }

@@ -6,6 +6,7 @@ import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
+import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
@@ -64,4 +65,9 @@ interface ClassroomApi {
     suspend fun joinClass(
         @Body request: ClassJoinRequestDto
     ): BaseResponse<ClassDetailResponseDto>
+
+    @GET("/api/v1/classes/{classId}/members")
+    suspend fun getClassMembers(
+        @Path("classId") classId: Long
+    ): BaseResponse<List<ClassMemberResponseDto>>
 }

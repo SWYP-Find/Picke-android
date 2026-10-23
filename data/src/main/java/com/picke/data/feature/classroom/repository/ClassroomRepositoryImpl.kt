@@ -11,6 +11,7 @@ import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
+import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
@@ -85,5 +86,11 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.joinClass(ClassJoinRequestDto(inviteCode, displayName))
             .toResult("클래스에 참여하지 못했습니다.")
             .map { it.toDomainModel() }
+    }
+
+    override suspend fun getClassMembers(classId: Long): Result<List<ClassMemberBoard>> = apiCall {
+        classroomApi.getClassMembers(classId)
+            .toResult("클래스 명단을 불러오지 못했습니다.")
+            .map { members -> members.map { it.toDomainModel() } }
     }
 }

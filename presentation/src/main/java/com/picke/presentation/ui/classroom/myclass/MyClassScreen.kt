@@ -47,6 +47,7 @@ fun MyClassScreen(
     val context = LocalContext.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -59,6 +60,9 @@ fun MyClassScreen(
 
                 MyClassUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                MyClassUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

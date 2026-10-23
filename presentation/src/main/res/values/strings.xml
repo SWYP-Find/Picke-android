@@ -28,6 +28,7 @@
 
     <!-- 토스트 -->
     <string name="toast_load_failed">정보를 불러오지 못했어요</string>
+    <string name="toast_action_failed">요청을 처리하지 못했어요</string>
 
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>

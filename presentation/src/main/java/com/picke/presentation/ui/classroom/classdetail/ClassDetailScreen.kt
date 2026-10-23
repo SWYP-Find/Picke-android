@@ -50,6 +50,7 @@ fun ClassDetailScreen(
     onBattleClick: (classId: Long) -> Unit,
     onShareCodeClick: (classId: Long) -> Unit,
     onResultClick: (classId: Long) -> Unit,
+    onClassRemoved: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassDetailViewModel = hiltViewModel()
 ) {
@@ -59,6 +60,7 @@ fun ClassDetailScreen(
 
     val deadlinePassedMessage = stringResource(R.string.class_detail_deadline_passed)
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -76,11 +78,16 @@ fun ClassDetailScreen(
                 // TODO: 클래스 정보 수정 화면이 생기면 이동 연결
                 is ClassDetailUiEvent.NavigateToEdit -> Unit
 
+                ClassDetailUiEvent.NavigateBackAfterClassRemoved -> onClassRemoved()
+
                 ClassDetailUiEvent.ShowDeadlinePassedToast ->
                     Toast.makeText(context, deadlinePassedMessage, Toast.LENGTH_SHORT).show()
 
                 ClassDetailUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDetailUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

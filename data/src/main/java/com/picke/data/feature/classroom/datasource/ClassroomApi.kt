@@ -9,6 +9,7 @@ import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -46,4 +47,9 @@ interface ClassroomApi {
     suspend fun getClassBattle(
         @Path("classId") classId: Long
     ): BaseResponse<ClassBattleDetailResponseDto>
+
+    @DELETE("/api/v1/classes/{classId}")
+    suspend fun deleteClass(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
 }

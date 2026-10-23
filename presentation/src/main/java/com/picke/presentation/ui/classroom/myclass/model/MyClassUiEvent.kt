@@ -9,4 +9,6 @@ sealed interface MyClassUiEvent {
     data class NavigateToShare(val classId: Long) : MyClassUiEvent
 
     data object ShowLoadFailedToast : MyClassUiEvent
+
+    data object ShowActionFailedToast : MyClassUiEvent
 }

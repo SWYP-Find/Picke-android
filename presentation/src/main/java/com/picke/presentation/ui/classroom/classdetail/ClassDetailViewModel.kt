@@ -109,8 +109,11 @@ class ClassDetailViewModel @Inject constructor(
     }
 
     private fun deleteClass() {
-        // TODO: API 연동 - 클래스 삭제 요청 성공 시 이동
-        sendEvent(ClassDetailUiEvent.NavigateBack)
+        viewModelScope.launch {
+            classroomUseCases.deleteClassUseCase(_uiState.value.classId)
+                .onSuccess { sendEvent(ClassDetailUiEvent.NavigateBackAfterClassRemoved) }
+                .onFailure { sendEvent(ClassDetailUiEvent.ShowActionFailedToast) }
+        }
     }
 
     private fun leaveClass() {

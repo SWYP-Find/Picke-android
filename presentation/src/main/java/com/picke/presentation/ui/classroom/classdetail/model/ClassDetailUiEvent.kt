@@ -14,7 +14,11 @@ sealed interface ClassDetailUiEvent {
 
     data class NavigateToEdit(val classId: Long) : ClassDetailUiEvent
 
+    data object NavigateBackAfterClassRemoved : ClassDetailUiEvent
+
     data object ShowDeadlinePassedToast : ClassDetailUiEvent
 
     data object ShowLoadFailedToast : ClassDetailUiEvent
+
+    data object ShowActionFailedToast : ClassDetailUiEvent
 }

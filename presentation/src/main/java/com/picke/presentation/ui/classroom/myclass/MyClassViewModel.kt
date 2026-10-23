@@ -1,8 +1,10 @@
 package com.picke.presentation.ui.classroom.myclass
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.myclass.model.MyClassMutation
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
@@ -14,6 +16,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyClassViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
@@ -31,6 +37,7 @@ class MyClassViewModel @Inject constructor(
     val uiEvent: Flow<MyClassUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
+        observeClassChanged()
         fetchClasses()
     }
 
@@ -60,6 +67,16 @@ class MyClassViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
+    private fun observeClassChanged() {
+        savedStateHandle.getStateFlow(AppRoute.RESULT_CLASS_CHANGED, false)
+            .filter { it }
+            .onEach {
+                savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
+                fetchClasses()
+            }
+            .launchIn(viewModelScope)
+    }
+
     private fun fetchClasses() {
         viewModelScope.launch {
             classroomUseCases.getMyClassesUseCase()
@@ -75,8 +92,11 @@ class MyClassViewModel @Inject constructor(
     }
 
     private fun deleteClass(classId: Long) {
-        // TODO: API 연동 - 클래스 삭제 요청 성공 시 반영
-        _uiState.update { reduce(it, MyClassMutation.ClassDeleted(classId)) }
+        viewModelScope.launch {
+            classroomUseCases.deleteClassUseCase(classId)
+                .onSuccess { _uiState.update { reduce(it, MyClassMutation.ClassDeleted(classId)) } }
+                .onFailure { sendEvent(MyClassUiEvent.ShowActionFailedToast) }
+        }
     }
 
     private fun leaveClass(classId: Long) {

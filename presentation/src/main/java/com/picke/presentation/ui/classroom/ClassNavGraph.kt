@@ -188,6 +188,10 @@ fun NavGraphBuilder.classGraph(
                 onResultClick = { classId ->
                     navController.navigate(AppRoute.ClassResult.createRoute(classId))
                 },
+                onClassRemoved = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(AppRoute.RESULT_CLASS_CHANGED, true)
+                    navController.popBackStack()
+                },
                 modifier = contentModifier
             )
         }

@@ -1,6 +1,7 @@
 package com.picke.data.feature.classroom.repository
 
 import com.picke.data.common.model.toResult
+import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
@@ -65,5 +66,10 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.getClassBattle(classId)
             .toResult("클래스 배틀을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
+    }
+
+    override suspend fun deleteClass(classId: Long): Result<Unit> = apiCall {
+        classroomApi.deleteClass(classId)
+            .toUnitResult("클래스를 삭제하지 못했습니다.")
     }
 }

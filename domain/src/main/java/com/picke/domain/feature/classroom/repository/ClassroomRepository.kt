@@ -21,4 +21,5 @@ interface ClassroomRepository {
 
     suspend fun getClassDetail(classId: Long): Result<ClassDetailBoard>
     suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard>
+    suspend fun deleteClass(classId: Long): Result<Unit>
 }

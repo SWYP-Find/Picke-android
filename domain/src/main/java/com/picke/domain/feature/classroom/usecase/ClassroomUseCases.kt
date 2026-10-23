@@ -7,5 +7,6 @@ data class ClassroomUseCases(
     val getMyClassesUseCase: GetMyClassesUseCase,
     val createClassUseCase: CreateClassUseCase,
     val getClassDetailUseCase: GetClassDetailUseCase,
-    val getClassBattleUseCase: GetClassBattleUseCase
+    val getClassBattleUseCase: GetClassBattleUseCase,
+    val deleteClassUseCase: DeleteClassUseCase
 )

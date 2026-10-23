@@ -14,3 +14,18 @@ data class MyClassBoard(
     val closed: Boolean,
     val createdAt: String
 )
+
+data class ClassDetailBoard(
+    val classId: Long,
+    val name: String,
+    val inviteCode: String,
+    val myRole: String,
+    val battleId: Long,
+    val battleType: String,
+    val memberCount: Int,
+    val capacity: Int,
+    val closeAt: String,
+    val closed: Boolean,
+    val commentRequired: Boolean,
+    val ownerParticipates: Boolean
+)

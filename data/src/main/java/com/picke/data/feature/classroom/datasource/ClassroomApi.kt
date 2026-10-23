@@ -1,6 +1,8 @@
 package com.picke.data.feature.classroom.datasource
 
 import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
@@ -27,4 +29,9 @@ interface ClassroomApi {
 
     @GET("/api/v1/classes")
     suspend fun getMyClasses(): BaseResponse<List<MyClassResponseDto>>
+
+    @POST("/api/v1/classes")
+    suspend fun createClass(
+        @Body request: ClassCreateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
 }

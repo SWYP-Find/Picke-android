@@ -3,8 +3,10 @@ package com.picke.data.feature.classroom.repository
 import com.picke.data.common.model.toResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
+import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
+import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
@@ -37,5 +39,18 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.getMyClasses()
             .toResult("내 클래스 목록을 불러오지 못했습니다.")
             .map { classes -> classes.map { it.toDomainModel() } }
+    }
+
+    override suspend fun createClass(
+        name: String,
+        battleId: Long,
+        deadline: String?,
+        commentRequired: Boolean,
+        ownerParticipates: Boolean
+    ): Result<ClassDetailBoard> = apiCall {
+        val request = ClassCreateRequestDto(name, battleId, deadline, commentRequired, ownerParticipates)
+        classroomApi.createClass(request)
+            .toResult("클래스를 만들지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 }

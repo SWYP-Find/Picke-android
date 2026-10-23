@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classcreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.explore.usecase.ExploreUseCases
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
@@ -11,10 +12,12 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiEvent
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.classroom.model.toClassBattleUiModel
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +27,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -38,6 +42,8 @@ class ClassCreateViewModel @Inject constructor(
 
     private val _uiEvent = Channel<ClassCreateUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<ClassCreateUiEvent> = _uiEvent.receiveAsFlow()
+
+    private var createClassJob: Job? = null
 
     init {
         fetchTicketEndDate()
@@ -149,12 +155,47 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        // TODO: API 연동 - 클래스 생성 요청 후 응답의 classId로 이동, 실패 시 CLASS_CREATION_FAILED로 RequestFailed 반영
-        sendEvent(ClassCreateUiEvent.NavigateToShare(DummyData.dummyMyClasses.first().id))
+        val battleId = state.selectedBattleId
+        if (state.method == ClassCreateMethod.AI_TOPIC || battleId == null) {
+            // TODO: API 연동 - 커스텀 주제 API 연결 후 AI 내 주제 방식은 topicVersionId로 생성
+            _uiState.update {
+                reduce(
+                    it,
+                    ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                )
+            }
+            return
+        }
+
+        if (createClassJob?.isActive == true) return
+        createClassJob = viewModelScope.launch {
+            classroomUseCases.createClassUseCase(
+                name = state.className.trim(),
+                battleId = battleId,
+                deadline = if (state.isDeadlineEnabled) deadline?.format(SERVER_DATE_TIME_FORMATTER) else null,
+                commentRequired = state.isCommentRequired,
+                ownerParticipates = state.isOperatorJoin
+            ).onSuccess { classDetail ->
+                sendEvent(ClassCreateUiEvent.NavigateToShare(classDetail.classId))
+            }.onFailure { exception ->
+                val mutation =
+                    if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_400_DEADLINE) {
+                        ClassCreateMutation.SettingInvalid(
+                            isClassNameInvalid = false,
+                            isDeadlineOutOfRange = true
+                        )
+                    } else {
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                    }
+                _uiState.update { reduce(it, mutation) }
+            }
+        }
     }
 
     companion object {
         private const val RECOMMENDED_BATTLE_SORT = "POPULAR"
         private const val RECOMMENDED_BATTLE_COUNT = 3
+        private val SERVER_DATE_TIME_FORMATTER: DateTimeFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     }
 }

@@ -1,5 +1,7 @@
 package com.picke.presentation.ui.classroom.model
 
+import com.picke.domain.feature.battle.model.BattleOptionBoard
+import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.explore.model.ExploreItemBoard
 
 private const val SECONDS_PER_MINUTE = 60
@@ -21,6 +23,22 @@ data class ClassBattleUiModel(
     val commentCount: Int = 0
 )
 
+fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUiModel {
+    val battleInfo = battle.battleInfo
+    val isAiQuestion = battleType == ClassBattleType.CUSTOM
+    val categoryName = battle.categoryTags.firstOrNull()?.name
+    val durationMinutes = (battleInfo.audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
+    return ClassBattleUiModel(
+        battleId = battleInfo.battleId.toLongOrNull() ?: 0L,
+        tag = if (categoryName != null) "#$categoryName" else "",
+        title = battleInfo.title,
+        description = battleInfo.summary,
+        durationMinutes = if (isAiQuestion || durationMinutes == 0) null else durationMinutes,
+        options = battleInfo.options.map { it.toClassBattleOptionUiModel() },
+        isAiQuestion = isAiQuestion
+    )
+}
+
 fun ExploreItemBoard.toClassBattleUiModel(): ClassBattleUiModel {
     val categoryName = tags.firstOrNull()?.name
     val durationMinutes = (audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
@@ -32,3 +50,9 @@ fun ExploreItemBoard.toClassBattleUiModel(): ClassBattleUiModel {
         durationMinutes = if (durationMinutes == 0) null else durationMinutes
     )
 }
+
+private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = title,
+    subText = representative,
+    imageUrl = imageUrl.ifBlank { null }
+)

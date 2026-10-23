@@ -20,6 +20,15 @@ enum class ClassRole {
     }
 }
 
+enum class ClassBattleType {
+    TTS,
+    CUSTOM;
+
+    companion object {
+        fun from(value: String): ClassBattleType = entries.find { it.name == value } ?: TTS
+    }
+}
+
 enum class ClassTicketDialog {
     NO_PERMISSION,
     UNREGISTERED,

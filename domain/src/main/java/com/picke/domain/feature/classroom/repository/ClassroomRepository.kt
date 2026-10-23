@@ -1,5 +1,6 @@
 package com.picke.domain.feature.classroom.repository
 
+import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
@@ -17,4 +18,7 @@ interface ClassroomRepository {
         commentRequired: Boolean,
         ownerParticipates: Boolean
     ): Result<ClassDetailBoard>
+
+    suspend fun getClassDetail(classId: Long): Result<ClassDetailBoard>
+    suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard>
 }

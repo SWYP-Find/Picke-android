@@ -1,6 +1,7 @@
 package com.picke.data.feature.classroom.datasource
 
 import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.classroom.model.ClassBattleDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
@@ -10,6 +11,7 @@ import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ClassroomApi {
@@ -34,4 +36,14 @@ interface ClassroomApi {
     suspend fun createClass(
         @Body request: ClassCreateRequestDto
     ): BaseResponse<ClassDetailResponseDto>
+
+    @GET("/api/v1/classes/{classId}")
+    suspend fun getClassDetail(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @GET("/api/v1/classes/{classId}/battle")
+    suspend fun getClassBattle(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassBattleDetailResponseDto>
 }

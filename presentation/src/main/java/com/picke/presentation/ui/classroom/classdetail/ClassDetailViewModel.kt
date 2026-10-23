@@ -3,12 +3,16 @@ package com.picke.presentation.ui.classroom.classdetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailMutation
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.ClassRole
+import com.picke.presentation.ui.classroom.model.toUiModel
+import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -22,9 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
-    
+
     private val _uiState = MutableStateFlow(
         ClassDetailUiState(classId = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID) ?: 0L)
     )
@@ -49,9 +54,15 @@ class ClassDetailViewModel @Inject constructor(
             ClassDetailUiAction.MemberClick -> sendEvent(ClassDetailUiEvent.NavigateToMember(state.classId))
             ClassDetailUiAction.BattleClick -> startBattle(state)
             ClassDetailUiAction.ResultClick -> sendEvent(ClassDetailUiEvent.NavigateToResult(state.classId))
-            ClassDetailUiAction.DeadlineEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
+            ClassDetailUiAction.DeadlineEditClick -> sendEvent(
+                ClassDetailUiEvent.NavigateToEdit(state.classId)
+            )
+
             ClassDetailUiAction.ManageEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
-            ClassDetailUiAction.ManageShareCodeClick -> sendEvent(ClassDetailUiEvent.NavigateToShare(state.classId))
+            ClassDetailUiAction.ManageShareCodeClick -> sendEvent(
+                ClassDetailUiEvent.NavigateToShare(state.classId)
+            )
+
             ClassDetailUiAction.DeleteConfirm -> deleteClass()
             ClassDetailUiAction.LeaveConfirm -> leaveClass()
             is ClassDetailUiAction.StateOnly -> Unit
@@ -63,18 +74,29 @@ class ClassDetailViewModel @Inject constructor(
     }
 
     private fun fetchClassDetail() {
-        // TODO: API 연동 - 클래스 상세 조회로 교체 (운영자 여부 포함)
-        val classItem =
-            DummyData.dummyMyClasses.firstOrNull { it.id == _uiState.value.classId } ?: return
-        val mutation = ClassDetailMutation.ClassDetailLoaded(
-            isOperator = classItem.isOperator,
-            isInProgress = classItem.isInProgress,
-            title = classItem.title,
-            memberCount = classItem.memberCount,
-            deadline = classItem.deadline,
-            battle = DummyData.dummyClassBattleByClassId[classItem.id]
-        )
-        _uiState.update { reduce(it, mutation) }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                sendEvent(ClassDetailUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val mutation = ClassDetailMutation.ClassDetailLoaded(
+                isOperator = ClassRole.from(classDetail.myRole) == ClassRole.OWNER,
+                isInProgress = !classDetail.closed,
+                title = classDetail.name,
+                memberCount = classDetail.memberCount,
+                deadline = parseServerDateTime(classDetail.closeAt)
+            )
+            _uiState.update { reduce(it, mutation) }
+
+            val battleType = ClassBattleType.from(classDetail.battleType)
+            classroomUseCases.getClassBattleUseCase(classId)
+                .onSuccess { classBattle ->
+                    val battle = classBattle.toUiModel(battleType)
+                    _uiState.update { reduce(it, ClassDetailMutation.BattleLoaded(battle)) }
+                }
+                .onFailure { sendEvent(ClassDetailUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun startBattle(state: ClassDetailUiState) {

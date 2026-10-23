@@ -29,7 +29,8 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
             isInProgress = mutation.isInProgress,
             title = mutation.title,
             memberCount = mutation.memberCount,
-            deadline = mutation.deadline,
-            battle = mutation.battle
+            deadline = mutation.deadline
         )
+
+        is ClassDetailMutation.BattleLoaded -> state.copy(battle = mutation.battle)
     }

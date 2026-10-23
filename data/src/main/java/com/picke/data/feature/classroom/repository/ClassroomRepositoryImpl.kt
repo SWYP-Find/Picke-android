@@ -6,6 +6,7 @@ import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
+import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
@@ -51,6 +52,18 @@ class ClassroomRepositoryImpl @Inject constructor(
         val request = ClassCreateRequestDto(name, battleId, deadline, commentRequired, ownerParticipates)
         classroomApi.createClass(request)
             .toResult("클래스를 만들지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun getClassDetail(classId: Long): Result<ClassDetailBoard> = apiCall {
+        classroomApi.getClassDetail(classId)
+            .toResult("클래스 상세를 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard> = apiCall {
+        classroomApi.getClassBattle(classId)
+            .toResult("클래스 배틀을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }
 }

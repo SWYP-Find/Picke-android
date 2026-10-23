@@ -5,5 +5,7 @@ data class ClassroomUseCases(
     val previewClassTicketUseCase: PreviewClassTicketUseCase,
     val registerClassTicketUseCase: RegisterClassTicketUseCase,
     val getMyClassesUseCase: GetMyClassesUseCase,
-    val createClassUseCase: CreateClassUseCase
+    val createClassUseCase: CreateClassUseCase,
+    val getClassDetailUseCase: GetClassDetailUseCase,
+    val getClassBattleUseCase: GetClassBattleUseCase
 )

@@ -27,6 +27,7 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -102,6 +103,15 @@ private fun MyClassContent(
                     selectedFilter = uiState.selectedFilter,
                     onFilterSelect = { filter -> onAction(MyClassUiAction.FilterSelect(filter)) }
                 )
+            }
+
+            if (!uiState.isLoading && uiState.filteredClasses.isEmpty()) {
+                item(key = "empty") {
+                    PickeEmptyState(
+                        message = stringResource(uiState.selectedFilter.emptyMessageRes),
+                        modifier = Modifier.fillParentMaxSize()
+                    )
+                }
             }
 
             items(items = uiState.filteredClasses, key = { it.id }) { item ->
@@ -185,6 +195,17 @@ private fun MyClassMemberPreview() {
             uiState = MyClassUiState(
                 classes = DummyData.dummyMyClasses.map { it.copy(isOperator = false) }
             ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "빈 목록", showBackground = true)
+@Composable
+private fun MyClassEmptyPreview() {
+    PickeTheme {
+        MyClassContent(
+            uiState = MyClassUiState(isLoading = false),
             onAction = {}
         )
     }

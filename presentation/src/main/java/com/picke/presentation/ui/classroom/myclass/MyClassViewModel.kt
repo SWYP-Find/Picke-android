@@ -67,7 +67,10 @@ class MyClassViewModel @Inject constructor(
                     val classUiModels = classes.map { it.toUiModel() }
                     _uiState.update { reduce(it, MyClassMutation.ClassesLoaded(classUiModels)) }
                 }
-                .onFailure { sendEvent(MyClassUiEvent.ShowLoadFailedToast) }
+                .onFailure {
+                    _uiState.update { reduce(it, MyClassMutation.ClassesLoadFailed) }
+                    sendEvent(MyClassUiEvent.ShowLoadFailedToast)
+                }
         }
     }
 

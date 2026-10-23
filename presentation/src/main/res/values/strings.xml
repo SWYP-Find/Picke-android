@@ -314,6 +314,9 @@
     <string name="my_class_status_ended">종료</string>
     <string name="my_class_member_count">멤버 %1$d명</string>
     <string name="my_class_view">보기</string>
+    <string name="my_class_empty_all">아직 참여한 클래스가 없어요!</string>
+    <string name="my_class_empty_in_progress">진행 중인 클래스가 없어요!</string>
+    <string name="my_class_empty_ended">종료된 클래스가 없어요!</string>
 
     <!-- 클래스 - 상세 -->
     <string name="class_detail_title">클래스 상세</string>

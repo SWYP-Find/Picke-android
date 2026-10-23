@@ -110,6 +110,11 @@ class ClassroomRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
+    override suspend fun leaveClass(classId: Long): Result<Unit> = apiCall {
+        classroomApi.leaveClass(classId)
+            .toUnitResult("클래스에서 나가지 못했습니다.")
+    }
+
     override suspend fun removeMember(classId: Long, memberId: Long): Result<Unit> = apiCall {
         classroomApi.removeMember(classId, memberId)
             .toUnitResult("멤버를 내보내지 못했습니다.")

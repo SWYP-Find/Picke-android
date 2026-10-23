@@ -13,5 +13,6 @@ data class ClassroomUseCases(
     val joinClassUseCase: JoinClassUseCase,
     val getClassMembersUseCase: GetClassMembersUseCase,
     val updateMyClassNameUseCase: UpdateMyClassNameUseCase,
+    val leaveClassUseCase: LeaveClassUseCase,
     val removeClassMemberUseCase: RemoveClassMemberUseCase
 )

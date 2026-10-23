@@ -79,6 +79,11 @@ interface ClassroomApi {
         @Body request: ClassMemberNameUpdateRequestDto
     ): BaseResponse<ClassMemberResponseDto>
 
+    @DELETE("/api/v1/classes/{classId}/members/me")
+    suspend fun leaveClass(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
+
     @DELETE("/api/v1/classes/{classId}/members/{memberId}")
     suspend fun removeMember(
         @Path("classId") classId: Long,

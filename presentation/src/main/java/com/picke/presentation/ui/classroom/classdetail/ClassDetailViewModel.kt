@@ -68,7 +68,7 @@ class ClassDetailViewModel @Inject constructor(
             )
 
             ClassDetailUiAction.DeleteConfirm -> if (!state.isRequesting) deleteClass()
-            ClassDetailUiAction.LeaveConfirm -> leaveClass()
+            ClassDetailUiAction.LeaveConfirm -> if (!state.isRequesting) leaveClass()
             is ClassDetailUiAction.StateOnly -> Unit
         }
     }
@@ -134,7 +134,13 @@ class ClassDetailViewModel @Inject constructor(
     }
 
     private fun leaveClass() {
-        // TODO: API 연동 - 클래스 나가기 요청 성공 시 이동
-        sendEvent(ClassDetailUiEvent.NavigateBack)
+        viewModelScope.launch {
+            classroomUseCases.leaveClassUseCase(_uiState.value.classId)
+                .onSuccess { sendEvent(ClassDetailUiEvent.NavigateBackAfterClassRemoved) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassDetailMutation.RequestFailed) }
+                    sendEvent(ClassDetailUiEvent.ShowActionFailedToast)
+                }
+        }
     }
 }

@@ -58,7 +58,7 @@ class MyClassViewModel @Inject constructor(
             }
 
             MyClassUiAction.DeleteConfirm -> if (!state.isRequesting) state.managingClassId?.let(::deleteClass)
-            MyClassUiAction.LeaveConfirm -> state.managingClassId?.let(::leaveClass)
+            MyClassUiAction.LeaveConfirm -> if (!state.isRequesting) state.managingClassId?.let(::leaveClass)
             is MyClassUiAction.StateOnly -> Unit
         }
     }
@@ -103,7 +103,13 @@ class MyClassViewModel @Inject constructor(
     }
 
     private fun leaveClass(classId: Long) {
-        // TODO: API 연동 - 클래스 나가기 요청 성공 시 반영
-        _uiState.update { reduce(it, MyClassMutation.ClassLeft(classId)) }
+        viewModelScope.launch {
+            classroomUseCases.leaveClassUseCase(classId)
+                .onSuccess { _uiState.update { reduce(it, MyClassMutation.ClassLeft(classId)) } }
+                .onFailure {
+                    _uiState.update { reduce(it, MyClassMutation.RequestFailed) }
+                    sendEvent(MyClassUiEvent.ShowActionFailedToast)
+                }
+        }
     }
 }

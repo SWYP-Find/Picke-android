@@ -28,5 +28,6 @@ interface ClassroomRepository {
     suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard>
     suspend fun getClassMembers(classId: Long): Result<List<ClassMemberBoard>>
     suspend fun updateMyDisplayName(classId: Long, displayName: String): Result<ClassMemberBoard>
+    suspend fun leaveClass(classId: Long): Result<Unit>
     suspend fun removeMember(classId: Long, memberId: Long): Result<Unit>
 }

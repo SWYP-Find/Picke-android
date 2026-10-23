@@ -35,7 +35,8 @@ internal fun reduce(state: MyClassUiState, action: MyClassUiAction): MyClassUiSt
 
         MyClassUiAction.LeaveConfirm -> state.copy(
             managingClassId = null,
-            isLeaveDialogVisible = false
+            isLeaveDialogVisible = false,
+            isRequesting = true
         )
 
         MyClassUiAction.LeaveDialogDismiss -> state.copy(
@@ -53,7 +54,10 @@ internal fun reduce(state: MyClassUiState, mutation: MyClassMutation): MyClassUi
 
         MyClassMutation.ClassesLoadFailed -> state.copy(isLoading = false)
 
-        is MyClassMutation.ClassLeft -> state.copy(classes = state.classes.filterNot { it.id == mutation.classId })
+        is MyClassMutation.ClassLeft -> state.copy(
+            classes = state.classes.filterNot { it.id == mutation.classId },
+            isRequesting = false
+        )
 
         is MyClassMutation.ClassDeleted -> state.copy(
             classes = state.classes.filterNot { it.id == mutation.classId },

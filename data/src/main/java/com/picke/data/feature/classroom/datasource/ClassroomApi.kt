@@ -6,6 +6,7 @@ import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
+import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
@@ -14,6 +15,7 @@ import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -70,4 +72,16 @@ interface ClassroomApi {
     suspend fun getClassMembers(
         @Path("classId") classId: Long
     ): BaseResponse<List<ClassMemberResponseDto>>
+
+    @PATCH("/api/v1/classes/{classId}/members/me")
+    suspend fun updateMyDisplayName(
+        @Path("classId") classId: Long,
+        @Body request: ClassMemberNameUpdateRequestDto
+    ): BaseResponse<ClassMemberResponseDto>
+
+    @DELETE("/api/v1/classes/{classId}/members/{memberId}")
+    suspend fun removeMember(
+        @Path("classId") classId: Long,
+        @Path("memberId") memberId: Long
+    ): BaseResponse<Unit>
 }

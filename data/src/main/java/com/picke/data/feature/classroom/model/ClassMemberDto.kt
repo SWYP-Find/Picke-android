@@ -18,6 +18,10 @@ data class ClassJoinPreviewResponseDto(
     val closeAt: String?
 )
 
+data class ClassMemberNameUpdateRequestDto(
+    val displayName: String
+)
+
 data class ClassMemberResponseDto(
     val memberId: Long?,
     val displayName: String?,

@@ -26,6 +26,7 @@ private object ClassNameSheetDimens {
 
 @Composable
 fun ClassNameSheet(
+    isConfirmEnabled: Boolean,
     name: String,
     onNameChange: (String) -> Unit,
     onConfirm: () -> Unit,
@@ -34,6 +35,7 @@ fun ClassNameSheet(
 ) {
     ClassBottomSheet(onDismiss = onDismiss, modifier = modifier) {
         ClassNameSheetContent(
+            isConfirmEnabled = isConfirmEnabled,
             name = name,
             onNameChange = onNameChange,
             onConfirm = onConfirm
@@ -43,12 +45,12 @@ fun ClassNameSheet(
 
 @Composable
 private fun ClassNameSheetContent(
+    isConfirmEnabled: Boolean,
     name: String,
     onNameChange: (String) -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isConfirmEnabled = name.isNotBlank()
     val backgroundColor =
         if (isConfirmEnabled) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled
 
@@ -95,6 +97,7 @@ private fun ClassNameSheetContentPreview() {
     PickeTheme {
         Column(modifier = Modifier.background(PickeTheme.colors.surfaceBeigeDefault)) {
             ClassNameSheetContent(
+                isConfirmEnabled = true,
                 name = "권동현",
                 onNameChange = {},
                 onConfirm = {}

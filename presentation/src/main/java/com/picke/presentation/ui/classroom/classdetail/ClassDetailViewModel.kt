@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
@@ -39,6 +42,7 @@ class ClassDetailViewModel @Inject constructor(
     val uiEvent: Flow<ClassDetailUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
+        observeClassChanged()
         fetchClassDetail()
     }
 
@@ -71,6 +75,16 @@ class ClassDetailViewModel @Inject constructor(
 
     private fun sendEvent(event: ClassDetailUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    private fun observeClassChanged() {
+        savedStateHandle.getStateFlow(AppRoute.RESULT_CLASS_CHANGED, false)
+            .filter { it }
+            .onEach {
+                savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
+                fetchClassDetail()
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun fetchClassDetail() {

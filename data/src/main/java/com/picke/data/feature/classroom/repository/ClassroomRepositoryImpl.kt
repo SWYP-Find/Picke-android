@@ -6,6 +6,7 @@ import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
+import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
@@ -28,11 +29,12 @@ class ClassroomRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun previewClassTicket(code: String): Result<ClassTicketPreviewBoard> = apiCall {
-        classroomApi.previewClassTicket(code)
-            .toResult("이용권 코드를 확인하지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun previewClassTicket(code: String): Result<ClassTicketPreviewBoard> =
+        apiCall {
+            classroomApi.previewClassTicket(code)
+                .toResult("이용권 코드를 확인하지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
     override suspend fun registerClassTicket(code: String): Result<ClassTicketBoard> = apiCall {
         classroomApi.registerClassTicket(ClassTicketRegisterRequestDto(code))
@@ -53,7 +55,8 @@ class ClassroomRepositoryImpl @Inject constructor(
         commentRequired: Boolean,
         ownerParticipates: Boolean
     ): Result<ClassDetailBoard> = apiCall {
-        val request = ClassCreateRequestDto(name, battleId, deadline, commentRequired, ownerParticipates)
+        val request =
+            ClassCreateRequestDto(name, battleId, deadline, commentRequired, ownerParticipates)
         classroomApi.createClass(request)
             .toResult("클래스를 만들지 못했습니다.")
             .map { it.toDomainModel() }
@@ -76,13 +79,17 @@ class ClassroomRepositoryImpl @Inject constructor(
             .toUnitResult("클래스를 삭제하지 못했습니다.")
     }
 
-    override suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard> = apiCall {
-        classroomApi.previewClassJoin(inviteCode)
-            .toResult("참여 코드를 확인하지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard> =
+        apiCall {
+            classroomApi.previewClassJoin(inviteCode)
+                .toResult("참여 코드를 확인하지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
-    override suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard> = apiCall {
+    override suspend fun joinClass(
+        inviteCode: String,
+        displayName: String
+    ): Result<ClassDetailBoard> = apiCall {
         classroomApi.joinClass(ClassJoinRequestDto(inviteCode, displayName))
             .toResult("클래스에 참여하지 못했습니다.")
             .map { it.toDomainModel() }
@@ -92,5 +99,19 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.getClassMembers(classId)
             .toResult("클래스 명단을 불러오지 못했습니다.")
             .map { members -> members.map { it.toDomainModel() } }
+    }
+
+    override suspend fun updateMyDisplayName(
+        classId: Long,
+        displayName: String
+    ): Result<ClassMemberBoard> = apiCall {
+        classroomApi.updateMyDisplayName(classId, ClassMemberNameUpdateRequestDto(displayName))
+            .toResult("이름을 변경하지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun removeMember(classId: Long, memberId: Long): Result<Unit> = apiCall {
+        classroomApi.removeMember(classId, memberId)
+            .toUnitResult("멤버를 내보내지 못했습니다.")
     }
 }

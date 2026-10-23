@@ -43,6 +43,8 @@ import com.picke.domain.feature.classroom.usecase.GetClassBattleUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassesUseCase
+import com.picke.domain.feature.classroom.usecase.JoinClassUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassJoinUseCase
 import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
@@ -181,7 +183,9 @@ object UseCaseModule {
             createClassUseCase = CreateClassUseCase(classroomRepository),
             getClassDetailUseCase = GetClassDetailUseCase(classroomRepository),
             getClassBattleUseCase = GetClassBattleUseCase(classroomRepository),
-            deleteClassUseCase = DeleteClassUseCase(classroomRepository)
+            deleteClassUseCase = DeleteClassUseCase(classroomRepository),
+            previewClassJoinUseCase = PreviewClassJoinUseCase(classroomRepository),
+            joinClassUseCase = JoinClassUseCase(classroomRepository)
         )
     }
 

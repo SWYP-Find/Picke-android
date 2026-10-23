@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classjoin
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,13 +47,21 @@ fun ClassJoinScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     BackHandler { viewModel.onAction(ClassJoinUiAction.BackClick) }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassJoinUiEvent.NavigateBack -> onBackClick()
+
                 is ClassJoinUiEvent.NavigateToClassDetail -> onNavigateToClassDetail(event.classId)
+
+                ClassJoinUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -221,7 +231,10 @@ private fun ClassJoinContentInvalidCodePreview() {
 private fun ClassJoinContentClassFullPreview() {
     PickeTheme {
         ClassJoinContent(
-            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_FULL),
+            uiState = ClassJoinUiState(
+                code = DummyData.dummyClassCode,
+                dialog = ClassJoinDialog.CLASS_FULL
+            ),
             onAction = {}
         )
     }
@@ -232,7 +245,10 @@ private fun ClassJoinContentClassFullPreview() {
 private fun ClassJoinContentClassClosedPreview() {
     PickeTheme {
         ClassJoinContent(
-            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_CLOSED),
+            uiState = ClassJoinUiState(
+                code = DummyData.dummyClassCode,
+                dialog = ClassJoinDialog.CLASS_CLOSED
+            ),
             onAction = {}
         )
     }
@@ -243,7 +259,10 @@ private fun ClassJoinContentClassClosedPreview() {
 private fun ClassJoinContentClassDeletedPreview() {
     PickeTheme {
         ClassJoinContent(
-            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.CLASS_DELETED),
+            uiState = ClassJoinUiState(
+                code = DummyData.dummyClassCode,
+                dialog = ClassJoinDialog.CLASS_DELETED
+            ),
             onAction = {}
         )
     }
@@ -254,7 +273,10 @@ private fun ClassJoinContentClassDeletedPreview() {
 private fun ClassJoinContentAlreadyJoinedPreview() {
     PickeTheme {
         ClassJoinContent(
-            uiState = ClassJoinUiState(code = DummyData.dummyClassCode, dialog = ClassJoinDialog.ALREADY_JOINED),
+            uiState = ClassJoinUiState(
+                code = DummyData.dummyClassCode,
+                dialog = ClassJoinDialog.ALREADY_JOINED
+            ),
             onAction = {}
         )
     }

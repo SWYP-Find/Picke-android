@@ -6,10 +6,11 @@ data class ClassJoinUiState(
     val isCodeInvalid: Boolean = false,
     val name: String = "",
     val isNameDuplicated: Boolean = false,
-    val dialog: ClassJoinDialog? = null
+    val dialog: ClassJoinDialog? = null,
+    val isRequesting: Boolean = false
 ) {
     val isNextEnabled: Boolean
-        get() = when (step) {
+        get() = !isRequesting && when (step) {
             ClassJoinStep.CODE -> code.length == CODE_LENGTH
             ClassJoinStep.NAME -> name.isNotBlank()
         }

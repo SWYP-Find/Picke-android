@@ -5,10 +5,12 @@ import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
+import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
@@ -71,5 +73,17 @@ class ClassroomRepositoryImpl @Inject constructor(
     override suspend fun deleteClass(classId: Long): Result<Unit> = apiCall {
         classroomApi.deleteClass(classId)
             .toUnitResult("클래스를 삭제하지 못했습니다.")
+    }
+
+    override suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard> = apiCall {
+        classroomApi.previewClassJoin(inviteCode)
+            .toResult("참여 코드를 확인하지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard> = apiCall {
+        classroomApi.joinClass(ClassJoinRequestDto(inviteCode, displayName))
+            .toResult("클래스에 참여하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 }

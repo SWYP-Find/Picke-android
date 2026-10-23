@@ -4,6 +4,8 @@ import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.classroom.model.ClassBattleDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
+import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
+import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
@@ -52,4 +54,14 @@ interface ClassroomApi {
     suspend fun deleteClass(
         @Path("classId") classId: Long
     ): BaseResponse<Unit>
+
+    @GET("/api/v1/classes/join/preview")
+    suspend fun previewClassJoin(
+        @Query("inviteCode") inviteCode: String
+    ): BaseResponse<ClassJoinPreviewResponseDto>
+
+    @POST("/api/v1/classes/join")
+    suspend fun joinClass(
+        @Body request: ClassJoinRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
 }

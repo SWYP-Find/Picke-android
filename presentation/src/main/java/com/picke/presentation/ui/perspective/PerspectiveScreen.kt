@@ -48,10 +48,10 @@ import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.PickeCommentInput
+import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
-import com.picke.presentation.ui.perspective.component.PerspectiveEmptyState
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
 import com.picke.presentation.ui.perspective.component.PerspectiveListSkeleton
@@ -385,7 +385,7 @@ fun PerspectiveContent(
                                             stringResource(R.string.comment_empty_option, tabList.getOrElse(pageIndex) { "" })
                                         }
 
-                                        PerspectiveEmptyState(
+                                        PickeEmptyState(
                                             message = emptyMsg,
                                             modifier = Modifier.fillParentMaxSize()
                                         )

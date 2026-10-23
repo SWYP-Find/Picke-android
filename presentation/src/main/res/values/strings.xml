@@ -109,6 +109,7 @@
     <!-- 탐색 -->
     <string name="explore_hot_rank">인기순</string>
     <string name="explore_recent_rank">최신순</string>
+    <string name="explore_empty">아직 준비된 배틀이 없어요!</string>
 
     <string name="battle_start">배틀 입장하기</string>
 

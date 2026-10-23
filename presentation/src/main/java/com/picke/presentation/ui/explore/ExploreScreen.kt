@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +17,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +42,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.explore.component.ExploreCard
 import com.picke.presentation.ui.explore.component.ExploreSkeleton
@@ -208,24 +206,10 @@ fun ExploreList(
         if (isLoading) {
             ExploreSkeleton(modifier = Modifier.fillMaxSize())
         } else if (pagingItems.itemCount == 0) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.logo_picke),
-                    contentDescription = "빈 화면 로고",
-                    modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                    tint = PickeTheme.colors.borderBeigeDefault
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "아직 준비된 배틀이 없어요!",
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.beige800
-                )
-            }
+            PickeEmptyState(
+                message = stringResource(R.string.explore_empty),
+                modifier = Modifier.fillMaxSize()
+            )
         } else {
             LazyColumn(
                 state = listState,

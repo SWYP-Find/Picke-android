@@ -25,18 +25,18 @@ data class ClassTicketPreviewResponseDto(
 )
 
 fun ClassTicketResponseDto.toDomainModel() = ClassTicketBoard(
-    ticketId = this.ticketId ?: 0L,
-    capacity = this.capacity ?: 0,
-    status = this.status ?: "",
-    activatedAt = this.activatedAt ?: "",
-    expiresAt = this.expiresAt ?: "",
-    remainingDays = this.remainingDays ?: 0,
-    readGraceEndsAt = this.readGraceEndsAt ?: ""
+    ticketId = ticketId ?: 0L,
+    capacity = capacity ?: 0,
+    status = status ?: "",
+    activatedAt = activatedAt ?: "",
+    expiresAt = expiresAt ?: "",
+    remainingDays = remainingDays ?: 0,
+    readGraceEndsAt = readGraceEndsAt ?: ""
 )
 
 fun ClassTicketPreviewResponseDto.toDomainModel() = ClassTicketPreviewBoard(
-    capacity = this.capacity ?: 0,
-    registerBy = this.registerBy ?: "",
-    usageMonths = this.usageMonths ?: 0,
-    registeredByMe = this.registeredByMe ?: false
+    capacity = capacity ?: 0,
+    registerBy = registerBy ?: "",
+    usageMonths = usageMonths ?: 0,
+    registeredByMe = registeredByMe ?: false
 )

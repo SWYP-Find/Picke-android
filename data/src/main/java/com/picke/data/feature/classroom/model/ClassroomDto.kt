@@ -46,18 +46,18 @@ data class ClassBattleInfoDto(
 )
 
 fun MyClassResponseDto.toDomainModel() = MyClassBoard(
-    classId = this.classId ?: 0L,
-    name = this.name ?: "",
-    myRole = this.myRole ?: "",
-    battleId = this.battleId ?: 0L,
-    battleTitle = this.battleTitle ?: "",
-    battleThumbnailUrl = this.battleThumbnailUrl ?: "",
-    battleType = this.battleType ?: "",
-    memberCount = this.memberCount ?: 0,
-    capacity = this.capacity ?: 0,
-    closeAt = this.closeAt ?: "",
-    closed = this.closed ?: false,
-    createdAt = this.createdAt ?: ""
+    classId = classId ?: 0L,
+    name = name ?: "",
+    myRole = myRole ?: "",
+    battleId = battleId ?: 0L,
+    battleTitle = battleTitle ?: "",
+    battleThumbnailUrl = battleThumbnailUrl ?: "",
+    battleType = battleType ?: "",
+    memberCount = memberCount ?: 0,
+    capacity = capacity ?: 0,
+    closeAt = closeAt ?: "",
+    closed = closed ?: false,
+    createdAt = createdAt ?: ""
 )
 
 fun ClassDetailResponseDto.toDomainModel() = ClassDetailBoard(

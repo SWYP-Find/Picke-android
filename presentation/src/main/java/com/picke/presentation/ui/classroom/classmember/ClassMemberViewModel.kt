@@ -88,7 +88,7 @@ class ClassMemberViewModel @Inject constructor(
 
     private fun updateMyName(name: String) {
         viewModelScope.launch {
-            classroomUseCases.updateMyClassNameUseCase(_uiState.value.classId, name)
+            classroomUseCases.updateMyDisplayNameUseCase(_uiState.value.classId, name)
                 .onSuccess { member ->
                     _uiState.update {
                         reduce(it, ClassMemberMutation.MyNameUpdated(member.displayName))
@@ -109,7 +109,7 @@ class ClassMemberViewModel @Inject constructor(
 
     private fun removeMember(memberId: Long) {
         viewModelScope.launch {
-            classroomUseCases.removeClassMemberUseCase(_uiState.value.classId, memberId)
+            classroomUseCases.removeMemberUseCase(_uiState.value.classId, memberId)
                 .onSuccess {
                     _uiState.update { reduce(it, ClassMemberMutation.MemberRemoved(memberId)) }
                 }

@@ -13,6 +13,8 @@ interface ClassroomRepository {
     suspend fun previewClassTicket(code: String): Result<ClassTicketPreviewBoard>
     suspend fun registerClassTicket(code: String): Result<ClassTicketBoard>
     suspend fun getMyClasses(): Result<List<MyClassBoard>>
+    suspend fun getClassDetail(classId: Long): Result<ClassDetailBoard>
+    suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard>
     suspend fun createClass(
         name: String,
         battleId: Long,
@@ -21,8 +23,6 @@ interface ClassroomRepository {
         ownerParticipates: Boolean
     ): Result<ClassDetailBoard>
 
-    suspend fun getClassDetail(classId: Long): Result<ClassDetailBoard>
-    suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard>
     suspend fun deleteClass(classId: Long): Result<Unit>
     suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard>
     suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard>

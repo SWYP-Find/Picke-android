@@ -38,11 +38,6 @@ interface ClassroomApi {
     @GET("/api/v1/classes")
     suspend fun getMyClasses(): BaseResponse<List<MyClassResponseDto>>
 
-    @POST("/api/v1/classes")
-    suspend fun createClass(
-        @Body request: ClassCreateRequestDto
-    ): BaseResponse<ClassDetailResponseDto>
-
     @GET("/api/v1/classes/{classId}")
     suspend fun getClassDetail(
         @Path("classId") classId: Long
@@ -52,6 +47,11 @@ interface ClassroomApi {
     suspend fun getClassBattle(
         @Path("classId") classId: Long
     ): BaseResponse<ClassBattleDetailResponseDto>
+
+    @POST("/api/v1/classes")
+    suspend fun createClass(
+        @Body request: ClassCreateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
 
     @DELETE("/api/v1/classes/{classId}")
     suspend fun deleteClass(

@@ -50,11 +50,6 @@
 # Kakao SDK
 -keep class com.kakao.sdk.** { *; }
 
-# ✨ 4. [가장 중요] Pické 앱의 데이터 모델(DTO, Domain) 난독화 방어!
-# 패키지명이 com.picke.app이 맞으시죠? 이 안의 데이터 클래스 이름은 절대 바꾸지 말라는 뜻입니다.
--keep class com.picke.app.data.model.** { *; }
--keep class com.picke.app.domain.model.** { *; }
-
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);

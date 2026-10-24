@@ -17,6 +17,7 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
             state.copy(
                 step = state.nextStep ?: state.step,
+                isRecommendationEmpty = false,
                 isRequesting = state.nextStep == null || state.nextStep == ClassCreateStep.SELECTION
             )
         } else {
@@ -40,7 +41,11 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         ClassCreateUiAction.RegenerateClick -> if (state.isRequesting) {
             state
         } else {
-            state.copy(selectedBattleId = null, isRequesting = true)
+            state.copy(
+                isRecommendationEmpty = false,
+                selectedBattleId = null,
+                isRequesting = true
+            )
         }
 
         is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
@@ -80,6 +85,7 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
 
         is ClassCreateMutation.BattlesLoaded -> state.copy(
             battles = mutation.battles,
+            isRecommendationEmpty = mutation.battles.isEmpty(),
             selectedBattleId = null,
             isRequesting = false
         )

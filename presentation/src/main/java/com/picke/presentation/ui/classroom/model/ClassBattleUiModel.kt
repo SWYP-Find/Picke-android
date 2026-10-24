@@ -2,7 +2,8 @@ package com.picke.presentation.ui.classroom.model
 
 import com.picke.domain.feature.battle.model.BattleOptionBoard
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
-import com.picke.domain.feature.explore.model.ExploreItemBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationOptionBoard
 
 private const val SECONDS_PER_MINUTE = 60
 
@@ -39,15 +40,15 @@ fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUi
     )
 }
 
-fun ExploreItemBoard.toClassBattleUiModel(): ClassBattleUiModel {
-    val categoryName = tags.firstOrNull()?.name
+fun ClassBattleRecommendationBoard.toUiModel(): ClassBattleUiModel {
     val durationMinutes = (audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
     return ClassBattleUiModel(
         battleId = battleId,
-        tag = if (categoryName != null) "#$categoryName" else "",
+        tag = if (category.isNotBlank()) "#$category" else "",
         title = title,
         description = summary,
-        durationMinutes = if (durationMinutes == 0) null else durationMinutes
+        durationMinutes = if (durationMinutes == 0) null else durationMinutes,
+        options = options.map { it.toClassBattleOptionUiModel() }
     )
 }
 
@@ -55,4 +56,9 @@ private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUi
     stance = title,
     subText = representative,
     imageUrl = imageUrl.ifBlank { null }
+)
+
+private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = label,
+    subText = philosopherName
 )

@@ -12,6 +12,7 @@ data class ClassCreateUiState(
     val selectedLevel: ClassLevel = ClassLevel.BEGINNER,
     val selectedCategories: List<ClassCategory> = listOf(ClassCategory.PHILOSOPHY),
     val battles: List<ClassBattleUiModel> = emptyList(),
+    val isRecommendationEmpty: Boolean = false,
     val selectedBattleId: Long? = null,
     val className: String = "",
     val isClassNameInvalid: Boolean = false,

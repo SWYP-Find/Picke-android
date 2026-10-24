@@ -34,6 +34,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
+import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -73,6 +74,15 @@ internal fun ClassCreateSelectionStep(
                 showsRegenerate = isAiQuestion,
                 onRegenerateClick = onRegenerateClick
             )
+
+            if (uiState.isRecommendationEmpty) {
+                PickeEmptyState(
+                    message = stringResource(R.string.class_create_recommend_empty),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = SpacingTokens.s80)
+                )
+            }
 
             uiState.battles.forEach { battle ->
                 ClassBattleCard(
@@ -219,6 +229,25 @@ private fun ClassCreateSelectionStepPreview() {
                 selectedCategories = listOf(ClassCategory.PHILOSOPHY, ClassCategory.SOCIETY),
                 battles = DummyData.dummyClassBattles,
                 selectedBattleId = DummyData.dummyClassBattles.first().battleId
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
+            onRegenerateClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "추천 결과 없음", showBackground = true)
+@Composable
+private fun ClassCreateEmptySelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                topic = "AI와 인간 사이의 윤리와 사상에 대해서",
+                selectedCategories = listOf(ClassCategory.PHILOSOPHY, ClassCategory.SOCIETY),
+                isRecommendationEmpty = true
             ),
             onBattleSelect = {},
             onBattlePreviewClick = {},

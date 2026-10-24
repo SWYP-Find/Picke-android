@@ -227,6 +227,7 @@
     <string name="class_create_selected_condition">선택한 조건</string>
     <string name="class_create_edit_condition">조건 수정</string>
     <string name="class_create_result_count">추천 결과 %1$d개</string>
+    <string name="class_create_recommend_empty">조건에 맞는 추천 배틀이 없어요!</string>
     <string name="class_create_regenerate">다시 추천</string>
     <string name="class_create_select_battle">배틀 선택하기</string>
     <string name="class_create_select_question">질문 선택하기</string>

@@ -2,6 +2,7 @@ package com.picke.data.feature.classroom.datasource
 
 import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.classroom.model.ClassBattleDetailResponseDto
+import com.picke.data.feature.classroom.model.ClassBattleRecommendationResponseDto
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
@@ -57,6 +58,13 @@ interface ClassroomApi {
     suspend fun deleteClass(
         @Path("classId") classId: Long
     ): BaseResponse<Unit>
+
+    @GET("/api/v1/class-battle-recommendations")
+    suspend fun getClassBattleRecommendations(
+        @Query("difficulty") difficulty: String,
+        @Query("categories") categories: List<String>,
+        @Query("keyword") keyword: String?
+    ): BaseResponse<ClassBattleRecommendationResponseDto>
 
     @GET("/api/v1/classes/join/preview")
     suspend fun previewClassJoin(

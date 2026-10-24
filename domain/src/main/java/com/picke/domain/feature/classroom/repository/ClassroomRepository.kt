@@ -1,6 +1,7 @@
 package com.picke.domain.feature.classroom.repository
 
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
@@ -24,6 +25,12 @@ interface ClassroomRepository {
     ): Result<ClassDetailBoard>
 
     suspend fun deleteClass(classId: Long): Result<Unit>
+    suspend fun getClassBattleRecommendations(
+        difficulty: String,
+        categories: List<String>,
+        keyword: String?
+    ): Result<List<ClassBattleRecommendationBoard>>
+
     suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard>
     suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard>
     suspend fun getClassMembers(classId: Long): Result<List<ClassMemberBoard>>

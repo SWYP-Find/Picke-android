@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
-import com.picke.domain.feature.explore.usecase.ExploreUseCases
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMutation
@@ -13,7 +12,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiEvent
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.model.ClassErrorCode
-import com.picke.presentation.ui.classroom.model.toClassBattleUiModel
+import com.picke.presentation.ui.classroom.model.toUiModel
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.formatServerDateTime
 import com.picke.presentation.util.parseServerDateTime
@@ -32,8 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassCreateViewModel @Inject constructor(
-    private val classroomUseCases: ClassroomUseCases,
-    private val exploreUseCases: ExploreUseCases
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassCreateUiState())
@@ -106,26 +104,23 @@ class ClassCreateViewModel @Inject constructor(
             }
             return
         }
+        val state = _uiState.value
         viewModelScope.launch {
-            // TODO: API 연동 - 클래스 배틀 추천 API(GET /class-battle-recommendations)가 배포되면 조건 기반 추천으로 교체
-            exploreUseCases.searchBattlesUseCase(
-                category = null,
-                sort = RECOMMENDED_BATTLE_SORT,
-                offset = null,
-                size = RECOMMENDED_BATTLE_COUNT
-            )
-                .onSuccess { page ->
-                    val battles = page.items.map { it.toClassBattleUiModel() }
-                    _uiState.update { reduce(it, ClassCreateMutation.BattlesLoaded(battles)) }
+            classroomUseCases.getClassBattleRecommendationsUseCase(
+                difficulty = state.selectedLevel.apiValue,
+                categories = state.selectedCategories.map { it.apiValue },
+                keyword = state.topic.trim().ifBlank { null }
+            ).onSuccess { recommendations ->
+                val battles = recommendations.map { it.toUiModel() }
+                _uiState.update { reduce(it, ClassCreateMutation.BattlesLoaded(battles)) }
+            }.onFailure {
+                _uiState.update {
+                    reduce(
+                        it,
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.BATTLE_SEARCH_FAILED)
+                    )
                 }
-                .onFailure {
-                    _uiState.update {
-                        reduce(
-                            it,
-                            ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.BATTLE_SEARCH_FAILED)
-                        )
-                    }
-                }
+            }
         }
     }
 
@@ -189,8 +184,4 @@ class ClassCreateViewModel @Inject constructor(
         }
     }
 
-    companion object {
-        private const val RECOMMENDED_BATTLE_SORT = "POPULAR"
-        private const val RECOMMENDED_BATTLE_COUNT = 3
-    }
 }

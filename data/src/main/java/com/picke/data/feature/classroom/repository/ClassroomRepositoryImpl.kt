@@ -10,6 +10,7 @@ import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
@@ -77,6 +78,16 @@ class ClassroomRepositoryImpl @Inject constructor(
     override suspend fun deleteClass(classId: Long): Result<Unit> = apiCall {
         classroomApi.deleteClass(classId)
             .toUnitResult("클래스를 삭제하지 못했습니다.")
+    }
+
+    override suspend fun getClassBattleRecommendations(
+        difficulty: String,
+        categories: List<String>,
+        keyword: String?
+    ): Result<List<ClassBattleRecommendationBoard>> = apiCall {
+        classroomApi.getClassBattleRecommendations(difficulty, categories, keyword)
+            .toResult("추천 배틀을 불러오지 못했습니다.")
+            .map { response -> response.items?.map { it.toDomainModel() } ?: emptyList() }
     }
 
     override suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard> =

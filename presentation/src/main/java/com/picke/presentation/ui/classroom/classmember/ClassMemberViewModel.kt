@@ -3,12 +3,15 @@ package com.picke.presentation.ui.classroom.classmember
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberMutation
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiAction
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiEvent
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.classmember.model.toUiModel
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +25,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassMemberViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -45,10 +49,21 @@ class ClassMemberViewModel @Inject constructor(
 
     private fun handleSideEffect(state: ClassMemberUiState, action: ClassMemberUiAction) {
         when (action) {
-            ClassMemberUiAction.BackClick -> sendEvent(ClassMemberUiEvent.NavigateBack)
-            ClassMemberUiAction.NameConfirm -> updateMyName(state.editingName.trim())
-            ClassMemberUiAction.RemoveConfirm -> state.removingMember?.let { member -> removeMember(member.memberId) }
             is ClassMemberUiAction.StateOnly -> Unit
+
+            ClassMemberUiAction.BackClick -> if (state.isMembersChanged) {
+                sendEvent(ClassMemberUiEvent.NavigateBackAfterMembersChanged)
+            } else {
+                sendEvent(ClassMemberUiEvent.NavigateBack)
+            }
+
+            ClassMemberUiAction.NameConfirm -> if (state.isNameConfirmEnabled) {
+                updateMyName(state.editingName.trim())
+            }
+
+            ClassMemberUiAction.RemoveConfirm -> if (state.isRemoveConfirmEnabled) {
+                state.removingMember?.let { member -> removeMember(member.memberId) }
+            }
         }
     }
 
@@ -57,25 +72,51 @@ class ClassMemberViewModel @Inject constructor(
     }
 
     private fun fetchMembers() {
-        // TODO: API 연동 - 멤버 목록 조회로 교체 (운영자 여부 포함)
-        val classItem = DummyData.dummyMyClasses.firstOrNull { it.id == _uiState.value.classId }
-        val isOperator = classItem?.isOperator ?: false
-        val mutation = ClassMemberMutation.MembersLoaded(
-            isOperatorViewer = isOperator,
-            members = if (isOperator) DummyData.dummyClassMembers else DummyData.dummyParticipantClassMembers
-        )
-        _uiState.update { reduce(it, mutation) }
+        viewModelScope.launch {
+            classroomUseCases.getClassMembersUseCase(_uiState.value.classId)
+                .onSuccess { memberBoards ->
+                    val members = memberBoards.map { it.toUiModel() }
+                    val mutation = ClassMemberMutation.MembersLoaded(
+                        isOperatorViewer = members.any { it.isMe && it.isOperator },
+                        members = members
+                    )
+                    _uiState.update { reduce(it, mutation) }
+                }
+                .onFailure { sendEvent(ClassMemberUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun updateMyName(name: String) {
-        if (name.isNotEmpty()) {
-            // TODO: API 연동 - 내 이름 수정 요청 성공 시 반영
-            _uiState.update { reduce(it, ClassMemberMutation.MyNameUpdated(name)) }
+        viewModelScope.launch {
+            classroomUseCases.updateMyDisplayNameUseCase(_uiState.value.classId, name)
+                .onSuccess { member ->
+                    _uiState.update {
+                        reduce(it, ClassMemberMutation.MyNameUpdated(member.displayName))
+                    }
+                }
+                .onFailure { exception ->
+                    _uiState.update { reduce(it, ClassMemberMutation.RequestFailed) }
+                    val event =
+                        if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_409_NAME) {
+                            ClassMemberUiEvent.ShowNameDuplicatedToast
+                        } else {
+                            ClassMemberUiEvent.ShowActionFailedToast
+                        }
+                    sendEvent(event)
+                }
         }
     }
 
     private fun removeMember(memberId: Long) {
-        // TODO: API 연동 - 멤버 내보내기 요청 성공 시 반영
-        _uiState.update { reduce(it, ClassMemberMutation.MemberRemoved(memberId)) }
+        viewModelScope.launch {
+            classroomUseCases.removeMemberUseCase(_uiState.value.classId, memberId)
+                .onSuccess {
+                    _uiState.update { reduce(it, ClassMemberMutation.MemberRemoved(memberId)) }
+                }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassMemberMutation.RequestFailed) }
+                    sendEvent(ClassMemberUiEvent.ShowActionFailedToast)
+                }
+        }
     }
 }

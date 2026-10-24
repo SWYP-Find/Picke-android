@@ -1,5 +1,7 @@
 package com.picke.presentation.ui.classroom.classmember
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,15 +39,35 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassMemberScreen(
     onBackClick: () -> Unit,
+    onMembersChanged: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassMemberViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val nameDuplicatedMessage = stringResource(R.string.class_join_name_duplicated)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
+    BackHandler { viewModel.onAction(ClassMemberUiAction.BackClick) }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassMemberUiEvent.NavigateBack -> onBackClick()
+
+                ClassMemberUiEvent.NavigateBackAfterMembersChanged -> onMembersChanged()
+
+                ClassMemberUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassMemberUiEvent.ShowNameDuplicatedToast ->
+                    Toast.makeText(context, nameDuplicatedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassMemberUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -130,6 +153,7 @@ private fun ClassMemberContent(
 
     if (uiState.isNameSheetVisible) {
         ClassNameSheet(
+            isConfirmEnabled = uiState.isNameConfirmEnabled,
             name = uiState.editingName,
             onNameChange = { name -> onAction(ClassMemberUiAction.EditingNameChange(name)) },
             onConfirm = { onAction(ClassMemberUiAction.NameConfirm) },

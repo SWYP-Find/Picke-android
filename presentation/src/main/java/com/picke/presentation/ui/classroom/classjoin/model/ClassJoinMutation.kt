@@ -5,4 +5,8 @@ internal sealed interface ClassJoinMutation {
     data object CodeVerified : ClassJoinMutation
 
     data class JoinFailed(val dialog: ClassJoinDialog) : ClassJoinMutation
+
+    data object NameDuplicated : ClassJoinMutation
+
+    data object RequestFailed : ClassJoinMutation
 }

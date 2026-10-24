@@ -13,5 +13,6 @@ data class ClassDetailUiState(
     val battle: ClassBattleUiModel? = null,
     val isManageSheetVisible: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
-    val isLeaveDialogVisible: Boolean = false
+    val isLeaveDialogVisible: Boolean = false,
+    val isRequesting: Boolean = false
 )

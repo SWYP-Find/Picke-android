@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,7 +45,6 @@ import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-import com.picke.presentation.util.DummyData
 
 private object ClassScreenDimens {
     val introTitleLetterSpacing = (-0.6).sp
@@ -70,6 +71,10 @@ fun ClassScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -84,6 +89,9 @@ fun ClassScreen(
                 ClassUiEvent.NavigateToTicket -> onNavigateToTicket()
 
                 ClassUiEvent.NavigateToTicketRegister -> onNavigateToTicketRegister()
+
+                ClassUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -265,7 +273,7 @@ private fun ClassTicketDialog.messageRes(): Int = when (this) {
 private fun ClassContentPreview() {
     PickeTheme {
         ClassContent(
-            uiState = ClassUiState(ticketStatus = DummyData.dummyClassTicketStatus),
+            uiState = ClassUiState(ticketStatus = ClassTicketStatus.ACTIVE),
             onAction = {}
         )
     }

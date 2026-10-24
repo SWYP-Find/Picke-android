@@ -3,12 +3,13 @@ package com.picke.presentation.ui.my.ticket.ticketregistercomplete
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
+import com.picke.presentation.ui.my.ticket.model.toUiModel
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteMutation
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiAction
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiEvent
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiState
-import com.picke.presentation.util.DummyData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TicketRegisterCompleteViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -53,10 +55,15 @@ class TicketRegisterCompleteViewModel @Inject constructor(
     }
 
     private fun fetchTicket() {
-        // TODO: API 연동 - 등록한 이용권 조회로 교체
-        val ticket =
-            DummyData.dummyRegisteredTicket.takeIf { it.ticketId == _uiState.value.ticketId }
-                ?: return
-        _uiState.update { reduce(it, TicketRegisterCompleteMutation.TicketLoaded(ticket)) }
+        viewModelScope.launch {
+            classroomUseCases.getMyClassTicketUseCase()
+                .onSuccess { ticket ->
+                    if (ticket.ticketId != _uiState.value.ticketId) return@onSuccess
+                    _uiState.update {
+                        reduce(it, TicketRegisterCompleteMutation.TicketLoaded(ticket.toUiModel()))
+                    }
+                }
+                .onFailure { sendEvent(TicketRegisterCompleteUiEvent.ShowLoadFailedToast) }
+        }
     }
 }

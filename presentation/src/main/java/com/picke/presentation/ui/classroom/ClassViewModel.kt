@@ -2,12 +2,14 @@ package com.picke.presentation.ui.classroom
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.classroom.model.ClassMutation
 import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
-import com.picke.presentation.util.DummyData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -20,17 +22,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ClassViewModel @Inject constructor() : ViewModel() {
+class ClassViewModel @Inject constructor(
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassUiState())
     val uiState: StateFlow<ClassUiState> = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<ClassUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<ClassUiEvent> = _uiEvent.receiveAsFlow()
-
-    init {
-        fetchTicketStatus()
-    }
 
     fun onAction(action: ClassUiAction) {
         val previousState = _uiState.value
@@ -48,9 +48,7 @@ class ClassViewModel @Inject constructor() : ViewModel() {
 
             ClassUiAction.MyClassClick -> sendEvent(ClassUiEvent.NavigateToMyClass)
 
-            ClassUiAction.CreateClick -> if (state.ticketStatus == ClassTicketStatus.ACTIVE) {
-                sendEvent(ClassUiEvent.NavigateToCreate)
-            }
+            ClassUiAction.CreateClick -> if (!state.isRequesting) checkTicketStatus()
 
             ClassUiAction.TicketClick -> sendEvent(ClassUiEvent.NavigateToTicket)
 
@@ -62,10 +60,25 @@ class ClassViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun fetchTicketStatus() {
-        // TODO: API 연동 - 내 이용권 상태 조회로 교체
-        _uiState.update {
-            reduce(it, ClassMutation.TicketStatusLoaded(DummyData.dummyClassTicketStatus))
+    private fun checkTicketStatus() {
+        viewModelScope.launch {
+            classroomUseCases.getMyClassTicketUseCase()
+                .onSuccess { ticket ->
+                    applyTicketStatus(ClassTicketStatus.from(ticket.status))
+                }
+                .onFailure { exception ->
+                    if ((exception as? ApiErrorException)?.code == ClassErrorCode.TICKET_404) {
+                        applyTicketStatus(ClassTicketStatus.NONE)
+                    } else {
+                        _uiState.update { reduce(it, ClassMutation.RequestFailed) }
+                        sendEvent(ClassUiEvent.ShowLoadFailedToast)
+                    }
+                }
         }
+    }
+
+    private fun applyTicketStatus(ticketStatus: ClassTicketStatus) {
+        _uiState.update { reduce(it, ClassMutation.TicketStatusLoaded(ticketStatus)) }
+        if (ticketStatus == ClassTicketStatus.ACTIVE) sendEvent(ClassUiEvent.NavigateToCreate)
     }
 }

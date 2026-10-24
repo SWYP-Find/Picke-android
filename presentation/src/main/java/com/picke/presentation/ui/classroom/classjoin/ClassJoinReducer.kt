@@ -12,6 +12,8 @@ internal fun reduce(state: ClassJoinUiState, action: ClassJoinUiAction): ClassJo
 
         ClassJoinUiAction.BackClick -> if (state.step == ClassJoinStep.NAME) state.copy(step = ClassJoinStep.CODE) else state
 
+        ClassJoinUiAction.NextClick -> if (state.isNextEnabled) state.copy(isRequesting = true) else state
+
         is ClassJoinUiAction.CodeChange -> state.copy(
             code = action.code.toClassCode(),
             isCodeInvalid = false
@@ -27,12 +29,23 @@ internal fun reduce(state: ClassJoinUiState, action: ClassJoinUiAction): ClassJo
 
 internal fun reduce(state: ClassJoinUiState, mutation: ClassJoinMutation): ClassJoinUiState =
     when (mutation) {
-        ClassJoinMutation.CodeVerified -> state.copy(step = ClassJoinStep.NAME)
+        ClassJoinMutation.CodeVerified -> state.copy(
+            step = ClassJoinStep.NAME,
+            isRequesting = false
+        )
 
         is ClassJoinMutation.JoinFailed -> state.copy(
             isCodeInvalid = mutation.dialog == ClassJoinDialog.INVALID_CODE,
-            dialog = mutation.dialog
+            dialog = mutation.dialog,
+            isRequesting = false
         )
+
+        ClassJoinMutation.NameDuplicated -> state.copy(
+            isNameDuplicated = true,
+            isRequesting = false
+        )
+
+        ClassJoinMutation.RequestFailed -> state.copy(isRequesting = false)
     }
 
 private fun String.toClassCode(): String =

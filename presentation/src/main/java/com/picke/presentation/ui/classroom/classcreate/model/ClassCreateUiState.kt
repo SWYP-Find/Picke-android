@@ -12,6 +12,7 @@ data class ClassCreateUiState(
     val selectedLevel: ClassLevel = ClassLevel.BEGINNER,
     val selectedCategories: List<ClassCategory> = listOf(ClassCategory.PHILOSOPHY),
     val battles: List<ClassBattleUiModel> = emptyList(),
+    val isRecommendationEmpty: Boolean = false,
     val selectedBattleId: Long? = null,
     val className: String = "",
     val isClassNameInvalid: Boolean = false,
@@ -22,13 +23,14 @@ data class ClassCreateUiState(
     val ticketEndDate: LocalDate? = null,
     val isCommentRequired: Boolean = false,
     val isOperatorJoin: Boolean = false,
-    val errorDialog: ClassCreateErrorDialog? = null
+    val errorDialog: ClassCreateErrorDialog? = null,
+    val isRequesting: Boolean = false
 ) {
     val selectedBattle: ClassBattleUiModel?
         get() = battles.firstOrNull { it.battleId == selectedBattleId }
 
     val isNextEnabled: Boolean
-        get() = when (step) {
+        get() = !isRequesting && when (step) {
             ClassCreateStep.METHOD, ClassCreateStep.SETTING -> true
             ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty()
             ClassCreateStep.SELECTION -> selectedBattleId != null

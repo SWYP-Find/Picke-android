@@ -135,5 +135,6 @@ sealed class AppRoute(val route: String) {
         const val ARG_PERSPECTIVE_ID = "perspectiveId"
         const val ARG_FIRST_OPTION_ID = "firstOptionId"
         const val ARG_COMMENT_ID = "commentId"
+        const val RESULT_CLASS_CHANGED = "classChanged"
     }
 }

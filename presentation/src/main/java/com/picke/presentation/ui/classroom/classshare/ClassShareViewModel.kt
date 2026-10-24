@@ -3,12 +3,15 @@ package com.picke.presentation.ui.classroom.classshare
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareMutation
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.toUiModel
+import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +25,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassShareViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -52,15 +56,26 @@ class ClassShareViewModel @Inject constructor(
     }
 
     private fun fetchClassShare() {
-        // TODO: API 연동 - 클래스 정보·참여 코드 조회로 교체
-        val classItem =
-            DummyData.dummyMyClasses.firstOrNull { it.id == _uiState.value.classId } ?: return
-        val mutation = ClassShareMutation.ClassShareLoaded(
-            className = classItem.title,
-            deadline = DummyData.dummyClassDeadline,
-            code = DummyData.dummyClassCode,
-            battle = DummyData.dummyClassBattles.first()
-        )
-        _uiState.update { reduce(it, mutation) }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                sendEvent(ClassShareUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val mutation = ClassShareMutation.ClassShareLoaded(
+                className = classDetail.name,
+                deadline = parseServerDateTime(classDetail.closeAt),
+                code = classDetail.inviteCode
+            )
+            _uiState.update { reduce(it, mutation) }
+
+            val battleType = ClassBattleType.from(classDetail.battleType)
+            classroomUseCases.getClassBattleUseCase(classId)
+                .onSuccess { classBattle ->
+                    val battle = classBattle.toUiModel(battleType)
+                    _uiState.update { reduce(it, ClassShareMutation.BattleLoaded(battle)) }
+                }
+                .onFailure { sendEvent(ClassShareUiEvent.ShowLoadFailedToast) }
+        }
     }
 }

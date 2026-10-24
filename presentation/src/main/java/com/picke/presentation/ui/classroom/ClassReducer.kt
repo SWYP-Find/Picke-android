@@ -10,14 +10,7 @@ internal fun reduce(state: ClassUiState, action: ClassUiAction): ClassUiState =
     when (action) {
         is ClassUiAction.SideEffectOnly -> state
 
-        ClassUiAction.CreateClick -> state.copy(
-            ticketDialog = when (state.ticketStatus) {
-                ClassTicketStatus.NONE -> ClassTicketDialog.NO_PERMISSION
-                ClassTicketStatus.UNREGISTERED -> ClassTicketDialog.UNREGISTERED
-                ClassTicketStatus.EXPIRED -> ClassTicketDialog.EXPIRED
-                ClassTicketStatus.ACTIVE, null -> null
-            }
-        )
+        ClassUiAction.CreateClick -> state.copy(isRequesting = true)
 
         ClassUiAction.TicketDialogRegisterClick -> state.copy(ticketDialog = null)
 
@@ -26,5 +19,16 @@ internal fun reduce(state: ClassUiState, action: ClassUiAction): ClassUiState =
 
 internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState =
     when (mutation) {
-        is ClassMutation.TicketStatusLoaded -> state.copy(ticketStatus = mutation.ticketStatus)
+        is ClassMutation.TicketStatusLoaded -> state.copy(
+            ticketStatus = mutation.ticketStatus,
+            ticketDialog = when (mutation.ticketStatus) {
+                ClassTicketStatus.NONE -> ClassTicketDialog.NO_PERMISSION
+                ClassTicketStatus.UNREGISTERED -> ClassTicketDialog.UNREGISTERED
+                ClassTicketStatus.EXPIRED -> ClassTicketDialog.EXPIRED
+                ClassTicketStatus.ACTIVE -> null
+            },
+            isRequesting = false
+        )
+
+        ClassMutation.RequestFailed -> state.copy(isRequesting = false)
     }

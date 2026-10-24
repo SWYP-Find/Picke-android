@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.ticket
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +40,10 @@ fun TicketScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -46,6 +52,9 @@ fun TicketScreen(
                 TicketUiEvent.NavigateToRegister -> onNavigateToRegister()
 
                 TicketUiEvent.ReplaceWithRegister -> onReplaceWithRegister()
+
+                TicketUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -68,14 +77,14 @@ private fun TicketContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
-            title = stringResource(R.string.ticket_title),
-            onBackClick = { onAction(TicketUiAction.BackClick) },
-            backgroundColor = PickeTheme.colors.backgroundBeige,
-            titleColor = PickeTheme.colors.textSubtler
-        )
-
         if (!uiState.isLoading) {
+            CustomTopAppBar(
+                title = stringResource(R.string.ticket_title),
+                onBackClick = { onAction(TicketUiAction.BackClick) },
+                backgroundColor = PickeTheme.colors.backgroundBeige,
+                titleColor = PickeTheme.colors.textSubtler
+            )
+
             Column(
                 modifier = Modifier
                     .weight(1f)

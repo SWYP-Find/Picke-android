@@ -7,7 +7,7 @@ sealed interface ClassJoinUiAction {
 
     data object BackClick : ClassJoinUiAction
 
-    data object NextClick : SideEffectOnly
+    data object NextClick : ClassJoinUiAction
 
     data class CodeChange(val code: String) : StateOnly
 

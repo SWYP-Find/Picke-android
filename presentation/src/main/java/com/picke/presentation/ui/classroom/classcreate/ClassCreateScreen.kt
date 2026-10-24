@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classcreate
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +63,10 @@ fun ClassCreateScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     BackHandler { viewModel.onAction(ClassCreateUiAction.BackClick) }
 
     LaunchedEffect(Unit) {
@@ -71,6 +77,9 @@ fun ClassCreateScreen(
                 is ClassCreateUiEvent.NavigateToShare -> onNavigateToShare(event.classId)
 
                 is ClassCreateUiEvent.NavigateToBattlePreview -> onNavigateToBattlePreview(event.battleId)
+
+                ClassCreateUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

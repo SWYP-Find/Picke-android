@@ -4,6 +4,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import com.picke.domain.feature.auth.repository.AuthRepository
 import com.picke.domain.feature.battle.repository.BattleRepository
+import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import com.picke.domain.feature.comment.repository.CommentRepository
 import com.picke.domain.feature.device.repository.DeviceRepository
 import com.picke.domain.feature.explore.repository.ExploreRepository
@@ -35,6 +36,22 @@ import com.picke.domain.feature.auth.usecase.WithdrawUseCase
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.classroom.usecase.CreateClassUseCase
+import com.picke.domain.feature.classroom.usecase.DeleteClassUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassBattleRecommendationsUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassBattleUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
+import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.GetMyClassesUseCase
+import com.picke.domain.feature.classroom.usecase.JoinClassUseCase
+import com.picke.domain.feature.classroom.usecase.LeaveClassUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassJoinUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
+import com.picke.domain.feature.classroom.usecase.UpdateMyDisplayNameUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
 import com.picke.domain.feature.comment.usecase.DeleteCommentUseCase
@@ -156,6 +173,29 @@ object UseCaseModule {
         return BattleUseCases(
             getBattleDetailUseCase = GetBattleDetailUseCase(battleRepository),
             getBattleStatusUseCase = GetBattleStatusUseCase(battleRepository)
+        )
+    }
+
+    @Provides
+    fun provideClassroomUseCases(
+        classroomRepository: ClassroomRepository
+    ): ClassroomUseCases {
+        return ClassroomUseCases(
+            getMyClassTicketUseCase = GetMyClassTicketUseCase(classroomRepository),
+            previewClassTicketUseCase = PreviewClassTicketUseCase(classroomRepository),
+            registerClassTicketUseCase = RegisterClassTicketUseCase(classroomRepository),
+            getMyClassesUseCase = GetMyClassesUseCase(classroomRepository),
+            getClassDetailUseCase = GetClassDetailUseCase(classroomRepository),
+            getClassBattleUseCase = GetClassBattleUseCase(classroomRepository),
+            createClassUseCase = CreateClassUseCase(classroomRepository),
+            deleteClassUseCase = DeleteClassUseCase(classroomRepository),
+            getClassBattleRecommendationsUseCase = GetClassBattleRecommendationsUseCase(classroomRepository),
+            previewClassJoinUseCase = PreviewClassJoinUseCase(classroomRepository),
+            joinClassUseCase = JoinClassUseCase(classroomRepository),
+            getClassMembersUseCase = GetClassMembersUseCase(classroomRepository),
+            updateMyDisplayNameUseCase = UpdateMyDisplayNameUseCase(classroomRepository),
+            leaveClassUseCase = LeaveClassUseCase(classroomRepository),
+            removeMemberUseCase = RemoveMemberUseCase(classroomRepository)
         )
     }
 

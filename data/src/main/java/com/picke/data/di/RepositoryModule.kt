@@ -4,6 +4,7 @@ import com.picke.data.feature.alarm.repository.AlarmRepositoryImpl
 import com.picke.data.feature.attendance.repository.AttendanceRepositoryImpl
 import com.picke.data.feature.auth.repository.AuthRepositoryImpl
 import com.picke.data.feature.battle.repository.BattleRepositoryImpl
+import com.picke.data.feature.classroom.repository.ClassroomRepositoryImpl
 import com.picke.data.feature.comment.repository.CommentRepositoryImpl
 import com.picke.data.feature.device.repository.DeviceRepositoryImpl
 import com.picke.data.feature.explore.repository.ExploreRepositoryImpl
@@ -22,6 +23,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import com.picke.domain.feature.auth.repository.AuthRepository
 import com.picke.domain.feature.battle.repository.BattleRepository
+import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import com.picke.domain.feature.comment.repository.CommentRepository
 import com.picke.domain.feature.device.repository.DeviceRepository
 import com.picke.domain.feature.explore.repository.ExploreRepository
@@ -146,6 +148,12 @@ abstract class RepositoryModule {
     abstract fun bindAttendanceRepository(
         attendanceRepositoryImpl: AttendanceRepositoryImpl
     ): AttendanceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindClassroomRepository(
+        classroomRepositoryImpl: ClassroomRepositoryImpl
+    ): ClassroomRepository
 
     @Binds
     @Singleton

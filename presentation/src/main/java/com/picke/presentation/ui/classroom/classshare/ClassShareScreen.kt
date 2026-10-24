@@ -73,12 +73,17 @@ fun ClassShareScreen(
     val clipboard = LocalClipboard.current
 
     val codeCopiedMessage = stringResource(R.string.class_share_code_copied)
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassShareUiEvent.NavigateBack -> onBackClick()
+
+                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
+
                 is ClassShareUiEvent.ShareCode -> onShareCodeClick(event.code)
+
                 is ClassShareUiEvent.CopyCode -> {
                     clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, event.code)))
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
@@ -86,7 +91,8 @@ fun ClassShareScreen(
                     }
                 }
 
-                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
+                ClassShareUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

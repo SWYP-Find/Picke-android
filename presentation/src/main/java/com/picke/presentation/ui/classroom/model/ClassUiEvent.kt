@@ -13,4 +13,6 @@ sealed interface ClassUiEvent {
     data object NavigateToTicket : ClassUiEvent
 
     data object NavigateToTicketRegister : ClassUiEvent
+
+    data object ShowLoadFailedToast : ClassUiEvent
 }

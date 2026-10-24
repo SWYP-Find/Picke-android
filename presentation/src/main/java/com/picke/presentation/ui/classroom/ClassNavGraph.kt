@@ -89,7 +89,9 @@ fun NavGraphBuilder.classGraph(
 
     composable(
         route = AppRoute.ClassVote.route,
-        arguments = classIdArguments + navArgument(AppRoute.ARG_VOTE_TYPE) { type = NavType.StringType }
+        arguments = classIdArguments + navArgument(AppRoute.ARG_VOTE_TYPE) {
+            type = NavType.StringType
+        }
     ) {
         ClassVoteScreen(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
@@ -124,7 +126,9 @@ fun NavGraphBuilder.classGraph(
 
     composable(
         route = AppRoute.ClassScenario.route,
-        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.LongType }
+        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) {
+            type = NavType.LongType
+        }
     ) { backStackEntry ->
         val classId = backStackEntry.arguments?.getLong(AppRoute.ARG_CLASS_ID) ?: 0L
         val battleId = backStackEntry.arguments?.getLong(AppRoute.ARG_BATTLE_ID) ?: 0L
@@ -141,7 +145,9 @@ fun NavGraphBuilder.classGraph(
 
     composable(
         route = AppRoute.ClassPerspective.route,
-        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType }
+        arguments = classIdArguments + navArgument(AppRoute.ARG_BATTLE_ID) {
+            type = NavType.StringType
+        }
     ) { backStackEntry ->
         val classId = backStackEntry.arguments?.getLong(AppRoute.ARG_CLASS_ID) ?: 0L
         PerspectiveScreen(
@@ -152,7 +158,9 @@ fun NavGraphBuilder.classGraph(
                 }
             },
             onMoreClick = { itemId, firstOptionId ->
-                navController.navigate(AppRoute.Comment.createRoute(itemId.toString(), firstOptionId))
+                navController.navigate(
+                    AppRoute.Comment.createRoute(itemId.toString(), firstOptionId)
+                )
             }
         )
     }
@@ -188,6 +196,12 @@ fun NavGraphBuilder.classGraph(
                 onResultClick = { classId ->
                     navController.navigate(AppRoute.ClassResult.createRoute(classId))
                 },
+                onClassRemoved = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        AppRoute.RESULT_CLASS_CHANGED, true
+                    )
+                    navController.popBackStack()
+                },
                 modifier = contentModifier
             )
         }
@@ -197,6 +211,12 @@ fun NavGraphBuilder.classGraph(
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassMemberScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
+                onMembersChanged = dropUnlessResumed {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        AppRoute.RESULT_CLASS_CHANGED, true
+                    )
+                    navController.popBackStack()
+                },
                 modifier = contentModifier
             )
         }

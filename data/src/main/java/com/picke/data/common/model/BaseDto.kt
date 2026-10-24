@@ -9,8 +9,8 @@ data class BaseResponse<T>(
 )
 
 data class ErrorResponse(
-    val code: String,
-    val message: String
+    val code: String?,
+    val message: String?
 )
 
 fun <T> BaseResponse<T>.toResult(fallbackMessage: String = "알 수 없는 오류가 발생했습니다."): Result<T> {
@@ -18,7 +18,7 @@ fun <T> BaseResponse<T>.toResult(fallbackMessage: String = "알 수 없는 오�
     return if (statusCode == 200 && body != null) {
         Result.success(body)
     } else {
-        Result.failure(ApiErrorException(error?.message ?: fallbackMessage))
+        Result.failure(ApiErrorException(error?.message ?: fallbackMessage, error?.code))
     }
 }
 
@@ -26,6 +26,6 @@ fun BaseResponse<*>.toUnitResult(fallbackMessage: String = "알 수 없는 오�
     return if (statusCode == 200) {
         Result.success(Unit)
     } else {
-        Result.failure(ApiErrorException(error?.message ?: fallbackMessage))
+        Result.failure(ApiErrorException(error?.message ?: fallbackMessage, error?.code))
     }
 }

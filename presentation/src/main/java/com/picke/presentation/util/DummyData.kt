@@ -13,7 +13,6 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultStanceUi
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
@@ -1159,9 +1158,6 @@ object DummyData {
     val dummyParticipantClassMembers = dummyClassMembers.map { member -> member.copy(isMe = member.memberId == 3L) }
 
     val dummyTicket = TicketUiModel(
-        ticketId = 1L,
-        name = "클래스 30인 이용권",
-        description = "함께 생각을 나누는 모임을 시작하세요",
         maxMemberCount = 30,
         durationMonths = 6
     )
@@ -1172,6 +1168,4 @@ object DummyData {
     )
 
     val dummyRegisteredTickets = listOf(dummyRegisteredTicket)
-
-    val dummyClassTicketStatus = ClassTicketStatus.ACTIVE
 }

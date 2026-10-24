@@ -2,11 +2,15 @@ package com.picke.presentation.ui.my.ticket
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.my.ticket.model.TicketMutation
 import com.picke.presentation.ui.my.ticket.model.TicketUiAction
 import com.picke.presentation.ui.my.ticket.model.TicketUiEvent
 import com.picke.presentation.ui.my.ticket.model.TicketUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.my.ticket.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +23,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TicketViewModel @Inject constructor() : ViewModel() {
+class TicketViewModel @Inject constructor(
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TicketUiState())
     val uiState: StateFlow<TicketUiState> = _uiState.asStateFlow()
@@ -44,12 +50,25 @@ class TicketViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchTickets() {
-        // TODO: API 연동 - 등록된 이용권 목록 조회로 교체
-        val tickets = DummyData.dummyRegisteredTickets
-        if (tickets.isEmpty()) {
-            sendEvent(TicketUiEvent.ReplaceWithRegister)
-            return
+        viewModelScope.launch {
+            classroomUseCases.getMyClassTicketUseCase()
+                .onSuccess { ticket ->
+                    if (ClassTicketStatus.from(ticket.status) == ClassTicketStatus.ACTIVE) {
+                        _uiState.update {
+                            reduce(it, TicketMutation.TicketsLoaded(listOf(ticket.toUiModel())))
+                        }
+                    } else {
+                        sendEvent(TicketUiEvent.ReplaceWithRegister)
+                    }
+                }
+                .onFailure { exception ->
+                    if ((exception as? ApiErrorException)?.code == ClassErrorCode.TICKET_404) {
+                        sendEvent(TicketUiEvent.ReplaceWithRegister)
+                    } else {
+                        _uiState.update { reduce(it, TicketMutation.TicketsLoadFailed) }
+                        sendEvent(TicketUiEvent.ShowLoadFailedToast)
+                    }
+                }
         }
-        _uiState.update { reduce(it, TicketMutation.TicketsLoaded(tickets)) }
     }
 }

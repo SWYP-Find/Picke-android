@@ -2,12 +2,15 @@ package com.picke.presentation.ui.classroom.classjoin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinDialog
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinMutation
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinStep
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiAction
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiEvent
 import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +23,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ClassJoinViewModel @Inject constructor() : ViewModel() {
+class ClassJoinViewModel @Inject constructor(
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassJoinUiState())
     val uiState: StateFlow<ClassJoinUiState> = _uiState.asStateFlow()
@@ -42,8 +47,8 @@ class ClassJoinViewModel @Inject constructor() : ViewModel() {
 
             ClassJoinUiAction.NextClick -> if (state.isNextEnabled) {
                 when (state.step) {
-                    ClassJoinStep.CODE -> verifyCode()
-                    ClassJoinStep.NAME -> enterClass()
+                    ClassJoinStep.CODE -> verifyCode(state.code)
+                    ClassJoinStep.NAME -> enterClass(state.code, state.name)
                 }
             }
 
@@ -55,13 +60,43 @@ class ClassJoinViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun verifyCode() {
-        // TODO: API 연동 - 참여 코드 검증 요청 성공 시 반영, 실패 시 오류 종류에 맞는 JoinFailed 반영
-        _uiState.update { reduce(it, ClassJoinMutation.CodeVerified) }
+    private fun verifyCode(code: String) {
+        viewModelScope.launch {
+            classroomUseCases.previewClassJoinUseCase(code)
+                .onSuccess { _uiState.update { reduce(it, ClassJoinMutation.CodeVerified) } }
+                .onFailure { exception -> handleJoinFailure(exception) }
+        }
     }
 
-    private fun enterClass() {
-        // TODO: API 연동 - 클래스 참여 요청 후 응답 classId로 이동, 이름 중복 시 isNameDuplicated 표시, 그 밖의 실패는 JoinFailed 반영
-        sendEvent(ClassJoinUiEvent.NavigateToClassDetail(DummyData.dummyMyClasses[1].id))
+    private fun enterClass(code: String, name: String) {
+        viewModelScope.launch {
+            classroomUseCases.joinClassUseCase(code, name.trim())
+                .onSuccess { classDetail ->
+                    sendEvent(ClassJoinUiEvent.NavigateToClassDetail(classDetail.classId))
+                }
+                .onFailure { exception -> handleJoinFailure(exception) }
+        }
+    }
+
+    private fun handleJoinFailure(exception: Throwable) {
+        val code = (exception as? ApiErrorException)?.code
+        if (code == ClassErrorCode.CLASS_409_NAME) {
+            _uiState.update { reduce(it, ClassJoinMutation.NameDuplicated) }
+            return
+        }
+        val dialog = when (code) {
+            ClassErrorCode.CLASS_404_CODE, ClassErrorCode.CLASS_403_REMOVED -> ClassJoinDialog.INVALID_CODE
+            ClassErrorCode.CLASS_409_FULL -> ClassJoinDialog.CLASS_FULL
+            ClassErrorCode.CLASS_409_CLOSED, ClassErrorCode.CLASS_409_TICKET_ENDED -> ClassJoinDialog.CLASS_CLOSED
+            ClassErrorCode.CLASS_409_DELETED -> ClassJoinDialog.CLASS_DELETED
+            ClassErrorCode.CLASS_409_JOINED, ClassErrorCode.CLASS_409_OWNER -> ClassJoinDialog.ALREADY_JOINED
+            else -> null
+        }
+        if (dialog != null) {
+            _uiState.update { reduce(it, ClassJoinMutation.JoinFailed(dialog)) }
+        } else {
+            _uiState.update { reduce(it, ClassJoinMutation.RequestFailed) }
+            sendEvent(ClassJoinUiEvent.ShowActionFailedToast)
+        }
     }
 }

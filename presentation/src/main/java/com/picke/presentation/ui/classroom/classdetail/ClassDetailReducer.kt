@@ -9,16 +9,35 @@ internal fun reduce(state: ClassDetailUiState, action: ClassDetailUiAction): Cla
         is ClassDetailUiAction.SideEffectOnly -> state
 
         ClassDetailUiAction.MoreClick -> state.copy(isManageSheetVisible = true)
+
         ClassDetailUiAction.ManageEditClick -> state.copy(isManageSheetVisible = false)
+
         ClassDetailUiAction.ManageShareCodeClick -> state.copy(isManageSheetVisible = false)
-        ClassDetailUiAction.ManageDeleteClick -> state.copy(isManageSheetVisible = false, isDeleteDialogVisible = true)
-        ClassDetailUiAction.ManageLeaveClick -> state.copy(isManageSheetVisible = false, isLeaveDialogVisible = true)
+
+        ClassDetailUiAction.ManageDeleteClick -> state.copy(
+            isManageSheetVisible = false,
+            isDeleteDialogVisible = true
+        )
+
+        ClassDetailUiAction.ManageLeaveClick -> state.copy(
+            isManageSheetVisible = false,
+            isLeaveDialogVisible = true
+        )
+
         ClassDetailUiAction.ManageSheetDismiss -> state.copy(isManageSheetVisible = false)
 
-        ClassDetailUiAction.DeleteConfirm -> state.copy(isDeleteDialogVisible = false)
+        ClassDetailUiAction.DeleteConfirm -> state.copy(
+            isDeleteDialogVisible = false,
+            isRequesting = true
+        )
+
         ClassDetailUiAction.DeleteDialogDismiss -> state.copy(isDeleteDialogVisible = false)
 
-        ClassDetailUiAction.LeaveConfirm -> state.copy(isLeaveDialogVisible = false)
+        ClassDetailUiAction.LeaveConfirm -> state.copy(
+            isLeaveDialogVisible = false,
+            isRequesting = true
+        )
+
         ClassDetailUiAction.LeaveDialogDismiss -> state.copy(isLeaveDialogVisible = false)
     }
 
@@ -29,7 +48,10 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
             isInProgress = mutation.isInProgress,
             title = mutation.title,
             memberCount = mutation.memberCount,
-            deadline = mutation.deadline,
-            battle = mutation.battle
+            deadline = mutation.deadline
         )
+
+        is ClassDetailMutation.BattleLoaded -> state.copy(battle = mutation.battle)
+
+        ClassDetailMutation.RequestFailed -> state.copy(isRequesting = false)
     }

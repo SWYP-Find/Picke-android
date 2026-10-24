@@ -5,4 +5,6 @@ sealed interface TicketRegisterCompleteUiEvent {
     data object NavigateBack : TicketRegisterCompleteUiEvent
 
     data object NavigateToTicket : TicketRegisterCompleteUiEvent
+
+    data object ShowLoadFailedToast : TicketRegisterCompleteUiEvent
 }

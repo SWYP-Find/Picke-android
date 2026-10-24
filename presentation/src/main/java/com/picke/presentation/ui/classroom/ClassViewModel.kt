@@ -11,7 +11,6 @@ import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +32,6 @@ class ClassViewModel @Inject constructor(
     private val _uiEvent = Channel<ClassUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<ClassUiEvent> = _uiEvent.receiveAsFlow()
 
-    private var ticketCheckJob: Job? = null
-
     fun onAction(action: ClassUiAction) {
         val previousState = _uiState.value
         _uiState.update { reduce(it, action) }
@@ -51,7 +48,7 @@ class ClassViewModel @Inject constructor(
 
             ClassUiAction.MyClassClick -> sendEvent(ClassUiEvent.NavigateToMyClass)
 
-            ClassUiAction.CreateClick -> checkTicketStatus()
+            ClassUiAction.CreateClick -> if (!state.isRequesting) checkTicketStatus()
 
             ClassUiAction.TicketClick -> sendEvent(ClassUiEvent.NavigateToTicket)
 
@@ -64,8 +61,7 @@ class ClassViewModel @Inject constructor(
     }
 
     private fun checkTicketStatus() {
-        if (ticketCheckJob?.isActive == true) return
-        ticketCheckJob = viewModelScope.launch {
+        viewModelScope.launch {
             classroomUseCases.getMyClassTicketUseCase()
                 .onSuccess { ticket ->
                     applyTicketStatus(ClassTicketStatus.from(ticket.status))
@@ -74,6 +70,7 @@ class ClassViewModel @Inject constructor(
                     if ((exception as? ApiErrorException)?.code == ClassErrorCode.TICKET_404) {
                         applyTicketStatus(ClassTicketStatus.NONE)
                     } else {
+                        _uiState.update { reduce(it, ClassMutation.RequestFailed) }
                         sendEvent(ClassUiEvent.ShowLoadFailedToast)
                     }
                 }

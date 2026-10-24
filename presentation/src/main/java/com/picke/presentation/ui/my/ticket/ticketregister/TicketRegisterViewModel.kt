@@ -52,7 +52,7 @@ class TicketRegisterViewModel @Inject constructor(
                 verifyCode(state.code)
             }
 
-            TicketRegisterUiAction.RegisterClick -> if (state.ticket != null) {
+            TicketRegisterUiAction.RegisterClick -> if (state.isRegisterEnabled) {
                 registerTicket(state.code)
             }
 

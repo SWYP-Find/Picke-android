@@ -14,7 +14,14 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
-        ClassCreateUiAction.NextClick -> state.copy(step = state.nextStep ?: state.step)
+        ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
+            state.copy(
+                step = state.nextStep ?: state.step,
+                isRequesting = state.nextStep == null || state.nextStep == ClassCreateStep.SELECTION
+            )
+        } else {
+            state
+        }
 
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
 
@@ -34,7 +41,11 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
 
-        ClassCreateUiAction.RegenerateClick -> state.copy(selectedBattleId = null)
+        ClassCreateUiAction.RegenerateClick -> if (state.isRequesting) {
+            state
+        } else {
+            state.copy(selectedBattleId = null, isRequesting = true)
+        }
 
         is ClassCreateUiAction.ClassNameChange -> state.copy(
             className = action.name,
@@ -67,7 +78,8 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
     when (mutation) {
         is ClassCreateMutation.BattlesLoaded -> state.copy(
             battles = mutation.battles,
-            selectedBattleId = null
+            selectedBattleId = null,
+            isRequesting = false
         )
 
         is ClassCreateMutation.DeadlineReset -> state.copy(
@@ -79,10 +91,14 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
 
         is ClassCreateMutation.SettingInvalid -> state.copy(
             isClassNameInvalid = mutation.isClassNameInvalid,
-            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange
+            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange,
+            isRequesting = false
         )
 
-        is ClassCreateMutation.RequestFailed -> state.copy(errorDialog = mutation.errorDialog)
+        is ClassCreateMutation.RequestFailed -> state.copy(
+            errorDialog = mutation.errorDialog,
+            isRequesting = false
+        )
     }
 
 private fun List<ClassCategory>.toggle(category: ClassCategory): List<ClassCategory> =

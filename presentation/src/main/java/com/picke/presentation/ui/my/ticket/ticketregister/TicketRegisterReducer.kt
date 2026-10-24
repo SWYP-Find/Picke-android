@@ -21,6 +21,12 @@ internal fun reduce(
         is TicketRegisterUiAction.CodeChange ->
             state.copy(code = action.code.toTicketCode())
 
+        TicketRegisterUiAction.CodeCheckClick ->
+            if (state.isCodeCheckEnabled) state.copy(isRequesting = true) else state
+
+        TicketRegisterUiAction.RegisterClick ->
+            if (state.isRegisterEnabled) state.copy(isRequesting = true) else state
+
         TicketRegisterUiAction.DialogBackClick -> state.copy(dialog = null)
 
         TicketRegisterUiAction.DialogDismiss -> state.copy(dialog = null)
@@ -33,10 +39,14 @@ internal fun reduce(
     when (mutation) {
         is TicketRegisterMutation.CodeVerified -> state.copy(
             step = TicketRegisterStep.CONFIRM,
-            ticket = mutation.ticket
+            ticket = mutation.ticket,
+            isRequesting = false
         )
 
-        is TicketRegisterMutation.RequestFailed -> state.copy(dialog = mutation.dialog)
+        is TicketRegisterMutation.RequestFailed -> state.copy(
+            dialog = mutation.dialog,
+            isRequesting = false
+        )
     }
 
 private fun String.toTicketCode(): String =

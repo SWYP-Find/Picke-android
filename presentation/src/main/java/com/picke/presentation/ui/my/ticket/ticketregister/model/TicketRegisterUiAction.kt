@@ -10,9 +10,9 @@ sealed interface TicketRegisterUiAction {
 
     data class CodeChange(val code: String) : StateOnly
 
-    data object CodeCheckClick : SideEffectOnly
+    data object CodeCheckClick : TicketRegisterUiAction
 
-    data object RegisterClick : SideEffectOnly
+    data object RegisterClick : TicketRegisterUiAction
 
     data object DialogBackClick : TicketRegisterUiAction
 

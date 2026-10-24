@@ -17,7 +17,6 @@ import com.picke.presentation.ui.classroom.model.toClassBattleUiModel
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,8 +42,6 @@ class ClassCreateViewModel @Inject constructor(
     private val _uiEvent = Channel<ClassCreateUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<ClassCreateUiEvent> = _uiEvent.receiveAsFlow()
 
-    private var createClassJob: Job? = null
-
     init {
         fetchTicketEndDate()
         resetDeadline()
@@ -62,7 +59,7 @@ class ClassCreateViewModel @Inject constructor(
                 sendEvent(ClassCreateUiEvent.NavigateBack)
             }
 
-            ClassCreateUiAction.NextClick -> {
+            ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
                 when (state.nextStep) {
                     null -> createClass()
                     ClassCreateStep.SELECTION -> fetchRecommendedBattles()
@@ -73,7 +70,7 @@ class ClassCreateViewModel @Inject constructor(
             is ClassCreateUiAction.BattlePreviewClick ->
                 sendEvent(ClassCreateUiEvent.NavigateToBattlePreview(action.battleId))
 
-            ClassCreateUiAction.RegenerateClick -> fetchRecommendedBattles()
+            ClassCreateUiAction.RegenerateClick -> if (!state.isRequesting) fetchRecommendedBattles()
 
             is ClassCreateUiAction.DeadlineToggle -> if (action.isEnabled) resetDeadline()
 
@@ -167,8 +164,7 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        if (createClassJob?.isActive == true) return
-        createClassJob = viewModelScope.launch {
+        viewModelScope.launch {
             classroomUseCases.createClassUseCase(
                 name = state.className.trim(),
                 battleId = battleId,

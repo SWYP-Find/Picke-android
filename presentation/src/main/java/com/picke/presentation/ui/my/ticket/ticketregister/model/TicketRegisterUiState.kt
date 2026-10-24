@@ -6,8 +6,12 @@ data class TicketRegisterUiState(
     val step: TicketRegisterStep = TicketRegisterStep.CODE,
     val code: String = "",
     val ticket: TicketUiModel? = null,
-    val dialog: TicketRegisterDialog? = null
+    val dialog: TicketRegisterDialog? = null,
+    val isRequesting: Boolean = false
 ) {
     val isCodeCheckEnabled: Boolean
-        get() = code.isNotBlank()
+        get() = !isRequesting && code.isNotBlank()
+
+    internal val isRegisterEnabled: Boolean
+        get() = !isRequesting && ticket != null
 }

@@ -30,8 +30,8 @@ android {
         applicationId = "com.picke.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 32
-        versionName = "1.1.10"
+        versionCode = 33
+        versionName = "1.1.11"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // 앱 레벨 Manifest에 주입할 값들

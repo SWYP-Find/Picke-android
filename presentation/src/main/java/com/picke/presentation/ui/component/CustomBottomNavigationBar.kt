@@ -20,12 +20,13 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.util.FeatureFlags
 
-private val bottomNavItems = listOf(
+private val bottomNavItems = listOfNotNull(
     BottomNavItem.Home,
     BottomNavItem.Explore,
     BottomNavItem.TodayBattle,
-    BottomNavItem.Class,
+    BottomNavItem.Class.takeIf { FeatureFlags.CLASS_TAB_ENABLED },
     BottomNavItem.My
 )
 
@@ -53,7 +54,8 @@ fun CustomBottomNavigationBar(
             onTabClick(item)
 
             when {
-                item == BottomNavItem.TodayBattle || item == BottomNavItem.Class -> onRootTabClick(item)
+                item == BottomNavItem.TodayBattle || item == BottomNavItem.Class ->
+                    onRootTabClick(item)
 
                 activeTabRoute == item.route -> {
                     if (navBackStackEntry?.destination?.route == item.route) {

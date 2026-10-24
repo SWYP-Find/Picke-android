@@ -11,13 +11,13 @@ sealed interface ClassMemberUiAction {
 
     data object EditNameClick : StateOnly
 
+    data class RemoveClick(val member: ClassMemberUiModel) : StateOnly
+
     data class EditingNameChange(val name: String) : StateOnly
 
     data object NameConfirm : ClassMemberUiAction
 
     data object NameSheetDismiss : StateOnly
-
-    data class RemoveClick(val member: ClassMemberUiModel) : StateOnly
 
     data object RemoveConfirm : ClassMemberUiAction
 

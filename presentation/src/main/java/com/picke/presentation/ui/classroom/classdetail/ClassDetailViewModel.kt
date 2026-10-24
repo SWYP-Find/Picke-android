@@ -54,22 +54,29 @@ class ClassDetailViewModel @Inject constructor(
 
     private fun handleSideEffect(state: ClassDetailUiState, action: ClassDetailUiAction) {
         when (action) {
+            is ClassDetailUiAction.StateOnly -> Unit
+
             ClassDetailUiAction.BackClick -> sendEvent(ClassDetailUiEvent.NavigateBack)
+
             ClassDetailUiAction.MemberClick -> sendEvent(ClassDetailUiEvent.NavigateToMember(state.classId))
-            ClassDetailUiAction.BattleClick -> startBattle(state)
-            ClassDetailUiAction.ResultClick -> sendEvent(ClassDetailUiEvent.NavigateToResult(state.classId))
+
             ClassDetailUiAction.DeadlineEditClick -> sendEvent(
                 ClassDetailUiEvent.NavigateToEdit(state.classId)
             )
 
+            ClassDetailUiAction.BattleClick -> startBattle(state)
+
+            ClassDetailUiAction.ResultClick -> sendEvent(ClassDetailUiEvent.NavigateToResult(state.classId))
+
             ClassDetailUiAction.ManageEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
+
             ClassDetailUiAction.ManageShareCodeClick -> sendEvent(
                 ClassDetailUiEvent.NavigateToShare(state.classId)
             )
 
             ClassDetailUiAction.DeleteConfirm -> if (!state.isRequesting) deleteClass()
+
             ClassDetailUiAction.LeaveConfirm -> if (!state.isRequesting) leaveClass()
-            is ClassDetailUiAction.StateOnly -> Unit
         }
     }
 

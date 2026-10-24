@@ -23,13 +23,9 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
             state
         }
 
-        ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
-
         is ClassCreateUiAction.MethodSelect -> state.copy(method = action.method)
 
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
-
-        ClassCreateUiAction.GuideSheetDismiss -> state.copy(guideMethod = null)
 
         is ClassCreateUiAction.TopicChange -> state.copy(topic = action.topic)
 
@@ -39,13 +35,15 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
             selectedCategories = state.selectedCategories.toggle(action.category)
         )
 
-        is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
+        ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
 
         ClassCreateUiAction.RegenerateClick -> if (state.isRequesting) {
             state
         } else {
             state.copy(selectedBattleId = null, isRequesting = true)
         }
+
+        is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
 
         is ClassCreateUiAction.ClassNameChange -> state.copy(
             className = action.name,
@@ -59,6 +57,12 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.DeadlineFieldClick -> state.copy(isDeadlineSheetVisible = state.isDeadlineEnabled)
 
+        is ClassCreateUiAction.CommentRequiredToggle -> state.copy(isCommentRequired = action.isRequired)
+
+        is ClassCreateUiAction.OperatorJoinToggle -> state.copy(isOperatorJoin = action.isJoined)
+
+        ClassCreateUiAction.GuideSheetDismiss -> state.copy(guideMethod = null)
+
         is ClassCreateUiAction.DeadlineConfirm -> state.copy(
             deadline = action.deadline,
             isDeadlineSheetVisible = false,
@@ -67,32 +71,28 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
 
-        is ClassCreateUiAction.CommentRequiredToggle -> state.copy(isCommentRequired = action.isRequired)
-
-        is ClassCreateUiAction.OperatorJoinToggle -> state.copy(isOperatorJoin = action.isJoined)
-
         ClassCreateUiAction.ErrorDialogDismiss -> state.copy(errorDialog = null)
     }
 
 internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState =
     when (mutation) {
+        is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
+
         is ClassCreateMutation.BattlesLoaded -> state.copy(
             battles = mutation.battles,
             selectedBattleId = null,
             isRequesting = false
         )
 
-        is ClassCreateMutation.DeadlineReset -> state.copy(
-            deadline = mutation.deadline,
-            isDeadlineOutOfRange = false
-        )
-
-        is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
-
         is ClassCreateMutation.SettingInvalid -> state.copy(
             isClassNameInvalid = mutation.isClassNameInvalid,
             isDeadlineOutOfRange = mutation.isDeadlineOutOfRange,
             isRequesting = false
+        )
+
+        is ClassCreateMutation.DeadlineReset -> state.copy(
+            deadline = mutation.deadline,
+            isDeadlineOutOfRange = false
         )
 
         is ClassCreateMutation.RequestFailed -> state.copy(

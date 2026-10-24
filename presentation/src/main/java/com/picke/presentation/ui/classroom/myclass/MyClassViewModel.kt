@@ -49,17 +49,22 @@ class MyClassViewModel @Inject constructor(
 
     private fun handleSideEffect(state: MyClassUiState, action: MyClassUiAction) {
         when (action) {
+            is MyClassUiAction.StateOnly -> Unit
+
             MyClassUiAction.BackClick -> sendEvent(MyClassUiEvent.NavigateBack)
+
             is MyClassUiAction.ClassClick -> sendEvent(MyClassUiEvent.NavigateToDetail(action.classId))
+
             // TODO: API 연동 - 클래스 정보 수정 화면 연결
             MyClassUiAction.ManageEditClick -> Unit
+
             MyClassUiAction.ManageShareCodeClick -> state.managingClassId?.let { classId ->
                 sendEvent(MyClassUiEvent.NavigateToShare(classId))
             }
 
             MyClassUiAction.DeleteConfirm -> if (!state.isRequesting) state.managingClassId?.let(::deleteClass)
+
             MyClassUiAction.LeaveConfirm -> if (!state.isRequesting) state.managingClassId?.let(::leaveClass)
-            is MyClassUiAction.StateOnly -> Unit
         }
     }
 

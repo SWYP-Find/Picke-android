@@ -55,6 +55,8 @@ class ClassCreateViewModel @Inject constructor(
 
     private fun handleSideEffect(state: ClassCreateUiState, action: ClassCreateUiAction) {
         when (action) {
+            is ClassCreateUiAction.StateOnly -> Unit
+
             ClassCreateUiAction.BackClick -> if (state.previousStep == null) {
                 sendEvent(ClassCreateUiEvent.NavigateBack)
             }
@@ -67,14 +69,12 @@ class ClassCreateViewModel @Inject constructor(
                 }
             }
 
+            ClassCreateUiAction.RegenerateClick -> if (!state.isRequesting) fetchRecommendedBattles()
+
             is ClassCreateUiAction.BattlePreviewClick ->
                 sendEvent(ClassCreateUiEvent.NavigateToBattlePreview(action.battleId))
 
-            ClassCreateUiAction.RegenerateClick -> if (!state.isRequesting) fetchRecommendedBattles()
-
             is ClassCreateUiAction.DeadlineToggle -> if (action.isEnabled) resetDeadline()
-
-            is ClassCreateUiAction.StateOnly -> Unit
         }
     }
 

@@ -80,6 +80,8 @@ fun ClassShareScreen(
             when (event) {
                 ClassShareUiEvent.NavigateBack -> onBackClick()
 
+                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
+
                 is ClassShareUiEvent.ShareCode -> onShareCodeClick(event.code)
 
                 is ClassShareUiEvent.CopyCode -> {
@@ -88,8 +90,6 @@ fun ClassShareScreen(
                         Toast.makeText(context, codeCopiedMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
 
                 ClassShareUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()

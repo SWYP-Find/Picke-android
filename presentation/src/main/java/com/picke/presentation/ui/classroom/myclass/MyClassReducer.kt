@@ -54,12 +54,12 @@ internal fun reduce(state: MyClassUiState, mutation: MyClassMutation): MyClassUi
 
         MyClassMutation.ClassesLoadFailed -> state.copy(isLoading = false)
 
-        is MyClassMutation.ClassLeft -> state.copy(
+        is MyClassMutation.ClassDeleted -> state.copy(
             classes = state.classes.filterNot { it.id == mutation.classId },
             isRequesting = false
         )
 
-        is MyClassMutation.ClassDeleted -> state.copy(
+        is MyClassMutation.ClassLeft -> state.copy(
             classes = state.classes.filterNot { it.id == mutation.classId },
             isRequesting = false
         )

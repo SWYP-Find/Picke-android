@@ -15,13 +15,13 @@ internal fun reduce(state: ClassMemberUiState, action: ClassMemberUiAction): Cla
             editingName = state.myName
         )
 
+        is ClassMemberUiAction.RemoveClick -> state.copy(removingMember = action.member)
+
         is ClassMemberUiAction.EditingNameChange -> state.copy(editingName = action.name)
 
         ClassMemberUiAction.NameConfirm -> if (state.isNameConfirmEnabled) state.copy(isRequesting = true) else state
 
         ClassMemberUiAction.NameSheetDismiss -> state.copy(isNameSheetVisible = false)
-
-        is ClassMemberUiAction.RemoveClick -> state.copy(removingMember = action.member)
 
         ClassMemberUiAction.RemoveConfirm -> if (state.isRemoveConfirmEnabled) {
             state.copy(removingMember = null, isRequesting = true)

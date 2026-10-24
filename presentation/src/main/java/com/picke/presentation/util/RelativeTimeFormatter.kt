@@ -3,9 +3,11 @@ package com.picke.presentation.util
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 private val RELATIVE_TIME_ZONE = ZoneId.of("Asia/Seoul")
+private val SERVER_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
 /**
  * 서버가 내려주는 createdAt 문자열(ISO-8601 계열)을
@@ -55,3 +57,5 @@ internal fun parseServerDateTime(raw: String): LocalDateTime? {
         }
     }
 }
+
+internal fun formatServerDateTime(dateTime: LocalDateTime): String = dateTime.format(SERVER_DATE_TIME_FORMATTER)

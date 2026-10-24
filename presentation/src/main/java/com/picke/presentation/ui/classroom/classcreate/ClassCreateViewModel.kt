@@ -15,6 +15,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.classroom.model.toClassBattleUiModel
 import com.picke.presentation.util.DummyData
+import com.picke.presentation.util.formatServerDateTime
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -169,7 +169,7 @@ class ClassCreateViewModel @Inject constructor(
             classroomUseCases.createClassUseCase(
                 name = state.className.trim(),
                 battleId = battleId,
-                deadline = if (state.isDeadlineEnabled) deadline?.format(SERVER_DATE_TIME_FORMATTER) else null,
+                deadline = if (state.isDeadlineEnabled) deadline?.let(::formatServerDateTime) else null,
                 commentRequired = state.isCommentRequired,
                 ownerParticipates = state.isOperatorJoin
             ).onSuccess { classDetail ->
@@ -192,7 +192,5 @@ class ClassCreateViewModel @Inject constructor(
     companion object {
         private const val RECOMMENDED_BATTLE_SORT = "POPULAR"
         private const val RECOMMENDED_BATTLE_COUNT = 3
-        private val SERVER_DATE_TIME_FORMATTER: DateTimeFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     }
 }

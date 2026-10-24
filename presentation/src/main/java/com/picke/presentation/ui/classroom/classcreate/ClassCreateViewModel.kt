@@ -91,6 +91,7 @@ class ClassCreateViewModel @Inject constructor(
                         reduce(it, ClassCreateMutation.TicketEndDateLoaded(ticketEndDate))
                     }
                 }
+                .onFailure { sendEvent(ClassCreateUiEvent.ShowLoadFailedToast) }
         }
     }
 

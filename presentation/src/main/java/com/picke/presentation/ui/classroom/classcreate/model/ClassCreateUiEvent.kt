@@ -7,4 +7,6 @@ sealed interface ClassCreateUiEvent {
     data class NavigateToShare(val classId: Long) : ClassCreateUiEvent
 
     data class NavigateToBattlePreview(val battleId: Long) : ClassCreateUiEvent
+
+    data object ShowLoadFailedToast : ClassCreateUiEvent
 }

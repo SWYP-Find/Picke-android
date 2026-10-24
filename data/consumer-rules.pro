@@ -1,0 +1,1 @@
+-keep class com.picke.data.**.model.** { *; }

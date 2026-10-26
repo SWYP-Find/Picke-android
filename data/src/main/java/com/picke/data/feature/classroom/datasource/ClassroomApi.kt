@@ -16,6 +16,7 @@ import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicDraftResponseDto
 import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicVersionResponseDto
+import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -56,6 +57,12 @@ interface ClassroomApi {
     @POST("/api/v1/classes")
     suspend fun createClass(
         @Body request: ClassCreateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @PATCH("/api/v1/classes/{classId}")
+    suspend fun updateClass(
+        @Path("classId") classId: Long,
+        @Body request: ClassUpdateRequestDto
     ): BaseResponse<ClassDetailResponseDto>
 
     @DELETE("/api/v1/classes/{classId}")

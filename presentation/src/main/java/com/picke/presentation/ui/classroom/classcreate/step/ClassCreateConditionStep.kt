@@ -11,11 +11,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassLevelTab
 import com.picke.presentation.ui.classroom.classcreate.component.ClassOptionChip
-import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
+import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.theme.PickeTheme

@@ -24,6 +24,8 @@ data class ClassDetailBoard(
     val battleType: String,
     val memberCount: Int,
     val capacity: Int,
+    val deadline: String,
+    val ticketExpiresAt: String,
     val closeAt: String,
     val closed: Boolean,
     val commentRequired: Boolean,

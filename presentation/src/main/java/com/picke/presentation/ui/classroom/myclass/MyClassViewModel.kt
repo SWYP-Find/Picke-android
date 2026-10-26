@@ -55,8 +55,9 @@ class MyClassViewModel @Inject constructor(
 
             is MyClassUiAction.ClassClick -> sendEvent(MyClassUiEvent.NavigateToDetail(action.classId))
 
-            // TODO: API 연동 - 클래스 정보 수정 화면 연결
-            MyClassUiAction.ManageEditClick -> Unit
+            MyClassUiAction.ManageEditClick -> state.managingClassId?.let { classId ->
+                sendEvent(MyClassUiEvent.NavigateToEdit(classId))
+            }
 
             MyClassUiAction.ManageShareCodeClick -> state.managingClassId?.let { classId ->
                 sendEvent(MyClassUiEvent.NavigateToShare(classId))

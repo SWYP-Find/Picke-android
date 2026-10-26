@@ -38,6 +38,7 @@ import com.picke.presentation.util.DummyData
 fun MyClassScreen(
     onBackClick: () -> Unit,
     onClassClick: (classId: Long) -> Unit,
+    onEditClick: (classId: Long) -> Unit,
     onShareCodeClick: (classId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyClassViewModel = hiltViewModel()
@@ -55,6 +56,8 @@ fun MyClassScreen(
                 MyClassUiEvent.NavigateBack -> onBackClick()
 
                 is MyClassUiEvent.NavigateToDetail -> onClassClick(event.classId)
+
+                is MyClassUiEvent.NavigateToEdit -> onEditClick(event.classId)
 
                 is MyClassUiEvent.NavigateToShare -> onShareCodeClick(event.classId)
 

@@ -10,6 +10,7 @@ import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
+import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
@@ -83,6 +84,16 @@ class ClassroomRepositoryImpl @Inject constructor(
         )
         classroomApi.createClass(request)
             .toResult("클래스를 만들지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun updateClass(
+        classId: Long,
+        name: String?,
+        deadline: String?
+    ): Result<ClassDetailBoard> = apiCall {
+        classroomApi.updateClass(classId, ClassUpdateRequestDto(name, deadline))
+            .toResult("클래스 정보를 수정하지 못했습니다.")
             .map { it.toDomainModel() }
     }
 

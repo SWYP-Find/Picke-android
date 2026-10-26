@@ -27,6 +27,11 @@ data class ClassCreateRequestDto(
     val ownerParticipates: Boolean
 )
 
+data class ClassUpdateRequestDto(
+    val name: String?,
+    val deadline: String?
+)
+
 data class ClassDetailResponseDto(
     val classId: Long?,
     val name: String?,
@@ -36,6 +41,8 @@ data class ClassDetailResponseDto(
     val battleType: String?,
     val memberCount: Int?,
     val capacity: Int?,
+    val deadline: String?,
+    val ticketExpiresAt: String?,
     val closeAt: String?,
     val closed: Boolean?,
     val commentRequired: Boolean?,
@@ -70,6 +77,8 @@ fun ClassDetailResponseDto.toDomainModel() = ClassDetailBoard(
     battleType = battleType ?: "",
     memberCount = memberCount ?: 0,
     capacity = capacity ?: 0,
+    deadline = deadline ?: "",
+    ticketExpiresAt = ticketExpiresAt ?: "",
     closeAt = closeAt ?: "",
     closed = closed ?: false,
     commentRequired = commentRequired ?: false,

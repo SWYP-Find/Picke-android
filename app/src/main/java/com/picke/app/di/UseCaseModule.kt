@@ -54,6 +54,7 @@ import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
 import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
+import com.picke.domain.feature.classroom.usecase.UpdateClassUseCase
 import com.picke.domain.feature.classroom.usecase.UpdateMyDisplayNameUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
@@ -191,6 +192,7 @@ object UseCaseModule {
             getClassDetailUseCase = GetClassDetailUseCase(classroomRepository),
             getClassBattleUseCase = GetClassBattleUseCase(classroomRepository),
             createClassUseCase = CreateClassUseCase(classroomRepository),
+            updateClassUseCase = UpdateClassUseCase(classroomRepository),
             deleteClassUseCase = DeleteClassUseCase(classroomRepository),
             getClassBattleRecommendationsUseCase = GetClassBattleRecommendationsUseCase(classroomRepository),
             createClassTopicDraftUseCase = CreateClassTopicDraftUseCase(classroomRepository),

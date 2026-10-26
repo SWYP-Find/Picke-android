@@ -259,6 +259,10 @@
 
     <!-- 클래스 - 설정 -->
     <string name="class_setting_title">클래스 설정</string>
+    <string name="class_edit_title">클래스 수정</string>
+    <string name="class_edit_headline">클래스 정보를 수정해 주세요</string>
+    <string name="class_edit_save">클래스 수정하기</string>
+    <string name="class_edit_deadline_range_error">기존 마감일 이후부터 이용권 종료일까지 선택할 수 있어요</string>
     <string name="class_setting_headline">거의 다 왔어요!\n클래스 정보를 입력해 주세요</string>
     <string name="class_setting_name_label">클래스 명</string>
     <string name="class_setting_name_placeholder">ex) 2학년 3반 1학기 토론</string>

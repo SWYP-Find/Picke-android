@@ -32,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassMethodGuideSheet
-import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
@@ -44,6 +43,7 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateMethodSte
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelectionStep
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
+import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme

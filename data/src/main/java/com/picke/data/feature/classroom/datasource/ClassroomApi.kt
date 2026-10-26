@@ -12,6 +12,11 @@ import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftResponseDto
+import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicVersionResponseDto
+import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -54,6 +59,12 @@ interface ClassroomApi {
         @Body request: ClassCreateRequestDto
     ): BaseResponse<ClassDetailResponseDto>
 
+    @PATCH("/api/v1/classes/{classId}")
+    suspend fun updateClass(
+        @Path("classId") classId: Long,
+        @Body request: ClassUpdateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
+
     @DELETE("/api/v1/classes/{classId}")
     suspend fun deleteClass(
         @Path("classId") classId: Long
@@ -65,6 +76,22 @@ interface ClassroomApi {
         @Query("categories") categories: List<String>,
         @Query("keyword") keyword: String?
     ): BaseResponse<ClassBattleRecommendationResponseDto>
+
+    @POST("/api/v1/class-topic-drafts")
+    suspend fun createClassTopicDraft(
+        @Body request: ClassTopicDraftRequestDto
+    ): BaseResponse<ClassTopicDraftResponseDto>
+
+    @POST("/api/v1/class-topic-drafts/{draftId}/suggestions")
+    suspend fun suggestClassTopics(
+        @Path("draftId") draftId: Long
+    ): BaseResponse<ClassTopicDraftResponseDto>
+
+    @POST("/api/v1/class-topic-drafts/{draftId}/selection")
+    suspend fun selectClassTopicCandidate(
+        @Path("draftId") draftId: Long,
+        @Body request: ClassTopicSelectionRequestDto
+    ): BaseResponse<ClassTopicVersionResponseDto>
 
     @GET("/api/v1/classes/join/preview")
     suspend fun previewClassJoin(

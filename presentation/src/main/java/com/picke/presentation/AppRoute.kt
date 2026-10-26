@@ -92,6 +92,10 @@ sealed class AppRoute(val route: String) {
         fun createRoute(classId: Long) = "class_detail_screen/$classId"
     }
 
+    object ClassEdit : AppRoute("class_edit_screen/{$ARG_CLASS_ID}") {
+        fun createRoute(classId: Long) = "class_edit_screen/$classId"
+    }
+
     object ClassMember : AppRoute("class_member_screen/{$ARG_CLASS_ID}") {
         fun createRoute(classId: Long) = "class_member_screen/$classId"
     }

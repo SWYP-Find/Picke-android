@@ -50,6 +50,7 @@ fun ClassDetailScreen(
     onBattleClick: (classId: Long) -> Unit,
     onShareCodeClick: (classId: Long) -> Unit,
     onResultClick: (classId: Long) -> Unit,
+    onEditClick: (classId: Long) -> Unit,
     onClassRemoved: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassDetailViewModel = hiltViewModel()
@@ -75,8 +76,7 @@ fun ClassDetailScreen(
 
                 is ClassDetailUiEvent.NavigateToResult -> onResultClick(event.classId)
 
-                // TODO: 클래스 정보 수정 화면이 생기면 이동 연결
-                is ClassDetailUiEvent.NavigateToEdit -> Unit
+                is ClassDetailUiEvent.NavigateToEdit -> onEditClick(event.classId)
 
                 ClassDetailUiEvent.NavigateBackAfterClassRemoved -> onClassRemoved()
 

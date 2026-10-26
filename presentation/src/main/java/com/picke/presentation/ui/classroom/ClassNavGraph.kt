@@ -11,6 +11,7 @@ import com.picke.presentation.ui.classroom.classbattlepreview.ClassBattlePreview
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
 import com.picke.presentation.ui.classroom.classdetail.ClassDetailScreen
+import com.picke.presentation.ui.classroom.classedit.ClassEditScreen
 import com.picke.presentation.ui.classroom.classjoin.ClassJoinScreen
 import com.picke.presentation.ui.classroom.classmember.ClassMemberScreen
 import com.picke.presentation.ui.classroom.classmyopinion.ClassMyOpinionScreen
@@ -172,6 +173,9 @@ fun NavGraphBuilder.classGraph(
                 onClassClick = { classId ->
                     navController.navigate(AppRoute.ClassDetail.createRoute(classId))
                 },
+                onEditClick = { classId ->
+                    navController.navigate(AppRoute.ClassEdit.createRoute(classId))
+                },
                 onShareCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))
                 },
@@ -196,6 +200,9 @@ fun NavGraphBuilder.classGraph(
                 onResultClick = { classId ->
                     navController.navigate(AppRoute.ClassResult.createRoute(classId))
                 },
+                onEditClick = { classId ->
+                    navController.navigate(AppRoute.ClassEdit.createRoute(classId))
+                },
                 onClassRemoved = {
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         AppRoute.RESULT_CLASS_CHANGED, true
@@ -205,6 +212,18 @@ fun NavGraphBuilder.classGraph(
                 modifier = contentModifier
             )
         }
+    }
+
+    composable(route = AppRoute.ClassEdit.route, arguments = classIdArguments) {
+        ClassEditScreen(
+            onBackClick = dropUnlessResumed { navController.popBackStack() },
+            onClassUpdated = dropUnlessResumed {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_CHANGED, true
+                )
+                navController.popBackStack()
+            }
+        )
     }
 
     composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {

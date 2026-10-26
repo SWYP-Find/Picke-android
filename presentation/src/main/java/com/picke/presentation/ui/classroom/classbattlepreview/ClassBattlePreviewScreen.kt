@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classbattlepreview
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +20,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classbattlepreview.component.ClassBattlePreviewBadge
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiEvent
@@ -48,6 +52,8 @@ fun ClassBattlePreviewScreen(
     viewModel: ClassBattlePreviewViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         viewModel.onAction(ClassBattlePreviewUiAction.ScreenStop)
@@ -57,6 +63,9 @@ fun ClassBattlePreviewScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassBattlePreviewUiEvent.NavigateBack -> onBackClick()
+
+                ClassBattlePreviewUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

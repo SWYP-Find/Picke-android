@@ -12,8 +12,10 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassLevelTab
 import com.picke.presentation.ui.classroom.classcreate.component.ClassOptionChip
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
+import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.theme.PickeTheme
@@ -34,14 +36,24 @@ internal fun ClassCreateConditionStep(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
     ) {
-        ClassTitledBlock(title = stringResource(R.string.class_create_topic_label)) {
-            CustomTextField(
-                value = uiState.topic,
-                onValueChange = onTopicChange,
-                minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                textStyle = PickeTheme.typography.bodySmMedium,
-                placeholder = stringResource(R.string.class_create_topic_placeholder)
-            )
+        ClassTitledBlock(
+            title = stringResource(R.string.class_create_topic_label),
+            isRequired = uiState.isTopicRequired
+        ) {
+            Column {
+                CustomTextField(
+                    value = uiState.topic,
+                    onValueChange = onTopicChange,
+                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                    textStyle = PickeTheme.typography.bodySmMedium,
+                    placeholder = stringResource(R.string.class_create_topic_placeholder),
+                    isError = uiState.isTopicInvalid
+                )
+                ClassSettingErrorText(
+                    text = stringResource(R.string.class_create_topic_too_short_error),
+                    isVisible = uiState.isTopicInvalid
+                )
+            }
         }
 
         ClassTitledBlock(
@@ -83,6 +95,24 @@ private fun ClassCreateConditionStepPreview() {
     PickeTheme {
         ClassCreateConditionStep(
             uiState = ClassCreateUiState(),
+            onTopicChange = {},
+            onLevelSelect = {},
+            onCategorySelect = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "AI 주제 2자 미만", showBackground = true)
+@Composable
+private fun ClassCreateConditionStepTopicErrorPreview() {
+    PickeTheme {
+        ClassCreateConditionStep(
+            uiState = ClassCreateUiState(
+                method = ClassCreateMethod.AI_TOPIC,
+                topic = "촉",
+                isTopicInvalid = true
+            ),
             onTopicChange = {},
             onLevelSelect = {},
             onCategorySelect = {},

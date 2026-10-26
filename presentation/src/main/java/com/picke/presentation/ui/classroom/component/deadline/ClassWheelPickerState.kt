@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.classroom.classcreate.component.deadline
+package com.picke.presentation.ui.classroom.component.deadline
 
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.FlingBehavior

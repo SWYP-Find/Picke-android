@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.classroom.classcreate
 
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMutation
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
@@ -14,21 +15,39 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
-        ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
-            state.copy(
+        ClassCreateUiAction.NextClick -> when {
+            state.isTopicTooShort -> state.copy(isTopicInvalid = true)
+
+            !state.isNextEnabled -> state
+
+            state.isMethodChanged -> {
+                val defaults = ClassCreateUiState()
+                state.copy(
+                    step = ClassCreateStep.CONDITION,
+                    conditionMethod = state.method,
+                    topic = defaults.topic,
+                    isTopicInvalid = defaults.isTopicInvalid,
+                    selectedLevel = defaults.selectedLevel,
+                    selectedCategories = defaults.selectedCategories
+                )
+            }
+
+            else -> state.copy(
                 step = state.nextStep ?: state.step,
+                battles = if (state.isNextSelection) emptyList() else state.battles,
                 isRecommendationEmpty = false,
-                isRequesting = state.nextStep == null || state.nextStep == ClassCreateStep.SELECTION
+                isRequesting = state.nextStep == null || state.isNextSelection
             )
-        } else {
-            state
         }
 
         is ClassCreateUiAction.MethodSelect -> state.copy(method = action.method)
 
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
 
-        is ClassCreateUiAction.TopicChange -> state.copy(topic = action.topic)
+        is ClassCreateUiAction.TopicChange -> state.copy(
+            topic = action.topic,
+            isTopicInvalid = false
+        )
 
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)
 
@@ -38,17 +57,21 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
 
-        ClassCreateUiAction.RegenerateClick -> if (state.isRequesting) {
-            state
-        } else {
+        ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
             state.copy(
                 isRecommendationEmpty = false,
                 selectedBattleId = null,
+                selectedCandidateId = null,
                 isRequesting = true
             )
+        } else {
+            state
         }
 
-        is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
+        is ClassCreateUiAction.BattleSelect -> state.copy(
+            selectedBattleId = action.battle.battleId,
+            selectedCandidateId = action.battle.candidateId
+        )
 
         is ClassCreateUiAction.ClassNameChange -> state.copy(
             className = action.name,
@@ -76,7 +99,10 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
 
-        ClassCreateUiAction.ErrorDialogDismiss -> state.copy(errorDialog = null)
+        ClassCreateUiAction.ErrorDialogDismiss -> state.copy(
+            errorDialog = null,
+            clarificationMessage = null
+        )
     }
 
 internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState =
@@ -96,12 +122,42 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
             isRequesting = false
         )
 
+        is ClassCreateMutation.TopicDraftCreated -> state.copy(
+            topicDraftId = mutation.draftId,
+            topicBatchNo = 0,
+            remainingSuggestions = mutation.remainingSuggestions
+        )
+
+        is ClassCreateMutation.TopicsSuggested -> state.copy(
+            battles = mutation.battles,
+            isRecommendationEmpty = mutation.battles.isEmpty(),
+            topicBatchNo = mutation.batchNo,
+            remainingSuggestions = mutation.remainingSuggestions,
+            selectedCandidateId = null,
+            isRequesting = false
+        )
+
+        is ClassCreateMutation.TopicClarificationNeeded -> state.copy(
+            step = ClassCreateStep.CONDITION,
+            remainingSuggestions = mutation.remainingSuggestions,
+            errorDialog = ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED,
+            clarificationMessage = mutation.message?.ifBlank { null },
+            isRequesting = false
+        )
+
+        ClassCreateMutation.TopicSuggestLimitReached -> state.copy(
+            remainingSuggestions = 0,
+            errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED,
+            isRequesting = false
+        )
+
         is ClassCreateMutation.DeadlineReset -> state.copy(
             deadline = mutation.deadline,
             isDeadlineOutOfRange = false
         )
 
         is ClassCreateMutation.RequestFailed -> state.copy(
+            step = if (state.isSelectionEmpty) ClassCreateStep.CONDITION else state.step,
             errorDialog = mutation.errorDialog,
             isRequesting = false
         )

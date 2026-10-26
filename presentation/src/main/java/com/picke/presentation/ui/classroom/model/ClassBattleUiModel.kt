@@ -4,6 +4,8 @@ import com.picke.domain.feature.battle.model.BattleOptionBoard
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationOptionBoard
+import com.picke.domain.feature.classroom.model.ClassTopicCandidateBoard
+import com.picke.domain.feature.classroom.model.ClassTopicOptionBoard
 
 private const val SECONDS_PER_MINUTE = 60
 
@@ -21,7 +23,8 @@ data class ClassBattleUiModel(
     val durationMinutes: Int? = null,
     val options: List<ClassBattleOptionUiModel> = emptyList(),
     val isAiQuestion: Boolean = false,
-    val commentCount: Int = 0
+    val commentCount: Int = 0,
+    val candidateId: Long? = null
 )
 
 fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUiModel {
@@ -52,6 +55,16 @@ fun ClassBattleRecommendationBoard.toUiModel(): ClassBattleUiModel {
     )
 }
 
+fun ClassTopicCandidateBoard.toUiModel() = ClassBattleUiModel(
+    battleId = 0L,
+    tag = if (category.isNotBlank()) "#$category" else "",
+    title = question,
+    description = description,
+    options = options.map { it.toClassBattleOptionUiModel() },
+    isAiQuestion = true,
+    candidateId = candidateId
+)
+
 private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
     stance = title,
     subText = representative,
@@ -59,6 +72,11 @@ private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUi
 )
 
 private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = label,
+    subText = philosopherName
+)
+
+private fun ClassTopicOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
     stance = label,
     subText = philosopherName
 )

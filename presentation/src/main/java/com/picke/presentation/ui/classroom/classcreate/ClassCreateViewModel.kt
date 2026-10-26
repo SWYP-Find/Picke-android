@@ -11,9 +11,9 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiEvent
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
+import com.picke.presentation.ui.classroom.classcreate.model.ClassTopicSuggestStatus
 import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.classroom.model.toUiModel
-import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.formatServerDateTime
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,7 +59,7 @@ class ClassCreateViewModel @Inject constructor(
                 sendEvent(ClassCreateUiEvent.NavigateBack)
             }
 
-            ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
+            ClassCreateUiAction.NextClick -> if (state.isNextEnabled && !state.isTopicTooShort) {
                 when (state.nextStep) {
                     null -> createClass()
                     ClassCreateStep.SELECTION -> fetchRecommendedBattles()
@@ -67,7 +67,10 @@ class ClassCreateViewModel @Inject constructor(
                 }
             }
 
-            ClassCreateUiAction.RegenerateClick -> if (!state.isRequesting) fetchRecommendedBattles()
+            ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
+                val draftId = state.topicDraftId
+                if (draftId == null) createTopicDraft() else suggestTopics(draftId)
+            }
 
             is ClassCreateUiAction.BattlePreviewClick ->
                 sendEvent(ClassCreateUiEvent.NavigateToBattlePreview(action.battleId))
@@ -95,13 +98,7 @@ class ClassCreateViewModel @Inject constructor(
 
     private fun fetchRecommendedBattles() {
         if (_uiState.value.method == ClassCreateMethod.AI_TOPIC) {
-            // TODO: API 연동 - AI 질문 생성으로 교체, 실패 시 TOPIC_GENERATION_FAILED로 RequestFailed 반영
-            _uiState.update {
-                reduce(
-                    it,
-                    ClassCreateMutation.BattlesLoaded(DummyData.dummyClassAiQuestions)
-                )
-            }
+            createTopicDraft()
             return
         }
         val state = _uiState.value
@@ -121,6 +118,71 @@ class ClassCreateViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun createTopicDraft() {
+        val state = _uiState.value
+        viewModelScope.launch {
+            classroomUseCases.createClassTopicDraftUseCase(
+                topicSeed = state.topic.trim(),
+                difficulty = state.selectedLevel.apiValue,
+                categories = state.selectedCategories.map { it.topicApiValue }
+            ).onSuccess { draft ->
+                _uiState.update {
+                    reduce(
+                        it,
+                        ClassCreateMutation.TopicDraftCreated(
+                            draft.draftId,
+                            draft.remainingSuggestions
+                        )
+                    )
+                }
+                suggestTopics(draft.draftId)
+            }.onFailure {
+                _uiState.update {
+                    reduce(
+                        it,
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.TOPIC_GENERATION_FAILED)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun suggestTopics(draftId: Long) {
+        viewModelScope.launch {
+            classroomUseCases.suggestClassTopicsUseCase(draftId)
+                .onSuccess { draft ->
+                    val mutation = when (ClassTopicSuggestStatus.from(draft.suggestStatus)) {
+                        ClassTopicSuggestStatus.SUCCEEDED -> ClassCreateMutation.TopicsSuggested(
+                            batchNo = draft.batchNo,
+                            remainingSuggestions = draft.remainingSuggestions,
+                            battles = draft.candidates.map { it.toUiModel() }
+                        )
+
+                        ClassTopicSuggestStatus.NEEDS_CLARIFICATION -> ClassCreateMutation.TopicClarificationNeeded(
+                            remainingSuggestions = draft.remainingSuggestions,
+                            message = draft.clarificationMessage
+                        )
+
+                        ClassTopicSuggestStatus.NONE,
+                        ClassTopicSuggestStatus.GENERATING,
+                        ClassTopicSuggestStatus.FAILED -> ClassCreateMutation.RequestFailed(
+                            ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
+                        )
+                    }
+                    _uiState.update { reduce(it, mutation) }
+                }
+                .onFailure { exception ->
+                    val code = (exception as? ApiErrorException)?.code
+                    val mutation = if (code == ClassErrorCode.CLASS_409_TOPIC_SUGGEST_LIMIT) {
+                        ClassCreateMutation.TopicSuggestLimitReached
+                    } else {
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.TOPIC_GENERATION_FAILED)
+                    }
+                    _uiState.update { reduce(it, mutation) }
+                }
         }
     }
 
@@ -148,9 +210,52 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        val battleId = state.selectedBattleId
-        if (state.method == ClassCreateMethod.AI_TOPIC || battleId == null) {
-            // TODO: API 연동 - 커스텀 주제 API 연결 후 AI 내 주제 방식은 topicVersionId로 생성
+        viewModelScope.launch {
+            when (state.method) {
+                ClassCreateMethod.CONTENT -> requestCreateClass(
+                    state = state,
+                    battleId = state.selectedBattleId,
+                    topicVersionId = null
+                )
+
+                ClassCreateMethod.AI_TOPIC -> createClassWithTopic(state)
+            }
+        }
+    }
+
+    private suspend fun requestCreateClass(
+        state: ClassCreateUiState,
+        battleId: Long?,
+        topicVersionId: Long?
+    ) {
+        val deadline = state.deadline
+        classroomUseCases.createClassUseCase(
+            name = state.className.trim(),
+            battleId = battleId,
+            topicVersionId = topicVersionId,
+            deadline = if (state.isDeadlineEnabled) deadline?.let(::formatServerDateTime) else null,
+            commentRequired = state.isCommentRequired,
+            ownerParticipates = state.isOperatorJoin
+        ).onSuccess { classDetail ->
+            sendEvent(ClassCreateUiEvent.NavigateToShare(classDetail.classId))
+        }.onFailure { exception ->
+            val mutation =
+                if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_400_DEADLINE) {
+                    ClassCreateMutation.SettingInvalid(
+                        isClassNameInvalid = false,
+                        isDeadlineOutOfRange = true
+                    )
+                } else {
+                    ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                }
+            _uiState.update { reduce(it, mutation) }
+        }
+    }
+
+    private suspend fun createClassWithTopic(state: ClassCreateUiState) {
+        val draftId = state.topicDraftId
+        val candidateId = state.selectedCandidateId
+        if (draftId == null || candidateId == null) {
             _uiState.update {
                 reduce(
                     it,
@@ -160,28 +265,21 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
-            classroomUseCases.createClassUseCase(
-                name = state.className.trim(),
-                battleId = battleId,
-                deadline = if (state.isDeadlineEnabled) deadline?.let(::formatServerDateTime) else null,
-                commentRequired = state.isCommentRequired,
-                ownerParticipates = state.isOperatorJoin
-            ).onSuccess { classDetail ->
-                sendEvent(ClassCreateUiEvent.NavigateToShare(classDetail.classId))
-            }.onFailure { exception ->
-                val mutation =
-                    if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_400_DEADLINE) {
-                        ClassCreateMutation.SettingInvalid(
-                            isClassNameInvalid = false,
-                            isDeadlineOutOfRange = true
-                        )
-                    } else {
-                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
-                    }
-                _uiState.update { reduce(it, mutation) }
+        classroomUseCases.selectClassTopicCandidateUseCase(draftId, state.topicBatchNo, candidateId)
+            .onSuccess { topicVersion ->
+                requestCreateClass(
+                    state = state,
+                    battleId = null,
+                    topicVersionId = topicVersion.topicVersionId
+                )
             }
-        }
+            .onFailure {
+                _uiState.update {
+                    reduce(
+                        it,
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                    )
+                }
+            }
     }
-
 }

@@ -178,6 +178,7 @@ object AnalyticsScreen {
     const val RECAP = "recap"
     const val CLASS = "class"
     const val CLASS_CREATE = "class_create"
+    const val CLASS_EDIT = "class_edit"
     const val CLASS_BATTLE_PREVIEW = "class_battle_preview"
     const val CLASS_JOIN = "class_join"
     const val MY_CLASS = "my_class"
@@ -214,6 +215,7 @@ object AnalyticsScreen {
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         BottomNavItem.Class.route -> CLASS
         AppRoute.ClassCreate.route -> CLASS_CREATE
+        AppRoute.ClassEdit.route -> CLASS_EDIT
         AppRoute.ClassBattlePreview.route -> CLASS_BATTLE_PREVIEW
         AppRoute.ClassJoin.route -> CLASS_JOIN
         AppRoute.MyClass.route -> MY_CLASS

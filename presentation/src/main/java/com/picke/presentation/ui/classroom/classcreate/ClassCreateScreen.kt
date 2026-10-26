@@ -32,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassMethodGuideSheet
-import com.picke.presentation.ui.classroom.classcreate.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
@@ -44,6 +43,7 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateMethodSte
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelectionStep
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
+import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -166,8 +166,8 @@ private fun ClassCreateContent(
 
                     ClassCreateStep.SELECTION -> ClassCreateSelectionStep(
                         uiState = uiState,
-                        onBattleSelect = { battleId ->
-                            onAction(ClassCreateUiAction.BattleSelect(battleId))
+                        onBattleSelect = { battle ->
+                            onAction(ClassCreateUiAction.BattleSelect(battle))
                         },
                         onBattlePreviewClick = { battleId ->
                             onAction(ClassCreateUiAction.BattlePreviewClick(battleId))
@@ -237,8 +237,9 @@ private fun ClassCreateContent(
 
     val errorDialog = uiState.errorDialog
     if (errorDialog != null) {
+        val message = uiState.clarificationMessage ?: stringResource(errorDialog.messageRes())
         CustomSingleActionDialog(
-            message = stringResource(errorDialog.messageRes()),
+            message = message,
             buttonText = stringResource(R.string.dialog_ok),
             onConfirm = { onAction(ClassCreateUiAction.ErrorDialogDismiss) },
             onDismiss = { onAction(ClassCreateUiAction.ErrorDialogDismiss) }
@@ -307,6 +308,7 @@ private fun ClassCreateUiState.nextButtonRes(): Int = when (step) {
 private fun ClassCreateErrorDialog.messageRes(): Int = when (this) {
     ClassCreateErrorDialog.BATTLE_SEARCH_FAILED -> R.string.class_create_dialog_battle_search_failed
     ClassCreateErrorDialog.TOPIC_GENERATION_FAILED -> R.string.class_create_dialog_topic_generation_failed
+    ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED -> R.string.class_create_dialog_topic_clarification_needed
     ClassCreateErrorDialog.CLASS_CREATION_FAILED -> R.string.class_create_dialog_class_creation_failed
 }
 

@@ -34,6 +34,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -49,7 +50,7 @@ private object ClassCreateSelectionStepDimens {
 @Composable
 internal fun ClassCreateSelectionStep(
     uiState: ClassCreateUiState,
-    onBattleSelect: (Long) -> Unit,
+    onBattleSelect: (ClassBattleUiModel) -> Unit,
     onBattlePreviewClick: (Long) -> Unit,
     onEditConditionClick: () -> Unit,
     onRegenerateClick: () -> Unit,
@@ -72,6 +73,7 @@ internal fun ClassCreateSelectionStep(
             ClassCreateSelectionHeader(
                 resultCount = uiState.battles.size,
                 showsRegenerate = isAiQuestion,
+                isRegenerateEnabled = uiState.isRegenerateEnabled,
                 onRegenerateClick = onRegenerateClick
             )
 
@@ -87,8 +89,8 @@ internal fun ClassCreateSelectionStep(
             uiState.battles.forEach { battle ->
                 ClassBattleCard(
                     battle = battle,
-                    isSelected = battle.battleId == uiState.selectedBattleId,
-                    onClick = { onBattleSelect(battle.battleId) },
+                    isSelected = battle == uiState.selectedBattle,
+                    onClick = { onBattleSelect(battle) },
                     onPreviewClick = if (isAiQuestion) null else ({ onBattlePreviewClick(battle.battleId) })
                 )
             }
@@ -179,6 +181,7 @@ private fun ClassCreateSelectedConditionSection(
 private fun ClassCreateSelectionHeader(
     resultCount: Int,
     showsRegenerate: Boolean,
+    isRegenerateEnabled: Boolean,
     onRegenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -198,6 +201,7 @@ private fun ClassCreateSelectionHeader(
                 modifier = Modifier.clickable(
                     interactionSource = null,
                     indication = null,
+                    enabled = isRegenerateEnabled,
                     onClick = onRegenerateClick
                 ),
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
@@ -265,8 +269,11 @@ private fun ClassCreateAiSelectionStepPreview() {
         ClassCreateSelectionStep(
             uiState = ClassCreateUiState(
                 method = ClassCreateMethod.AI_TOPIC,
-                battles = DummyData.dummyClassAiQuestions,
-                selectedBattleId = DummyData.dummyClassAiQuestions.first().battleId
+                battles = DummyData.dummyClassAiQuestions.mapIndexed { index, question ->
+                    question.copy(candidateId = index + 1L)
+                },
+                remainingSuggestions = 2,
+                selectedCandidateId = 1L
             ),
             onBattleSelect = {},
             onBattlePreviewClick = {},

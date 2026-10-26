@@ -205,6 +205,7 @@
     <string name="class_create_headline">어떤 주제로\n이야기 나눌까요?</string>
     <string name="class_create_description">관심 있는 주제나 배틀 조건을 선택해 주세요.</string>
     <string name="class_create_topic_label">찾고 싶은 주제</string>
+    <string name="class_create_topic_too_short_error">주제를 2자 이상 입력해주세요</string>
     <string name="class_create_topic_placeholder">예) AI, 범죄, 촉법</string>
     <string name="class_form_required_mark">\u0020*</string>
     <string name="class_create_level_label">대상 수준</string>

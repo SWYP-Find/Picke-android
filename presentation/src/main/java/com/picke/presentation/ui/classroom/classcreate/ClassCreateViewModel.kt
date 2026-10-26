@@ -59,7 +59,7 @@ class ClassCreateViewModel @Inject constructor(
                 sendEvent(ClassCreateUiEvent.NavigateBack)
             }
 
-            ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
+            ClassCreateUiAction.NextClick -> if (state.isNextEnabled && !state.isTopicTooShort) {
                 when (state.nextStep) {
                     null -> createClass()
                     ClassCreateStep.SELECTION -> fetchRecommendedBattles()

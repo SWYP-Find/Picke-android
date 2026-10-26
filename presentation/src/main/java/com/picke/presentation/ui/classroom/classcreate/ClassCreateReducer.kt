@@ -15,7 +15,9 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
-        ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
+        ClassCreateUiAction.NextClick -> if (state.isTopicTooShort) {
+            state.copy(isTopicInvalid = true)
+        } else if (state.isNextEnabled) {
             state.copy(
                 step = state.nextStep ?: state.step,
                 isRecommendationEmpty = false,
@@ -29,7 +31,10 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
 
-        is ClassCreateUiAction.TopicChange -> state.copy(topic = action.topic)
+        is ClassCreateUiAction.TopicChange -> state.copy(
+            topic = action.topic,
+            isTopicInvalid = false
+        )
 
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)
 

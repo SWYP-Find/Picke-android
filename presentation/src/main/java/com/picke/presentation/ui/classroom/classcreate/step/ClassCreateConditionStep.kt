@@ -34,7 +34,10 @@ internal fun ClassCreateConditionStep(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
     ) {
-        ClassTitledBlock(title = stringResource(R.string.class_create_topic_label)) {
+        ClassTitledBlock(
+            title = stringResource(R.string.class_create_topic_label),
+            isRequired = uiState.isTopicRequired
+        ) {
             CustomTextField(
                 value = uiState.topic,
                 onValueChange = onTopicChange,

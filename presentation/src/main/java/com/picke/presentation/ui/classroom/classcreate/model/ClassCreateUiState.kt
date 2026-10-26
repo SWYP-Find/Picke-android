@@ -4,6 +4,8 @@ import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+private const val MIN_AI_TOPIC_LENGTH = 2
+
 data class ClassCreateUiState(
     val step: ClassCreateStep = ClassCreateStep.METHOD,
     val method: ClassCreateMethod = ClassCreateMethod.CONTENT,
@@ -32,16 +34,19 @@ data class ClassCreateUiState(
     val isNextEnabled: Boolean
         get() = !isRequesting && when (step) {
             ClassCreateStep.METHOD, ClassCreateStep.SETTING -> true
-            ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty()
+            ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty() && isTopicValid
             ClassCreateStep.SELECTION -> selectedBattleId != null
         }
 
+    val isTopicRequired: Boolean
+        get() = method == ClassCreateMethod.AI_TOPIC
+
+    private val isTopicValid: Boolean
+        get() = !isTopicRequired || topic.trim().length >= MIN_AI_TOPIC_LENGTH
+
     internal val nextStep: ClassCreateStep?
-        get() = steps.getOrNull(steps.indexOf(step) + 1)
+        get() = ClassCreateStep.entries.getOrNull(step.ordinal + 1)
 
     internal val previousStep: ClassCreateStep?
-        get() = steps.getOrNull(steps.indexOf(step) - 1)
-
-    private val steps: List<ClassCreateStep>
-        get() = if (method == ClassCreateMethod.AI_TOPIC) ClassCreateStep.entries - ClassCreateStep.CONDITION else ClassCreateStep.entries
+        get() = ClassCreateStep.entries.getOrNull(step.ordinal - 1)
 }

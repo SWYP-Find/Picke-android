@@ -3,7 +3,9 @@ package com.picke.presentation.ui.classroom.classbattlepreview
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.scenario.usecase.ScenarioUseCases
 import com.picke.presentation.AppRoute
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.audio.AudioPlayerManager
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewMutation
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
@@ -11,7 +13,7 @@ import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattleP
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.scenario.model.toUiModel
 import com.picke.presentation.util.splitScriptsBySentence
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -31,6 +33,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @HiltViewModel
 class ClassBattlePreviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val scenarioUseCases: ScenarioUseCases,
     private val audioPlayerManager: AudioPlayerManager
 ) : ViewModel() {
 
@@ -45,10 +48,6 @@ class ClassBattlePreviewViewModel @Inject constructor(
     val uiEvent: Flow<ClassBattlePreviewUiEvent> = _uiEvent.receiveAsFlow()
 
     private var syncJob: Job? = null
-
-    // TODO: API 연동 - 오디오를 loadAudio로 불러오면 isDummyPlayback·dummyPositionMs와 더미 재생 분기 삭제
-    private val isDummyPlayback = true
-    private var dummyPositionMs = 0L
 
     init {
         viewModelScope.launch {
@@ -96,23 +95,35 @@ class ClassBattlePreviewViewModel @Inject constructor(
     }
 
     private fun fetchBattlePreview() {
-        // TODO: API 연동 - 시나리오 조회(fetchBattleScenarioUseCase)로 교체하고 시작 노드 오디오를 audioPlayerManager.loadAudio로 불러오기
-        val battleId = _uiState.value.battleId
-        val battle = DummyData.dummyClassBattles.firstOrNull { it.battleId == battleId }
-        val scenario = DummyData.dummyClassBattlePreviewScenarios[battleId] ?: return
-        val startNode = scenario.nodes[scenario.startNodeId] ?: return
-        val sortedScripts = startNode.scripts.sortedBy { it.startTimeMs }
-        val startMs = sortedScripts.firstOrNull()?.startTimeMs ?: 0L
-        val mutation = ClassBattlePreviewMutation.BattlePreviewLoaded(
-            title = battle?.title ?: "",
-            scripts = splitScriptsBySentence(
-                sortedScripts,
-                startMs + startNode.audioDuration * 1000L
-            ).filter { it.startTimeMs < PREVIEW_DURATION_MS },
-            totalDurationMs = PREVIEW_DURATION_MS
-        )
-        _uiState.update { reduce(it, mutation) }
-        play()
+        viewModelScope.launch {
+            scenarioUseCases.fetchBattleScenarioUseCase(_uiState.value.battleId.toString())
+                .onSuccess { board ->
+                    val scenario = board.toUiModel()
+                    val startNode = scenario.nodes[scenario.startNodeId]
+                    val audioUrl = scenario.audios.values.firstOrNull()
+                    if (startNode == null || audioUrl == null) {
+                        sendEvent(ClassBattlePreviewUiEvent.ShowLoadFailedToast)
+                        return@onSuccess
+                    }
+                    val sortedScripts = startNode.scripts.sortedBy { it.startTimeMs }
+                    val startMs = sortedScripts.firstOrNull()?.startTimeMs ?: 0L
+                    val mutation = ClassBattlePreviewMutation.BattlePreviewLoaded(
+                        title = board.title,
+                        scripts = splitScriptsBySentence(
+                            sortedScripts,
+                            startMs + startNode.audioDuration * 1000L
+                        ).filter { it.startTimeMs < PREVIEW_DURATION_MS },
+                        totalDurationMs = PREVIEW_DURATION_MS
+                    )
+                    _uiState.update { reduce(it, mutation) }
+                    val fullAudioUrl =
+                        if (audioUrl.startsWith("http")) audioUrl
+                        else "${BuildConfig.BASE_URL}${audioUrl.removePrefix("/")}"
+                    audioPlayerManager.loadAudio(fullAudioUrl)
+                    play()
+                }
+                .onFailure { sendEvent(ClassBattlePreviewUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun togglePlayPause(state: ClassBattlePreviewUiState) {
@@ -131,29 +142,18 @@ class ClassBattlePreviewViewModel @Inject constructor(
     }
 
     private fun play() {
-        if (isDummyPlayback) {
-            _uiState.update { reduce(it, ClassBattlePreviewMutation.PlayingChanged(true)) }
-            startSync()
-        } else {
-            audioPlayerManager.play()
-        }
+        audioPlayerManager.play()
     }
 
     private fun pause() {
-        if (isDummyPlayback) {
-            _uiState.update { reduce(it, ClassBattlePreviewMutation.PlayingChanged(false)) }
-            stopSync()
-        } else {
-            audioPlayerManager.pause()
-        }
+        audioPlayerManager.pause()
     }
 
     private fun seekTo(positionMs: Long) {
-        if (isDummyPlayback) dummyPositionMs = positionMs else audioPlayerManager.seekTo(positionMs)
+        audioPlayerManager.seekTo(positionMs)
     }
 
-    private fun currentPosition(): Long =
-        if (isDummyPlayback) dummyPositionMs else audioPlayerManager.currentPosition
+    private fun currentPosition(): Long = audioPlayerManager.currentPosition
 
     private fun startSync() {
         syncJob?.cancel()
@@ -161,7 +161,6 @@ class ClassBattlePreviewViewModel @Inject constructor(
             while (isActive) {
                 syncPosition(currentPosition())
                 delay(SYNC_INTERVAL_MS.milliseconds)
-                if (isDummyPlayback) dummyPositionMs += (SYNC_INTERVAL_MS * _uiState.value.playbackSpeed).toLong()
             }
         }
     }

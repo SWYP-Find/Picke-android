@@ -210,9 +210,52 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        val battleId = state.selectedBattleId
-        if (state.method == ClassCreateMethod.AI_TOPIC || battleId == null) {
-            // TODO: API 연동 - 커스텀 주제 API 연결 후 AI 내 주제 방식은 topicVersionId로 생성
+        viewModelScope.launch {
+            when (state.method) {
+                ClassCreateMethod.CONTENT -> requestCreateClass(
+                    state = state,
+                    battleId = state.selectedBattleId,
+                    topicVersionId = null
+                )
+
+                ClassCreateMethod.AI_TOPIC -> createClassWithTopic(state)
+            }
+        }
+    }
+
+    private suspend fun requestCreateClass(
+        state: ClassCreateUiState,
+        battleId: Long?,
+        topicVersionId: Long?
+    ) {
+        val deadline = state.deadline
+        classroomUseCases.createClassUseCase(
+            name = state.className.trim(),
+            battleId = battleId,
+            topicVersionId = topicVersionId,
+            deadline = if (state.isDeadlineEnabled) deadline?.let(::formatServerDateTime) else null,
+            commentRequired = state.isCommentRequired,
+            ownerParticipates = state.isOperatorJoin
+        ).onSuccess { classDetail ->
+            sendEvent(ClassCreateUiEvent.NavigateToShare(classDetail.classId))
+        }.onFailure { exception ->
+            val mutation =
+                if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_400_DEADLINE) {
+                    ClassCreateMutation.SettingInvalid(
+                        isClassNameInvalid = false,
+                        isDeadlineOutOfRange = true
+                    )
+                } else {
+                    ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                }
+            _uiState.update { reduce(it, mutation) }
+        }
+    }
+
+    private suspend fun createClassWithTopic(state: ClassCreateUiState) {
+        val draftId = state.topicDraftId
+        val candidateId = state.selectedCandidateId
+        if (draftId == null || candidateId == null) {
             _uiState.update {
                 reduce(
                     it,
@@ -222,28 +265,21 @@ class ClassCreateViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
-            classroomUseCases.createClassUseCase(
-                name = state.className.trim(),
-                battleId = battleId,
-                deadline = if (state.isDeadlineEnabled) deadline?.let(::formatServerDateTime) else null,
-                commentRequired = state.isCommentRequired,
-                ownerParticipates = state.isOperatorJoin
-            ).onSuccess { classDetail ->
-                sendEvent(ClassCreateUiEvent.NavigateToShare(classDetail.classId))
-            }.onFailure { exception ->
-                val mutation =
-                    if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_400_DEADLINE) {
-                        ClassCreateMutation.SettingInvalid(
-                            isClassNameInvalid = false,
-                            isDeadlineOutOfRange = true
-                        )
-                    } else {
-                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
-                    }
-                _uiState.update { reduce(it, mutation) }
+        classroomUseCases.selectClassTopicCandidateUseCase(draftId, state.topicBatchNo, candidateId)
+            .onSuccess { topicVersion ->
+                requestCreateClass(
+                    state = state,
+                    battleId = null,
+                    topicVersionId = topicVersion.topicVersionId
+                )
             }
-        }
+            .onFailure {
+                _uiState.update {
+                    reduce(
+                        it,
+                        ClassCreateMutation.RequestFailed(ClassCreateErrorDialog.CLASS_CREATION_FAILED)
+                    )
+                }
+            }
     }
-
 }

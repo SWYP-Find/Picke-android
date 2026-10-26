@@ -20,7 +20,8 @@ data class MyClassResponseDto(
 
 data class ClassCreateRequestDto(
     val name: String,
-    val battleId: Long,
+    val battleId: Long?,
+    val topicVersionId: Long?,
     val deadline: String?,
     val commentRequired: Boolean,
     val ownerParticipates: Boolean

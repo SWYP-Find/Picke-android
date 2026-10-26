@@ -8,6 +8,7 @@ import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
+import com.picke.domain.feature.classroom.model.ClassTopicVersionBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
 
 interface ClassroomRepository {
@@ -19,7 +20,8 @@ interface ClassroomRepository {
     suspend fun getClassBattle(classId: Long): Result<ClassBattleDetailBoard>
     suspend fun createClass(
         name: String,
-        battleId: Long,
+        battleId: Long?,
+        topicVersionId: Long?,
         deadline: String?,
         commentRequired: Boolean,
         ownerParticipates: Boolean
@@ -39,6 +41,11 @@ interface ClassroomRepository {
     ): Result<ClassTopicDraftBoard>
 
     suspend fun suggestClassTopics(draftId: Long): Result<ClassTopicDraftBoard>
+    suspend fun selectClassTopicCandidate(
+        draftId: Long,
+        batchNo: Int,
+        candidateId: Long
+    ): Result<ClassTopicVersionBoard>
 
     suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard>
     suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard>

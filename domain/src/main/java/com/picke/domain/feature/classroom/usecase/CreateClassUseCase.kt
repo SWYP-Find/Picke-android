@@ -8,10 +8,17 @@ class CreateClassUseCase(
 ) {
     suspend operator fun invoke(
         name: String,
-        battleId: Long,
+        battleId: Long?,
+        topicVersionId: Long?,
         deadline: String?,
         commentRequired: Boolean,
         ownerParticipates: Boolean
-    ): Result<ClassDetailBoard> =
-        classroomRepository.createClass(name, battleId, deadline, commentRequired, ownerParticipates)
+    ): Result<ClassDetailBoard> = classroomRepository.createClass(
+        name = name,
+        battleId = battleId,
+        topicVersionId = topicVersionId,
+        deadline = deadline,
+        commentRequired = commentRequired,
+        ownerParticipates = ownerParticipates
+    )
 }

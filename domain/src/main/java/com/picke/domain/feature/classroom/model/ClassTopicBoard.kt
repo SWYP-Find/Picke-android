@@ -18,6 +18,18 @@ data class ClassTopicCandidateBoard(
     val options: List<ClassTopicOptionBoard>
 )
 
+data class ClassTopicVersionBoard(
+    val topicVersionId: Long,
+    val draftId: Long,
+    val versionNo: Int,
+    val source: String,
+    val question: String,
+    val description: String,
+    val category: String,
+    val difficulty: String,
+    val options: List<ClassTopicOptionBoard>
+)
+
 data class ClassTopicOptionBoard(
     val position: String,
     val label: String,

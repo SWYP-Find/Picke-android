@@ -9,6 +9,7 @@ private const val MIN_AI_TOPIC_LENGTH = 2
 data class ClassCreateUiState(
     val step: ClassCreateStep = ClassCreateStep.METHOD,
     val method: ClassCreateMethod = ClassCreateMethod.CONTENT,
+    val conditionMethod: ClassCreateMethod? = null,
     val guideMethod: ClassCreateMethod? = null,
     val topic: String = "",
     val isTopicInvalid: Boolean = false,
@@ -54,11 +55,20 @@ data class ClassCreateUiState(
     val isTopicRequired: Boolean
         get() = method == ClassCreateMethod.AI_TOPIC
 
+    internal val isMethodChanged: Boolean
+        get() = step == ClassCreateStep.METHOD && conditionMethod != method
+
+    internal val isSelectionEmpty: Boolean
+        get() = step == ClassCreateStep.SELECTION && battles.isEmpty()
+
     internal val isTopicTooShort: Boolean
         get() = step == ClassCreateStep.CONDITION && isTopicRequired && topic.trim().length < MIN_AI_TOPIC_LENGTH
 
     internal val nextStep: ClassCreateStep?
         get() = ClassCreateStep.entries.getOrNull(step.ordinal + 1)
+
+    internal val isNextSelection: Boolean
+        get() = nextStep == ClassCreateStep.SELECTION
 
     internal val previousStep: ClassCreateStep?
         get() = ClassCreateStep.entries.getOrNull(step.ordinal - 1)

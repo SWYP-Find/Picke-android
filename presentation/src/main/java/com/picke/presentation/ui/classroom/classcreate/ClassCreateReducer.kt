@@ -15,16 +15,29 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
-        ClassCreateUiAction.NextClick -> if (state.isTopicTooShort) {
-            state.copy(isTopicInvalid = true)
-        } else if (state.isNextEnabled) {
-            state.copy(
+        ClassCreateUiAction.NextClick -> when {
+            state.isTopicTooShort -> state.copy(isTopicInvalid = true)
+
+            !state.isNextEnabled -> state
+
+            state.isMethodChanged -> {
+                val defaults = ClassCreateUiState()
+                state.copy(
+                    step = ClassCreateStep.CONDITION,
+                    conditionMethod = state.method,
+                    topic = defaults.topic,
+                    isTopicInvalid = defaults.isTopicInvalid,
+                    selectedLevel = defaults.selectedLevel,
+                    selectedCategories = defaults.selectedCategories
+                )
+            }
+
+            else -> state.copy(
                 step = state.nextStep ?: state.step,
+                battles = if (state.isNextSelection) emptyList() else state.battles,
                 isRecommendationEmpty = false,
-                isRequesting = state.nextStep == null || state.nextStep == ClassCreateStep.SELECTION
+                isRequesting = state.nextStep == null || state.isNextSelection
             )
-        } else {
-            state
         }
 
         is ClassCreateUiAction.MethodSelect -> state.copy(method = action.method)
@@ -144,6 +157,7 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
         )
 
         is ClassCreateMutation.RequestFailed -> state.copy(
+            step = if (state.isSelectionEmpty) ClassCreateStep.CONDITION else state.step,
             errorDialog = mutation.errorDialog,
             isRequesting = false
         )

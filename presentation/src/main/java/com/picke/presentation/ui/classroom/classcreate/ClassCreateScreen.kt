@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassMethodGuideSheet
-import com.picke.presentation.ui.classroom.classcreate.component.deadline.ClassDeadlineSheet
+import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep

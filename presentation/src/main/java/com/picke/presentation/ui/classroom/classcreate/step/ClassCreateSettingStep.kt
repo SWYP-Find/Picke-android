@@ -1,36 +1,28 @@
 package com.picke.presentation.ui.classroom.classcreate.step
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classcreate.component.ClassSettingErrorText
+import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
+import com.picke.presentation.ui.classroom.component.ClassDeadlineField
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
-import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.CustomToggle
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
-import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import java.time.LocalDateTime
@@ -117,60 +109,6 @@ internal fun ClassCreateSettingStep(
                 description = stringResource(R.string.class_setting_operator_join_description),
                 isChecked = uiState.isOperatorJoin,
                 onCheckedChange = onOperatorJoinToggle
-            )
-        }
-    }
-}
-
-@Composable
-private fun ClassDeadlineField(
-    deadline: LocalDateTime?,
-    isEnabled: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isError: Boolean = false
-) {
-    val shape = RoundedCornerShape(RadiusTokens.default)
-    val deadlineText = rememberClassDeadlineText(deadline)
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = ComponentNumberTokens.inputTextfieldHeight)
-            .clip(shape)
-            .background(
-                if (isEnabled) {
-                    PickeTheme.colors.inputTextfieldBackgroundDefault
-                } else {
-                    PickeTheme.colors.inputTextfieldBackgroundDisabled
-                }
-            )
-            .border(
-                width = ComponentNumberTokens.borderWidthRegular,
-                color = if (isError) PickeTheme.colors.borderErrorDefault else PickeTheme.colors.inputTextfieldBorderDefault,
-                shape = shape
-            )
-            .clickable(
-                enabled = isEnabled,
-                onClick = onClick
-            )
-            .padding(
-                horizontal = SpacingTokens.s8,
-                vertical = SpacingTokens.s8
-            ),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        if (isEnabled && deadline != null) {
-            Text(
-                text = deadlineText,
-                color = PickeTheme.colors.textDefault,
-                style = PickeTheme.typography.bodySmMedium
-            )
-        } else {
-            Text(
-                text = stringResource(R.string.class_setting_deadline_placeholder),
-                color = PickeTheme.colors.inputTextfieldTextDefault,
-                style = PickeTheme.typography.bodyXsMedium
             )
         }
     }

@@ -51,7 +51,6 @@ import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
 import com.picke.presentation.ui.my.user.model.MyUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-import com.picke.presentation.util.FeatureFlags
 
 @Composable
 fun MyScreen(
@@ -211,12 +210,10 @@ fun MyScreen(
                     title = stringResource(R.string.my_menu_notice),
                     onClick = { onNavigateToNotice() }
                 )
-                if (FeatureFlags.CLASS_TAB_ENABLED) {
-                    MyPageMenuItem(
-                        title = stringResource(R.string.my_menu_ticket),
-                        onClick = onNavigateToTicket
-                    )
-                }
+                MyPageMenuItem(
+                    title = stringResource(R.string.my_menu_ticket),
+                    onClick = onNavigateToTicket
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Box(

@@ -20,13 +20,12 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.FeatureFlags
 
-private val bottomNavItems = listOfNotNull(
+private val bottomNavItems = listOf(
     BottomNavItem.Home,
     BottomNavItem.Explore,
     BottomNavItem.TodayBattle,
-    BottomNavItem.Class.takeIf { FeatureFlags.CLASS_TAB_ENABLED },
+    BottomNavItem.Class,
     BottomNavItem.My
 )
 

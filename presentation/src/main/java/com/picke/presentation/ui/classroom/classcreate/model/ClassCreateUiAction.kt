@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classcreate.model
 
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import java.time.LocalDateTime
 
 sealed interface ClassCreateUiAction {
@@ -26,7 +27,7 @@ sealed interface ClassCreateUiAction {
 
     data object RegenerateClick : ClassCreateUiAction
 
-    data class BattleSelect(val battleId: Long) : StateOnly
+    data class BattleSelect(val battle: ClassBattleUiModel) : StateOnly
 
     data class BattlePreviewClick(val battleId: Long) : SideEffectOnly
 

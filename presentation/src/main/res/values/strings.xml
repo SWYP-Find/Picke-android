@@ -233,6 +233,7 @@
     <string name="class_create_select_question">질문 선택하기</string>
     <string name="class_create_dialog_battle_search_failed">배틀 검색에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
     <string name="class_create_dialog_topic_generation_failed">주제 생성에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
+    <string name="class_create_dialog_topic_clarification_needed">주제를 조금 더 자세히 적어주세요\n어떤 상황인지 함께 적으면 좋아요!</string>
     <string name="class_create_dialog_class_creation_failed">클래스 개설이 완료되지 않았습니다\n네트워크 확인 후 다시 시도해주세요</string>
 
     <!-- 클래스 - 배틀 미리듣기 -->

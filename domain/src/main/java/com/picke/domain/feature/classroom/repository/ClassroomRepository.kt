@@ -7,6 +7,7 @@ import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
+import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
 
 interface ClassroomRepository {
@@ -30,6 +31,14 @@ interface ClassroomRepository {
         categories: List<String>,
         keyword: String?
     ): Result<List<ClassBattleRecommendationBoard>>
+
+    suspend fun createClassTopicDraft(
+        topicSeed: String,
+        difficulty: String,
+        categories: List<String>
+    ): Result<ClassTopicDraftBoard>
+
+    suspend fun suggestClassTopics(draftId: Long): Result<ClassTopicDraftBoard>
 
     suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard>
     suspend fun joinClass(inviteCode: String, displayName: String): Result<ClassDetailBoard>

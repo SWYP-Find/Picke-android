@@ -8,6 +8,7 @@ import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
@@ -16,6 +17,7 @@ import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
+import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
 import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import javax.inject.Inject
@@ -88,6 +90,23 @@ class ClassroomRepositoryImpl @Inject constructor(
         classroomApi.getClassBattleRecommendations(difficulty, categories, keyword)
             .toResult("추천 배틀을 불러오지 못했습니다.")
             .map { response -> response.items?.map { it.toDomainModel() } ?: emptyList() }
+    }
+
+    override suspend fun createClassTopicDraft(
+        topicSeed: String,
+        difficulty: String,
+        categories: List<String>
+    ): Result<ClassTopicDraftBoard> = apiCall {
+        val request = ClassTopicDraftRequestDto(topicSeed, difficulty, categories)
+        classroomApi.createClassTopicDraft(request)
+            .toResult("주제 초안을 만들지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun suggestClassTopics(draftId: Long): Result<ClassTopicDraftBoard> = apiCall {
+        classroomApi.suggestClassTopics(draftId)
+            .toResult("AI 주제를 추천받지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
     override suspend fun previewClassJoin(inviteCode: String): Result<ClassJoinPreviewBoard> =

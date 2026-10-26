@@ -16,6 +16,10 @@ data class ClassCreateUiState(
     val battles: List<ClassBattleUiModel> = emptyList(),
     val isRecommendationEmpty: Boolean = false,
     val selectedBattleId: Long? = null,
+    val topicDraftId: Long? = null,
+    val topicBatchNo: Int = 0,
+    val remainingSuggestions: Int = 0,
+    val selectedCandidateId: Long? = null,
     val className: String = "",
     val isClassNameInvalid: Boolean = false,
     val isDeadlineEnabled: Boolean = true,
@@ -26,17 +30,25 @@ data class ClassCreateUiState(
     val isCommentRequired: Boolean = false,
     val isOperatorJoin: Boolean = false,
     val errorDialog: ClassCreateErrorDialog? = null,
+    val clarificationMessage: String? = null,
     val isRequesting: Boolean = false
 ) {
     val selectedBattle: ClassBattleUiModel?
-        get() = battles.firstOrNull { it.battleId == selectedBattleId }
+        get() = if (method == ClassCreateMethod.AI_TOPIC) {
+            battles.firstOrNull { it.candidateId == selectedCandidateId }
+        } else {
+            battles.firstOrNull { it.battleId == selectedBattleId }
+        }
 
     val isNextEnabled: Boolean
         get() = !isRequesting && when (step) {
             ClassCreateStep.METHOD, ClassCreateStep.SETTING -> true
             ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty() && isTopicValid
-            ClassCreateStep.SELECTION -> selectedBattleId != null
+            ClassCreateStep.SELECTION -> selectedBattle != null
         }
+
+    val isRegenerateEnabled: Boolean
+        get() = !isRequesting && remainingSuggestions > 0
 
     val isTopicRequired: Boolean
         get() = method == ClassCreateMethod.AI_TOPIC

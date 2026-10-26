@@ -12,6 +12,8 @@ import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftResponseDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -65,6 +67,16 @@ interface ClassroomApi {
         @Query("categories") categories: List<String>,
         @Query("keyword") keyword: String?
     ): BaseResponse<ClassBattleRecommendationResponseDto>
+
+    @POST("/api/v1/class-topic-drafts")
+    suspend fun createClassTopicDraft(
+        @Body request: ClassTopicDraftRequestDto
+    ): BaseResponse<ClassTopicDraftResponseDto>
+
+    @POST("/api/v1/class-topic-drafts/{draftId}/suggestions")
+    suspend fun suggestClassTopics(
+        @Path("draftId") draftId: Long
+    ): BaseResponse<ClassTopicDraftResponseDto>
 
     @GET("/api/v1/classes/join/preview")
     suspend fun previewClassJoin(

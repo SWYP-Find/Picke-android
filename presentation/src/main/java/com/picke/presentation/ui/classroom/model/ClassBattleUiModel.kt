@@ -23,6 +23,7 @@ data class ClassBattleUiModel(
     val durationMinutes: Int? = null,
     val options: List<ClassBattleOptionUiModel> = emptyList(),
     val isAiQuestion: Boolean = false,
+    // TODO: API 연동 - 클래스 배틀 상세에 의견 수 필드가 생기면 toUiModel()에서 채우고 사전 투표 화면 댓글 수 배지에 연결
     val commentCount: Int = 0,
     val candidateId: Long? = null
 )

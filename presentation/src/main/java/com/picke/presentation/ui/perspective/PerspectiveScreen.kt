@@ -66,6 +66,7 @@ import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
@@ -222,7 +223,7 @@ fun PerspectiveContent(
                                 iconRes = R.drawable.ic_arrow_right,
                                 contentDescription = stringResource(R.string.top_app_bar_next),
                                 onClick = { onNextClick(uiState.battleId) },
-                                iconSize = 16.dp
+                                iconSize = ComponentNumberTokens.iconSm
                             )
                         }
                     }

@@ -334,6 +334,7 @@
     <string name="class_detail_join_battle">배틀 참여</string>
     <string name="class_detail_view_result">결과 보기</string>
     <string name="class_detail_deadline_passed">참여 기간이 마감되었어요.</string>
+    <string name="class_detail_not_participating">운영자 참여를 켜지 않은 클래스라 배틀에 참여할 수 없어요.</string>
     <string name="class_detail_edit">수정</string>
 
     <!-- 클래스 - 관리 시트 -->

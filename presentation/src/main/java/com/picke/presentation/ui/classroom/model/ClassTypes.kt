@@ -29,6 +29,18 @@ enum class ClassBattleType {
     }
 }
 
+enum class ClassBattleStep {
+    NONE,
+    PRE_VOTE,
+    TTS_LISTENING,
+    POST_VOTE,
+    COMPLETED;
+
+    companion object {
+        fun from(value: String): ClassBattleStep = entries.find { it.name == value } ?: NONE
+    }
+}
+
 enum class ClassTicketDialog {
     NO_PERMISSION,
     UNREGISTERED,

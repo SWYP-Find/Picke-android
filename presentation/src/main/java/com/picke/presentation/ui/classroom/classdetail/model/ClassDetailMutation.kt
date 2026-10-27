@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classdetail.model
 
+import com.picke.presentation.ui.classroom.model.ClassBattleStep
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import java.time.LocalDateTime
 
@@ -13,7 +14,11 @@ internal sealed interface ClassDetailMutation {
         val deadline: LocalDateTime?
     ) : ClassDetailMutation
 
-    data class BattleLoaded(val battle: ClassBattleUiModel) : ClassDetailMutation
+    data class BattleLoaded(
+        val battle: ClassBattleUiModel,
+        val battleStep: ClassBattleStep,
+        val canParticipate: Boolean
+    ) : ClassDetailMutation
 
     data object RequestFailed : ClassDetailMutation
 }

@@ -6,7 +6,15 @@ sealed interface ClassDetailUiEvent {
 
     data class NavigateToMember(val classId: Long) : ClassDetailUiEvent
 
-    data class NavigateToBattle(val classId: Long) : ClassDetailUiEvent
+    data class NavigateToPreVote(val classId: Long) : ClassDetailUiEvent
+
+    data class NavigateToScenario(val classId: Long, val battleId: Long) : ClassDetailUiEvent
+
+    data class NavigateToDebate(val classId: Long) : ClassDetailUiEvent
+
+    data class NavigateToFinalVote(val classId: Long) : ClassDetailUiEvent
+
+    data class NavigateToPerspective(val classId: Long, val battleId: Long) : ClassDetailUiEvent
 
     data class NavigateToShare(val classId: Long) : ClassDetailUiEvent
 
@@ -17,6 +25,8 @@ sealed interface ClassDetailUiEvent {
     data object NavigateBackAfterClassRemoved : ClassDetailUiEvent
 
     data object ShowDeadlinePassedToast : ClassDetailUiEvent
+
+    data object ShowNotParticipatingToast : ClassDetailUiEvent
 
     data object ShowLoadFailedToast : ClassDetailUiEvent
 

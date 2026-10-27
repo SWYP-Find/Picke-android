@@ -3,6 +3,7 @@ package com.picke.presentation.ui.perspective
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
@@ -33,6 +34,9 @@ class PerspectiveViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val battleId: Long = savedStateHandle.get<String>(AppRoute.ARG_BATTLE_ID)?.toLongOrNull() ?: 0L
+    private val target: BattleTarget = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)
+        ?.let { classId -> BattleTarget.Class(classId) }
+        ?: BattleTarget.General(battleId)
 
     private val _uiState = MutableStateFlow(
         PerspectiveUiState(
@@ -189,7 +193,7 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             val cursor = if (isRefresh) null else state.nextCursor
             perspectiveUseCases.loadPerspectivesUseCase(
-                battleId = battleId,
+                target = target,
                 cursor = cursor,
                 size = 10,
                 optionId = state.selectedOptionId,
@@ -216,7 +220,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchMyVoteHistory() {
         viewModelScope.launch {
-            voteUseCases.getMyVoteHistoryUseCase(battleId)
+            voteUseCases.getMyVoteHistoryUseCase(target)
                 .onSuccess { voteHistory ->
                     _uiState.update {
                         it.copy(
@@ -233,7 +237,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchMyPerspective() {
         viewModelScope.launch {
-            perspectiveUseCases.getMyPerspectiveUseCase(battleId)
+            perspectiveUseCases.getMyPerspectiveUseCase(target)
                 .onSuccess { myData ->
                     _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
                 }
@@ -245,7 +249,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchVoteStats() {
         viewModelScope.launch {
-            voteUseCases.getVoteStatsUseCase(battleId)
+            voteUseCases.getVoteStatsUseCase(target)
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
                 }

@@ -3,6 +3,7 @@ package com.picke.presentation.ui.vote
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.share.usecase.ShareUseCases
 import com.picke.domain.feature.vote.usecase.SubmitVoteResult
@@ -88,7 +89,7 @@ class VoteViewModel @Inject constructor(
                                     choice = selectedOptionId
                                 )
                             } else {
-                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(battleIdLong)
+                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(BattleTarget.General(battleIdLong))
                                     .getOrNull()?.opinionChanged
                                 analyticsTracker.trackBattleStep(
                                     stepName = BattleStepName.POST_VOTE,

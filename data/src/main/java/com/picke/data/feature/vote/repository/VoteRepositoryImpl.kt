@@ -8,6 +8,7 @@ import com.picke.data.common.model.toResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.vote.datasource.VoteApi
 import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.vote.model.MyVoteBoard
 import com.picke.domain.feature.vote.model.VoteStatsBoard
 import com.picke.domain.feature.vote.repository.VoteRepository
@@ -80,14 +81,20 @@ class VoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getVoteStats(battleId: Long): Result<VoteStatsBoard> = apiCall {
-        voteApi.getVoteStats(battleId)
+    override suspend fun getVoteStats(target: BattleTarget): Result<VoteStatsBoard> = apiCall {
+        when (target) {
+            is BattleTarget.General -> voteApi.getVoteStats(target.battleId)
+            is BattleTarget.Class -> voteApi.getClassVoteStats(target.classId)
+        }
             .toResult("투표 통계를 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }
 
-    override suspend fun getMyVoteHistory(battleId: Long): Result<MyVoteBoard> = apiCall {
-        voteApi.getMyVoteHistory(battleId)
+    override suspend fun getMyVoteHistory(target: BattleTarget): Result<MyVoteBoard> = apiCall {
+        when (target) {
+            is BattleTarget.General -> voteApi.getMyVoteHistory(target.battleId)
+            is BattleTarget.Class -> voteApi.getClassMyVoteHistory(target.classId)
+        }
             .toResult("내 투표 내역을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }

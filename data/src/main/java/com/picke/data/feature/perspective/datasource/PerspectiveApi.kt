@@ -88,4 +88,18 @@ interface PerspectiveApi {
     suspend fun reportPerspective(
         @Path("perspectiveId") perspectiveId: Long
     ): BaseResponse<String>
+
+    @GET("/api/v1/classes/{classId}/battle/perspectives")
+    suspend fun getClassPerspectives(
+        @Path("classId") classId: Long,
+        @Query("cursor") cursor: String?,
+        @Query("size") size: Int,
+        @Query("optionId") optionId: Long?,
+        @Query("sort") sort: String
+    ): BaseResponse<PerspectivePageDto>
+
+    @GET("/api/v1/classes/{classId}/battle/perspectives/me")
+    suspend fun getClassMyPerspective(
+        @Path("classId") classId: Long
+    ): BaseResponse<PerspectiveDetailResponseDto>
 }

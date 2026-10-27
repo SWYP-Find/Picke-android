@@ -36,4 +36,14 @@ interface VoteApi {
     suspend fun getMyVoteHistory(
         @Path("battleId") battleId: Long
     ): BaseResponse<MyVoteResponseDto>
+
+    @GET("/api/v1/classes/{classId}/battle/vote-stats")
+    suspend fun getClassVoteStats(
+        @Path("classId") classId: Long
+    ): BaseResponse<VoteStatsDto>
+
+    @GET("/api/v1/classes/{classId}/battle/votes/me")
+    suspend fun getClassMyVoteHistory(
+        @Path("classId") classId: Long
+    ): BaseResponse<MyVoteResponseDto>
 }

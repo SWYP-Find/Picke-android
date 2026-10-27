@@ -1,5 +1,6 @@
 package com.picke.domain.feature.perspective.repository
 
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
@@ -10,7 +11,7 @@ import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
 interface PerspectiveRepository {
     // 1. 관점 목록 조회
     suspend fun getPerspectives(
-        battleId: Long,
+        target: BattleTarget,
         cursor: String? = null,
         size: Int = 10,
         optionId: Long? = null,
@@ -21,7 +22,7 @@ interface PerspectiveRepository {
     suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard>
 
     // 3. 내 관점 조회
-    suspend fun getMyPerspective(battleId: Long): Result<PerspectiveDetailBoard>
+    suspend fun getMyPerspective(target: BattleTarget): Result<PerspectiveDetailBoard>
 
     // 4. 관점 단건 조회
     suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard>

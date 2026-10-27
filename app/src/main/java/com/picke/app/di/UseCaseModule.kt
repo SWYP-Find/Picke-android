@@ -37,6 +37,7 @@ import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.classroom.usecase.CompleteClassTtsUseCase
 import com.picke.domain.feature.classroom.usecase.CreateClassTopicDraftUseCase
 import com.picke.domain.feature.classroom.usecase.CreateClassUseCase
 import com.picke.domain.feature.classroom.usecase.DeleteClassUseCase
@@ -207,7 +208,8 @@ object UseCaseModule {
             leaveClassUseCase = LeaveClassUseCase(classroomRepository),
             removeMemberUseCase = RemoveMemberUseCase(classroomRepository),
             submitClassPreVoteUseCase = SubmitClassPreVoteUseCase(classroomRepository),
-            submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository)
+            submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository),
+            completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository)
         )
     }
 

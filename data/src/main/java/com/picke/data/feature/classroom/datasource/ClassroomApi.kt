@@ -138,4 +138,9 @@ interface ClassroomApi {
         @Path("classId") classId: Long,
         @Body request: VoteRequestDto
     ): BaseResponse<VoteResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/tts-complete")
+    suspend fun completeClassTts(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
 }

@@ -98,10 +98,7 @@ class ClassVoteViewModel @Inject constructor(
                     selectedOptionId
                 )
 
-                VoteType.POST -> classroomUseCases.submitClassPostVoteUseCase(
-                    state.classId,
-                    selectedOptionId
-                )
+                VoteType.POST -> submitPostVote(state, selectedOptionId)
             }
             result
                 .onSuccess { sendEvent(nextEvent(state)) }
@@ -110,6 +107,14 @@ class ClassVoteViewModel @Inject constructor(
                     sendEvent(ClassVoteUiEvent.ShowActionFailedToast)
                 }
         }
+    }
+
+    private suspend fun submitPostVote(state: ClassVoteUiState, optionId: Long): Result<Unit> {
+        if (!state.isAiBattle) {
+            classroomUseCases.completeClassTtsUseCase(state.classId)
+                .onFailure { exception -> return Result.failure(exception) }
+        }
+        return classroomUseCases.submitClassPostVoteUseCase(state.classId, optionId)
     }
 
     private fun nextEvent(state: ClassVoteUiState): ClassVoteUiEvent = when (state.voteType) {

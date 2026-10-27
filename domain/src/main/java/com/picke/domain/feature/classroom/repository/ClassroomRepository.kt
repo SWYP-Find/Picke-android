@@ -56,4 +56,5 @@ interface ClassroomRepository {
     suspend fun removeMember(classId: Long, memberId: Long): Result<Unit>
     suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit>
+    suspend fun completeClassTts(classId: Long): Result<Unit>
 }

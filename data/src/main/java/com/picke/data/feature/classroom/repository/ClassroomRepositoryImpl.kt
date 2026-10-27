@@ -193,4 +193,9 @@ class ClassroomRepositoryImpl @Inject constructor(
             .toResult("최종 투표를 하지 못했습니다.")
             .map { }
     }
+
+    override suspend fun completeClassTts(classId: Long): Result<Unit> = apiCall {
+        classroomApi.completeClassTts(classId)
+            .toUnitResult("시나리오 청취 완료를 저장하지 못했습니다.")
+    }
 }

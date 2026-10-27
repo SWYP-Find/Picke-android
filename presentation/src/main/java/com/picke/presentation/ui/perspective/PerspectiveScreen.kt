@@ -94,6 +94,8 @@ fun PerspectiveScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
+                is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
+
                 is PerspectiveUiEvent.ShowToast -> {
                     Toast.makeText(
                         context,
@@ -101,8 +103,6 @@ fun PerspectiveScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
-                is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
             }
         }
     }

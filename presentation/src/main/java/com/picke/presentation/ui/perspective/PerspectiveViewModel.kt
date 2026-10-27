@@ -41,6 +41,7 @@ class PerspectiveViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(
         PerspectiveUiState(
             battleId = battleId,
+            isClassBattle = target is BattleTarget.Class,
             perspectives = emptyList(),
             hasNext = true
         )

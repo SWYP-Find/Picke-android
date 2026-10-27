@@ -14,6 +14,7 @@
     <string name="top_app_bar_share">공유</string>
     <string name="top_app_bar_close">닫기</string>
     <string name="top_app_bar_next">다음</string>
+    <string name="top_app_bar_report">리포트</string>
 
     <!-- 다이얼로그 -->
     <string name="dialog_confirm">네, 확인합니다</string>

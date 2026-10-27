@@ -126,8 +126,8 @@ fun CustomTopAppBarTextAction(
 ) {
     Row(
         modifier = modifier
-            .clickable(onClick = onClick)
-            .padding(horizontal = SpacingTokens.s12, vertical = SpacingTokens.s12),
+            .clickable(interactionSource = null, indication = null, onClick = onClick)
+            .padding(SpacingTokens.s12),
         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
         verticalAlignment = Alignment.CenterVertically
     ) {

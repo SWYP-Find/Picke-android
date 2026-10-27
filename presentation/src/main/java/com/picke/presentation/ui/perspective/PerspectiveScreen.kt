@@ -258,7 +258,8 @@ fun PerspectiveContent(
             } else {
                 PerspectiveStatsSection(
                     voteOptions = uiState.voteOptions,
-                    opinionChanged = uiState.opinionChanged
+                    opinionChanged = uiState.opinionChanged,
+                    isOptionImageVisible = !uiState.isAiBattle
                 )
 
                 CustomTabBar(
@@ -502,6 +503,7 @@ fun PerspectiveContent(
 private fun PerspectiveStatsSection(
     voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
+    isOptionImageVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val leftOption = voteOptions.getOrNull(0)
@@ -512,12 +514,13 @@ private fun PerspectiveStatsSection(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s4),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = if (isOptionImageVisible) Alignment.Bottom else Alignment.CenterVertically
     ) {
         PerspectiveStatsOption(
             imageUrl = leftOption?.imageUrl,
             title = leftOption?.title.orEmpty(),
-            ratio = leftRatio
+            ratio = leftRatio,
+            isImageVisible = isOptionImageVisible
         )
 
         Column(
@@ -533,7 +536,8 @@ private fun PerspectiveStatsSection(
         PerspectiveStatsOption(
             imageUrl = rightOption?.imageUrl,
             title = rightOption?.title.orEmpty(),
-            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO
+            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO,
+            isImageVisible = isOptionImageVisible
         )
     }
 }

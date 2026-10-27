@@ -3,6 +3,7 @@ package com.picke.presentation.ui.perspective.model
 data class PerspectiveUiState(
     val battleId: Long = 0L,
     val isClassBattle: Boolean = false,
+    val isAiBattle: Boolean = false,
     val voteOptions: List<PerspectiveVoteOptionUiModel> = emptyList(),
     val perspectives: List<PerspectiveUiModel> = emptyList(),
     val myPerspective: PerspectiveUiModel? = null,

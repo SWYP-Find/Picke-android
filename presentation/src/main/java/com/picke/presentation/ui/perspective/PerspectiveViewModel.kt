@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.model.BattleTarget
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
@@ -30,6 +32,7 @@ class PerspectiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val perspectiveUseCases: PerspectiveUseCases,
     private val voteUseCases: VoteUseCases,
+    private val classroomUseCases: ClassroomUseCases,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
@@ -56,6 +59,7 @@ class PerspectiveViewModel @Inject constructor(
         fetchVoteStats()
         fetchMyPerspective()
         fetchMyVoteHistory()
+        fetchBattleType()
     }
 
     fun updateSort(newSort: PerspectiveSort) {
@@ -253,6 +257,17 @@ class PerspectiveViewModel @Inject constructor(
             voteUseCases.getVoteStatsUseCase(target)
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
+                }
+        }
+    }
+
+    private fun fetchBattleType() {
+        val classTarget = target as? BattleTarget.Class ?: return
+        viewModelScope.launch {
+            classroomUseCases.getClassDetailUseCase(classTarget.classId)
+                .onSuccess { classDetail ->
+                    val battleType = ClassBattleType.from(classDetail.battleType)
+                    _uiState.update { it.copy(isAiBattle = battleType == ClassBattleType.CUSTOM) }
                 }
         }
     }

@@ -29,17 +29,20 @@ fun PerspectiveStatsOption(
     imageUrl: String?,
     title: String,
     ratio: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isImageVisible: Boolean = true
 ) {
     Column(
         modifier = modifier.width(PerspectiveStatsOptionDimens.width),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProfileImage(
-            model = imageUrl,
-            size = ComponentNumberTokens.avatarMd
-        )
+        if (isImageVisible) {
+            ProfileImage(
+                model = imageUrl,
+                size = ComponentNumberTokens.avatarMd
+            )
+        }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -59,7 +62,7 @@ fun PerspectiveStatsOption(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "이미지", showBackground = true)
 @Composable
 private fun PerspectiveStatsOptionPreview() {
     PickeTheme {
@@ -68,6 +71,20 @@ private fun PerspectiveStatsOptionPreview() {
             imageUrl = option.imageUrl,
             title = option.title,
             ratio = option.ratio
+        )
+    }
+}
+
+@Preview(name = "이미지 없음", showBackground = true)
+@Composable
+private fun PerspectiveStatsOptionNoImagePreview() {
+    PickeTheme {
+        val option = DummyData.dummyVoteOptions.first()
+        PerspectiveStatsOption(
+            imageUrl = option.imageUrl,
+            title = option.title,
+            ratio = option.ratio,
+            isImageVisible = false
         )
     }
 }

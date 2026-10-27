@@ -3,13 +3,16 @@ package com.picke.presentation.ui.classroom.classvote
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classvote.model.ClassVoteMutation
 import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiAction
 import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiEvent
 import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiState
+import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.vote.model.VoteType
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.vote.model.toUiModel
+import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassVoteViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -44,9 +48,18 @@ class ClassVoteViewModel @Inject constructor(
     }
 
     fun onAction(action: ClassVoteUiAction) {
+        val previousState = _uiState.value
+        _uiState.update { reduce(it, action) }
+        handleSideEffect(previousState, action)
+    }
+
+    private fun handleSideEffect(state: ClassVoteUiState, action: ClassVoteUiAction) {
         when (action) {
             ClassVoteUiAction.BackClick -> sendEvent(ClassVoteUiEvent.NavigateBack)
-            is ClassVoteUiAction.VoteClick -> submitVote(_uiState.value, action.optionId)
+
+            is ClassVoteUiAction.VoteClick -> if (!state.isRequesting) {
+                submitVote(state, action.optionId)
+            }
         }
     }
 
@@ -55,37 +68,57 @@ class ClassVoteViewModel @Inject constructor(
     }
 
     private fun fetchClassVote() {
-        // TODO: API 연동 - 클래스 배틀 조회 후 battleId로 배틀 상세 조회 (기존 콘텐츠는 getBattleDetailUseCase)
         val classId = _uiState.value.classId
-        val classItem = DummyData.dummyMyClasses.firstOrNull { it.id == classId } ?: return
-        val classBattle = DummyData.dummyClassBattleByClassId[classId] ?: return
-        val battleDetail = if (classBattle.isAiQuestion) {
-            DummyData.dummyClassAiBattleDetail
-        } else {
-            DummyData.dummyBattleDetailList.first()
+        viewModelScope.launch {
+            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                sendEvent(ClassVoteUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                sendEvent(ClassVoteUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val mutation = ClassVoteMutation.ClassVoteLoaded(
+                className = classDetail.name,
+                deadline = parseServerDateTime(classBattle.closeAt),
+                battleId = classBattle.battle.battleInfo.battleId.toLongOrNull() ?: 0L,
+                isAiBattle = ClassBattleType.from(classDetail.battleType) == ClassBattleType.CUSTOM,
+                battle = classBattle.battle.toUiModel()
+            )
+            _uiState.update { reduce(it, mutation) }
         }
-        val mutation = ClassVoteMutation.ClassVoteLoaded(
-            className = classItem.title,
-            deadline = classItem.deadline,
-            battleId = classBattle.battleId,
-            isAiBattle = classBattle.isAiQuestion,
-            commentCount = classBattle.commentCount,
-            battle = battleDetail
-        )
-        _uiState.update { reduce(it, mutation) }
     }
 
     private fun submitVote(state: ClassVoteUiState, optionId: String) {
-        // TODO: API 연동 - 사전·최종 투표 요청 성공 시 이동 (optionId 전송)
-        val event = when (state.voteType) {
-            VoteType.PRE -> if (state.isAiBattle) {
-                ClassVoteUiEvent.NavigateToDebate(state.classId)
-            } else {
-                ClassVoteUiEvent.NavigateToScenario(state.classId, state.battleId)
-            }
+        val selectedOptionId = optionId.toLongOrNull() ?: 0L
+        viewModelScope.launch {
+            val result = when (state.voteType) {
+                VoteType.PRE -> classroomUseCases.submitClassPreVoteUseCase(
+                    state.classId,
+                    selectedOptionId
+                )
 
-            VoteType.POST -> ClassVoteUiEvent.NavigateToPerspective(state.classId, state.battleId)
+                VoteType.POST -> classroomUseCases.submitClassPostVoteUseCase(
+                    state.classId,
+                    selectedOptionId
+                )
+            }
+            result
+                .onSuccess { sendEvent(nextEvent(state)) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassVoteMutation.RequestFailed) }
+                    sendEvent(ClassVoteUiEvent.ShowActionFailedToast)
+                }
         }
-        sendEvent(event)
+    }
+
+    private fun nextEvent(state: ClassVoteUiState): ClassVoteUiEvent = when (state.voteType) {
+        VoteType.PRE -> if (state.isAiBattle) {
+            ClassVoteUiEvent.NavigateToDebate(state.classId)
+        } else {
+            ClassVoteUiEvent.NavigateToScenario(state.classId, state.battleId)
+        }
+
+        VoteType.POST -> ClassVoteUiEvent.NavigateToPerspective(state.classId, state.battleId)
     }
 }

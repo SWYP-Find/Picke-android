@@ -19,5 +19,7 @@ data class ClassroomUseCases(
     val getClassMembersUseCase: GetClassMembersUseCase,
     val updateMyDisplayNameUseCase: UpdateMyDisplayNameUseCase,
     val leaveClassUseCase: LeaveClassUseCase,
-    val removeMemberUseCase: RemoveMemberUseCase
+    val removeMemberUseCase: RemoveMemberUseCase,
+    val submitClassPreVoteUseCase: SubmitClassPreVoteUseCase,
+    val submitClassPostVoteUseCase: SubmitClassPostVoteUseCase
 )

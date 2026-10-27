@@ -11,6 +11,6 @@ data class ClassVoteUiState(
     val deadline: LocalDateTime? = null,
     val battleId: Long = 0L,
     val isAiBattle: Boolean = false,
-    val commentCount: Int = 0,
-    val battle: BattleDetailUiModel? = null
+    val battle: BattleDetailUiModel? = null,
+    val isRequesting: Boolean = false
 )

@@ -18,6 +18,8 @@ import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicVersionResponseDto
 import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
+import com.picke.data.feature.pollquiz.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -124,4 +126,16 @@ interface ClassroomApi {
         @Path("classId") classId: Long,
         @Path("memberId") memberId: Long
     ): BaseResponse<Unit>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/pre")
+    suspend fun submitClassPreVote(
+        @Path("classId") classId: Long,
+        @Body request: VoteRequestDto
+    ): BaseResponse<VoteResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/post")
+    suspend fun submitClassPostVote(
+        @Path("classId") classId: Long,
+        @Body request: VoteRequestDto
+    ): BaseResponse<VoteResponseDto>
 }

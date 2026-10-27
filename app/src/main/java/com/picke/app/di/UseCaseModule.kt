@@ -53,6 +53,8 @@ import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPostVoteUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPreVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
 import com.picke.domain.feature.classroom.usecase.UpdateClassUseCase
 import com.picke.domain.feature.classroom.usecase.UpdateMyDisplayNameUseCase
@@ -203,7 +205,9 @@ object UseCaseModule {
             getClassMembersUseCase = GetClassMembersUseCase(classroomRepository),
             updateMyDisplayNameUseCase = UpdateMyDisplayNameUseCase(classroomRepository),
             leaveClassUseCase = LeaveClassUseCase(classroomRepository),
-            removeMemberUseCase = RemoveMemberUseCase(classroomRepository)
+            removeMemberUseCase = RemoveMemberUseCase(classroomRepository),
+            submitClassPreVoteUseCase = SubmitClassPreVoteUseCase(classroomRepository),
+            submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository)
         )
     }
 

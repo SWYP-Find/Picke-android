@@ -54,4 +54,6 @@ interface ClassroomRepository {
     suspend fun updateMyDisplayName(classId: Long, displayName: String): Result<ClassMemberBoard>
     suspend fun leaveClass(classId: Long): Result<Unit>
     suspend fun removeMember(classId: Long, memberId: Long): Result<Unit>
+    suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit>
+    suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit>
 }

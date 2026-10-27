@@ -379,6 +379,9 @@
     <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>
     <string name="class_debate_ai_badge">AI</string>
 
+    <!-- 클래스 - 댓글 -->
+    <string name="class_comment_required">의견을 남겨야 리포트를 볼 수 있어요.</string>
+
     <!-- 클래스 - 결과 -->
     <string name="class_result_summary_tab">클래스 요약</string>
     <string name="class_result_report_tab">내 리포트</string>

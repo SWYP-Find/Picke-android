@@ -100,6 +100,8 @@ fun PerspectiveScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
             }
         }
     }
@@ -107,7 +109,7 @@ fun PerspectiveScreen(
     PerspectiveContent(
         uiState = uiState,
         onBackClick = onBackClick,
-        onNextClick = onNextClick,
+        onNextClick = { viewModel.moveToNext() },
         onMoreClick = onMoreClick,
         onSubmitPerspective = { content, onSuccess ->
             viewModel.submitPerspective(content, onSuccess)

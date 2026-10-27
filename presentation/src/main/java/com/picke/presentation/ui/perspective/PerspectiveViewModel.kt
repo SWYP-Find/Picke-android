@@ -59,7 +59,7 @@ class PerspectiveViewModel @Inject constructor(
         fetchVoteStats()
         fetchMyPerspective()
         fetchMyVoteHistory()
-        fetchBattleType()
+        fetchClassDetail()
     }
 
     fun updateSort(newSort: PerspectiveSort) {
@@ -178,6 +178,16 @@ class PerspectiveViewModel @Inject constructor(
         }
     }
 
+    fun moveToNext() {
+        val state = _uiState.value
+        val event = if (state.isCommentRequired && state.myPerspective == null) {
+            PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
+        } else {
+            PerspectiveUiEvent.NavigateNext(battleId)
+        }
+        sendEvent(event)
+    }
+
     fun refreshAllData() {
         fetchMyVoteHistory()
         fetchVoteStats()
@@ -261,13 +271,18 @@ class PerspectiveViewModel @Inject constructor(
         }
     }
 
-    private fun fetchBattleType() {
+    private fun fetchClassDetail() {
         val classTarget = target as? BattleTarget.Class ?: return
         viewModelScope.launch {
             classroomUseCases.getClassDetailUseCase(classTarget.classId)
                 .onSuccess { classDetail ->
                     val battleType = ClassBattleType.from(classDetail.battleType)
-                    _uiState.update { it.copy(isAiBattle = battleType == ClassBattleType.CUSTOM) }
+                    _uiState.update {
+                        it.copy(
+                            isAiBattle = battleType == ClassBattleType.CUSTOM,
+                            isCommentRequired = classDetail.commentRequired
+                        )
+                    }
                 }
         }
     }

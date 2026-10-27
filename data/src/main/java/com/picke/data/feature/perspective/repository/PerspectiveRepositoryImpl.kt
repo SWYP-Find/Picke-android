@@ -41,8 +41,12 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard> = apiCall {
-        perspectiveApi.createPerspective(battleId, PerspectiveRequestDto(content))
+    override suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard> = apiCall {
+        val request = PerspectiveRequestDto(content)
+        when (target) {
+            is BattleTarget.General -> perspectiveApi.createPerspective(target.battleId, request)
+            is BattleTarget.Class -> perspectiveApi.createClassPerspective(target.classId, request)
+        }
             .toResult("관점을 작성하지 못했습니다.")
             .map { it.toDomainModel() }
     }

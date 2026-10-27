@@ -100,7 +100,7 @@ class PerspectiveViewModel @Inject constructor(
             val result = if (editId != null) {
                 perspectiveUseCases.updatePerspectiveUseCase(editId, content)
             } else {
-                perspectiveUseCases.createPerspectiveUseCase(battleId, content)
+                perspectiveUseCases.createPerspectiveUseCase(target, content)
             }
             result
                 .onSuccess {

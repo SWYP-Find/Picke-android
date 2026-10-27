@@ -19,7 +19,7 @@ interface PerspectiveRepository {
     ): Result<PerspectivePage>
 
     // 2. 관점 생성
-    suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard>
+    suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard>
 
     // 3. 내 관점 조회
     suspend fun getMyPerspective(target: BattleTarget): Result<PerspectiveDetailBoard>

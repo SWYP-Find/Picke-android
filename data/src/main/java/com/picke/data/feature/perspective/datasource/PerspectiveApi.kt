@@ -98,6 +98,12 @@ interface PerspectiveApi {
         @Query("sort") sort: String
     ): BaseResponse<PerspectivePageDto>
 
+    @POST("/api/v1/classes/{classId}/battle/perspectives")
+    suspend fun createClassPerspective(
+        @Path("classId") classId: Long,
+        @Body request: PerspectiveRequestDto
+    ): BaseResponse<PerspectiveCreateResponseDto>
+
     @GET("/api/v1/classes/{classId}/battle/perspectives/me")
     suspend fun getClassMyPerspective(
         @Path("classId") classId: Long

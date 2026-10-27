@@ -9,7 +9,9 @@ import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailMutation
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
+import com.picke.presentation.ui.classroom.model.ClassBattleStep
 import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.classroom.model.ClassRole
 import com.picke.presentation.ui.classroom.model.toUiModel
 import com.picke.presentation.util.parseServerDateTime
@@ -113,20 +115,49 @@ class ClassDetailViewModel @Inject constructor(
             val battleType = ClassBattleType.from(classDetail.battleType)
             classroomUseCases.getClassBattleUseCase(classId)
                 .onSuccess { classBattle ->
-                    val battle = classBattle.toUiModel(battleType)
-                    _uiState.update { reduce(it, ClassDetailMutation.BattleLoaded(battle)) }
+                    val mutation = ClassDetailMutation.BattleLoaded(
+                        battle = classBattle.toUiModel(battleType),
+                        battleStep = ClassBattleStep.from(classBattle.battle.currentStep),
+                        canParticipate = classBattle.canParticipate
+                    )
+                    _uiState.update { reduce(it, mutation) }
                 }
                 .onFailure { sendEvent(ClassDetailUiEvent.ShowLoadFailedToast) }
         }
     }
 
     private fun startBattle(state: ClassDetailUiState) {
-        val event = if (state.isInProgress) {
-            ClassDetailUiEvent.NavigateToBattle(state.classId)
-        } else {
-            ClassDetailUiEvent.ShowDeadlinePassedToast
+        val battle = state.battle
+        val event = when {
+            !state.isInProgress -> ClassDetailUiEvent.ShowDeadlinePassedToast
+
+            battle == null -> ClassDetailUiEvent.ShowLoadFailedToast
+
+            !state.canParticipate -> ClassDetailUiEvent.ShowNotParticipatingToast
+
+            else -> battleStepEvent(state.classId, state.battleStep, battle)
         }
         sendEvent(event)
+    }
+
+    private fun battleStepEvent(
+        classId: Long,
+        step: ClassBattleStep,
+        battle: ClassBattleUiModel
+    ): ClassDetailUiEvent = when (step) {
+        ClassBattleStep.NONE -> ClassDetailUiEvent.NavigateToPreVote(classId)
+
+        ClassBattleStep.PRE_VOTE,
+        ClassBattleStep.TTS_LISTENING -> if (battle.isAiQuestion) {
+            ClassDetailUiEvent.NavigateToDebate(classId)
+        } else {
+            ClassDetailUiEvent.NavigateToScenario(classId, battle.battleId)
+        }
+
+        ClassBattleStep.POST_VOTE -> ClassDetailUiEvent.NavigateToFinalVote(classId)
+
+        ClassBattleStep.COMPLETED ->
+            ClassDetailUiEvent.NavigateToPerspective(classId, battle.battleId)
     }
 
     private fun deleteClass() {

@@ -47,7 +47,11 @@ import java.time.LocalDateTime
 fun ClassDetailScreen(
     onBackClick: () -> Unit,
     onMemberClick: (classId: Long) -> Unit,
-    onBattleClick: (classId: Long) -> Unit,
+    onNavigateToPreVote: (classId: Long) -> Unit,
+    onNavigateToScenario: (classId: Long, battleId: Long) -> Unit,
+    onNavigateToDebate: (classId: Long) -> Unit,
+    onNavigateToFinalVote: (classId: Long) -> Unit,
+    onNavigateToPerspective: (classId: Long, battleId: Long) -> Unit,
     onShareCodeClick: (classId: Long) -> Unit,
     onResultClick: (classId: Long) -> Unit,
     onEditClick: (classId: Long) -> Unit,
@@ -60,6 +64,7 @@ fun ClassDetailScreen(
     val context = LocalContext.current
 
     val deadlinePassedMessage = stringResource(R.string.class_detail_deadline_passed)
+    val notParticipatingMessage = stringResource(R.string.class_detail_not_participating)
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
@@ -70,7 +75,15 @@ fun ClassDetailScreen(
 
                 is ClassDetailUiEvent.NavigateToMember -> onMemberClick(event.classId)
 
-                is ClassDetailUiEvent.NavigateToBattle -> onBattleClick(event.classId)
+                is ClassDetailUiEvent.NavigateToPreVote -> onNavigateToPreVote(event.classId)
+
+                is ClassDetailUiEvent.NavigateToScenario -> onNavigateToScenario(event.classId, event.battleId)
+
+                is ClassDetailUiEvent.NavigateToDebate -> onNavigateToDebate(event.classId)
+
+                is ClassDetailUiEvent.NavigateToFinalVote -> onNavigateToFinalVote(event.classId)
+
+                is ClassDetailUiEvent.NavigateToPerspective -> onNavigateToPerspective(event.classId, event.battleId)
 
                 is ClassDetailUiEvent.NavigateToShare -> onShareCodeClick(event.classId)
 
@@ -82,6 +95,9 @@ fun ClassDetailScreen(
 
                 ClassDetailUiEvent.ShowDeadlinePassedToast ->
                     Toast.makeText(context, deadlinePassedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDetailUiEvent.ShowNotParticipatingToast ->
+                    Toast.makeText(context, notParticipatingMessage, Toast.LENGTH_SHORT).show()
 
                 ClassDetailUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()

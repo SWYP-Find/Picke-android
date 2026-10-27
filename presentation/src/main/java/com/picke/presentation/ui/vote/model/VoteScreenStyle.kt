@@ -23,9 +23,9 @@ internal fun voteScreenStyle(voteType: VoteType, classInfo: VoteClassInfoUiModel
     val isPreVote = voteType == VoteType.PRE
     val isGeneralBattle = classInfo == null
     val submitTextRes = when {
-        !isPreVote -> R.string.postvote
-        isGeneralBattle -> R.string.prevote
-        else -> R.string.vote_submit
+        !isGeneralBattle -> R.string.vote_submit
+        isPreVote -> R.string.prevote
+        else -> R.string.postvote
     }
 
     return VoteScreenStyle(
@@ -37,6 +37,6 @@ internal fun voteScreenStyle(voteType: VoteType, classInfo: VoteClassInfoUiModel
         isShareVisible = isGeneralBattle,
         isOptionImageVisible = classInfo?.isAiBattle != true,
         commentCount = if (isPreVote) classInfo?.commentCount else null,
-        deadlineText = if (isPreVote) classInfo?.deadlineText else null
+        deadlineText = classInfo?.deadlineText
     )
 }

@@ -14,6 +14,7 @@
     <string name="top_app_bar_share">공유</string>
     <string name="top_app_bar_close">닫기</string>
     <string name="top_app_bar_next">다음</string>
+    <string name="top_app_bar_report">리포트</string>
 
     <!-- 다이얼로그 -->
     <string name="dialog_confirm">네, 확인합니다</string>
@@ -334,6 +335,7 @@
     <string name="class_detail_join_battle">배틀 참여</string>
     <string name="class_detail_view_result">결과 보기</string>
     <string name="class_detail_deadline_passed">참여 기간이 마감되었어요.</string>
+    <string name="class_detail_not_participating">운영자 참여를 켜지 않은 클래스라 배틀에 참여할 수 없어요.</string>
     <string name="class_detail_edit">수정</string>
 
     <!-- 클래스 - 관리 시트 -->
@@ -376,6 +378,9 @@
     <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
     <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>
     <string name="class_debate_ai_badge">AI</string>
+
+    <!-- 클래스 - 댓글 -->
+    <string name="class_comment_required">의견을 남겨야 리포트를 볼 수 있어요.</string>
 
     <!-- 클래스 - 결과 -->
     <string name="class_result_summary_tab">클래스 요약</string>

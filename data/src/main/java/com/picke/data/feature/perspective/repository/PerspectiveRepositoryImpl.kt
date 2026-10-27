@@ -8,6 +8,7 @@ import com.picke.data.feature.perspective.datasource.PerspectiveApi
 import com.picke.data.feature.perspective.model.PerspectiveRequestDto
 import com.picke.data.feature.perspective.model.toDomainModel
 import com.picke.domain.common.exception.ApiErrorException
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
@@ -23,25 +24,38 @@ class PerspectiveRepositoryImpl @Inject constructor(
 ) : PerspectiveRepository {
 
     override suspend fun getPerspectives(
-        battleId: Long,
+        target: BattleTarget,
         cursor: String?,
         size: Int,
         optionId: Long?,
         sort: String
     ): Result<PerspectivePage> = apiCall {
-        perspectiveApi.getPerspectives(battleId, cursor, size, optionId, sort)
+        when (target) {
+            is BattleTarget.General ->
+                perspectiveApi.getPerspectives(target.battleId, cursor, size, optionId, sort)
+
+            is BattleTarget.Class ->
+                perspectiveApi.getClassPerspectives(target.classId, cursor, size, optionId, sort)
+        }
             .toResult("관점 목록을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }
 
-    override suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard> = apiCall {
-        perspectiveApi.createPerspective(battleId, PerspectiveRequestDto(content))
+    override suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard> = apiCall {
+        val request = PerspectiveRequestDto(content)
+        when (target) {
+            is BattleTarget.General -> perspectiveApi.createPerspective(target.battleId, request)
+            is BattleTarget.Class -> perspectiveApi.createClassPerspective(target.classId, request)
+        }
             .toResult("관점을 작성하지 못했습니다.")
             .map { it.toDomainModel() }
     }
 
-    override suspend fun getMyPerspective(battleId: Long): Result<PerspectiveDetailBoard> = apiCall {
-        perspectiveApi.getMyPerspective(battleId)
+    override suspend fun getMyPerspective(target: BattleTarget): Result<PerspectiveDetailBoard> = apiCall {
+        when (target) {
+            is BattleTarget.General -> perspectiveApi.getMyPerspective(target.battleId)
+            is BattleTarget.Class -> perspectiveApi.getClassMyPerspective(target.classId)
+        }
             .toResult("내 관점을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }

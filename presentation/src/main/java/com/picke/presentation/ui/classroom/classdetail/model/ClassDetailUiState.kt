@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classdetail.model
 
+import com.picke.presentation.ui.classroom.model.ClassBattleStep
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import java.time.LocalDateTime
 
@@ -11,6 +12,8 @@ data class ClassDetailUiState(
     val memberCount: Int = 0,
     val deadline: LocalDateTime? = null,
     val battle: ClassBattleUiModel? = null,
+    val battleStep: ClassBattleStep = ClassBattleStep.NONE,
+    val canParticipate: Boolean = false,
     val isManageSheetVisible: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
     val isLeaveDialogVisible: Boolean = false,

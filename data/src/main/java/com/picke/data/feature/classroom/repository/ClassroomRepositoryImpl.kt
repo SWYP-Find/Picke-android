@@ -12,6 +12,7 @@ import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
 import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
+import com.picke.data.feature.pollquiz.model.VoteRequestDto
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
@@ -179,5 +180,22 @@ class ClassroomRepositoryImpl @Inject constructor(
     override suspend fun removeMember(classId: Long, memberId: Long): Result<Unit> = apiCall {
         classroomApi.removeMember(classId, memberId)
             .toUnitResult("멤버를 내보내지 못했습니다.")
+    }
+
+    override suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit> = apiCall {
+        classroomApi.submitClassPreVote(classId, VoteRequestDto(optionId))
+            .toResult("사전 투표를 하지 못했습니다.")
+            .map { }
+    }
+
+    override suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit> = apiCall {
+        classroomApi.submitClassPostVote(classId, VoteRequestDto(optionId))
+            .toResult("최종 투표를 하지 못했습니다.")
+            .map { }
+    }
+
+    override suspend fun completeClassTts(classId: Long): Result<Unit> = apiCall {
+        classroomApi.completeClassTts(classId)
+            .toUnitResult("시나리오 청취 완료를 저장하지 못했습니다.")
     }
 }

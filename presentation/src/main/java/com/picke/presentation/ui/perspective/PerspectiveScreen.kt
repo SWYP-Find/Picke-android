@@ -47,6 +47,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.CustomTopAppBarTextAction
 import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.SortFilterChip
@@ -65,6 +66,7 @@ import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.flow.collectLatest
@@ -92,6 +94,8 @@ fun PerspectiveScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
+                is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
+
                 is PerspectiveUiEvent.ShowToast -> {
                     Toast.makeText(
                         context,
@@ -106,7 +110,7 @@ fun PerspectiveScreen(
     PerspectiveContent(
         uiState = uiState,
         onBackClick = onBackClick,
-        onNextClick = onNextClick,
+        onNextClick = { viewModel.moveToNext() },
         onMoreClick = onMoreClick,
         onSubmitPerspective = { content, onSuccess ->
             viewModel.submitPerspective(content, onSuccess)
@@ -145,7 +149,7 @@ fun PerspectiveScreen(
 fun PerspectiveContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
-    onNextClick: (Long) -> Unit,
+    onNextClick: () -> Unit,
     onMoreClick: (Long, Long) -> Unit,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
@@ -208,12 +212,20 @@ fun PerspectiveContent(
                     showLogo = false,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
-                        CustomTopAppBarAction(
-                            iconRes = R.drawable.ic_arrow_right,
-                            contentDescription = stringResource(R.string.top_app_bar_next),
-                            onClick = { onNextClick(uiState.battleId) },
-                            iconSize = 16.dp
-                        )
+                        if (uiState.isClassBattle) {
+                            CustomTopAppBarTextAction(
+                                iconRes = R.drawable.ic_report,
+                                text = stringResource(R.string.top_app_bar_report),
+                                onClick = onNextClick
+                            )
+                        } else {
+                            CustomTopAppBarAction(
+                                iconRes = R.drawable.ic_arrow_right,
+                                contentDescription = stringResource(R.string.top_app_bar_next),
+                                onClick = onNextClick,
+                                iconSize = ComponentNumberTokens.iconSm
+                            )
+                        }
                     }
                 )
             }
@@ -249,7 +261,8 @@ fun PerspectiveContent(
             } else {
                 PerspectiveStatsSection(
                     voteOptions = uiState.voteOptions,
-                    opinionChanged = uiState.opinionChanged
+                    opinionChanged = uiState.opinionChanged,
+                    isOptionImageVisible = !uiState.isAiBattle
                 )
 
                 CustomTabBar(
@@ -493,6 +506,7 @@ fun PerspectiveContent(
 private fun PerspectiveStatsSection(
     voteOptions: List<PerspectiveVoteOptionUiModel>,
     opinionChanged: Boolean,
+    isOptionImageVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val leftOption = voteOptions.getOrNull(0)
@@ -503,12 +517,13 @@ private fun PerspectiveStatsSection(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s4),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = if (isOptionImageVisible) Alignment.Bottom else Alignment.CenterVertically
     ) {
         PerspectiveStatsOption(
             imageUrl = leftOption?.imageUrl,
             title = leftOption?.title.orEmpty(),
-            ratio = leftRatio
+            ratio = leftRatio,
+            isImageVisible = isOptionImageVisible
         )
 
         Column(
@@ -524,7 +539,8 @@ private fun PerspectiveStatsSection(
         PerspectiveStatsOption(
             imageUrl = rightOption?.imageUrl,
             title = rightOption?.title.orEmpty(),
-            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO
+            ratio = rightOption?.ratio ?: DEFAULT_VOTE_RATIO,
+            isImageVisible = isOptionImageVisible
         )
     }
 }

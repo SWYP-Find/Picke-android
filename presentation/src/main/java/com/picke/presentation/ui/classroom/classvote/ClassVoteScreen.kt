@@ -1,10 +1,12 @@
 package com.picke.presentation.ui.classroom.classvote
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,13 +34,33 @@ fun ClassVoteScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassVoteUiEvent.NavigateBack -> onBackClick()
+
                 is ClassVoteUiEvent.NavigateToDebate -> onNavigateToDebate(event.classId)
-                is ClassVoteUiEvent.NavigateToScenario -> onNavigateToScenario(event.classId, event.battleId)
-                is ClassVoteUiEvent.NavigateToPerspective -> onNavigateToPerspective(event.classId, event.battleId)
+
+                is ClassVoteUiEvent.NavigateToScenario -> onNavigateToScenario(
+                    event.classId,
+                    event.battleId
+                )
+
+                is ClassVoteUiEvent.NavigateToPerspective -> onNavigateToPerspective(
+                    event.classId,
+                    event.battleId
+                )
+
+                ClassVoteUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassVoteUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -56,13 +78,19 @@ private fun ClassVoteContent(
     onAction: (ClassVoteUiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val deadlineText = rememberClassDeadlineText(uiState.deadline, R.string.class_deadline_full_format)
-    val deadlineUntilText =
-        if (uiState.deadline != null) stringResource(R.string.class_deadline_until, deadlineText) else null
+    val deadlineText =
+        rememberClassDeadlineText(uiState.deadline, R.string.class_deadline_full_format)
+    val deadlineUntilText = if (uiState.deadline != null) {
+        stringResource(R.string.class_deadline_until, deadlineText)
+    } else {
+        null
+    }
+
     val battle = uiState.battle ?: return
     val classInfo = VoteClassInfoUiModel(
         className = uiState.className,
-        commentCount = uiState.commentCount,
+        // TODO: API 연동 - 클래스 배틀 상세에 의견 수 필드가 생기면 연결
+        commentCount = null,
         deadlineText = deadlineUntilText,
         isAiBattle = uiState.isAiBattle
     )
@@ -99,7 +127,6 @@ private fun ClassVotePreVotePreview() {
                 deadline = classItem.deadline,
                 battleId = classBattle.battleId,
                 isAiBattle = classBattle.isAiQuestion,
-                commentCount = classBattle.commentCount,
                 battle = DummyData.dummyClassAiBattleDetail
             ),
             onAction = {}
@@ -122,7 +149,6 @@ private fun ClassVoteFinalVotePreview() {
                 deadline = classItem.deadline,
                 battleId = classBattle.battleId,
                 isAiBattle = classBattle.isAiQuestion,
-                commentCount = classBattle.commentCount,
                 battle = DummyData.dummyClassAiBattleDetail
             ),
             onAction = {}

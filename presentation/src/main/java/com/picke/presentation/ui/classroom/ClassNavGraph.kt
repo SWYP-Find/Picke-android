@@ -191,8 +191,20 @@ fun NavGraphBuilder.classGraph(
                 onMemberClick = { classId ->
                     navController.navigate(AppRoute.ClassMember.createRoute(classId))
                 },
-                onBattleClick = { classId ->
+                onNavigateToPreVote = { classId ->
                     navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.PRE))
+                },
+                onNavigateToScenario = { classId, battleId ->
+                    navController.navigate(AppRoute.ClassScenario.createRoute(classId, battleId))
+                },
+                onNavigateToDebate = { classId ->
+                    navController.navigate(AppRoute.ClassDebate.createRoute(classId))
+                },
+                onNavigateToFinalVote = { classId ->
+                    navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST))
+                },
+                onNavigateToPerspective = { classId, battleId ->
+                    navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId))
                 },
                 onShareCodeClick = { classId ->
                     navController.navigate(AppRoute.ClassShare.createRoute(classId))

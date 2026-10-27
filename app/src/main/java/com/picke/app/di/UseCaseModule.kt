@@ -37,6 +37,7 @@ import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.classroom.usecase.CompleteClassTtsUseCase
 import com.picke.domain.feature.classroom.usecase.CreateClassTopicDraftUseCase
 import com.picke.domain.feature.classroom.usecase.CreateClassUseCase
 import com.picke.domain.feature.classroom.usecase.DeleteClassUseCase
@@ -53,6 +54,8 @@ import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPostVoteUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPreVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
 import com.picke.domain.feature.classroom.usecase.UpdateClassUseCase
 import com.picke.domain.feature.classroom.usecase.UpdateMyDisplayNameUseCase
@@ -203,7 +206,10 @@ object UseCaseModule {
             getClassMembersUseCase = GetClassMembersUseCase(classroomRepository),
             updateMyDisplayNameUseCase = UpdateMyDisplayNameUseCase(classroomRepository),
             leaveClassUseCase = LeaveClassUseCase(classroomRepository),
-            removeMemberUseCase = RemoveMemberUseCase(classroomRepository)
+            removeMemberUseCase = RemoveMemberUseCase(classroomRepository),
+            submitClassPreVoteUseCase = SubmitClassPreVoteUseCase(classroomRepository),
+            submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository),
+            completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository)
         )
     }
 

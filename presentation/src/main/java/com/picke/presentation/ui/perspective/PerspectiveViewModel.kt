@@ -3,12 +3,15 @@ package com.picke.presentation.ui.perspective
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.model.BattleTarget
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
@@ -29,14 +32,19 @@ class PerspectiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val perspectiveUseCases: PerspectiveUseCases,
     private val voteUseCases: VoteUseCases,
+    private val classroomUseCases: ClassroomUseCases,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val battleId: Long = savedStateHandle.get<String>(AppRoute.ARG_BATTLE_ID)?.toLongOrNull() ?: 0L
+    private val target: BattleTarget = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)
+        ?.let { classId -> BattleTarget.Class(classId) }
+        ?: BattleTarget.General(battleId)
 
     private val _uiState = MutableStateFlow(
         PerspectiveUiState(
             battleId = battleId,
+            isClassBattle = target is BattleTarget.Class,
             perspectives = emptyList(),
             hasNext = true
         )
@@ -51,6 +59,7 @@ class PerspectiveViewModel @Inject constructor(
         fetchVoteStats()
         fetchMyPerspective()
         fetchMyVoteHistory()
+        fetchClassDetail()
     }
 
     fun updateSort(newSort: PerspectiveSort) {
@@ -96,7 +105,7 @@ class PerspectiveViewModel @Inject constructor(
             val result = if (editId != null) {
                 perspectiveUseCases.updatePerspectiveUseCase(editId, content)
             } else {
-                perspectiveUseCases.createPerspectiveUseCase(battleId, content)
+                perspectiveUseCases.createPerspectiveUseCase(target, content)
             }
             result
                 .onSuccess {
@@ -169,6 +178,16 @@ class PerspectiveViewModel @Inject constructor(
         }
     }
 
+    fun moveToNext() {
+        val state = _uiState.value
+        val event = if (state.isCommentRequired && state.myPerspective == null) {
+            PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
+        } else {
+            PerspectiveUiEvent.NavigateNext(battleId)
+        }
+        sendEvent(event)
+    }
+
     fun refreshAllData() {
         fetchMyVoteHistory()
         fetchVoteStats()
@@ -189,7 +208,7 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             val cursor = if (isRefresh) null else state.nextCursor
             perspectiveUseCases.loadPerspectivesUseCase(
-                battleId = battleId,
+                target = target,
                 cursor = cursor,
                 size = 10,
                 optionId = state.selectedOptionId,
@@ -216,7 +235,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchMyVoteHistory() {
         viewModelScope.launch {
-            voteUseCases.getMyVoteHistoryUseCase(battleId)
+            voteUseCases.getMyVoteHistoryUseCase(target)
                 .onSuccess { voteHistory ->
                     _uiState.update {
                         it.copy(
@@ -233,7 +252,7 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchMyPerspective() {
         viewModelScope.launch {
-            perspectiveUseCases.getMyPerspectiveUseCase(battleId)
+            perspectiveUseCases.getMyPerspectiveUseCase(target)
                 .onSuccess { myData ->
                     _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
                 }
@@ -245,9 +264,25 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchVoteStats() {
         viewModelScope.launch {
-            voteUseCases.getVoteStatsUseCase(battleId)
+            voteUseCases.getVoteStatsUseCase(target)
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
+                }
+        }
+    }
+
+    private fun fetchClassDetail() {
+        val classTarget = target as? BattleTarget.Class ?: return
+        viewModelScope.launch {
+            classroomUseCases.getClassDetailUseCase(classTarget.classId)
+                .onSuccess { classDetail ->
+                    val battleType = ClassBattleType.from(classDetail.battleType)
+                    _uiState.update {
+                        it.copy(
+                            isAiBattle = battleType == ClassBattleType.CUSTOM,
+                            isCommentRequired = classDetail.commentRequired
+                        )
+                    }
                 }
         }
     }

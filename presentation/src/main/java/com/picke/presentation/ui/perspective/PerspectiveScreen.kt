@@ -149,7 +149,7 @@ fun PerspectiveScreen(
 fun PerspectiveContent(
     uiState: PerspectiveUiState,
     onBackClick: () -> Unit,
-    onNextClick: (Long) -> Unit,
+    onNextClick: () -> Unit,
     onMoreClick: (Long, Long) -> Unit,
     onSubmitPerspective: (String, () -> Unit) -> Unit,
     onSelectOption: (Long?) -> Unit,
@@ -216,13 +216,13 @@ fun PerspectiveContent(
                             CustomTopAppBarTextAction(
                                 iconRes = R.drawable.ic_report,
                                 text = stringResource(R.string.top_app_bar_report),
-                                onClick = { onNextClick(uiState.battleId) }
+                                onClick = onNextClick
                             )
                         } else {
                             CustomTopAppBarAction(
                                 iconRes = R.drawable.ic_arrow_right,
                                 contentDescription = stringResource(R.string.top_app_bar_next),
-                                onClick = { onNextClick(uiState.battleId) },
+                                onClick = onNextClick,
                                 iconSize = ComponentNumberTokens.iconSm
                             )
                         }

@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRetryChip
 import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRoundProgress
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
@@ -52,6 +51,7 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
+import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.component.ChatBubble
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTextField
@@ -275,7 +275,7 @@ private fun ClassDebateChatSection(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    ClassDebateRetryChip(onClick = onRetryClick)
+                    ClassRetryChip(onClick = onRetryClick)
                 }
             }
         }

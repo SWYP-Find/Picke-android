@@ -57,9 +57,24 @@ fun ClassDebateResponseDto.toDomainModel() = ClassDebateBoard(
     round = round ?: 1,
     canReply = canReply ?: false,
     canRetry = canRetry ?: false,
-    philosopher = philosopher?.toDomainModel() ?: ClassDebatePhilosopherBoard("", "", "", ""),
-    participantOption = participantOption?.toDomainModel() ?: ClassDebateSideBoard(0L, "", "", ""),
-    opponentOption = opponentOption?.toDomainModel() ?: ClassDebateSideBoard(0L, "", "", ""),
+    philosopher = philosopher?.toDomainModel() ?: ClassDebatePhilosopherBoard(
+        code = "",
+        name = "",
+        typeName = "",
+        imageKey = ""
+    ),
+    participantOption = participantOption?.toDomainModel() ?: ClassDebateSideBoard(
+        optionId = 0L,
+        position = "",
+        title = "",
+        stance = ""
+    ),
+    opponentOption = opponentOption?.toDomainModel() ?: ClassDebateSideBoard(
+        optionId = 0L,
+        position = "",
+        title = "",
+        stance = ""
+    ),
     messages = messages?.map { it.toDomainModel() } ?: emptyList(),
     aiNotice = aiNotice ?: "",
     replyMinLength = replyMinLength ?: 0,

@@ -123,10 +123,10 @@ class ClassDebateViewModel @Inject constructor(
         val requestKey = state.replyRequestKey ?: UUID.randomUUID().toString()
         viewModelScope.launch {
             classroomUseCases.submitClassDebateReplyUseCase(
-                state.classId,
-                state.debate.round,
-                state.input.trim(),
-                requestKey
+                classId = state.classId,
+                roundIndex = state.debate.round,
+                content = state.input.trim(),
+                requestKey = requestKey
             ).onSuccess { debate ->
                 _uiState.update {
                     reduce(it, ClassDebateMutation.ReplySubmitted(debate.toUiModel()))

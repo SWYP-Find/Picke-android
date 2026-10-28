@@ -11,6 +11,10 @@ class SubmitClassDebateReplyUseCase(
         roundIndex: Int,
         content: String,
         requestKey: String
-    ): Result<ClassDebateBoard> =
-        classroomRepository.submitClassDebateReply(classId, roundIndex, content, requestKey)
+    ): Result<ClassDebateBoard> = classroomRepository.submitClassDebateReply(
+        classId = classId,
+        roundIndex = roundIndex,
+        content = content,
+        requestKey = requestKey
+    )
 }

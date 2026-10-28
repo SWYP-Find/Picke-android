@@ -222,7 +222,11 @@ class ClassroomRepositoryImpl @Inject constructor(
     ): Result<ClassDebateBoard> = apiCall {
         classroomApi.submitClassDebateReply(
             classId,
-            ClassDebateReplyRequestDto(roundIndex, content, requestKey)
+            ClassDebateReplyRequestDto(
+                roundIndex = roundIndex,
+                content = content,
+                requestKey = requestKey
+            )
         )
             .toResult("AI 토론 반박을 보내지 못했습니다.")
             .map { it.toDomainModel() }

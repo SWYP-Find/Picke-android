@@ -31,3 +31,24 @@ data class ClassResultOptionBoard(
     val postVoteCount: Int,
     val postVoteRatio: Double
 )
+
+data class ClassResultInsightBoard(
+    val classId: Long,
+    val state: String,
+    val retryable: Boolean,
+    val cutoffAt: String?,
+    val generatedAt: String?,
+    val insightText: String,
+    val coverage: String,
+    val excludedCount: Int,
+    val evidence: List<ClassResultInsightEvidenceBoard>
+)
+
+data class ClassResultInsightEvidenceBoard(
+    val sourceType: String,
+    val id: Long,
+    val optionId: Long,
+    val stance: String,
+    val content: String,
+    val createdAt: String
+)

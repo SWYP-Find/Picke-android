@@ -390,6 +390,9 @@
     <string name="class_result_summary_tab">클래스 요약</string>
     <string name="class_result_report_tab">내 리포트</string>
     <string name="class_result_ai_insight">AI 인사이트</string>
+    <string name="class_result_ai_before_close">%1$s 이후 AI 피드백이 제공돼요</string>
+    <string name="class_result_insight_limited">아직 요약할 의견이 충분하지 않아요</string>
+    <string name="class_result_insight_failed">AI 요약을 준비하지 못했어요</string>
     <string name="class_result_participation">클래스 참여 현황</string>
     <string name="class_result_battle_rate">배틀 참여율</string>
     <string name="class_result_battle_members">참여한 멤버</string>

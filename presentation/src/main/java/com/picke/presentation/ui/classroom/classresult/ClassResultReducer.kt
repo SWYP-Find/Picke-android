@@ -24,13 +24,7 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
             summary = mutation.summary
         )
 
-        is ClassResultMutation.InsightLoaded -> state.copy(
-            summary = state.summary?.copy(
-                aiInsight = mutation.aiInsight,
-                bestComment = mutation.bestComment,
-                mostDebatedComment = mutation.mostDebatedComment
-            )
-        )
+        is ClassResultMutation.InsightLoaded -> state.copy(insight = mutation.insight)
 
         is ClassResultMutation.MyReportLoaded -> state.copy(report = mutation.report)
     }

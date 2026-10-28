@@ -12,6 +12,7 @@ data class ClassResultUiState(
     val hasSummaryTab: Boolean = false,
     val hasReportTab: Boolean = false,
     val summary: ClassResultSummaryUiModel? = null,
+    val insight: ClassResultInsightUiModel? = null,
     val report: ClassResultReportUiModel? = null,
     val selectedTab: ClassResultTab = ClassResultTab.SUMMARY
 ) {

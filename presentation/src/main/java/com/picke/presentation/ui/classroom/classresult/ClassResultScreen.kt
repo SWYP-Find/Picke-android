@@ -28,6 +28,7 @@ import com.picke.presentation.ui.classroom.classresult.component.ClassResultMyVo
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultOpinionCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultParticipationCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultStanceCard
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultTab
@@ -137,7 +138,11 @@ private fun ClassResultContent(
             item {
                 when (uiState.visibleTab) {
                     ClassResultTab.SUMMARY -> uiState.summary?.let { summary ->
-                        ClassResultSummarySection(summary = summary)
+                        ClassResultSummarySection(
+                            summary = summary,
+                            insight = uiState.insight,
+                            deadline = uiState.deadline
+                        )
                     }
 
                     ClassResultTab.REPORT -> uiState.report?.let { report ->
@@ -198,6 +203,8 @@ private fun ClassResultHeaderSection(
 @Composable
 private fun ClassResultSummarySection(
     summary: ClassResultSummaryUiModel,
+    insight: ClassResultInsightUiModel?,
+    deadline: LocalDateTime?,
     modifier: Modifier = Modifier
 ) {
     val titleStyle = PickeTheme.typography.bodySmSemiBold
@@ -213,7 +220,12 @@ private fun ClassResultSummarySection(
             ),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s24)
     ) {
-        ClassResultAiInsightCard(insight = summary.aiInsight)
+        if (insight != null) {
+            ClassResultAiInsightCard(
+                insight = insight,
+                deadline = deadline
+            )
+        }
 
         ClassTitledBlock(
             title = stringResource(R.string.class_result_participation),
@@ -233,14 +245,16 @@ private fun ClassResultSummarySection(
             ClassResultStanceCard(stances = summary.stances)
         }
 
-        ClassTitledBlock(
-            title = stringResource(R.string.class_result_opinions),
-            titleStyle = titleStyle
-        ) {
-            ClassResultOpinionCard(
-                bestComment = summary.bestComment,
-                mostDebatedComment = summary.mostDebatedComment
-            )
+        if (insight != null && insight.isOpinionVisible) {
+            ClassTitledBlock(
+                title = stringResource(R.string.class_result_opinions),
+                titleStyle = titleStyle
+            ) {
+                ClassResultOpinionCard(
+                    bestComment = insight.bestComment,
+                    mostDebatedComment = insight.mostDebatedComment
+                )
+            }
         }
     }
 }
@@ -288,6 +302,7 @@ private fun ClassResultReportSection(
 private fun ClassResultOperatorParticipatedPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport
     )
 }
@@ -297,6 +312,7 @@ private fun ClassResultOperatorParticipatedPreview() {
 private fun ClassResultOperatorReportPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport,
         selectedTab = ClassResultTab.REPORT
     )
@@ -307,6 +323,7 @@ private fun ClassResultOperatorReportPreview() {
 private fun ClassResultOperatorNotParticipatedPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = null
     )
 }
@@ -316,6 +333,7 @@ private fun ClassResultOperatorNotParticipatedPreview() {
 private fun ClassResultMemberPreview() {
     ClassResultContentPreview(
         summary = null,
+        insight = null,
         report = DummyData.dummyClassResultReport
     )
 }
@@ -323,6 +341,7 @@ private fun ClassResultMemberPreview() {
 @Composable
 private fun ClassResultContentPreview(
     summary: ClassResultSummaryUiModel?,
+    insight: ClassResultInsightUiModel?,
     report: ClassResultReportUiModel?,
     selectedTab: ClassResultTab = ClassResultTab.SUMMARY
 ) {
@@ -341,6 +360,7 @@ private fun ClassResultContentPreview(
                 hasSummaryTab = summary != null,
                 hasReportTab = report != null,
                 summary = summary,
+                insight = insight,
                 report = report,
                 selectedTab = selectedTab
             ),

@@ -90,7 +90,7 @@ class ClassResultViewModel @Inject constructor(
                 deadline = parseServerDateTime(classResult.closeAt),
                 hasSummaryTab = hasSummaryTab,
                 hasReportTab = hasReportTab,
-                summary = if (hasSummaryTab) classResult.stats.toUiModel() else null
+                summary = classResult.stats.toUiModel()
             )
             _uiState.update { reduce(it, mutation) }
 
@@ -100,14 +100,16 @@ class ClassResultViewModel @Inject constructor(
     }
 
     private fun fetchInsight() {
-        // TODO: API 연동 - 클래스 인사이트 조회로 교체
-        val dummySummary = DummyData.dummyClassResultSummary
-        val mutation = ClassResultMutation.InsightLoaded(
-            aiInsight = dummySummary.aiInsight,
-            bestComment = dummySummary.bestComment,
-            mostDebatedComment = dummySummary.mostDebatedComment
-        )
-        _uiState.update { reduce(it, mutation) }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            classroomUseCases.getClassResultInsightUseCase(classId)
+                .onSuccess { insight ->
+                    _uiState.update {
+                        reduce(it, ClassResultMutation.InsightLoaded(insight.toUiModel()))
+                    }
+                }
+                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun fetchMyReport() {

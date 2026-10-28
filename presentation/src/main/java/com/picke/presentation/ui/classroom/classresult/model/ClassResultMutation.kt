@@ -12,14 +12,10 @@ internal sealed interface ClassResultMutation {
         val deadline: LocalDateTime?,
         val hasSummaryTab: Boolean,
         val hasReportTab: Boolean,
-        val summary: ClassResultSummaryUiModel?
+        val summary: ClassResultSummaryUiModel
     ) : ClassResultMutation
 
-    data class InsightLoaded(
-        val aiInsight: String,
-        val bestComment: String,
-        val mostDebatedComment: String
-    ) : ClassResultMutation
+    data class InsightLoaded(val insight: ClassResultInsightUiModel) : ClassResultMutation
 
     data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation
 }

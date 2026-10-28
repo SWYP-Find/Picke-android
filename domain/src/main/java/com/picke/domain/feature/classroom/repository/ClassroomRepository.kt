@@ -7,6 +7,7 @@ import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassResultBoard
+import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
@@ -75,4 +76,5 @@ interface ClassroomRepository {
 
     suspend fun retryClassDebate(classId: Long): Result<ClassDebateBoard>
     suspend fun getClassResult(classId: Long): Result<ClassResultBoard>
+    suspend fun getClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
 }

@@ -1,6 +1,8 @@
 package com.picke.data.feature.classroom.model
 
 import com.picke.domain.feature.classroom.model.ClassResultBoard
+import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
+import com.picke.domain.feature.classroom.model.ClassResultInsightEvidenceBoard
 import com.picke.domain.feature.classroom.model.ClassResultOptionBoard
 import com.picke.domain.feature.classroom.model.ClassResultStatsBoard
 
@@ -34,6 +36,27 @@ data class ClassResultOptionDto(
     val preVoteCount: Int?,
     val postVoteCount: Int?,
     val postVoteRatio: Double?
+)
+
+data class ClassResultInsightResponseDto(
+    val classId: Long?,
+    val state: String?,
+    val retryable: Boolean?,
+    val cutoffAt: String?,
+    val generatedAt: String?,
+    val insightText: String?,
+    val coverage: String?,
+    val excludedCount: Int?,
+    val evidence: List<ClassResultInsightEvidenceDto>?
+)
+
+data class ClassResultInsightEvidenceDto(
+    val sourceType: String?,
+    val id: Long?,
+    val optionId: Long?,
+    val stance: String?,
+    val content: String?,
+    val createdAt: String?
 )
 
 fun ClassResultResponseDto.toDomainModel() = ClassResultBoard(
@@ -74,4 +97,25 @@ fun ClassResultOptionDto.toDomainModel() = ClassResultOptionBoard(
     preVoteCount = preVoteCount ?: 0,
     postVoteCount = postVoteCount ?: 0,
     postVoteRatio = postVoteRatio ?: 0.0
+)
+
+fun ClassResultInsightResponseDto.toDomainModel() = ClassResultInsightBoard(
+    classId = classId ?: 0L,
+    state = state ?: "",
+    retryable = retryable ?: false,
+    cutoffAt = cutoffAt,
+    generatedAt = generatedAt,
+    insightText = insightText ?: "",
+    coverage = coverage ?: "",
+    excludedCount = excludedCount ?: 0,
+    evidence = evidence?.map { it.toDomainModel() } ?: emptyList()
+)
+
+fun ClassResultInsightEvidenceDto.toDomainModel() = ClassResultInsightEvidenceBoard(
+    sourceType = sourceType ?: "",
+    id = id ?: 0L,
+    optionId = optionId ?: 0L,
+    stance = stance ?: "",
+    content = content ?: "",
+    createdAt = createdAt ?: ""
 )

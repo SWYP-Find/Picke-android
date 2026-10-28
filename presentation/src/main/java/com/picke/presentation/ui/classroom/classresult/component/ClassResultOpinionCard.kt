@@ -79,12 +79,12 @@ private fun ClassResultOpinionItem(
 @Preview(showBackground = true)
 @Composable
 private fun ClassResultOpinionCardPreview() {
-    val summary = DummyData.dummyClassResultSummary
+    val insight = DummyData.dummyClassResultInsight
 
     PickeTheme {
         ClassResultOpinionCard(
-            bestComment = summary.bestComment,
-            mostDebatedComment = summary.mostDebatedComment
+            bestComment = insight.bestComment,
+            mostDebatedComment = insight.mostDebatedComment
         )
     }
 }

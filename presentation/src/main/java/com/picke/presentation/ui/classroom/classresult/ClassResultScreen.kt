@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classresult
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,12 +55,19 @@ fun ClassResultScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassResultUiEvent.NavigateBack -> onBackClick()
 
                 is ClassResultUiEvent.NavigateToMyOpinion -> onNavigateToMyOpinion(event.classId)
+
+                ClassResultUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -329,6 +338,8 @@ private fun ClassResultContentPreview(
                 tag = battle.tag,
                 battleTitle = battle.title,
                 deadline = classItem.deadline,
+                hasSummaryTab = summary != null,
+                hasReportTab = report != null,
                 summary = summary,
                 report = report,
                 selectedTab = selectedTab

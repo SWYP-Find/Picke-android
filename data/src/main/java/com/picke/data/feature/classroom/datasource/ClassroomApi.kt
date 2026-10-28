@@ -11,6 +11,7 @@ import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
+import com.picke.data.feature.classroom.model.ClassResultResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
@@ -166,4 +167,9 @@ interface ClassroomApi {
     suspend fun retryClassDebate(
         @Path("classId") classId: Long
     ): BaseResponse<ClassDebateResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result")
+    suspend fun getClassResult(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultResponseDto>
 }

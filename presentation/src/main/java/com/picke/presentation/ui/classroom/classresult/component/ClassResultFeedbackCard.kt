@@ -78,8 +78,8 @@ fun ClassResultFeedbackCard(
             )
 
             ClassResultFeedbackItem(
-                title = stringResource(R.string.class_result_improvement),
-                content = report.improvement
+                title = stringResource(R.string.class_result_next_focus),
+                content = report.nextFocus
             )
             HorizontalDivider(
                 thickness = ComponentNumberTokens.borderWidthRegular,
@@ -87,8 +87,8 @@ fun ClassResultFeedbackCard(
             )
 
             ClassResultFeedbackItem(
-                title = stringResource(R.string.class_result_next_thought),
-                content = report.nextThought
+                title = stringResource(R.string.class_result_next_question),
+                content = report.nextQuestion
             )
             HorizontalDivider(
                 thickness = ComponentNumberTokens.borderWidthRegular,

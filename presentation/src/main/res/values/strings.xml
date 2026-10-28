@@ -415,8 +415,8 @@
     <string name="class_result_ai_feedback">AI 피드백</string>
     <string name="class_result_judgment_basis">내 판단의 기준</string>
     <string name="class_result_strength">이번에 잘한 점</string>
-    <string name="class_result_improvement">한 가지 더 살펴볼 점</string>
-    <string name="class_result_next_thought">다음 생각 한 걸음</string>
+    <string name="class_result_next_focus">한 가지 더 살펴볼 점</string>
+    <string name="class_result_next_question">다음 생각 한 걸음</string>
     <string name="class_result_my_opinion_link">내가 남긴 의견 %1$d개 보기</string>
 
     <!-- 클래스 - 내가 남긴 의견 -->

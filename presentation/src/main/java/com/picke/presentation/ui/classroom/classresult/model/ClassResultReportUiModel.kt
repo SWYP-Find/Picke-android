@@ -8,8 +8,8 @@ data class ClassResultReportUiModel(
     val receivedLikeCount: Int,
     val judgmentBasis: String,
     val strength: String,
-    val improvement: String,
-    val nextThought: String
+    val nextFocus: String,
+    val nextQuestion: String
 ) {
     val isStanceChanged: Boolean
         get() = preVoteStance != postVoteStance

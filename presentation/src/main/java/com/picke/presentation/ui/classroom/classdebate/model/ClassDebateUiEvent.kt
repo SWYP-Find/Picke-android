@@ -6,4 +6,8 @@ sealed interface ClassDebateUiEvent {
     data class NavigateToFinalVote(val classId: Long) : ClassDebateUiEvent
 
     data object ShowLoadFailedToast : ClassDebateUiEvent
+
+    data object ShowReplyTooShortToast : ClassDebateUiEvent
+
+    data object ShowActionFailedToast : ClassDebateUiEvent
 }

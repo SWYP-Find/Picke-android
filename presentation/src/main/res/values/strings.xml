@@ -374,6 +374,7 @@
     <string name="class_debate_intro_start_format">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
     <string name="class_debate_input_placeholder">내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
+    <string name="class_debate_reply_too_short">%1$d자 이상 입력해주세요</string>
     <string name="class_debate_final_vote">최종투표하기</string>
     <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
     <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>

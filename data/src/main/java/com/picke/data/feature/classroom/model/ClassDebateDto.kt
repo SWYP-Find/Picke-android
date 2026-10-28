@@ -5,6 +5,12 @@ import com.picke.domain.feature.classroom.model.ClassDebateMessageBoard
 import com.picke.domain.feature.classroom.model.ClassDebatePhilosopherBoard
 import com.picke.domain.feature.classroom.model.ClassDebateSideBoard
 
+data class ClassDebateReplyRequestDto(
+    val roundIndex: Int,
+    val content: String,
+    val requestKey: String
+)
+
 data class ClassDebateResponseDto(
     val sessionId: Long?,
     val status: String?,

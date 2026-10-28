@@ -5,7 +5,8 @@ data class ClassDebateUiState(
     val battleTitle: String = "",
     val debate: ClassDebateUiModel = ClassDebateUiModel(),
     val input: String = "",
-    val isReplying: Boolean = false,
+    val replyRequestKey: String? = null,
+    val isRequesting: Boolean = false,
     val isFinalVoteDialogVisible: Boolean = false
 ) {
     val isFinished: Boolean
@@ -15,13 +16,16 @@ data class ClassDebateUiState(
         get() = debate.round.coerceIn(1, TOTAL_ROUNDS)
 
     val isInputEnabled: Boolean
-        get() = debate.canReply && !isReplying
+        get() = debate.canReply && !isRequesting
 
     val isSendEnabled: Boolean
         get() = input.isNotBlank() && isInputEnabled
 
-    internal val nextMessageId: Long
-        get() = (debate.messages.maxOfOrNull { it.messageId } ?: 0L) + 1
+    internal val isReplyLengthEnough: Boolean
+        get() = input.trim().length >= debate.replyMinLength
+
+    internal fun isReplyLengthWithinMax(text: String): Boolean =
+        debate.replyMaxLength <= 0 || text.length <= debate.replyMaxLength
 
     companion object {
         const val TOTAL_ROUNDS = 3

@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -80,6 +81,11 @@ fun ClassDebateScreen(
     val context = LocalContext.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+    val replyTooShortText =
+        stringResource(R.string.class_debate_reply_too_short, uiState.debate.replyMinLength)
+
+    val replyTooShortMessage by rememberUpdatedState(replyTooShortText)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -90,6 +96,12 @@ fun ClassDebateScreen(
 
                 ClassDebateUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDebateUiEvent.ShowReplyTooShortToast ->
+                    Toast.makeText(context, replyTooShortMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDebateUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

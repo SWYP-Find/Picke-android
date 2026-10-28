@@ -5,6 +5,7 @@ import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassDebateReplyRequestDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
@@ -189,11 +190,12 @@ class ClassroomRepositoryImpl @Inject constructor(
             .map { }
     }
 
-    override suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit> = apiCall {
-        classroomApi.submitClassPostVote(classId, VoteRequestDto(optionId))
-            .toResult("최종 투표를 하지 못했습니다.")
-            .map { }
-    }
+    override suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit> =
+        apiCall {
+            classroomApi.submitClassPostVote(classId, VoteRequestDto(optionId))
+                .toResult("최종 투표를 하지 못했습니다.")
+                .map { }
+        }
 
     override suspend fun completeClassTts(classId: Long): Result<Unit> = apiCall {
         classroomApi.completeClassTts(classId)
@@ -209,6 +211,20 @@ class ClassroomRepositoryImpl @Inject constructor(
     override suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {
         classroomApi.startClassDebate(classId)
             .toResult("AI 토론을 시작하지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun submitClassDebateReply(
+        classId: Long,
+        roundIndex: Int,
+        content: String,
+        requestKey: String
+    ): Result<ClassDebateBoard> = apiCall {
+        classroomApi.submitClassDebateReply(
+            classId,
+            ClassDebateReplyRequestDto(roundIndex, content, requestKey)
+        )
+            .toResult("AI 토론 반박을 보내지 못했습니다.")
             .map { it.toDomainModel() }
     }
 }

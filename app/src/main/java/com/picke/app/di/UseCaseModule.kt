@@ -56,6 +56,7 @@ import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
 import com.picke.domain.feature.classroom.usecase.StartClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassDebateReplyUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassPostVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassPreVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
@@ -213,7 +214,8 @@ object UseCaseModule {
             submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository),
             completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository),
             getClassDebateUseCase = GetClassDebateUseCase(classroomRepository),
-            startClassDebateUseCase = StartClassDebateUseCase(classroomRepository)
+            startClassDebateUseCase = StartClassDebateUseCase(classroomRepository),
+            submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository)
         )
     }
 

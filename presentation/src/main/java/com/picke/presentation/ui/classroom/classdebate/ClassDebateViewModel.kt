@@ -11,7 +11,6 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 import com.picke.presentation.ui.classroom.classdebate.model.toUiModel
-import com.picke.presentation.util.DummyData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,7 +53,13 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.BackClick -> sendEvent(ClassDebateUiEvent.NavigateBack)
 
-            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) requestOpponentReply(state.debate.round)
+            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
+                if (state.isReplyLengthEnough) {
+                    submitReply(state)
+                } else {
+                    sendEvent(ClassDebateUiEvent.ShowReplyTooShortToast)
+                }
+            }
 
             ClassDebateUiAction.FinalVoteClick ->
                 sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))
@@ -86,18 +92,32 @@ class ClassDebateViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startOrGetDebate(classId: Long, canParticipate: Boolean): Result<ClassDebateBoard> =
+    private suspend fun startOrGetDebate(
+        classId: Long,
+        canParticipate: Boolean
+    ): Result<ClassDebateBoard> =
         if (canParticipate) {
             classroomUseCases.startClassDebateUseCase(classId)
         } else {
             classroomUseCases.getClassDebateUseCase(classId)
         }
 
-    private fun requestOpponentReply(round: Int) {
-        // TODO: API 연동 - 내 의견 전송 후 AI 철학자 답변 수신으로 교체
-        val nextMessageId = _uiState.value.nextMessageId
-        val replies = DummyData.dummyClassDebateReplies.getOrElse(round - 1) { emptyList() }
-            .mapIndexed { index, reply -> reply.copy(messageId = nextMessageId + index) }
-        _uiState.update { reduce(it, ClassDebateMutation.OpponentReplied(replies)) }
+    private fun submitReply(state: ClassDebateUiState) {
+        val requestKey = state.replyRequestKey ?: UUID.randomUUID().toString()
+        viewModelScope.launch {
+            classroomUseCases.submitClassDebateReplyUseCase(
+                state.classId,
+                state.debate.round,
+                state.input.trim(),
+                requestKey
+            ).onSuccess { debate ->
+                _uiState.update {
+                    reduce(it, ClassDebateMutation.ReplySubmitted(debate.toUiModel()))
+                }
+            }.onFailure {
+                _uiState.update { reduce(it, ClassDebateMutation.ReplyFailed(requestKey)) }
+                sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+            }
+        }
     }
 }

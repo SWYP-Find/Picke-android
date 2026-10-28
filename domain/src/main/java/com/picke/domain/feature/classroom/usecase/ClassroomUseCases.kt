@@ -24,5 +24,6 @@ data class ClassroomUseCases(
     val submitClassPostVoteUseCase: SubmitClassPostVoteUseCase,
     val completeClassTtsUseCase: CompleteClassTtsUseCase,
     val getClassDebateUseCase: GetClassDebateUseCase,
-    val startClassDebateUseCase: StartClassDebateUseCase
+    val startClassDebateUseCase: StartClassDebateUseCase,
+    val submitClassDebateReplyUseCase: SubmitClassDebateReplyUseCase
 )

@@ -60,4 +60,10 @@ interface ClassroomRepository {
     suspend fun completeClassTts(classId: Long): Result<Unit>
     suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard>
     suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard>
+    suspend fun submitClassDebateReply(
+        classId: Long,
+        roundIndex: Int,
+        content: String,
+        requestKey: String
+    ): Result<ClassDebateBoard>
 }

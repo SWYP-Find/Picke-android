@@ -375,6 +375,9 @@
     <string name="class_debate_input_placeholder">내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
     <string name="class_debate_reply_too_short">%1$d자 이상 입력해주세요</string>
+    <string name="class_debate_generating">생각을 정리하고 있어요</string>
+    <string name="class_debate_failed">응답을 준비하지 못했어요. 다시 시도해 주세요</string>
+    <string name="class_debate_retry">다시 시도</string>
     <string name="class_debate_final_vote">최종투표하기</string>
     <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
     <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>

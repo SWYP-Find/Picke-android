@@ -161,4 +161,9 @@ interface ClassroomApi {
         @Path("classId") classId: Long,
         @Body request: ClassDebateReplyRequestDto
     ): BaseResponse<ClassDebateResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/debate/retry")
+    suspend fun retryClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
 }

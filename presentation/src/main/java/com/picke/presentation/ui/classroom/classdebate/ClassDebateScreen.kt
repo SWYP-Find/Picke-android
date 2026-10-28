@@ -3,6 +3,7 @@ package com.picke.presentation.ui.classroom.classdebate
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRetryChip
 import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRoundProgress
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
@@ -161,6 +163,10 @@ private fun ClassDebateContent(
             opponentName = uiState.debate.opponentName,
             opponentImageUrl = uiState.debate.opponentImageUrl,
             messages = uiState.debate.messages,
+            isOpponentGenerating = uiState.isOpponentGenerating,
+            isOpponentFailed = uiState.isOpponentFailed,
+            isRetryVisible = uiState.isRetryVisible,
+            onRetryClick = { onAction(ClassDebateUiAction.RetryClick) },
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -182,14 +188,27 @@ private fun ClassDebateChatSection(
     opponentName: String,
     opponentImageUrl: String?,
     messages: List<ClassDebateMessageUiModel>,
+    isOpponentGenerating: Boolean,
+    isOpponentFailed: Boolean,
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val myLabel = stringResource(R.string.class_member_me)
     val aiBadge = stringResource(R.string.class_debate_ai_badge)
+    val pendingText = stringResource(
+        if (isOpponentGenerating) R.string.class_debate_generating else R.string.class_debate_failed
+    )
+
     val listState = rememberLazyListState()
 
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) listState.animateScrollToItem(messages.size)
+    val isPendingVisible = isOpponentGenerating || isOpponentFailed
+    val isPendingNewSpeaker = messages.lastOrNull()?.speaker != ClassDebateSpeaker.AI
+    val lastItemIndex =
+        messages.size + (if (isPendingVisible) 1 else 0) + (if (isRetryVisible) 1 else 0)
+
+    LaunchedEffect(lastItemIndex) {
+        if (lastItemIndex > 0) listState.animateScrollToItem(lastItemIndex)
     }
 
     LazyColumn(
@@ -228,6 +247,37 @@ private fun ClassDebateChatSection(
                 },
                 nameBadge = if (isOpponent) aiBadge else null
             )
+        }
+
+        if (isPendingVisible) {
+            item {
+                ChatBubble(
+                    text = pendingText,
+                    speakerName = opponentName,
+                    avatarUrl = opponentImageUrl,
+                    defaultAvatarRes = R.drawable.illust_mengzi,
+                    isLeft = true,
+                    showAvatarAndName = isPendingNewSpeaker,
+                    modifier = if (isPendingNewSpeaker) {
+                        Modifier.padding(top = ClassDebateScreenDimens.speakerGroupSpacing)
+                    } else {
+                        Modifier
+                    },
+                    isDimmed = isOpponentGenerating,
+                    nameBadge = aiBadge
+                )
+            }
+        }
+
+        if (isRetryVisible) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ClassDebateRetryChip(onClick = onRetryClick)
+                }
+            }
         }
     }
 }
@@ -386,6 +436,51 @@ private fun ClassDebateReplyDisabledPreview() {
             uiState = ClassDebateUiState(
                 battleTitle = battle.title,
                 debate = DummyData.dummyClassDebate.copy(canReply = false)
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주장 생성 중", showBackground = true)
+@Composable
+private fun ClassDebateGeneratingPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = debate.copy(
+                    round = 2,
+                    status = ClassDebateStatus.GENERATING,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateMyMessage
+                )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주장 생성 실패", showBackground = true)
+@Composable
+private fun ClassDebateFailedPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = debate.copy(
+                    round = 2,
+                    status = ClassDebateStatus.FAILED,
+                    canReply = false,
+                    canRetry = true,
+                    messages = debate.messages + DummyData.dummyClassDebateMyMessage
+                )
             ),
             onAction = {}
         )

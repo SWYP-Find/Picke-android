@@ -53,6 +53,8 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.BackClick -> sendEvent(ClassDebateUiEvent.NavigateBack)
 
+            ClassDebateUiAction.RetryClick -> if (state.isRetryVisible) retryDebate(state.classId)
+
             ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
                 if (state.isReplyLengthEnough) {
                     submitReply(state)
@@ -101,6 +103,21 @@ class ClassDebateViewModel @Inject constructor(
         } else {
             classroomUseCases.getClassDebateUseCase(classId)
         }
+
+    private fun retryDebate(classId: Long) {
+        viewModelScope.launch {
+            classroomUseCases.retryClassDebateUseCase(classId)
+                .onSuccess { debate ->
+                    _uiState.update {
+                        reduce(it, ClassDebateMutation.DebateRetried(debate.toUiModel()))
+                    }
+                }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassDebateMutation.RequestFailed) }
+                    sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
 
     private fun submitReply(state: ClassDebateUiState) {
         val requestKey = state.replyRequestKey ?: UUID.randomUUID().toString()

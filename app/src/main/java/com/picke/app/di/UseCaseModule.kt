@@ -54,6 +54,7 @@ import com.picke.domain.feature.classroom.usecase.PreviewClassJoinUseCase
 import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
 import com.picke.domain.feature.classroom.usecase.StartClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassDebateReplyUseCase
@@ -215,7 +216,8 @@ object UseCaseModule {
             completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository),
             getClassDebateUseCase = GetClassDebateUseCase(classroomRepository),
             startClassDebateUseCase = StartClassDebateUseCase(classroomRepository),
-            submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository)
+            submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository),
+            retryClassDebateUseCase = RetryClassDebateUseCase(classroomRepository)
         )
     }
 

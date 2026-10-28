@@ -28,7 +28,12 @@ interface ClassroomRepository {
         ownerParticipates: Boolean
     ): Result<ClassDetailBoard>
 
-    suspend fun updateClass(classId: Long, name: String?, deadline: String?): Result<ClassDetailBoard>
+    suspend fun updateClass(
+        classId: Long,
+        name: String?,
+        deadline: String?
+    ): Result<ClassDetailBoard>
+
     suspend fun deleteClass(classId: Long): Result<Unit>
     suspend fun getClassBattleRecommendations(
         difficulty: String,
@@ -66,4 +71,6 @@ interface ClassroomRepository {
         content: String,
         requestKey: String
     ): Result<ClassDebateBoard>
+
+    suspend fun retryClassDebate(classId: Long): Result<ClassDebateBoard>
 }

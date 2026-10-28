@@ -9,6 +9,8 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
     when (action) {
         is ClassDebateUiAction.SideEffectOnly -> state
 
+        ClassDebateUiAction.RetryClick -> if (state.isRetryVisible) state.copy(isRequesting = true) else state
+
         is ClassDebateUiAction.InputChange -> if (state.isReplyLengthWithinMax(action.input)) {
             state.copy(
                 input = action.input,
@@ -31,12 +33,14 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
 
 internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): ClassDebateUiState {
     val reduced = when (mutation) {
-        is ClassDebateMutation.ReplyFailed -> state.copy(replyRequestKey = mutation.requestKey)
+        ClassDebateMutation.RequestFailed -> state
 
         is ClassDebateMutation.DebateLoaded -> state.copy(
             battleTitle = mutation.battleTitle,
             debate = mutation.debate
         )
+
+        is ClassDebateMutation.DebateRetried -> state.copy(debate = mutation.debate)
 
         is ClassDebateMutation.ReplySubmitted -> state.copy(
             debate = mutation.debate,
@@ -44,6 +48,8 @@ internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): C
             replyRequestKey = null,
             isFinalVoteDialogVisible = mutation.debate.status == ClassDebateStatus.COMPLETED
         )
+
+        is ClassDebateMutation.ReplyFailed -> state.copy(replyRequestKey = mutation.requestKey)
     }
 
     return if (mutation is ClassDebateMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced

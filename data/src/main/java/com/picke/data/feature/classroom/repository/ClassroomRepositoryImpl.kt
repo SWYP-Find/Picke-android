@@ -227,4 +227,10 @@ class ClassroomRepositoryImpl @Inject constructor(
             .toResult("AI 토론 반박을 보내지 못했습니다.")
             .map { it.toDomainModel() }
     }
+
+    override suspend fun retryClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {
+        classroomApi.retryClassDebate(classId)
+            .toResult("AI 토론 주장을 다시 만들지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
 }

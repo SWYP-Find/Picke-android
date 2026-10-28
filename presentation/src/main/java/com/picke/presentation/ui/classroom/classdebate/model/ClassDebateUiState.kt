@@ -15,6 +15,15 @@ data class ClassDebateUiState(
     val displayRound: Int
         get() = debate.round.coerceIn(1, TOTAL_ROUNDS)
 
+    val isOpponentGenerating: Boolean
+        get() = isRequesting || debate.status == ClassDebateStatus.GENERATING
+
+    val isOpponentFailed: Boolean
+        get() = !isRequesting && debate.status == ClassDebateStatus.FAILED
+
+    val isRetryVisible: Boolean
+        get() = isOpponentFailed && debate.canRetry
+
     val isInputEnabled: Boolean
         get() = debate.canReply && !isRequesting
 

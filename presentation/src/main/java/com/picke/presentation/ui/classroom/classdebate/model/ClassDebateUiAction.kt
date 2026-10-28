@@ -7,6 +7,8 @@ sealed interface ClassDebateUiAction {
 
     data object BackClick : SideEffectOnly
 
+    data object RetryClick : ClassDebateUiAction
+
     data class InputChange(val input: String) : StateOnly
 
     data object SendClick : ClassDebateUiAction

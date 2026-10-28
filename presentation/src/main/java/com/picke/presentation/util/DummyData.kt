@@ -5,6 +5,8 @@ import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiModel
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyReplyUiModel
@@ -1090,29 +1092,27 @@ object DummyData {
         3L to dummyClassBattles[2]
     )
 
-    val dummyClassDebateOpponentName = "플라톤"
-
     val dummyClassDebateOpening = listOf(
         ClassDebateMessageUiModel(
             messageId = 1L,
-            speaker = ClassDebateSpeaker.OPPONENT,
+            speaker = ClassDebateSpeaker.AI,
             text = "감정을 겉으로 드러내지 않았다고 해서 그 사람을 비난할 수는 없습니다."
         ),
         ClassDebateMessageUiModel(
             messageId = 2L,
-            speaker = ClassDebateSpeaker.OPPONENT,
+            speaker = ClassDebateSpeaker.AI,
             text = "슬픔은 저마다의 방식으로 존재하고, 눈물만이 그 증거는 아닙니다."
         ),
         ClassDebateMessageUiModel(
             messageId = 3L,
-            speaker = ClassDebateSpeaker.OPPONENT,
+            speaker = ClassDebateSpeaker.AI,
             text = "보이는 모습만으로 마음을 판단하는 것은 진리를 놓치는 일입니다."
         )
     )
 
     val dummyClassDebateMyMessage = ClassDebateMessageUiModel(
         messageId = 4L,
-        speaker = ClassDebateSpeaker.ME,
+        speaker = ClassDebateSpeaker.USER,
         text = "하지만 장례식처럼 함께 슬퍼하는 자리에서는 최소한의 공감을 보여야 하지 않을까요?"
     )
 
@@ -1120,24 +1120,35 @@ object DummyData {
         listOf(
             ClassDebateMessageUiModel(
                 messageId = 5L,
-                speaker = ClassDebateSpeaker.OPPONENT,
+                speaker = ClassDebateSpeaker.AI,
                 text = "공감을 보여야 한다는 요구는 결국 남의 눈에 맞춘 연기를 강요하는 것 아닐까요?"
             )
         ),
         listOf(
             ClassDebateMessageUiModel(
                 messageId = 6L,
-                speaker = ClassDebateSpeaker.OPPONENT,
+                speaker = ClassDebateSpeaker.AI,
                 text = "사회의 약속이 중요하더라도, 그 약속을 지키지 않았다는 이유로 마음까지 단정할 수는 없습니다."
             )
         ),
         listOf(
             ClassDebateMessageUiModel(
                 messageId = 7L,
-                speaker = ClassDebateSpeaker.OPPONENT,
+                speaker = ClassDebateSpeaker.AI,
                 text = "좋은 토론이었습니다. 이제 최종 투표로 당신의 생각을 정리해 보세요."
             )
         )
+    )
+
+    val dummyClassDebate = ClassDebateUiModel(
+        round = 1,
+        status = ClassDebateStatus.WAITING_USER,
+        canReply = true,
+        myChoice = "비난할 수 있다",
+        opponentName = "플라톤",
+        messages = dummyClassDebateOpening,
+        replyMinLength = 50,
+        replyMaxLength = 500
     )
 
     val dummyClassMembers = listOf(

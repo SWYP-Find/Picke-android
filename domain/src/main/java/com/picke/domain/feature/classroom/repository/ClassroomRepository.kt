@@ -2,6 +2,7 @@ package com.picke.domain.feature.classroom.repository
 
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
+import com.picke.domain.feature.classroom.model.ClassDebateBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
@@ -57,4 +58,6 @@ interface ClassroomRepository {
     suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun completeClassTts(classId: Long): Result<Unit>
+    suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard>
+    suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard>
 }

@@ -3,6 +3,7 @@ package com.picke.presentation.ui.classroom.classdebate
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMutation
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 
@@ -15,10 +16,14 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
         ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
             val message = ClassDebateMessageUiModel(
                 messageId = state.nextMessageId,
-                speaker = ClassDebateSpeaker.ME,
+                speaker = ClassDebateSpeaker.USER,
                 text = state.input.trim()
             )
-            state.copy(messages = state.messages + message, input = "", isReplying = true)
+            state.copy(
+                debate = state.debate.copy(messages = state.debate.messages + message),
+                input = "",
+                isReplying = true
+            )
         } else {
             state
         }
@@ -31,18 +36,21 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
 internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): ClassDebateUiState =
     when (mutation) {
         is ClassDebateMutation.DebateLoaded -> state.copy(
-            battleId = mutation.battleId,
             battleTitle = mutation.battleTitle,
-            myChoice = mutation.myChoice,
-            opponentName = mutation.opponentName,
-            opponentImageUrl = mutation.opponentImageUrl,
-            messages = mutation.messages
+            debate = mutation.debate
         )
 
-        is ClassDebateMutation.OpponentReplied -> state.copy(
-            currentRound = state.currentRound + 1,
-            messages = state.messages + mutation.messages,
-            isReplying = false,
-            isFinalVoteDialogVisible = state.currentRound + 1 > ClassDebateUiState.TOTAL_ROUNDS
-        )
+        is ClassDebateMutation.OpponentReplied -> {
+            val nextRound = state.debate.round + 1
+            val isFinished = nextRound > ClassDebateUiState.TOTAL_ROUNDS
+            state.copy(
+                debate = state.debate.copy(
+                    round = nextRound,
+                    status = if (isFinished) ClassDebateStatus.COMPLETED else state.debate.status,
+                    messages = state.debate.messages + mutation.messages
+                ),
+                isReplying = false,
+                isFinalVoteDialogVisible = isFinished
+            )
+        }
     }

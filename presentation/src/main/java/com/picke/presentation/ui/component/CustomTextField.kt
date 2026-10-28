@@ -41,6 +41,7 @@ fun CustomTextField(
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
     placeholder: String = "",
+    enabled: Boolean = true,
     isError: Boolean = false,
     @DrawableRes leadingIconRes: Int? = null,
     horizontalPadding: Dp = SpacingTokens.s8,
@@ -51,12 +52,17 @@ fun CustomTextField(
         if (isError) CustomTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
     val color =
         if (isError) PickeTheme.colors.borderErrorDefault else PickeTheme.colors.inputTextfieldBorderDefault
+    val backgroundColor = if (enabled) {
+        PickeTheme.colors.inputTextfieldBackgroundDefault
+    } else {
+        PickeTheme.colors.inputTextfieldBackgroundDisabled
+    }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = minHeight)
-            .background(PickeTheme.colors.inputTextfieldBackgroundDefault, shape)
+            .background(backgroundColor, shape)
             .border(width, color, shape)
             .padding(horizontal = horizontalPadding, vertical = SpacingTokens.s8),
         contentAlignment = Alignment.CenterStart
@@ -77,6 +83,7 @@ fun CustomTextField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
+                enabled = enabled,
                 textStyle = textStyle.copy(color = PickeTheme.colors.textDefault),
                 keyboardOptions = keyboardOptions,
                 singleLine = true,
@@ -119,6 +126,21 @@ private fun CustomTextFieldErrorPreview() {
             minHeight = ComponentNumberTokens.inputTextfieldHeight,
             textStyle = PickeTheme.typography.bodySmMedium,
             isError = true
+        )
+    }
+}
+
+@Preview(name = "비활성", showBackground = true)
+@Composable
+private fun CustomTextFieldDisabledPreview() {
+    PickeTheme {
+        CustomTextField(
+            value = "",
+            onValueChange = {},
+            minHeight = ComponentNumberTokens.inputTextfieldHeight,
+            textStyle = PickeTheme.typography.bodySmMedium,
+            placeholder = "내용을 입력하세요",
+            enabled = false
         )
     }
 }

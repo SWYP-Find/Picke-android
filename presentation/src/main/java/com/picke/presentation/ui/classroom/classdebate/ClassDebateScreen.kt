@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classdebate
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -43,6 +45,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRoundProgress
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
@@ -74,12 +77,19 @@ fun ClassDebateScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassDebateUiEvent.NavigateBack -> onBackClick()
 
                 is ClassDebateUiEvent.NavigateToFinalVote -> onNavigateToFinalVote(event.classId)
+
+                ClassDebateUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -124,6 +134,7 @@ private fun ClassDebateContent(
             } else {
                 ClassDebateComposerSection(
                     input = uiState.input,
+                    isInputEnabled = uiState.isInputEnabled,
                     isSendEnabled = uiState.isSendEnabled,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
@@ -134,10 +145,10 @@ private fun ClassDebateContent(
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
         ClassDebateChatSection(
-            myChoice = uiState.myChoice,
-            opponentName = uiState.opponentName,
-            opponentImageUrl = uiState.opponentImageUrl,
-            messages = uiState.messages,
+            myChoice = uiState.debate.myChoice,
+            opponentName = uiState.debate.opponentName,
+            opponentImageUrl = uiState.debate.opponentImageUrl,
+            messages = uiState.debate.messages,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -184,8 +195,11 @@ private fun ClassDebateChatSection(
             ClassDebateIntroSection(myChoice = myChoice, opponentName = opponentName)
         }
 
-        itemsIndexed(items = messages, key = { _, message -> message.messageId }) { index, message ->
-            val isOpponent = message.speaker == ClassDebateSpeaker.OPPONENT
+        itemsIndexed(
+            items = messages,
+            key = { _, message -> message.messageId }
+        ) { index, message ->
+            val isOpponent = message.speaker == ClassDebateSpeaker.AI
             val isNewSpeaker = index == 0 || messages[index - 1].speaker != message.speaker
 
             ChatBubble(
@@ -216,9 +230,14 @@ private fun ClassDebateIntroSection(
     val opponentText = stringResource(R.string.class_debate_intro_opponent, opponentName)
     val choiceLine = stringResource(R.string.class_debate_intro_choice_format, choiceText)
     val startLine =
-        stringResource(R.string.class_debate_intro_start_format, opponentText, ClassDebateUiState.TOTAL_ROUNDS)
+        stringResource(
+            R.string.class_debate_intro_start_format,
+            opponentText,
+            ClassDebateUiState.TOTAL_ROUNDS
+        )
 
-    val highlightStyle = SpanStyle(color = PickeTheme.colors.textDefault, fontWeight = FontWeight.Bold)
+    val highlightStyle =
+        SpanStyle(color = PickeTheme.colors.textDefault, fontWeight = FontWeight.Bold)
     val introText = remember(choiceLine, startLine, highlightStyle) {
         buildAnnotatedString {
             appendHighlighted(choiceLine, choiceText, highlightStyle)
@@ -242,6 +261,7 @@ private fun ClassDebateIntroSection(
 @Composable
 private fun ClassDebateComposerSection(
     input: String,
+    isInputEnabled: Boolean,
     isSendEnabled: Boolean,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
@@ -280,7 +300,8 @@ private fun ClassDebateComposerSection(
                 minHeight = ComponentNumberTokens.inputTextfieldHeight,
                 textStyle = PickeTheme.typography.bodyXsMedium,
                 modifier = Modifier.weight(1f),
-                placeholder = stringResource(R.string.class_debate_input_placeholder)
+                placeholder = stringResource(R.string.class_debate_input_placeholder),
+                enabled = isInputEnabled
             )
             IconButton(
                 onClick = onSendClick,
@@ -325,18 +346,34 @@ private fun ClassDebateFinalVoteSection(
 @Composable
 private fun ClassDebateContentPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = 2,
-                messages = DummyData.dummyClassDebateOpening +
-                        DummyData.dummyClassDebateMyMessage +
-                        DummyData.dummyClassDebateReplies.first()
+                debate = debate.copy(
+                    round = 2,
+                    messages = debate.messages +
+                            DummyData.dummyClassDebateMyMessage +
+                            DummyData.dummyClassDebateReplies.first()
+                )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "반박 불가", showBackground = true)
+@Composable
+private fun ClassDebateReplyDisabledPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = DummyData.dummyClassDebate.copy(canReply = false)
             ),
             onAction = {}
         )
@@ -347,16 +384,18 @@ private fun ClassDebateContentPreview() {
 @Composable
 private fun ClassDebateFinishedPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
-                messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last()
+                debate = debate.copy(
+                    round = ClassDebateUiState.TOTAL_ROUNDS,
+                    status = ClassDebateStatus.COMPLETED,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateReplies.last()
+                )
             ),
             onAction = {}
         )
@@ -367,16 +406,18 @@ private fun ClassDebateFinishedPreview() {
 @Composable
 private fun ClassDebateFinalVoteDialogPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
-                messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last(),
+                debate = debate.copy(
+                    round = ClassDebateUiState.TOTAL_ROUNDS,
+                    status = ClassDebateStatus.COMPLETED,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateReplies.last()
+                ),
                 isFinalVoteDialogVisible = true
             ),
             onAction = {}

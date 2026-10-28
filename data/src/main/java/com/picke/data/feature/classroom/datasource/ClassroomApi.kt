@@ -4,6 +4,7 @@ import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.classroom.model.ClassBattleDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassBattleRecommendationResponseDto
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassDebateResponseDto
 import com.picke.data.feature.classroom.model.ClassDetailResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
@@ -143,4 +144,14 @@ interface ClassroomApi {
     suspend fun completeClassTts(
         @Path("classId") classId: Long
     ): BaseResponse<Unit>
+
+    @GET("/api/v1/classes/{classId}/battle/debate")
+    suspend fun getClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/debate")
+    suspend fun startClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
 }

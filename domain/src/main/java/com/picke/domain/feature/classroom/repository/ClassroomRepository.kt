@@ -2,6 +2,7 @@ package com.picke.domain.feature.classroom.repository
 
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
+import com.picke.domain.feature.classroom.model.ClassDebateBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
@@ -27,7 +28,12 @@ interface ClassroomRepository {
         ownerParticipates: Boolean
     ): Result<ClassDetailBoard>
 
-    suspend fun updateClass(classId: Long, name: String?, deadline: String?): Result<ClassDetailBoard>
+    suspend fun updateClass(
+        classId: Long,
+        name: String?,
+        deadline: String?
+    ): Result<ClassDetailBoard>
+
     suspend fun deleteClass(classId: Long): Result<Unit>
     suspend fun getClassBattleRecommendations(
         difficulty: String,
@@ -57,4 +63,14 @@ interface ClassroomRepository {
     suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun completeClassTts(classId: Long): Result<Unit>
+    suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard>
+    suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard>
+    suspend fun submitClassDebateReply(
+        classId: Long,
+        roundIndex: Int,
+        content: String,
+        requestKey: String
+    ): Result<ClassDebateBoard>
+
+    suspend fun retryClassDebate(classId: Long): Result<ClassDebateBoard>
 }

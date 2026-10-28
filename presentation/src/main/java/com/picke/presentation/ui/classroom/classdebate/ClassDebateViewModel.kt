@@ -3,12 +3,14 @@ package com.picke.presentation.ui.classroom.classdebate
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.model.ClassDebateBoard
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMutation
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.classdebate.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +20,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class ClassDebateViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -49,7 +53,15 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.BackClick -> sendEvent(ClassDebateUiEvent.NavigateBack)
 
-            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) requestOpponentReply(state.currentRound)
+            ClassDebateUiAction.RetryClick -> if (state.isRetryVisible) retryDebate(state.classId)
+
+            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
+                if (state.isReplyLengthEnough) {
+                    submitReply(state)
+                } else {
+                    sendEvent(ClassDebateUiEvent.ShowReplyTooShortToast)
+                }
+            }
 
             ClassDebateUiAction.FinalVoteClick ->
                 sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))
@@ -64,25 +76,65 @@ class ClassDebateViewModel @Inject constructor(
     }
 
     private fun fetchDebate() {
-        // TODO: API 연동 - AI 토론 시작 정보 조회로 교체 (사전 투표 선택, 상대 철학자 포함)
-        val battle = DummyData.dummyClassBattleByClassId[_uiState.value.classId] ?: return
-        val mutation = ClassDebateMutation.DebateLoaded(
-            battleId = battle.battleId,
-            battleTitle = battle.title,
-            myChoice = battle.options.firstOrNull()?.stance.orEmpty(),
-            opponentName = DummyData.dummyClassDebateOpponentName,
-            opponentImageUrl = null,
-            messages = DummyData.dummyClassDebateOpening,
-            quickReplies = DummyData.dummyClassDebateQuickReplies
-        )
-        _uiState.update { reduce(it, mutation) }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                sendEvent(ClassDebateUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val debate = startOrGetDebate(classId, classBattle.canParticipate).getOrElse {
+                sendEvent(ClassDebateUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+            val mutation = ClassDebateMutation.DebateLoaded(
+                battleTitle = classBattle.battle.battleInfo.title,
+                debate = debate.toUiModel()
+            )
+            _uiState.update { reduce(it, mutation) }
+        }
     }
 
-    private fun requestOpponentReply(round: Int) {
-        // TODO: API 연동 - 내 의견 전송 후 AI 철학자 답변 수신으로 교체
-        val nextMessageId = _uiState.value.nextMessageId
-        val replies = DummyData.dummyClassDebateReplies.getOrElse(round - 1) { emptyList() }
-            .mapIndexed { index, reply -> reply.copy(messageId = nextMessageId + index) }
-        _uiState.update { reduce(it, ClassDebateMutation.OpponentReplied(replies)) }
+    private suspend fun startOrGetDebate(
+        classId: Long,
+        canParticipate: Boolean
+    ): Result<ClassDebateBoard> =
+        if (canParticipate) {
+            classroomUseCases.startClassDebateUseCase(classId)
+        } else {
+            classroomUseCases.getClassDebateUseCase(classId)
+        }
+
+    private fun retryDebate(classId: Long) {
+        viewModelScope.launch {
+            classroomUseCases.retryClassDebateUseCase(classId)
+                .onSuccess { debate ->
+                    _uiState.update {
+                        reduce(it, ClassDebateMutation.DebateRetried(debate.toUiModel()))
+                    }
+                }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassDebateMutation.RequestFailed) }
+                    sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
+
+    private fun submitReply(state: ClassDebateUiState) {
+        val requestKey = state.replyRequestKey ?: UUID.randomUUID().toString()
+        viewModelScope.launch {
+            classroomUseCases.submitClassDebateReplyUseCase(
+                classId = state.classId,
+                roundIndex = state.debate.round,
+                content = state.input.trim(),
+                requestKey = requestKey
+            ).onSuccess { debate ->
+                _uiState.update {
+                    reduce(it, ClassDebateMutation.ReplySubmitted(debate.toUiModel()))
+                }
+            }.onFailure {
+                _uiState.update { reduce(it, ClassDebateMutation.ReplyFailed(requestKey)) }
+                sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+            }
+        }
     }
 }

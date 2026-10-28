@@ -43,6 +43,7 @@ import com.picke.domain.feature.classroom.usecase.CreateClassUseCase
 import com.picke.domain.feature.classroom.usecase.DeleteClassUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassBattleRecommendationsUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassBattleUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
@@ -53,7 +54,10 @@ import com.picke.domain.feature.classroom.usecase.PreviewClassJoinUseCase
 import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
+import com.picke.domain.feature.classroom.usecase.StartClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassDebateReplyUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassPostVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassPreVoteUseCase
 import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
@@ -209,7 +213,11 @@ object UseCaseModule {
             removeMemberUseCase = RemoveMemberUseCase(classroomRepository),
             submitClassPreVoteUseCase = SubmitClassPreVoteUseCase(classroomRepository),
             submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository),
-            completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository)
+            completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository),
+            getClassDebateUseCase = GetClassDebateUseCase(classroomRepository),
+            startClassDebateUseCase = StartClassDebateUseCase(classroomRepository),
+            submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository),
+            retryClassDebateUseCase = RetryClassDebateUseCase(classroomRepository)
         )
     }
 

@@ -1,15 +1,19 @@
 package com.picke.presentation.ui.classroom.classdebate.model
 
 internal sealed interface ClassDebateMutation {
+
+    sealed interface RequestFinished : ClassDebateMutation
+
+    data object RequestFailed : RequestFinished
+
     data class DebateLoaded(
-        val battleId: Long,
         val battleTitle: String,
-        val myChoice: String,
-        val opponentName: String,
-        val opponentImageUrl: String?,
-        val messages: List<ClassDebateMessageUiModel>,
-        val quickReplies: List<String>
+        val debate: ClassDebateUiModel
     ) : ClassDebateMutation
 
-    data class OpponentReplied(val messages: List<ClassDebateMessageUiModel>) : ClassDebateMutation
+    data class DebateRetried(val debate: ClassDebateUiModel) : RequestFinished
+
+    data class ReplySubmitted(val debate: ClassDebateUiModel) : RequestFinished
+
+    data class ReplyFailed(val requestKey: String) : RequestFinished
 }

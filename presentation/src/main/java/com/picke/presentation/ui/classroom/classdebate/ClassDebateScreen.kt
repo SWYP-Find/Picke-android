@@ -1,8 +1,9 @@
 package com.picke.presentation.ui.classroom.classdebate
 
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -29,8 +29,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -42,10 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateQuickReplyChip
+import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRetryChip
 import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRoundProgress
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
+import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
@@ -77,12 +80,30 @@ fun ClassDebateScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+    val replyTooShortText =
+        stringResource(R.string.class_debate_reply_too_short, uiState.debate.replyMinLength)
+
+    val replyTooShortMessage by rememberUpdatedState(replyTooShortText)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassDebateUiEvent.NavigateBack -> onBackClick()
 
                 is ClassDebateUiEvent.NavigateToFinalVote -> onNavigateToFinalVote(event.classId)
+
+                ClassDebateUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDebateUiEvent.ShowReplyTooShortToast ->
+                    Toast.makeText(context, replyTooShortMessage, Toast.LENGTH_SHORT).show()
+
+                ClassDebateUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -127,10 +148,9 @@ private fun ClassDebateContent(
             } else {
                 ClassDebateComposerSection(
                     input = uiState.input,
-                    quickReplies = uiState.quickReplies,
+                    isInputEnabled = uiState.isInputEnabled,
                     isSendEnabled = uiState.isSendEnabled,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
-                    onQuickReplyClick = { reply -> onAction(ClassDebateUiAction.QuickReplyClick(reply)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
                 )
             }
@@ -139,10 +159,14 @@ private fun ClassDebateContent(
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
         ClassDebateChatSection(
-            myChoice = uiState.myChoice,
-            opponentName = uiState.opponentName,
-            opponentImageUrl = uiState.opponentImageUrl,
-            messages = uiState.messages,
+            myChoice = uiState.debate.myChoice,
+            opponentName = uiState.debate.opponentName,
+            opponentImageUrl = uiState.debate.opponentImageUrl,
+            messages = uiState.debate.messages,
+            isOpponentGenerating = uiState.isOpponentGenerating,
+            isOpponentFailed = uiState.isOpponentFailed,
+            isRetryVisible = uiState.isRetryVisible,
+            onRetryClick = { onAction(ClassDebateUiAction.RetryClick) },
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -164,14 +188,27 @@ private fun ClassDebateChatSection(
     opponentName: String,
     opponentImageUrl: String?,
     messages: List<ClassDebateMessageUiModel>,
+    isOpponentGenerating: Boolean,
+    isOpponentFailed: Boolean,
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val myLabel = stringResource(R.string.class_member_me)
     val aiBadge = stringResource(R.string.class_debate_ai_badge)
+    val pendingText = stringResource(
+        if (isOpponentGenerating) R.string.class_debate_generating else R.string.class_debate_failed
+    )
+
     val listState = rememberLazyListState()
 
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) listState.animateScrollToItem(messages.size)
+    val isPendingVisible = isOpponentGenerating || isOpponentFailed
+    val isPendingNewSpeaker = messages.lastOrNull()?.speaker != ClassDebateSpeaker.AI
+    val lastItemIndex =
+        messages.size + (if (isPendingVisible) 1 else 0) + (if (isRetryVisible) 1 else 0)
+
+    LaunchedEffect(lastItemIndex) {
+        if (lastItemIndex > 0) listState.animateScrollToItem(lastItemIndex)
     }
 
     LazyColumn(
@@ -189,8 +226,11 @@ private fun ClassDebateChatSection(
             ClassDebateIntroSection(myChoice = myChoice, opponentName = opponentName)
         }
 
-        itemsIndexed(items = messages, key = { _, message -> message.messageId }) { index, message ->
-            val isOpponent = message.speaker == ClassDebateSpeaker.OPPONENT
+        itemsIndexed(
+            items = messages,
+            key = { _, message -> message.messageId }
+        ) { index, message ->
+            val isOpponent = message.speaker == ClassDebateSpeaker.AI
             val isNewSpeaker = index == 0 || messages[index - 1].speaker != message.speaker
 
             ChatBubble(
@@ -208,6 +248,37 @@ private fun ClassDebateChatSection(
                 nameBadge = if (isOpponent) aiBadge else null
             )
         }
+
+        if (isPendingVisible) {
+            item {
+                ChatBubble(
+                    text = pendingText,
+                    speakerName = opponentName,
+                    avatarUrl = opponentImageUrl,
+                    defaultAvatarRes = R.drawable.illust_mengzi,
+                    isLeft = true,
+                    showAvatarAndName = isPendingNewSpeaker,
+                    modifier = if (isPendingNewSpeaker) {
+                        Modifier.padding(top = ClassDebateScreenDimens.speakerGroupSpacing)
+                    } else {
+                        Modifier
+                    },
+                    isDimmed = isOpponentGenerating,
+                    nameBadge = aiBadge
+                )
+            }
+        }
+
+        if (isRetryVisible) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ClassDebateRetryChip(onClick = onRetryClick)
+                }
+            }
+        }
     }
 }
 
@@ -221,9 +292,14 @@ private fun ClassDebateIntroSection(
     val opponentText = stringResource(R.string.class_debate_intro_opponent, opponentName)
     val choiceLine = stringResource(R.string.class_debate_intro_choice_format, choiceText)
     val startLine =
-        stringResource(R.string.class_debate_intro_start_format, opponentText, ClassDebateUiState.TOTAL_ROUNDS)
+        stringResource(
+            R.string.class_debate_intro_start_format,
+            opponentText,
+            ClassDebateUiState.TOTAL_ROUNDS
+        )
 
-    val highlightStyle = SpanStyle(color = PickeTheme.colors.textDefault, fontWeight = FontWeight.Bold)
+    val highlightStyle =
+        SpanStyle(color = PickeTheme.colors.textDefault, fontWeight = FontWeight.Bold)
     val introText = remember(choiceLine, startLine, highlightStyle) {
         buildAnnotatedString {
             appendHighlighted(choiceLine, choiceText, highlightStyle)
@@ -247,10 +323,9 @@ private fun ClassDebateIntroSection(
 @Composable
 private fun ClassDebateComposerSection(
     input: String,
-    quickReplies: List<String>,
+    isInputEnabled: Boolean,
     isSendEnabled: Boolean,
     onInputChange: (String) -> Unit,
-    onQuickReplyClick: (String) -> Unit,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -271,50 +346,38 @@ private fun ClassDebateComposerSection(
             thickness = ComponentNumberTokens.borderWidthRegular,
             color = PickeTheme.colors.borderBeigeDefault
         )
-        Column(
+        Row(
             modifier = Modifier.padding(
                 start = SpacingTokens.s16,
                 top = SpacingTokens.s16,
                 end = SpacingTokens.s16,
                 bottom = ClassDebateScreenDimens.composerBottomPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+            CustomTextField(
+                value = input,
+                onValueChange = onInputChange,
+                minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                textStyle = PickeTheme.typography.bodyXsMedium,
+                modifier = Modifier.weight(1f),
+                placeholder = stringResource(R.string.class_debate_input_placeholder),
+                enabled = isInputEnabled
+            )
+            IconButton(
+                onClick = onSendClick,
+                modifier = Modifier
+                    .size(ClassDebateScreenDimens.sendButtonSize)
+                    .background(sendButtonColor, CircleShape),
+                enabled = isSendEnabled
             ) {
-                quickReplies.forEach { reply ->
-                    ClassDebateQuickReplyChip(text = reply, onClick = { onQuickReplyClick(reply) })
-                }
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CustomTextField(
-                    value = input,
-                    onValueChange = onInputChange,
-                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                    textStyle = PickeTheme.typography.bodyXsMedium,
-                    modifier = Modifier.weight(1f),
-                    placeholder = stringResource(R.string.class_debate_input_placeholder)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_send),
+                    contentDescription = stringResource(R.string.class_debate_send),
+                    modifier = Modifier.size(ComponentNumberTokens.iconLg),
+                    tint = PickeTheme.colors.textInverse
                 )
-                IconButton(
-                    onClick = onSendClick,
-                    modifier = Modifier
-                        .size(ClassDebateScreenDimens.sendButtonSize)
-                        .background(sendButtonColor, CircleShape),
-                    enabled = isSendEnabled
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_send),
-                        contentDescription = stringResource(R.string.class_debate_send),
-                        modifier = Modifier.size(ComponentNumberTokens.iconLg),
-                        tint = PickeTheme.colors.textInverse
-                    )
-                }
             }
         }
     }
@@ -345,19 +408,79 @@ private fun ClassDebateFinalVoteSection(
 @Composable
 private fun ClassDebateContentPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = 2,
-                messages = DummyData.dummyClassDebateOpening +
-                        DummyData.dummyClassDebateMyMessage +
-                        DummyData.dummyClassDebateReplies.first(),
-                quickReplies = DummyData.dummyClassDebateQuickReplies
+                debate = debate.copy(
+                    round = 2,
+                    messages = debate.messages +
+                            DummyData.dummyClassDebateMyMessage +
+                            DummyData.dummyClassDebateReplies.first()
+                )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "반박 불가", showBackground = true)
+@Composable
+private fun ClassDebateReplyDisabledPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = DummyData.dummyClassDebate.copy(canReply = false)
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주장 생성 중", showBackground = true)
+@Composable
+private fun ClassDebateGeneratingPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = debate.copy(
+                    round = 2,
+                    status = ClassDebateStatus.GENERATING,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateMyMessage
+                )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주장 생성 실패", showBackground = true)
+@Composable
+private fun ClassDebateFailedPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                battleTitle = battle.title,
+                debate = debate.copy(
+                    round = 2,
+                    status = ClassDebateStatus.FAILED,
+                    canReply = false,
+                    canRetry = true,
+                    messages = debate.messages + DummyData.dummyClassDebateMyMessage
+                )
             ),
             onAction = {}
         )
@@ -368,16 +491,18 @@ private fun ClassDebateContentPreview() {
 @Composable
 private fun ClassDebateFinishedPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
-                messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last()
+                debate = debate.copy(
+                    round = ClassDebateUiState.TOTAL_ROUNDS,
+                    status = ClassDebateStatus.COMPLETED,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateReplies.last()
+                )
             ),
             onAction = {}
         )
@@ -388,16 +513,18 @@ private fun ClassDebateFinishedPreview() {
 @Composable
 private fun ClassDebateFinalVoteDialogPreview() {
     val battle = DummyData.dummyClassAiQuestions.first()
+    val debate = DummyData.dummyClassDebate
 
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
-                battleId = battle.battleId,
                 battleTitle = battle.title,
-                myChoice = battle.options.first().stance,
-                opponentName = DummyData.dummyClassDebateOpponentName,
-                currentRound = ClassDebateUiState.TOTAL_ROUNDS + 1,
-                messages = DummyData.dummyClassDebateOpening + DummyData.dummyClassDebateReplies.last(),
+                debate = debate.copy(
+                    round = ClassDebateUiState.TOTAL_ROUNDS,
+                    status = ClassDebateStatus.COMPLETED,
+                    canReply = false,
+                    messages = debate.messages + DummyData.dummyClassDebateReplies.last()
+                ),
                 isFinalVoteDialogVisible = true
             ),
             onAction = {}

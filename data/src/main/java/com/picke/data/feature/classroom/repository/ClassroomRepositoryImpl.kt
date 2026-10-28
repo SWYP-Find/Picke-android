@@ -5,6 +5,7 @@ import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassDebateReplyRequestDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
@@ -15,6 +16,7 @@ import com.picke.data.feature.classroom.model.toDomainModel
 import com.picke.data.feature.pollquiz.model.VoteRequestDto
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
+import com.picke.domain.feature.classroom.model.ClassDebateBoard
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
@@ -188,14 +190,51 @@ class ClassroomRepositoryImpl @Inject constructor(
             .map { }
     }
 
-    override suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit> = apiCall {
-        classroomApi.submitClassPostVote(classId, VoteRequestDto(optionId))
-            .toResult("최종 투표를 하지 못했습니다.")
-            .map { }
-    }
+    override suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit> =
+        apiCall {
+            classroomApi.submitClassPostVote(classId, VoteRequestDto(optionId))
+                .toResult("최종 투표를 하지 못했습니다.")
+                .map { }
+        }
 
     override suspend fun completeClassTts(classId: Long): Result<Unit> = apiCall {
         classroomApi.completeClassTts(classId)
             .toUnitResult("시나리오 청취 완료를 저장하지 못했습니다.")
+    }
+
+    override suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {
+        classroomApi.getClassDebate(classId)
+            .toResult("AI 토론을 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {
+        classroomApi.startClassDebate(classId)
+            .toResult("AI 토론을 시작하지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun submitClassDebateReply(
+        classId: Long,
+        roundIndex: Int,
+        content: String,
+        requestKey: String
+    ): Result<ClassDebateBoard> = apiCall {
+        classroomApi.submitClassDebateReply(
+            classId,
+            ClassDebateReplyRequestDto(
+                roundIndex = roundIndex,
+                content = content,
+                requestKey = requestKey
+            )
+        )
+            .toResult("AI 토론 반박을 보내지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun retryClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {
+        classroomApi.retryClassDebate(classId)
+            .toResult("AI 토론 주장을 다시 만들지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 }

@@ -9,7 +9,6 @@ data class ClassDebateUiState(
     val opponentImageUrl: String? = null,
     val currentRound: Int = 1,
     val messages: List<ClassDebateMessageUiModel> = emptyList(),
-    val quickReplies: List<String> = emptyList(),
     val input: String = "",
     val isReplying: Boolean = false,
     val isFinalVoteDialogVisible: Boolean = false

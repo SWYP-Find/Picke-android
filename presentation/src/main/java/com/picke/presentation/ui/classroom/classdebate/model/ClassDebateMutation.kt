@@ -7,8 +7,7 @@ internal sealed interface ClassDebateMutation {
         val myChoice: String,
         val opponentName: String,
         val opponentImageUrl: String?,
-        val messages: List<ClassDebateMessageUiModel>,
-        val quickReplies: List<String>
+        val messages: List<ClassDebateMessageUiModel>
     ) : ClassDebateMutation
 
     data class OpponentReplied(val messages: List<ClassDebateMessageUiModel>) : ClassDebateMutation

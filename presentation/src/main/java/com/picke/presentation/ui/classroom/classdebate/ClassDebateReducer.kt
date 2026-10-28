@@ -10,8 +10,6 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
     when (action) {
         is ClassDebateUiAction.SideEffectOnly -> state
 
-        is ClassDebateUiAction.QuickReplyClick -> state.copy(input = action.reply)
-
         is ClassDebateUiAction.InputChange -> state.copy(input = action.input)
 
         ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
@@ -38,8 +36,7 @@ internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): C
             myChoice = mutation.myChoice,
             opponentName = mutation.opponentName,
             opponentImageUrl = mutation.opponentImageUrl,
-            messages = mutation.messages,
-            quickReplies = mutation.quickReplies
+            messages = mutation.messages
         )
 
         is ClassDebateMutation.OpponentReplied -> state.copy(

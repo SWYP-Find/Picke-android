@@ -72,8 +72,7 @@ class ClassDebateViewModel @Inject constructor(
             myChoice = battle.options.firstOrNull()?.stance.orEmpty(),
             opponentName = DummyData.dummyClassDebateOpponentName,
             opponentImageUrl = null,
-            messages = DummyData.dummyClassDebateOpening,
-            quickReplies = DummyData.dummyClassDebateQuickReplies
+            messages = DummyData.dummyClassDebateOpening
         )
         _uiState.update { reduce(it, mutation) }
     }

@@ -372,7 +372,7 @@
     <string name="class_debate_intro_choice_format">사전투표에서 %1$s를 선택하셨네요.</string>
     <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
     <string name="class_debate_intro_start_format">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
-    <string name="class_debate_input_placeholder">내 생각을 입력해보세요</string>
+    <string name="class_debate_input_placeholder">내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
     <string name="class_debate_final_vote">최종투표하기</string>
     <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>

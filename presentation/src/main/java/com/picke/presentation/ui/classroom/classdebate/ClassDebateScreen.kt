@@ -1,7 +1,6 @@
 package com.picke.presentation.ui.classroom.classdebate
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -42,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateQuickReplyChip
 import com.picke.presentation.ui.classroom.classdebate.component.ClassDebateRoundProgress
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
@@ -127,10 +124,8 @@ private fun ClassDebateContent(
             } else {
                 ClassDebateComposerSection(
                     input = uiState.input,
-                    quickReplies = uiState.quickReplies,
                     isSendEnabled = uiState.isSendEnabled,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
-                    onQuickReplyClick = { reply -> onAction(ClassDebateUiAction.QuickReplyClick(reply)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
                 )
             }
@@ -247,10 +242,8 @@ private fun ClassDebateIntroSection(
 @Composable
 private fun ClassDebateComposerSection(
     input: String,
-    quickReplies: List<String>,
     isSendEnabled: Boolean,
     onInputChange: (String) -> Unit,
-    onQuickReplyClick: (String) -> Unit,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -271,50 +264,37 @@ private fun ClassDebateComposerSection(
             thickness = ComponentNumberTokens.borderWidthRegular,
             color = PickeTheme.colors.borderBeigeDefault
         )
-        Column(
+        Row(
             modifier = Modifier.padding(
                 start = SpacingTokens.s16,
                 top = SpacingTokens.s16,
                 end = SpacingTokens.s16,
                 bottom = ClassDebateScreenDimens.composerBottomPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+            CustomTextField(
+                value = input,
+                onValueChange = onInputChange,
+                minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                textStyle = PickeTheme.typography.bodyXsMedium,
+                modifier = Modifier.weight(1f),
+                placeholder = stringResource(R.string.class_debate_input_placeholder)
+            )
+            IconButton(
+                onClick = onSendClick,
+                modifier = Modifier
+                    .size(ClassDebateScreenDimens.sendButtonSize)
+                    .background(sendButtonColor, CircleShape),
+                enabled = isSendEnabled
             ) {
-                quickReplies.forEach { reply ->
-                    ClassDebateQuickReplyChip(text = reply, onClick = { onQuickReplyClick(reply) })
-                }
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CustomTextField(
-                    value = input,
-                    onValueChange = onInputChange,
-                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                    textStyle = PickeTheme.typography.bodyXsMedium,
-                    modifier = Modifier.weight(1f),
-                    placeholder = stringResource(R.string.class_debate_input_placeholder)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_send),
+                    contentDescription = stringResource(R.string.class_debate_send),
+                    modifier = Modifier.size(ComponentNumberTokens.iconLg),
+                    tint = PickeTheme.colors.textInverse
                 )
-                IconButton(
-                    onClick = onSendClick,
-                    modifier = Modifier
-                        .size(ClassDebateScreenDimens.sendButtonSize)
-                        .background(sendButtonColor, CircleShape),
-                    enabled = isSendEnabled
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_send),
-                        contentDescription = stringResource(R.string.class_debate_send),
-                        modifier = Modifier.size(ComponentNumberTokens.iconLg),
-                        tint = PickeTheme.colors.textInverse
-                    )
-                }
             }
         }
     }
@@ -356,8 +336,7 @@ private fun ClassDebateContentPreview() {
                 currentRound = 2,
                 messages = DummyData.dummyClassDebateOpening +
                         DummyData.dummyClassDebateMyMessage +
-                        DummyData.dummyClassDebateReplies.first(),
-                quickReplies = DummyData.dummyClassDebateQuickReplies
+                        DummyData.dummyClassDebateReplies.first()
             ),
             onAction = {}
         )

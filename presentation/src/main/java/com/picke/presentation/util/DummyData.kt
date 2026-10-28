@@ -1140,12 +1140,6 @@ object DummyData {
         )
     )
 
-    val dummyClassDebateQuickReplies = listOf(
-        "장례식에선 예의가 필요해요",
-        "공감은 사회의 약속이에요",
-        "태도도 하나의 표현이에요"
-    )
-
     val dummyClassMembers = listOf(
         ClassMemberUiModel(1L, "김선생", null, isOperator = true, isMe = true),
         ClassMemberUiModel(2L, "공은지", null, isOperator = false, isMe = false),

@@ -22,6 +22,7 @@ import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class TokenAuthenticator @Inject constructor(
@@ -76,41 +77,44 @@ class TokenAuthenticator @Inject constructor(
                 .header("X-Refresh-Token", refreshToken)
                 .build()
 
-            val refreshResponse = client.newCall(refreshRequest).execute()
-            val body = refreshResponse.body?.string()
+            client.newCall(refreshRequest).execute().use { refreshResponse ->
+                val body = refreshResponse.body?.string()
 
-            if (refreshResponse.isSuccessful && body != null) {
-                val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
-                val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
-                val data = parsed.data
+                if (refreshResponse.isSuccessful && body != null) {
+                    val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
+                    val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
+                    val data = parsed.data
 
-                if (parsed.statusCode == 200 && data != null) {
-                    preferencesManager.saveAccessToken(data.accessToken)
-                    preferencesManager.saveRefreshToken(data.refreshToken)
-                    if (BuildConfig.DEBUG) {
-                        Handler(Looper.getMainLooper()).post {
-                            Toast.makeText(
-                                context,
-                                "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                    if (parsed.statusCode == 200 && data != null) {
+                        preferencesManager.saveAccessToken(data.accessToken)
+                        preferencesManager.saveRefreshToken(data.refreshToken)
+                        if (BuildConfig.DEBUG) {
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(
+                                    context,
+                                    "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
 
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer ${data.accessToken}")
-                        .build()
+                        response.request.newBuilder()
+                            .header("Authorization", "Bearer ${data.accessToken}")
+                            .build()
+                    } else {
+                        Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                        null
+                    }
                 } else {
-                    Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                    Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
+                    if (refreshResponse.code == 401) {
+                        rejectedRefreshToken = refreshToken
+                    }
                     null
                 }
-            } else {
-                Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
-                if (refreshResponse.code == 401) {
-                    rejectedRefreshToken = refreshToken
-                }
-                null
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[AUTH] 토큰 갱신 중 예외 발생: ${e.message}", e)
             reportIfUnexpected(e)

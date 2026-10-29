@@ -41,6 +41,8 @@ class TokenAuthenticator @Inject constructor(
             .build()
     }
 
+    private var rejectedRefreshToken: String? = null
+
     @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
         if (responseCount(response) >= 2) {
@@ -59,6 +61,10 @@ class TokenAuthenticator @Inject constructor(
         val refreshToken = preferencesManager.getRefreshToken()
         if (refreshToken.isNullOrEmpty()) {
             Log.e(TAG, "[AUTH] 저장된 리프레시 토큰 없음. 재발급 불가.")
+            return null
+        }
+
+        if (refreshToken == rejectedRefreshToken) {
             return null
         }
 
@@ -100,6 +106,9 @@ class TokenAuthenticator @Inject constructor(
                 }
             } else {
                 Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
+                if (refreshResponse.code == 401) {
+                    rejectedRefreshToken = refreshToken
+                }
                 null
             }
         } catch (e: Exception) {

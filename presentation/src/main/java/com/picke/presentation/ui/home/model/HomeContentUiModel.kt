@@ -2,6 +2,7 @@ package com.picke.presentation.ui.home.model
 
 import com.picke.domain.feature.home.model.ContentDomainType
 import com.picke.domain.feature.home.model.HomeContent
+import com.picke.presentation.util.formatCount
 
 data class HomeContentUiModel(
     val contentId: String,
@@ -26,7 +27,7 @@ fun HomeContent.toUiModel(): HomeContentUiModel {
         title = title,
         summary = summary,
         thumbnailUrl = thumbnailUrl,
-        viewCountText = viewCount.toString(),
+        viewCountText = formatCount(viewCount),
         timeInfoText = "${audioDuration / 60}분",
         tags = tags,
         leftOpinion = options.getOrNull(0)?.text ?: "",

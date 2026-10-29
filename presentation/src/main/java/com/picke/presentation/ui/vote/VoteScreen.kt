@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.vote
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -41,11 +42,11 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,6 +77,9 @@ import com.picke.presentation.util.loadBitmapFromUrl
 import com.picke.presentation.util.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
+import kotlinx.coroutines.launch
+
+private const val CLIP_LABEL = "battle_link"
 
 @Composable
 fun VoteRoute(
@@ -144,7 +148,7 @@ fun VoteScreen(
     isRequesting: Boolean = false
 ) {
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
 
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
@@ -455,9 +459,11 @@ fun VoteScreen(
                     onGetShareLink(
                         battleInfo.battleId.toInt(),
                         { url ->
-                            clipboardManager.setText(AnnotatedString(url))
-                            Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
-                            onTrackShare(ShareChannel.LINK)
+                            coroutineScope.launch {
+                                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
+                                Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                                onTrackShare(ShareChannel.LINK)
+                            }
                         },
                         { errorMessage ->
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()

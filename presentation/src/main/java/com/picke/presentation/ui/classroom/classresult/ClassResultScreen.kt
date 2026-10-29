@@ -92,6 +92,7 @@ private fun ClassResultContent(
     modifier: Modifier = Modifier
 ) {
     val tabLabels = ClassResultTab.entries.map { stringResource(it.labelRes) }
+
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.visibleTab) {

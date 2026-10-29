@@ -40,8 +40,8 @@ fun ClassResultFeedbackCard(
     modifier: Modifier = Modifier
 ) {
     val deadlineText = rememberClassDeadlineText(deadline, R.string.class_deadline_full_format)
-    val notice = report.feedbackNotice(deadlineText)
 
+    val notice = report.feedbackNotice(deadlineText)
     val shape = RoundedCornerShape(RadiusTokens.default)
 
     Column(

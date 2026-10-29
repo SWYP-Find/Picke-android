@@ -50,6 +50,7 @@ fun MyClassCard(
     modifier: Modifier = Modifier
 ) {
     val deadlineText = rememberClassDeadlineText(item.deadline, R.string.class_deadline_full_format)
+
     val shape = RoundedCornerShape(RadiusTokens.default)
     val statusTextRes = if (item.isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
 

@@ -135,6 +135,7 @@ object ContentActionType {
 /** content_action.section 허용값 */
 object ContentSection {
     const val BEST = "best"
+    const val BEST_COMMENT = "best_comment"
     const val HOT = "hot"
     const val NEW = "new"
     const val VOTE = "vote"

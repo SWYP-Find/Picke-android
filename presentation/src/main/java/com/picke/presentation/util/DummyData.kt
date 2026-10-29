@@ -24,6 +24,7 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.home.model.ContentUiType
+import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.home.model.PollQuizOptionStatUiModel
 import com.picke.presentation.ui.home.model.TodayPickUiModel
@@ -260,6 +261,27 @@ object DummyData {
             tags = listOf("철학", "인문"),
             leftProfileName = "플라톤",
             rightProfileName = "튜링"
+        )
+    )
+
+    val dummyBestComments = listOf(
+        HomeBestCommentUiModel(
+            battleId = 1L,
+            battleTitle = "인간은 본래 선한가, 악한가?",
+            optionTitle = "본성은 선하다",
+            content = "아이가 우물에 빠지려는 걸 보면 누구나 먼저 손을 뻗잖아요. 계산하기 전에 움직이는 그 마음이 본성이라고 생각해요."
+        ),
+        HomeBestCommentUiModel(
+            battleId = 2L,
+            battleTitle = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            optionTitle = "말해야 한다",
+            content = "남은 시간을 어떻게 쓸지는 본인이 정해야 해요. 진실을 숨기면 그 선택권까지 빼앗는 거라고 봐요."
+        ),
+        HomeBestCommentUiModel(
+            battleId = 3L,
+            battleTitle = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            optionTitle = "진짜 사랑이다",
+            content = "상대가 무엇이든 내가 느끼는 감정은 진짜잖아요. 사랑을 상대의 조건으로만 판단하는 건 좁은 기준 같아요."
         )
     )
 

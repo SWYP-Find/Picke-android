@@ -75,6 +75,7 @@ class HomeViewModel @Inject constructor(
                             editorPicks = boardData.editorPicks.map { it.toUiModel() },
                             trendingBattles = boardData.trendingBattles.map { it.toUiModel() },
                             bestBattles = boardData.bestBattles.map { it.toUiModel() },
+                            bestComments = boardData.bestComments.map { it.toUiModel() },
                             newBattles = boardData.newBattles.map { it.toUiModel() },
                             todayPicks = emptyList()
                         )

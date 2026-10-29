@@ -10,8 +10,16 @@ data class HomeBoard(
     val editorPicks: List<HomeContent>,
     val trendingBattles: List<HomeContent>,
     val bestBattles: List<HomeContent>,
+    val bestComments: List<HomeBestCommentBoard>,
     val todayPicks: List<TodayPick>,
     val newBattles: List<HomeContent>
+)
+
+data class HomeBestCommentBoard(
+    val battleId: Long,
+    val battleTitle: String,
+    val optionTitle: String,
+    val content: String
 )
 
 data class HomeContent(

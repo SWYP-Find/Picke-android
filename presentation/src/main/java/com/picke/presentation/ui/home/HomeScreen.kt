@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -69,13 +70,17 @@ import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
+import com.picke.presentation.ui.home.component.HomeBestCommentItem
 import com.picke.presentation.ui.home.component.HomeSectionEmpty
 import com.picke.presentation.ui.home.component.HomeSkeleton
 import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
+import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -145,6 +150,7 @@ fun HomeScreen(
     val isDataEmpty = uiState.editorPicks.isEmpty() &&
             uiState.trendingBattles.isEmpty() &&
             uiState.bestBattles.isEmpty() &&
+            uiState.bestComments.isEmpty() &&
             uiState.newBattles.isEmpty()
 
     LaunchedEffect(scrollToTopTrigger) {
@@ -315,6 +321,21 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(32.dp))
                 }
 
+                if (uiState.bestComments.isNotEmpty()) {
+                    HomeBestCommentSection(
+                        comments = uiState.bestComments,
+                        onCommentClick = { item ->
+                            onTrackBattleTap(
+                                ContentActionType.BATTLE_CARD_TAP,
+                                item.battleId.toString(),
+                                ContentSection.BEST_COMMENT
+                            )
+                            onNavigateToVote(item.battleId.toString())
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(SpacingTokens.s32))
+                }
+
                 // 4. 오늘의 Pické (투표/퀴즈)
                 //  - 홈에서 오늘의 Pické 섹션을 노출하지 않기로 하여 전체 주석 처리.
                 //  - 백엔드에서 데이터를 내려주더라도 홈에서는 그리지 않는다. 필요 시 아래 블록을 복원하면 된다.
@@ -382,6 +403,37 @@ fun HomeScreen(
             uiState = attendanceCheckUiState,
             onDismiss = onDismissAttendanceCheckSheet
         )
+    }
+}
+
+@Composable
+private fun HomeBestCommentSection(
+    comments: List<HomeBestCommentUiModel>,
+    onCommentClick: (HomeBestCommentUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+            HomeSectionHeader(
+                title = stringResource(R.string.home_section_best_comment),
+                highlightText = stringResource(R.string.home_highlight_comment),
+                onMoreClick = {}
+            )
+        }
+
+        comments.forEachIndexed { index, item ->
+            HomeBestCommentItem(
+                item = item,
+                onClick = { onCommentClick(item) }
+            )
+            if (index < comments.lastIndex) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+            }
+        }
     }
 }
 
@@ -631,6 +683,7 @@ fun HomeScreenPreview() {
             editorPicks = DummyData.dummyHomeContentItems,
             trendingBattles = DummyData.dummyHomeContentItems,
             bestBattles = DummyData.dummyHomeContentItems,
+            bestComments = DummyData.dummyBestComments,
             newBattles = DummyData.dummyHomeContentItems,
             todayPicks = listOf(DummyData.dummyVotePick, DummyData.dummyQuizPick)
         ),

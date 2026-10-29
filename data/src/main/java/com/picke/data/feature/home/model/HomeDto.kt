@@ -2,6 +2,7 @@ package com.picke.data.feature.home.model
 
 import com.picke.domain.feature.home.model.ContentDomainType
 import com.picke.domain.feature.home.model.ContentOption
+import com.picke.domain.feature.home.model.HomeBestCommentBoard
 import com.picke.domain.feature.home.model.HomeBoard
 import com.picke.domain.feature.home.model.HomeContent
 import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
@@ -12,6 +13,7 @@ data class HomeResponseDto(
     val editorPicks: List<EditorPickDto>?,
     val trendingBattles: List<TrendingBattleDto>?,
     val bestBattles: List<BestBattleDto>?,
+    val bestComments: List<BestCommentDto>?,
     val todayQuizzes: List<TodayQuizDto>?,
     val todayVotes: List<TodayVoteDto>?,
     val newBattles: List<NewBattleDto>?
@@ -51,6 +53,14 @@ data class BestBattleDto(
     val tags: List<TagDto>?,
     val audioDuration: Int?,
     val viewCount: Int?
+)
+
+// TODO: API 연동 - 홈 API에 bestComments가 추가되면 필드 이름 확인
+data class BestCommentDto(
+    val battleId: Long?,
+    val battleTitle: String?,
+    val optionTitle: String?,
+    val content: String?
 )
 
 data class TodayQuizDto(
@@ -99,6 +109,7 @@ fun HomeResponseDto.toDomainModel() = HomeBoard(
     editorPicks = editorPicks?.map { it.toDomainModel() } ?: emptyList(),
     trendingBattles = trendingBattles?.map { it.toDomainModel() } ?: emptyList(),
     bestBattles = bestBattles?.map { it.toDomainModel() } ?: emptyList(),
+    bestComments = bestComments?.map { it.toDomainModel() } ?: emptyList(),
     todayPicks = (todayQuizzes?.map { it.toTodayPickDomainModel() } ?: emptyList()) +
         (todayVotes?.map { it.toTodayPickDomainModel() } ?: emptyList()),
     newBattles = newBattles?.map { it.toDomainModel() } ?: emptyList()
@@ -152,6 +163,13 @@ fun NewBattleDto.toDomainModel() = HomeContent(
             imageUrl = this.philosopherBImageUrl
         )
     )
+)
+
+fun BestCommentDto.toDomainModel() = HomeBestCommentBoard(
+    battleId = battleId ?: 0L,
+    battleTitle = battleTitle ?: "",
+    optionTitle = optionTitle ?: "",
+    content = content ?: ""
 )
 
 fun TodayQuizDto.toTodayPickDomainModel() = TodayPick.QuizPick(

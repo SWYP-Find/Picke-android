@@ -109,7 +109,7 @@ fun HomeResponseDto.toDomainModel() = HomeBoard(
     editorPicks = editorPicks?.map { it.toDomainModel() } ?: emptyList(),
     trendingBattles = trendingBattles?.map { it.toDomainModel() } ?: emptyList(),
     bestBattles = bestBattles?.map { it.toDomainModel() } ?: emptyList(),
-    bestComments = bestComments?.map { it.toDomainModel() } ?: emptyList(),
+    bestComments = bestComments?.mapNotNull { it.toDomainModel() } ?: emptyList(),
     todayPicks = (todayQuizzes?.map { it.toTodayPickDomainModel() } ?: emptyList()) +
         (todayVotes?.map { it.toTodayPickDomainModel() } ?: emptyList()),
     newBattles = newBattles?.map { it.toDomainModel() } ?: emptyList()
@@ -165,12 +165,15 @@ fun NewBattleDto.toDomainModel() = HomeContent(
     )
 )
 
-fun BestCommentDto.toDomainModel() = HomeBestCommentBoard(
-    battleId = battleId ?: 0L,
-    battleTitle = battleTitle ?: "",
-    optionTitle = optionTitle ?: "",
-    content = content ?: ""
-)
+fun BestCommentDto.toDomainModel(): HomeBestCommentBoard? {
+    val battleId = battleId ?: return null
+    return HomeBestCommentBoard(
+        battleId = battleId,
+        battleTitle = battleTitle ?: "",
+        optionTitle = optionTitle ?: "",
+        content = content ?: ""
+    )
+}
 
 fun TodayQuizDto.toTodayPickDomainModel() = TodayPick.QuizPick(
     contentId = this.battleId?.toString() ?: "",

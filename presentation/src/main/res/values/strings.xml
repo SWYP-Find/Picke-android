@@ -30,6 +30,10 @@
     <!-- 토스트 -->
     <string name="toast_load_failed">정보를 불러오지 못했어요</string>
     <string name="toast_action_failed">요청을 처리하지 못했어요</string>
+    <string name="share_image_load_failed">이미지 로드 실패</string>
+    <string name="share_failed">공유 실패</string>
+    <string name="share_capture_failed">캡처 실패</string>
+    <string name="share_link_copied">링크가 클립보드에 복사되었습니다.</string>
 
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
@@ -120,6 +124,9 @@
     <string name="postvote">최종 투표하기</string>
     <string name="vote_comment_count">댓글 수</string>
     <string name="vote_submit">투표하기</string>
+    <string name="vote_point_shortage_message">컨텐츠를 시청하기 위한\n포인트가 부족해요!</string>
+    <string name="vote_point_shortage_sub_message">매일 출석체크만 해도 5P를 받을 수 있어요!</string>
+    <string name="vote_point_shortage_button">배틀 주제 구경하러 가기</string>
 
     <!-- 시나리오   -->
     <string name="scenario_go_to_final_vote">최종투표 하러가기</string>
@@ -400,10 +407,10 @@
     <string name="class_result_comment_members">댓글을 남긴 멤버</string>
     <string name="class_result_rate">%1$s%%</string>
     <string name="class_result_member_ratio">%1$d / %2$d명</string>
+    <string name="class_result_no_participation">아직 참여 없음</string>
     <string name="class_result_stance">입장 분포</string>
     <string name="class_result_people_count">%1$d명</string>
     <string name="class_result_total_label">총 참여</string>
-    <string name="class_result_stance_percent">%1$d%%</string>
     <string name="class_result_opinions">주요 의견</string>
     <string name="class_result_best_comment">BEST 댓글</string>
     <string name="class_result_most_debated_comment">가장 논쟁이 활발했던 댓글</string>

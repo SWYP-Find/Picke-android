@@ -4,6 +4,8 @@ sealed interface ClassDetailUiEvent {
 
     data object NavigateBack : ClassDetailUiEvent
 
+    data object NavigateBackAfterClassChanged : ClassDetailUiEvent
+
     data class NavigateToMember(val classId: Long) : ClassDetailUiEvent
 
     data class NavigateToPreVote(val classId: Long) : ClassDetailUiEvent

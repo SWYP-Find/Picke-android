@@ -11,7 +11,6 @@ import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
-import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
@@ -60,6 +59,93 @@ class PerspectiveViewModel @Inject constructor(
         fetchMyPerspective()
         fetchMyVoteHistory()
         fetchClassDetail()
+    }
+
+    private fun sendEvent(event: PerspectiveUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    fun fetchPerspectives(isRefresh: Boolean = false) {
+        val state = _uiState.value
+        if (!isRefresh && (state.isLoading || !state.hasNext)) return
+
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            val cursor = if (isRefresh) null else state.nextCursor
+            perspectiveUseCases.loadPerspectivesUseCase(
+                target = target,
+                cursor = cursor,
+                size = 10,
+                optionId = state.selectedOptionId,
+                sort = state.sort.apiValue
+            ).onSuccess { page ->
+                val newItems = page.items.map { it.toUiModel() }
+                val actualHasNext = page.hasNext && page.nextCursor != null && newItems.isNotEmpty()
+
+                _uiState.update { currentState ->
+                    val mergedList =
+                        if (isRefresh) newItems else (currentState.perspectives + newItems).distinctBy { it.perspectiveId }
+                    currentState.copy(
+                        perspectives = mergedList,
+                        nextCursor = page.nextCursor,
+                        hasNext = actualHasNext,
+                        isLoading = false
+                    )
+                }
+            }.onFailure {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    private fun fetchMyVoteHistory() {
+        viewModelScope.launch {
+            voteUseCases.getMyVoteHistoryUseCase(target)
+                .onSuccess { voteHistory ->
+                    _uiState.update {
+                        it.copy(
+                            opinionChanged = voteHistory.opinionChanged,
+                            battleTitle = voteHistory.battleTitle
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(opinionChanged = false) }
+                }
+        }
+    }
+
+    private fun fetchMyPerspective() {
+        viewModelScope.launch {
+            perspectiveUseCases.getMyPerspectiveUseCase(target)
+                .onSuccess { myData ->
+                    _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(myPerspective = null) }
+                }
+        }
+    }
+
+    private fun fetchVoteStats() {
+        viewModelScope.launch {
+            voteUseCases.getVoteStatsUseCase(target)
+                .onSuccess { statsBoard ->
+                    _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
+                }
+        }
+    }
+
+    private fun fetchClassDetail() {
+        val classTarget = target as? BattleTarget.Class ?: return
+        viewModelScope.launch {
+            classroomUseCases.getClassDetailUseCase(classTarget.classId)
+                .onSuccess { classDetail ->
+                    _uiState.update { it.copy(classSetting = classDetail.toUiModel()) }
+                }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)) }
+        }
     }
 
     fun updateSort(newSort: PerspectiveSort) {
@@ -180,10 +266,15 @@ class PerspectiveViewModel @Inject constructor(
 
     fun moveToNext() {
         val state = _uiState.value
-        val event = if (state.isCommentRequired && state.myPerspective == null) {
-            PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
-        } else {
-            PerspectiveUiEvent.NavigateNext(battleId)
+        val classSetting = state.classSetting
+        val event = when {
+            state.isClassBattle && classSetting == null ->
+                PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)
+
+            classSetting?.isCommentRequired == true && state.myPerspective == null ->
+                PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
+
+            else -> PerspectiveUiEvent.NavigateNext(battleId)
         }
         sendEvent(event)
     }
@@ -193,97 +284,5 @@ class PerspectiveViewModel @Inject constructor(
         fetchVoteStats()
         fetchMyPerspective()
         fetchPerspectives(isRefresh = true)
-    }
-
-    private fun sendEvent(event: PerspectiveUiEvent) {
-        viewModelScope.launch { _uiEvent.send(event) }
-    }
-
-    fun fetchPerspectives(isRefresh: Boolean = false) {
-        val state = _uiState.value
-        if (!isRefresh && (state.isLoading || !state.hasNext)) return
-
-        _uiState.update { it.copy(isLoading = true) }
-
-        viewModelScope.launch {
-            val cursor = if (isRefresh) null else state.nextCursor
-            perspectiveUseCases.loadPerspectivesUseCase(
-                target = target,
-                cursor = cursor,
-                size = 10,
-                optionId = state.selectedOptionId,
-                sort = state.sort.apiValue
-            ).onSuccess { page ->
-                val newItems = page.items.map { it.toUiModel() }
-                val actualHasNext = page.hasNext && page.nextCursor != null && newItems.isNotEmpty()
-
-                _uiState.update { currentState ->
-                    val mergedList =
-                        if (isRefresh) newItems else (currentState.perspectives + newItems).distinctBy { it.perspectiveId }
-                    currentState.copy(
-                        perspectives = mergedList,
-                        nextCursor = page.nextCursor,
-                        hasNext = actualHasNext,
-                        isLoading = false
-                    )
-                }
-            }.onFailure {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
-    }
-
-    private fun fetchMyVoteHistory() {
-        viewModelScope.launch {
-            voteUseCases.getMyVoteHistoryUseCase(target)
-                .onSuccess { voteHistory ->
-                    _uiState.update {
-                        it.copy(
-                            opinionChanged = voteHistory.opinionChanged,
-                            battleTitle = voteHistory.battleTitle
-                        )
-                    }
-                }
-                .onFailure {
-                    _uiState.update { it.copy(opinionChanged = false) }
-                }
-        }
-    }
-
-    private fun fetchMyPerspective() {
-        viewModelScope.launch {
-            perspectiveUseCases.getMyPerspectiveUseCase(target)
-                .onSuccess { myData ->
-                    _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
-                }
-                .onFailure {
-                    _uiState.update { it.copy(myPerspective = null) }
-                }
-        }
-    }
-
-    private fun fetchVoteStats() {
-        viewModelScope.launch {
-            voteUseCases.getVoteStatsUseCase(target)
-                .onSuccess { statsBoard ->
-                    _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
-                }
-        }
-    }
-
-    private fun fetchClassDetail() {
-        val classTarget = target as? BattleTarget.Class ?: return
-        viewModelScope.launch {
-            classroomUseCases.getClassDetailUseCase(classTarget.classId)
-                .onSuccess { classDetail ->
-                    val battleType = ClassBattleType.from(classDetail.battleType)
-                    _uiState.update {
-                        it.copy(
-                            isAiBattle = battleType == ClassBattleType.CUSTOM,
-                            isCommentRequired = classDetail.commentRequired
-                        )
-                    }
-                }
-        }
     }
 }

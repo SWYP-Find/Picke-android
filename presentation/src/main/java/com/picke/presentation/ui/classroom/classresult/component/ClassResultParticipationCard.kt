@@ -97,7 +97,11 @@ private fun ClassResultParticipationRow(
                     style = PickeTheme.typography.captionLgSemiBold
                 )
                 Text(
-                    text = stringResource(R.string.class_result_rate, formatRate(ratio * 100)),
+                    text = if (memberCount > 0) {
+                        stringResource(R.string.class_result_rate, formatRate(ratio * 100))
+                    } else {
+                        stringResource(R.string.class_result_no_participation)
+                    },
                     color = PickeTheme.colors.textDefault,
                     style = PickeTheme.typography.bodySmSemiBold
                 )
@@ -147,6 +151,18 @@ private fun ClassResultParticipationCardPreview() {
             memberCount = summary.memberCount,
             participatedCount = summary.participatedCount,
             commentedCount = summary.commentedCount
+        )
+    }
+}
+
+@Preview(name = "참여 대상 없음", showBackground = true)
+@Composable
+private fun ClassResultParticipationCardEmptyPreview() {
+    PickeTheme {
+        ClassResultParticipationCard(
+            memberCount = 0,
+            participatedCount = 0,
+            commentedCount = 0
         )
     }
 }

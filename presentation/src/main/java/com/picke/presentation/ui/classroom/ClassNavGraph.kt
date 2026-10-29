@@ -188,6 +188,12 @@ fun NavGraphBuilder.classGraph(
         ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
             ClassDetailScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
+                onClassChanged = dropUnlessResumed {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        AppRoute.RESULT_CLASS_CHANGED, true
+                    )
+                    navController.popBackStack()
+                },
                 onMemberClick = { classId ->
                     navController.navigate(AppRoute.ClassMember.createRoute(classId))
                 },

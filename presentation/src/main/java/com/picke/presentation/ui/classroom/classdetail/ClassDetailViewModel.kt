@@ -58,7 +58,11 @@ class ClassDetailViewModel @Inject constructor(
         when (action) {
             is ClassDetailUiAction.StateOnly -> Unit
 
-            ClassDetailUiAction.BackClick -> sendEvent(ClassDetailUiEvent.NavigateBack)
+            ClassDetailUiAction.BackClick -> if (state.isClassChanged) {
+                sendEvent(ClassDetailUiEvent.NavigateBackAfterClassChanged)
+            } else {
+                sendEvent(ClassDetailUiEvent.NavigateBack)
+            }
 
             ClassDetailUiAction.MemberClick -> sendEvent(ClassDetailUiEvent.NavigateToMember(state.classId))
 
@@ -91,6 +95,7 @@ class ClassDetailViewModel @Inject constructor(
             .filter { it }
             .onEach {
                 savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
+                _uiState.update { reduce(it, ClassDetailMutation.ClassChanged) }
                 fetchClassDetail()
             }
             .launchIn(viewModelScope)

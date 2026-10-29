@@ -262,16 +262,6 @@ fun VoteScreen(
                         onClick = {
                             if (selectedOptionId != null) {
                                 onSubmitVote(selectedOptionId!!) {
-                                    /*val props = JSONObject().apply {
-                                        put("battle_id", battleInfo.battleId.toString())
-                                        put("battle_title", battleInfo.title)
-                                    }
-
-                                    if (isPreVote) {
-                                        PickeApplication.mixpanel.track("pre_vote", props) // 기획서 명칭 일치
-                                    } else {
-                                        PickeApplication.mixpanel.track("post_vote", props) // 기획서 명칭 일치
-                                    }*/
                                     onVoteSubmit(battleInfo.battleId)
                                 }
                             }

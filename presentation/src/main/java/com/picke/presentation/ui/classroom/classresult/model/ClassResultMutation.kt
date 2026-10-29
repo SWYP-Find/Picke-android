@@ -4,6 +4,10 @@ import java.time.LocalDateTime
 
 internal sealed interface ClassResultMutation {
 
+    sealed interface RequestFinished : ClassResultMutation
+
+    data object RequestFailed : RequestFinished
+
     data class ClassResultLoaded(
         val className: String,
         val isInProgress: Boolean,
@@ -18,4 +22,6 @@ internal sealed interface ClassResultMutation {
     data class InsightLoaded(val insight: ClassResultInsightUiModel) : ClassResultMutation
 
     data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation
+
+    data class InsightRetried(val insight: ClassResultInsightUiModel) : RequestFinished
 }

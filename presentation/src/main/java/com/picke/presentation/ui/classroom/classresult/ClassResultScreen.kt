@@ -59,6 +59,7 @@ fun ClassResultScreen(
     val context = LocalContext.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -69,6 +70,9 @@ fun ClassResultScreen(
 
                 ClassResultUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassResultUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -141,7 +145,9 @@ private fun ClassResultContent(
                         ClassResultSummarySection(
                             summary = summary,
                             insight = uiState.insight,
-                            deadline = uiState.deadline
+                            deadline = uiState.deadline,
+                            isInsightRetryVisible = uiState.isInsightRetryEnabled,
+                            onInsightRetryClick = { onAction(ClassResultUiAction.InsightRetryClick) }
                         )
                     }
 
@@ -206,6 +212,8 @@ private fun ClassResultSummarySection(
     summary: ClassResultSummaryUiModel,
     insight: ClassResultInsightUiModel?,
     deadline: LocalDateTime?,
+    isInsightRetryVisible: Boolean,
+    onInsightRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val titleStyle = PickeTheme.typography.bodySmSemiBold
@@ -224,7 +232,9 @@ private fun ClassResultSummarySection(
         if (insight != null) {
             ClassResultAiInsightCard(
                 insight = insight,
-                deadline = deadline
+                deadline = deadline,
+                isRetryVisible = isInsightRetryVisible,
+                onRetryClick = onInsightRetryClick
             )
         }
 

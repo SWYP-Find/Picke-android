@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
+import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -27,6 +28,8 @@ import java.time.LocalDateTime
 fun ClassResultAiInsightCard(
     insight: ClassResultInsightUiModel,
     deadline: LocalDateTime?,
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val deadlineText = rememberClassDeadlineText(deadline, R.string.class_deadline_full_format)
@@ -50,6 +53,9 @@ fun ClassResultAiInsightCard(
             color = PickeTheme.colors.textPrimary,
             style = PickeTheme.typography.captionLgRegular
         )
+        if (isRetryVisible) {
+            ClassRetryChip(onClick = onRetryClick)
+        }
     }
 }
 
@@ -103,11 +109,17 @@ private fun ClassResultAiInsightCardFailedPreview() {
 @Composable
 private fun ClassResultAiInsightCardStatePreview(state: ClassReportState) {
     val classItem = DummyData.dummyMyClasses.first()
+    val insight = DummyData.dummyClassResultInsight.copy(
+        state = state,
+        isRetryable = state == ClassReportState.FAILED
+    )
 
     PickeTheme {
         ClassResultAiInsightCard(
-            insight = DummyData.dummyClassResultInsight.copy(state = state),
-            deadline = classItem.deadline
+            insight = insight,
+            deadline = classItem.deadline,
+            isRetryVisible = insight.isRetryVisible,
+            onRetryClick = {}
         )
     }
 }

@@ -811,6 +811,7 @@ object DummyData {
     val dummyClassResultInsight = ClassResultInsightUiModel(
         state = ClassReportState.SUCCEEDED,
         insightText = "처음에는 처벌을 강화해야 한다는 의견이 많았지만, 대화 후에는 교정과 보호를 함께 봐야 한다는 의견이 늘어났어요.",
+        isRetryable = false,
         bestComment = "처벌만 강화하면 아이들이 다시 사회로 돌아올 길이 더 좁아진다고 생각해요.",
         mostDebatedComment = "피해자의 고통을 생각하면 나이와 상관없이 책임을 지게 해야 한다고 생각해요."
     )

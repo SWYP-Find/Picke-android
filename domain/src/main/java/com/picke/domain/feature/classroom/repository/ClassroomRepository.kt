@@ -79,4 +79,5 @@ interface ClassroomRepository {
     suspend fun getClassResult(classId: Long): Result<ClassResultBoard>
     suspend fun getClassResultMyReport(classId: Long): Result<ClassResultMyReportBoard>
     suspend fun getClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
+    suspend fun retryClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
 }

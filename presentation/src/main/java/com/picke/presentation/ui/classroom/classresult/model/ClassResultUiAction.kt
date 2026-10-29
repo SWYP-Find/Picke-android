@@ -10,5 +10,7 @@ sealed interface ClassResultUiAction {
 
     data class TabSelect(val tab: ClassResultTab) : StateOnly
 
+    data object InsightRetryClick : ClassResultUiAction
+
     data object MyOpinionClick : SideEffectOnly
 }

@@ -184,4 +184,9 @@ interface ClassroomApi {
     suspend fun getClassResultInsight(
         @Path("classId") classId: Long
     ): BaseResponse<ClassResultInsightResponseDto>
+
+    @POST("/api/v1/classes/{classId}/result/insight/retry")
+    suspend fun retryClassResultInsight(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultInsightResponseDto>
 }

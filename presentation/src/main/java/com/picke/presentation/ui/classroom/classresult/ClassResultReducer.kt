@@ -9,10 +9,15 @@ internal fun reduce(state: ClassResultUiState, action: ClassResultUiAction): Cla
         is ClassResultUiAction.SideEffectOnly -> state
 
         is ClassResultUiAction.TabSelect -> state.copy(selectedTab = action.tab)
+
+        ClassResultUiAction.InsightRetryClick ->
+            if (state.isInsightRetryEnabled) state.copy(isRequesting = true) else state
     }
 
-internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): ClassResultUiState =
-    when (mutation) {
+internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): ClassResultUiState {
+    val reduced = when (mutation) {
+        ClassResultMutation.RequestFailed -> state
+
         is ClassResultMutation.ClassResultLoaded -> state.copy(
             className = mutation.className,
             isInProgress = mutation.isInProgress,
@@ -27,4 +32,8 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
         is ClassResultMutation.InsightLoaded -> state.copy(insight = mutation.insight)
 
         is ClassResultMutation.MyReportLoaded -> state.copy(report = mutation.report)
+
+        is ClassResultMutation.InsightRetried -> state.copy(insight = mutation.insight)
     }
+    return if (mutation is ClassResultMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}

@@ -820,8 +820,8 @@ object DummyData {
         state = ClassReportState.SUCCEEDED,
         preVoteStance = "낮춰야 한다",
         postVoteStance = "교정이 우선이다",
-        commentCount = 1,
-        replyCount = 2,
+        perspectiveCount = 1,
+        commentCount = 2,
         receivedLikeCount = 12,
         judgmentBasis = "마지막 의견에서는 재범을 줄이는 방법으로 교육과 보호를 중요하게 봤어요.",
         feedbackItems = listOf(

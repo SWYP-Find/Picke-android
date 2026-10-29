@@ -170,6 +170,9 @@ fun MainScreen(
                         mainNavController.navigate(AppRoute.TicketRegister.route) {
                             popUpTo(AppRoute.Ticket.route) { inclusive = true }
                         }
+                    },
+                    onNavigateBackAfterLoadFailed = {
+                        mainNavController.popBackStack(AppRoute.Ticket.route, inclusive = true)
                     }
                 )
             }

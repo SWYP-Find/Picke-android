@@ -8,5 +8,7 @@ sealed interface TicketUiEvent {
 
     data object ReplaceWithRegister : TicketUiEvent
 
+    data object NavigateBackAfterLoadFailed : TicketUiEvent
+
     data object ShowLoadFailedToast : TicketUiEvent
 }

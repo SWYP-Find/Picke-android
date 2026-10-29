@@ -35,6 +35,7 @@ fun TicketScreen(
     onBackClick: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onReplaceWithRegister: () -> Unit,
+    onNavigateBackAfterLoadFailed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TicketViewModel = hiltViewModel()
 ) {
@@ -52,6 +53,8 @@ fun TicketScreen(
                 TicketUiEvent.NavigateToRegister -> onNavigateToRegister()
 
                 TicketUiEvent.ReplaceWithRegister -> onReplaceWithRegister()
+
+                TicketUiEvent.NavigateBackAfterLoadFailed -> onNavigateBackAfterLoadFailed()
 
                 TicketUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()

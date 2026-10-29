@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.picke.presentation.ui.theme.PickeTheme
@@ -19,7 +20,8 @@ fun PickeBadge(
     text: String,
     modifier: Modifier = Modifier,
     isMuted: Boolean = false,
-    horizontalPadding: Dp = SpacingTokens.s6
+    horizontalPadding: Dp = SpacingTokens.s6,
+    textStyle: TextStyle = PickeTheme.typography.bodyXxsSemiBold
 ) {
     val backgroundColor = if (isMuted) PickeTheme.colors.backgroundSubtler else PickeTheme.colors.badgeFilledBackground
     val textColor = if (isMuted) PickeTheme.colors.textMuted else PickeTheme.colors.badgeFilledText
@@ -30,7 +32,7 @@ fun PickeBadge(
             .background(backgroundColor, RoundedCornerShape(RadiusTokens.default))
             .padding(horizontal = horizontalPadding, vertical = SpacingTokens.s2),
         color = textColor,
-        style = PickeTheme.typography.bodyXxsSemiBold
+        style = textStyle
     )
 }
 
@@ -46,6 +48,11 @@ private fun PickeBadgePreview() {
             PickeBadge(text = "종료", isMuted = true)
             PickeBadge(text = "운영자")
             PickeBadge(text = "나")
+            PickeBadge(
+                text = "변기는 변기다",
+                horizontalPadding = SpacingTokens.s4,
+                textStyle = PickeTheme.typography.bodyXxsMedium
+            )
         }
     }
 }

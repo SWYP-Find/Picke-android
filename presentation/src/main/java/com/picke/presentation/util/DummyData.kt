@@ -224,6 +224,45 @@ object DummyData {
         )
     )
 
+    val dummyBestBattles = listOf(
+        HomeContentUiModel(
+            contentId = "1",
+            type = ContentUiType.BATTLE,
+            title = "인간은 본래 선한가, 악한가?",
+            summary = "맹자와 순자가 말하는 인간의 본성",
+            thumbnailUrl = "",
+            viewCountText = "1340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "맹자",
+            rightProfileName = "순자"
+        ),
+        HomeContentUiModel(
+            contentId = "2",
+            type = ContentUiType.BATTLE,
+            title = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            summary = "선의의 거짓말과 알 권리 사이",
+            thumbnailUrl = "",
+            viewCountText = "1340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "칸트",
+            rightProfileName = "밀"
+        ),
+        HomeContentUiModel(
+            contentId = "3",
+            type = ContentUiType.BATTLE,
+            title = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            summary = "감정의 진정성은 상대가 사람이어야만 성립하는가",
+            thumbnailUrl = "",
+            viewCountText = "1340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "플라톤",
+            rightProfileName = "튜링"
+        )
+    )
+
     val dummyVotePick = TodayPickUiModel.VotePick(
         contentId = "vote_001",
         titlePrefix = "Q. ",

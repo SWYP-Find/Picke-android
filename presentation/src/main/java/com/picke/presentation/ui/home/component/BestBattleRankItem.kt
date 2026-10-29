@@ -4,30 +4,33 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private object BestBattleRankItemDimens {
+    val rankWidth = 16.dp
+}
 
 @Composable
 fun BestBattleRankItem(
@@ -36,6 +39,14 @@ fun BestBattleRankItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val versusText = stringResource(
+        R.string.home_best_battle_versus,
+        item.leftProfileName ?: stringResource(R.string.home_best_battle_left_default),
+        item.rightProfileName ?: stringResource(R.string.home_best_battle_right_default)
+    )
+
+    val rankColor = if (rank == 1) PickeTheme.colors.primary500 else PickeTheme.colors.gray100
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -44,99 +55,109 @@ fun BestBattleRankItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-            verticalAlignment = Alignment.Top
+                .padding(horizontal = SpacingTokens.s12, vertical = SpacingTokens.s16),
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s16),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            val rankColor =
-                if (rank == 1) PickeTheme.colors.primary500 else if (rank == 2) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeSelected
-
             Text(
                 text = rank.toString(),
-                style = PickeTheme.typography.displayMd,
+                modifier = Modifier.width(BestBattleRankItemDimens.rankWidth),
                 color = rankColor,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(24.dp)
-                    .align(Alignment.CenterVertically),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = PickeTheme.typography.headingXl
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Surface(color = PickeTheme.colors.borderBeigeDefault, shape = RoundedCornerShape(2.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
+                    PickeBadge(text = versusText)
                     Text(
-                        text = "${item.leftProfileName ?: "A"} VS ${item.rightProfileName ?: "B"}",
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        style = PickeTheme.typography.captionSmSemiBold,
-                        color = PickeTheme.colors.primary500
+                        text = item.title,
+                        color = PickeTheme.colors.cardBaseTextTitle,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = PickeTheme.typography.headingXs
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = item.title,
-                    style = PickeTheme.typography.bodySmSemiBold,
-                    color = PickeTheme.colors.textDefault,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = item.tags.joinToString(" ") { "#$it" },
-                        style = PickeTheme.typography.captionLgMedium,
-                        color = PickeTheme.colors.textMuted
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painterResource(R.drawable.ic_clock),
-                            null,
-                            Modifier.size(14.dp),
-                            tint = PickeTheme.colors.textMuted
-                        )
+                    Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
+                        item.tags.forEach { tag ->
+                            Text(
+                                text = stringResource(R.string.home_best_battle_tag, tag),
+                                color = PickeTheme.colors.cardBaseTextDecription,
+                                style = PickeTheme.typography.bodyXxsMedium
+                            )
+                        }
+                    }
 
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = item.timeInfoText,
-                            style = PickeTheme.typography.captionLgMedium,
-                            color = PickeTheme.colors.gray400
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_clock),
+                                contentDescription = null,
+                                modifier = Modifier.size(ComponentNumberTokens.iconSm),
+                                tint = PickeTheme.colors.cardBaseTextDecription
+                            )
+                            Text(
+                                text = item.timeInfoText,
+                                color = PickeTheme.colors.cardBaseTextDecription,
+                                style = PickeTheme.typography.bodyXxsMedium
+                            )
+                        }
 
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Icon(
-                            painterResource(R.drawable.ic_eye),
-                            null,
-                            Modifier.size(14.dp),
-                            tint = PickeTheme.colors.textMuted
-                        )
-
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = item.viewCountText,
-                            style = PickeTheme.typography.captionLgMedium,
-                            color = PickeTheme.colors.gray400
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_eye),
+                                contentDescription = null,
+                                modifier = Modifier.size(ComponentNumberTokens.iconSm),
+                                tint = PickeTheme.colors.cardBaseTextDecription
+                            )
+                            Text(
+                                text = item.viewCountText,
+                                color = PickeTheme.colors.cardBaseTextDecription,
+                                style = PickeTheme.typography.bodyXxsMedium
+                            )
+                        }
                     }
                 }
             }
         }
-        HorizontalDivider(color = PickeTheme.colors.surfaceBeigeStrong, thickness = 1.dp)
+
+        HorizontalDivider(
+            thickness = ComponentNumberTokens.borderWidthRegular,
+            color = PickeTheme.colors.cardBaseBorderDefault
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun BestBattleRankItemPreview() {
+private fun BestBattleRankItemPreview() {
     PickeTheme {
-        BestBattleRankItem(
-            item = DummyData.dummyHomeContentItems.first(),
-            rank = 2,
-            onClick = { }
-        )
+        Column {
+            DummyData.dummyBestBattles.forEachIndexed { index, item ->
+                BestBattleRankItem(
+                    item = item,
+                    rank = index + 1,
+                    onClick = { }
+                )
+            }
+        }
     }
 }

@@ -50,7 +50,7 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
 
-        val sentAccessToken = response.request.header("Authorization")?.removePrefix("Bearer ")
+        val sentAccessToken = response.request.header("Authorization")?.removePrefix("Bearer ") ?: return null
         val savedAccessToken = preferencesManager.getAccessToken()
         if (!savedAccessToken.isNullOrEmpty() && savedAccessToken != sentAccessToken) {
             return response.request.newBuilder()

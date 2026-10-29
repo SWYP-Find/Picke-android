@@ -9,17 +9,24 @@ data class ClassResultUiState(
     val tag: String = "",
     val battleTitle: String = "",
     val deadline: LocalDateTime? = null,
+    val hasSummaryTab: Boolean = false,
+    val hasReportTab: Boolean = false,
     val summary: ClassResultSummaryUiModel? = null,
+    val insight: ClassResultInsightUiModel? = null,
     val report: ClassResultReportUiModel? = null,
-    val selectedTab: ClassResultTab = ClassResultTab.SUMMARY
+    val selectedTab: ClassResultTab = ClassResultTab.SUMMARY,
+    val isRequesting: Boolean = false
 ) {
+    internal val isInsightRetryEnabled: Boolean
+        get() = insight?.isRetryVisible == true && !isRequesting
+
     internal val isTabVisible: Boolean
-        get() = summary != null && report != null
+        get() = hasSummaryTab && hasReportTab
 
     internal val visibleTab: ClassResultTab
         get() = when {
-            summary == null -> ClassResultTab.REPORT
-            report == null -> ClassResultTab.SUMMARY
+            !hasSummaryTab -> ClassResultTab.REPORT
+            !hasReportTab -> ClassResultTab.SUMMARY
             else -> selectedTab
         }
 }

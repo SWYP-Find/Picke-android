@@ -87,7 +87,7 @@ fun ClassResultMyVoteCard(
                 .padding(SpacingTokens.s16)
         ) {
             ClassResultStatColumn(
-                count = report.commentCount,
+                count = report.perspectiveCount,
                 label = stringResource(R.string.class_result_comment_count),
                 modifier = Modifier.weight(1f)
             )
@@ -96,19 +96,21 @@ fun ClassResultMyVoteCard(
                 color = PickeTheme.colors.cardBaseBorderDefault
             )
             ClassResultStatColumn(
-                count = report.replyCount,
+                count = report.commentCount,
                 label = stringResource(R.string.class_result_reply_count),
                 modifier = Modifier.weight(1f)
             )
-            VerticalDivider(
-                thickness = ComponentNumberTokens.borderWidthRegular,
-                color = PickeTheme.colors.cardBaseBorderDefault
-            )
-            ClassResultStatColumn(
-                count = report.receivedLikeCount,
-                label = stringResource(R.string.class_result_received_like_count),
-                modifier = Modifier.weight(1f)
-            )
+            if (report.receivedLikeCount != null) {
+                VerticalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+                ClassResultStatColumn(
+                    count = report.receivedLikeCount,
+                    label = stringResource(R.string.class_result_received_like_count),
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }

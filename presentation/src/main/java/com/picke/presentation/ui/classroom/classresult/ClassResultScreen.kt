@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classresult
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +28,7 @@ import com.picke.presentation.ui.classroom.classresult.component.ClassResultMyVo
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultOpinionCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultParticipationCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultStanceCard
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultSummaryUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultTab
@@ -53,12 +56,23 @@ fun ClassResultScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassResultUiEvent.NavigateBack -> onBackClick()
 
                 is ClassResultUiEvent.NavigateToMyOpinion -> onNavigateToMyOpinion(event.classId)
+
+                ClassResultUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ClassResultUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -78,6 +92,7 @@ private fun ClassResultContent(
     modifier: Modifier = Modifier
 ) {
     val tabLabels = ClassResultTab.entries.map { stringResource(it.labelRes) }
+
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.visibleTab) {
@@ -128,12 +143,19 @@ private fun ClassResultContent(
             item {
                 when (uiState.visibleTab) {
                     ClassResultTab.SUMMARY -> uiState.summary?.let { summary ->
-                        ClassResultSummarySection(summary = summary)
+                        ClassResultSummarySection(
+                            summary = summary,
+                            insight = uiState.insight,
+                            deadline = uiState.deadline,
+                            isInsightRetryVisible = uiState.isInsightRetryEnabled,
+                            onInsightRetryClick = { onAction(ClassResultUiAction.InsightRetryClick) }
+                        )
                     }
 
                     ClassResultTab.REPORT -> uiState.report?.let { report ->
                         ClassResultReportSection(
                             report = report,
+                            deadline = uiState.deadline,
                             onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
                         )
                     }
@@ -189,6 +211,10 @@ private fun ClassResultHeaderSection(
 @Composable
 private fun ClassResultSummarySection(
     summary: ClassResultSummaryUiModel,
+    insight: ClassResultInsightUiModel?,
+    deadline: LocalDateTime?,
+    isInsightRetryVisible: Boolean,
+    onInsightRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val titleStyle = PickeTheme.typography.bodySmSemiBold
@@ -204,7 +230,14 @@ private fun ClassResultSummarySection(
             ),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s24)
     ) {
-        ClassResultAiInsightCard(insight = summary.aiInsight)
+        if (insight != null) {
+            ClassResultAiInsightCard(
+                insight = insight,
+                deadline = deadline,
+                isRetryVisible = isInsightRetryVisible,
+                onRetryClick = onInsightRetryClick
+            )
+        }
 
         ClassTitledBlock(
             title = stringResource(R.string.class_result_participation),
@@ -224,14 +257,16 @@ private fun ClassResultSummarySection(
             ClassResultStanceCard(stances = summary.stances)
         }
 
-        ClassTitledBlock(
-            title = stringResource(R.string.class_result_opinions),
-            titleStyle = titleStyle
-        ) {
-            ClassResultOpinionCard(
-                bestComment = summary.bestComment,
-                mostDebatedComment = summary.mostDebatedComment
-            )
+        if (insight != null && insight.isOpinionVisible) {
+            ClassTitledBlock(
+                title = stringResource(R.string.class_result_opinions),
+                titleStyle = titleStyle
+            ) {
+                ClassResultOpinionCard(
+                    bestComment = insight.bestComment,
+                    mostDebatedComment = insight.mostDebatedComment
+                )
+            }
         }
     }
 }
@@ -239,6 +274,7 @@ private fun ClassResultSummarySection(
 @Composable
 private fun ClassResultReportSection(
     report: ClassResultReportUiModel,
+    deadline: LocalDateTime?,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -268,6 +304,7 @@ private fun ClassResultReportSection(
         ) {
             ClassResultFeedbackCard(
                 report = report,
+                deadline = deadline,
                 onMyOpinionClick = onMyOpinionClick
             )
         }
@@ -279,6 +316,7 @@ private fun ClassResultReportSection(
 private fun ClassResultOperatorParticipatedPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport
     )
 }
@@ -288,6 +326,7 @@ private fun ClassResultOperatorParticipatedPreview() {
 private fun ClassResultOperatorReportPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport,
         selectedTab = ClassResultTab.REPORT
     )
@@ -298,6 +337,7 @@ private fun ClassResultOperatorReportPreview() {
 private fun ClassResultOperatorNotParticipatedPreview() {
     ClassResultContentPreview(
         summary = DummyData.dummyClassResultSummary,
+        insight = DummyData.dummyClassResultInsight,
         report = null
     )
 }
@@ -307,6 +347,7 @@ private fun ClassResultOperatorNotParticipatedPreview() {
 private fun ClassResultMemberPreview() {
     ClassResultContentPreview(
         summary = null,
+        insight = null,
         report = DummyData.dummyClassResultReport
     )
 }
@@ -314,6 +355,7 @@ private fun ClassResultMemberPreview() {
 @Composable
 private fun ClassResultContentPreview(
     summary: ClassResultSummaryUiModel?,
+    insight: ClassResultInsightUiModel?,
     report: ClassResultReportUiModel?,
     selectedTab: ClassResultTab = ClassResultTab.SUMMARY
 ) {
@@ -329,7 +371,10 @@ private fun ClassResultContentPreview(
                 tag = battle.tag,
                 battleTitle = battle.title,
                 deadline = classItem.deadline,
+                hasSummaryTab = summary != null,
+                hasReportTab = report != null,
                 summary = summary,
+                insight = insight,
                 report = report,
                 selectedTab = selectedTab
             ),

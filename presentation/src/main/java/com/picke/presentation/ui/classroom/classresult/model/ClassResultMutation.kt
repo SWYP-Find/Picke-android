@@ -3,13 +3,25 @@ package com.picke.presentation.ui.classroom.classresult.model
 import java.time.LocalDateTime
 
 internal sealed interface ClassResultMutation {
+
+    sealed interface RequestFinished : ClassResultMutation
+
+    data object RequestFailed : RequestFinished
+
     data class ClassResultLoaded(
         val className: String,
         val isInProgress: Boolean,
         val tag: String,
         val battleTitle: String,
         val deadline: LocalDateTime?,
-        val summary: ClassResultSummaryUiModel?,
-        val report: ClassResultReportUiModel?
+        val hasSummaryTab: Boolean,
+        val hasReportTab: Boolean,
+        val summary: ClassResultSummaryUiModel
     ) : ClassResultMutation
+
+    data class InsightLoaded(val insight: ClassResultInsightUiModel) : ClassResultMutation
+
+    data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation
+
+    data class InsightRetried(val insight: ClassResultInsightUiModel) : RequestFinished
 }

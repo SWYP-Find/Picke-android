@@ -377,7 +377,7 @@
     <string name="class_debate_reply_too_short">%1$d자 이상 입력해주세요</string>
     <string name="class_debate_generating">생각을 정리하고 있어요</string>
     <string name="class_debate_failed">응답을 준비하지 못했어요. 다시 시도해 주세요</string>
-    <string name="class_debate_retry">다시 시도</string>
+    <string name="class_retry">다시 시도</string>
     <string name="class_debate_final_vote">최종투표하기</string>
     <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
     <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>
@@ -390,6 +390,9 @@
     <string name="class_result_summary_tab">클래스 요약</string>
     <string name="class_result_report_tab">내 리포트</string>
     <string name="class_result_ai_insight">AI 인사이트</string>
+    <string name="class_result_ai_before_close">%1$s 이후 AI 피드백이 제공돼요</string>
+    <string name="class_result_insight_limited">아직 요약할 의견이 충분하지 않아요</string>
+    <string name="class_result_insight_failed">AI 요약을 준비하지 못했어요</string>
     <string name="class_result_participation">클래스 참여 현황</string>
     <string name="class_result_battle_rate">배틀 참여율</string>
     <string name="class_result_battle_members">참여한 멤버</string>
@@ -413,10 +416,13 @@
     <string name="class_result_reply_count">대댓글</string>
     <string name="class_result_received_like_count">받은 추천</string>
     <string name="class_result_ai_feedback">AI 피드백</string>
+    <string name="class_result_report_not_eligible">참여를 완료하면 AI 피드백을 받을 수 있어요</string>
+    <string name="class_result_report_limited">판단의 이유를 살펴볼 글이 아직 충분하지 않아요</string>
+    <string name="class_result_report_partial">이번 피드백은 일부 발언을 기준으로 작성했어요</string>
     <string name="class_result_judgment_basis">내 판단의 기준</string>
     <string name="class_result_strength">이번에 잘한 점</string>
-    <string name="class_result_improvement">한 가지 더 살펴볼 점</string>
-    <string name="class_result_next_thought">다음 생각 한 걸음</string>
+    <string name="class_result_next_focus">한 가지 더 살펴볼 점</string>
+    <string name="class_result_next_question">다음 생각 한 걸음</string>
     <string name="class_result_my_opinion_link">내가 남긴 의견 %1$d개 보기</string>
 
     <!-- 클래스 - 내가 남긴 의견 -->

@@ -46,6 +46,9 @@ import com.picke.domain.feature.classroom.usecase.GetClassBattleUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultInsightUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultMyReportUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassesUseCase
 import com.picke.domain.feature.classroom.usecase.JoinClassUseCase
@@ -55,6 +58,7 @@ import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
 import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
 import com.picke.domain.feature.classroom.usecase.RetryClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassResultInsightUseCase
 import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
 import com.picke.domain.feature.classroom.usecase.StartClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.SubmitClassDebateReplyUseCase
@@ -217,7 +221,11 @@ object UseCaseModule {
             getClassDebateUseCase = GetClassDebateUseCase(classroomRepository),
             startClassDebateUseCase = StartClassDebateUseCase(classroomRepository),
             submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository),
-            retryClassDebateUseCase = RetryClassDebateUseCase(classroomRepository)
+            retryClassDebateUseCase = RetryClassDebateUseCase(classroomRepository),
+            getClassResultUseCase = GetClassResultUseCase(classroomRepository),
+            getClassResultMyReportUseCase = GetClassResultMyReportUseCase(classroomRepository),
+            getClassResultInsightUseCase = GetClassResultInsightUseCase(classroomRepository),
+            retryClassResultInsightUseCase = RetryClassResultInsightUseCase(classroomRepository)
         )
     }
 

@@ -11,6 +11,9 @@ import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
+import com.picke.data.feature.classroom.model.ClassResultInsightResponseDto
+import com.picke.data.feature.classroom.model.ClassResultMyReportResponseDto
+import com.picke.data.feature.classroom.model.ClassResultResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketResponseDto
@@ -166,4 +169,24 @@ interface ClassroomApi {
     suspend fun retryClassDebate(
         @Path("classId") classId: Long
     ): BaseResponse<ClassDebateResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result")
+    suspend fun getClassResult(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/my-report")
+    suspend fun getClassResultMyReport(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultMyReportResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/insight")
+    suspend fun getClassResultInsight(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultInsightResponseDto>
+
+    @POST("/api/v1/classes/{classId}/result/insight/retry")
+    suspend fun retryClassResultInsight(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultInsightResponseDto>
 }

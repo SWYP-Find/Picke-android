@@ -13,17 +13,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
+import com.picke.presentation.ui.classroom.component.ClassRetryChip
+import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+import java.time.LocalDateTime
 
 @Composable
 fun ClassResultAiInsightCard(
-    insight: String,
+    insight: ClassResultInsightUiModel,
+    deadline: LocalDateTime?,
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val deadlineText = rememberClassDeadlineText(deadline, R.string.class_deadline_full_format)
+
     val shape = RoundedCornerShape(RadiusTokens.default)
 
     Column(
@@ -39,17 +49,77 @@ fun ClassResultAiInsightCard(
             style = PickeTheme.typography.captionMdBold
         )
         Text(
-            text = insight,
+            text = insight.insightText(deadlineText),
             color = PickeTheme.colors.textPrimary,
             style = PickeTheme.typography.captionLgRegular
         )
+        if (isRetryVisible) {
+            ClassRetryChip(onClick = onRetryClick)
+        }
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+private fun ClassResultInsightUiModel.insightText(deadlineText: String): String = when (state) {
+    ClassReportState.BEFORE_CLOSE -> stringResource(
+        R.string.class_result_ai_before_close,
+        deadlineText
+    )
+
+    ClassReportState.PENDING, ClassReportState.GENERATING -> stringResource(R.string.class_debate_generating)
+
+    ClassReportState.SUCCEEDED -> insightText
+
+    ClassReportState.LIMITED -> stringResource(R.string.class_result_insight_limited)
+
+    ClassReportState.NOT_ELIGIBLE, ClassReportState.FAILED ->
+        stringResource(R.string.class_result_insight_failed)
+}
+
+@Preview(name = "생성 완료", showBackground = true)
 @Composable
 private fun ClassResultAiInsightCardPreview() {
+    ClassResultAiInsightCardStatePreview(state = ClassReportState.SUCCEEDED)
+}
+
+@Preview(name = "마감 전", showBackground = true)
+@Composable
+private fun ClassResultAiInsightCardBeforeClosePreview() {
+    ClassResultAiInsightCardStatePreview(state = ClassReportState.BEFORE_CLOSE)
+}
+
+@Preview(name = "생성 중", showBackground = true)
+@Composable
+private fun ClassResultAiInsightCardGeneratingPreview() {
+    ClassResultAiInsightCardStatePreview(state = ClassReportState.GENERATING)
+}
+
+@Preview(name = "자료 부족", showBackground = true)
+@Composable
+private fun ClassResultAiInsightCardLimitedPreview() {
+    ClassResultAiInsightCardStatePreview(state = ClassReportState.LIMITED)
+}
+
+@Preview(name = "실패", showBackground = true)
+@Composable
+private fun ClassResultAiInsightCardFailedPreview() {
+    ClassResultAiInsightCardStatePreview(state = ClassReportState.FAILED)
+}
+
+@Composable
+private fun ClassResultAiInsightCardStatePreview(state: ClassReportState) {
+    val classItem = DummyData.dummyMyClasses.first()
+    val insight = DummyData.dummyClassResultInsight.copy(
+        state = state,
+        isRetryable = state == ClassReportState.FAILED
+    )
+
     PickeTheme {
-        ClassResultAiInsightCard(insight = DummyData.dummyClassResultSummary.aiInsight)
+        ClassResultAiInsightCard(
+            insight = insight,
+            deadline = classItem.deadline,
+            isRetryVisible = insight.isRetryVisible,
+            onRetryClick = {}
+        )
     }
 }

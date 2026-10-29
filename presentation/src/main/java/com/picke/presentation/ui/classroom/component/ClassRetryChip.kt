@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.classroom.classdebate.component
+package com.picke.presentation.ui.classroom.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,17 +18,21 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-fun ClassDebateRetryChip(
+fun ClassRetryChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.max)
 
     Text(
-        text = stringResource(R.string.class_debate_retry),
+        text = stringResource(R.string.class_retry),
         modifier = modifier
             .background(PickeTheme.colors.cardBaseBackgroundDefault, shape)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.borderBeigeDefault, shape)
+            .border(
+                ComponentNumberTokens.borderWidthRegular,
+                PickeTheme.colors.borderBeigeDefault,
+                shape
+            )
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = SpacingTokens.s12, vertical = SpacingTokens.s6),
         color = PickeTheme.colors.textBody,
@@ -38,8 +42,8 @@ fun ClassDebateRetryChip(
 
 @Preview(showBackground = true)
 @Composable
-private fun ClassDebateRetryChipPreview() {
+private fun ClassRetryChipPreview() {
     PickeTheme {
-        ClassDebateRetryChip(onClick = {})
+        ClassRetryChip(onClick = {})
     }
 }

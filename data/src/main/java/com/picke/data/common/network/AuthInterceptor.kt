@@ -5,6 +5,11 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
+internal object AuthHeader {
+    const val AUTHORIZATION = "Authorization"
+    const val BEARER_PREFIX = "Bearer "
+}
+
 class AuthInterceptor @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : Interceptor {
@@ -21,7 +26,7 @@ class AuthInterceptor @Inject constructor(
         }
 
         val authorizedRequest = originalRequest.newBuilder()
-            .header("Authorization", "Bearer $accessToken")
+            .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}$accessToken")
             .build()
 
         return chain.proceed(authorizedRequest)

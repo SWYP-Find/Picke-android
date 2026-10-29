@@ -3,6 +3,7 @@ package com.picke.data.di
 import android.util.Log
 import com.google.gson.Gson
 import com.picke.data.BuildConfig
+import com.picke.data.common.network.AuthHeader
 import com.picke.data.common.network.AuthInterceptor
 import com.picke.data.common.network.TokenAuthenticator
 import dagger.Module
@@ -32,7 +33,7 @@ object NetworkModule {
         return HttpLoggingInterceptor(logger).apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
             else HttpLoggingInterceptor.Level.NONE
-            redactHeader("Authorization")
+            redactHeader(AuthHeader.AUTHORIZATION)
             redactHeader("X-Refresh-Token")
         }
     }

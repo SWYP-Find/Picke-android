@@ -51,11 +51,13 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
 
-        val sentAccessToken = response.request.header("Authorization")?.removePrefix("Bearer ") ?: return null
+        val sentAccessToken = response.request.header(AuthHeader.AUTHORIZATION)
+            ?.removePrefix(AuthHeader.BEARER_PREFIX)
+            ?: return null
         val savedAccessToken = preferencesManager.getAccessToken()
         if (!savedAccessToken.isNullOrEmpty() && savedAccessToken != sentAccessToken) {
             return response.request.newBuilder()
-                .header("Authorization", "Bearer $savedAccessToken")
+                .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}$savedAccessToken")
                 .build()
         }
 
@@ -70,14 +72,13 @@ class TokenAuthenticator @Inject constructor(
         }
 
         return try {
-            val client = refreshClient
             val refreshRequest = Request.Builder()
                 .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
                 .post(ByteArray(0).toRequestBody(null))
                 .header("X-Refresh-Token", refreshToken)
                 .build()
 
-            client.newCall(refreshRequest).execute().use { refreshResponse ->
+            refreshClient.newCall(refreshRequest).execute().use { refreshResponse ->
                 val body = refreshResponse.body?.string()
 
                 if (refreshResponse.isSuccessful && body != null) {
@@ -99,7 +100,7 @@ class TokenAuthenticator @Inject constructor(
                         }
 
                         response.request.newBuilder()
-                            .header("Authorization", "Bearer ${data.accessToken}")
+                            .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}${data.accessToken}")
                             .build()
                     } else {
                         Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")

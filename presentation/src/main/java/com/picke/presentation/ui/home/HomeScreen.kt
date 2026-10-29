@@ -675,7 +675,7 @@ fun EditorPickSection(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 2200)
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(

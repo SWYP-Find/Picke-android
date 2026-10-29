@@ -11,6 +11,5 @@ data class HomeUiState(
     val bestBattles: List<HomeContentUiModel> = emptyList(),
     val bestComments: List<HomeBestCommentUiModel> = emptyList(),
     val newBattles: List<HomeContentUiModel> = emptyList(),
-    val todayPicks: List<TodayPickUiModel> = emptyList(),
     val attendanceCheckUiState: AttendanceCheckUiState? = null
 )

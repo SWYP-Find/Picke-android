@@ -90,12 +90,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
     scrollToTopTrigger: Int = 0,
-    isNotificationSheetPending: Boolean = false,
+    isNotificationSheetPending: Boolean = false
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -121,10 +117,6 @@ fun HomeScreen(
         onNavigateToAlarm = onNavigateToAlarm,
         onNavigateToVote = onNavigateToVote,
         onTrackBattleTap = viewModel::trackBattleTap,
-        onNavigateToTrendingBattle = onNavigateToTrendingBattle,
-        onNavigateToBestBattle = onNavigateToBestBattle,
-        onNavigateToTodayPicke = onNavigateToTodayPicke,
-        onNavigateToNewBattle = onNavigateToNewBattle,
         onFetchHomeData = { viewModel.fetchHomeData() },
         onDismissAttendanceCheckSheet = { viewModel.dismissAttendanceCheckSheet() },
         scrollToTopTrigger = scrollToTopTrigger
@@ -137,13 +129,9 @@ fun HomeScreen(
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
     onTrackBattleTap: (action: String, contentId: String, section: String?) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
     onFetchHomeData: () -> Unit,
     onDismissAttendanceCheckSheet: () -> Unit,
-    scrollToTopTrigger: Int,
+    scrollToTopTrigger: Int
 ) {
     val scrollState = rememberScrollState()
 
@@ -254,8 +242,7 @@ fun HomeScreen(
                     Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_trending),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToTrendingBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
                     }
                     if (uiState.trendingBattles.isNotEmpty()) {
@@ -299,8 +286,7 @@ fun HomeScreen(
                     ) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_best),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToBestBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
 
                         uiState.bestBattles.take(3).forEachIndexed { index, item ->
@@ -336,35 +322,6 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(SpacingTokens.s32))
                 }
 
-                // 4. 오늘의 Pické (투표/퀴즈)
-                //  - 홈에서 오늘의 Pické 섹션을 노출하지 않기로 하여 전체 주석 처리.
-                //  - 백엔드에서 데이터를 내려주더라도 홈에서는 그리지 않는다. 필요 시 아래 블록을 복원하면 된다.
-                /*
-                if (uiState.todayPicks.isNotEmpty()) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_today_picke),
-                            highlightText = stringResource(R.string.home_highlight_picke),
-                            onMoreClick = onNavigateToTodayPicke
-                        )
-                        uiState.todayPicks.forEach { item ->
-                            TodayPickeCard(
-                                item = item,
-                                onVoteClick = { optionId ->
-                                    viewModel.submitTodayPickVote(
-                                        battleId = item.contentId,
-                                        optionId = optionId,
-                                        type = item.type
-                                    )
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
-                */
-
                 if (uiState.newBattles.isNotEmpty()) {
                     Column(
                         modifier = Modifier
@@ -373,8 +330,7 @@ fun HomeScreen(
                     ) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_new),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToNewBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
                         uiState.newBattles.forEach { item ->
                             NewBattleCard(
@@ -416,8 +372,7 @@ private fun HomeBestCommentSection(
         Box(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
             HomeSectionHeader(
                 title = stringResource(R.string.home_section_best_comment),
-                highlightText = stringResource(R.string.home_highlight_comment),
-                onMoreClick = {}
+                highlightText = stringResource(R.string.home_highlight_comment)
             )
         }
 
@@ -440,8 +395,7 @@ private fun HomeBestCommentSection(
 @Composable
 fun HomeSectionHeader(
     title: String,
-    highlightText: String? = null,
-    onMoreClick: () -> Unit,
+    highlightText: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -471,12 +425,6 @@ fun HomeSectionHeader(
             style = PickeTheme.typography.headingMd,
             color = PickeTheme.colors.textDefault
         )
-        /*Text(
-            text = stringResource(R.string.more),
-            style = PickeTheme.typography.bodyXsMedium,
-            color = PickeTheme.colors.textSubtler,
-            modifier = Modifier.clickable { onMoreClick() }
-        )*/
     }
 }
 
@@ -684,16 +632,11 @@ fun HomeScreenPreview() {
             trendingBattles = DummyData.dummyHomeContentItems,
             bestBattles = DummyData.dummyHomeContentItems,
             bestComments = DummyData.dummyBestComments,
-            newBattles = DummyData.dummyHomeContentItems,
-            todayPicks = listOf(DummyData.dummyVotePick, DummyData.dummyQuizPick)
+            newBattles = DummyData.dummyHomeContentItems
         ),
         onNavigateToAlarm = {},
         onNavigateToVote = {},
         onTrackBattleTap = { _, _, _ -> },
-        onNavigateToTrendingBattle = {},
-        onNavigateToBestBattle = {},
-        onNavigateToTodayPicke = {},
-        onNavigateToNewBattle = {},
         onFetchHomeData = {},
         onDismissAttendanceCheckSheet = {},
         scrollToTopTrigger = 0

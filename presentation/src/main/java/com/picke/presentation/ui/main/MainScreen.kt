@@ -110,10 +110,6 @@ fun MainScreen(
                     onNavigateToVote = { contentId ->
                         rootNavController.navigate(AppRoute.BattleRouting.createRoute(contentId))
                     },
-                    onNavigateToTrendingBattle = { },
-                    onNavigateToBestBattle = { },
-                    onNavigateToTodayPicke = { },
-                    onNavigateToNewBattle = { },
                     scrollToTopTrigger = homeScrollTrigger,
                     isNotificationSheetPending = isNotificationSheetPending
                 )

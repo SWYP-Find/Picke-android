@@ -26,8 +26,6 @@ import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.home.model.ContentUiType
 import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
-import com.picke.presentation.ui.home.model.PollQuizOptionStatUiModel
-import com.picke.presentation.ui.home.model.TodayPickUiModel
 import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
@@ -282,70 +280,6 @@ object DummyData {
             battleTitle = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
             optionTitle = "진짜 사랑이다",
             content = "상대가 무엇이든 내가 느끼는 감정은 진짜잖아요. 사랑을 상대의 조건으로만 판단하는 건 좁은 기준 같아요."
-        )
-    )
-
-    val dummyVotePick = TodayPickUiModel.VotePick(
-        contentId = "vote_001",
-        titlePrefix = "Q. ",
-        title = "평생 한 가지 음식만 먹어야 한다면?",
-        titleSuffix = "",
-        summary = "짜장면 vs 짬뽕, 당신의 영혼의 단짝은?",
-        participantsCount = 1542,
-        selectedOptionId = null,
-        type = "VOTE",
-        options = listOf(
-            PollQuizOptionStatUiModel(
-                optionId = 1L,
-                title = "윤기 좔좔 짜장면",
-                isCorrect = false,
-                stance = "짜장면",
-                voteCount = 848,
-                ratio = 55.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 2L,
-                title = "얼큰한 국물 짬뽕",
-                isCorrect = false,
-                stance = "짬뽕",
-                voteCount = 694,
-                ratio = 45.0f
-            )
-        )
-    )
-
-    val dummyQuizPick = TodayPickUiModel.QuizPick(
-        contentId = "quiz_001",
-        title = "다음 중 안드로이드의 공식 마스코트 이름은?",
-        summary = "알쏭달쏭 IT 상식 퀴즈",
-        participantsCount = 820,
-        selectedOptionId = 1L,
-        type = "QUIZ",
-        options = listOf(
-            PollQuizOptionStatUiModel(
-                optionId = 1L,
-                title = "버그드로이드 (Bugdroid)",
-                isCorrect = true,
-                stance = "NONE",
-                voteCount = 697,
-                ratio = 85.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 2L,
-                title = "안디 (Andy)",
-                isCorrect = false,
-                stance = "NONE",
-                voteCount = 82,
-                ratio = 10.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 3L,
-                title = "로보 (Robo)",
-                isCorrect = false,
-                stance = "NONE",
-                voteCount = 41,
-                ratio = 5.0f
-            )
         )
     )
 

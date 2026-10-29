@@ -46,7 +46,7 @@ class TokenAuthenticator @Inject constructor(
 
     @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) >= 2) {
+        if (unauthorizedCount(response) >= 2) {
             Log.e(TAG, "[AUTH] 토큰 갱신 후에도 401 지속. 인증 실패 처리.")
             return null
         }
@@ -124,13 +124,6 @@ class TokenAuthenticator @Inject constructor(
         }
     }
 
-    private fun responseCount(response: Response): Int {
-        var count = 1
-        var prior = response.priorResponse
-        while (prior != null) {
-            count++
-            prior = prior.priorResponse
-        }
-        return count
-    }
+    private fun unauthorizedCount(response: Response): Int =
+        generateSequence(response) { it.priorResponse }.count { it.code == 401 }
 }

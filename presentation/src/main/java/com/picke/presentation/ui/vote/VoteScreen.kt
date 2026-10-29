@@ -161,6 +161,11 @@ fun VoteScreen(
     val style = voteScreenStyle(voteType = voteType, classInfo = classInfo)
     val battleInfo = battleDetail.battleInfo
 
+    val imageLoadFailedMessage = stringResource(R.string.share_image_load_failed)
+    val shareFailedMessage = stringResource(R.string.share_failed)
+    val captureFailedMessage = stringResource(R.string.share_capture_failed)
+    val linkCopiedMessage = stringResource(R.string.share_link_copied)
+
     val backgroundColor = if (selectedOptionId != null && !isRequesting) {
         PickeTheme.colors.primary500
     } else {
@@ -184,11 +189,11 @@ fun VoteScreen(
             },
             onBitmapMissing = {
                 isSharing = false
-                Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, imageLoadFailedMessage, Toast.LENGTH_SHORT).show()
             },
             onError = {
                 isSharing = false
-                Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, shareFailedMessage, Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -216,7 +221,7 @@ fun VoteScreen(
             },
             onError = {
                 isSharing = false
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -451,7 +456,7 @@ fun VoteScreen(
                         { url ->
                             coroutineScope.launch {
                                 clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
-                                Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT).show()
                                 onTrackShare(ShareChannel.LINK)
                             }
                         },
@@ -478,9 +483,9 @@ fun VoteScreen(
 
         if (uiState.isInsufficientPoints) {
             CustomSingleActionDialog(
-                message = "컨텐츠를 시청하기 위한\n포인트가 부족해요!",
-                subMessage = "매일 출석체크만 해도 5P를 받을 수 있어요!",
-                buttonText = "배틀 주제 구경하러 가기",
+                message = stringResource(R.string.vote_point_shortage_message),
+                subMessage = stringResource(R.string.vote_point_shortage_sub_message),
+                buttonText = stringResource(R.string.vote_point_shortage_button),
                 onDismiss = { onDismissPointDialog() },
                 onConfirm = {
                     onDismissPointDialog()

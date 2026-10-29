@@ -4,7 +4,9 @@ import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 
 internal sealed interface TicketRegisterMutation {
 
-    data class CodeVerified(val ticket: TicketUiModel) : TicketRegisterMutation
+    sealed interface RequestFinished : TicketRegisterMutation
 
-    data class RequestFailed(val dialog: TicketRegisterDialog) : TicketRegisterMutation
+    data class RequestFailed(val dialog: TicketRegisterDialog) : RequestFinished
+
+    data class CodeVerified(val ticket: TicketUiModel) : RequestFinished
 }

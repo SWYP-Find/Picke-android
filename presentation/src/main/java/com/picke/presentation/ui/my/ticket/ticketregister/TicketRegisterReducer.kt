@@ -35,19 +35,18 @@ internal fun reduce(
 internal fun reduce(
     state: TicketRegisterUiState,
     mutation: TicketRegisterMutation
-): TicketRegisterUiState =
-    when (mutation) {
+): TicketRegisterUiState {
+    val reduced = when (mutation) {
+        is TicketRegisterMutation.RequestFailed -> state.copy(dialog = mutation.dialog)
+
         is TicketRegisterMutation.CodeVerified -> state.copy(
             step = TicketRegisterStep.CONFIRM,
-            ticket = mutation.ticket,
-            isRequesting = false
-        )
-
-        is TicketRegisterMutation.RequestFailed -> state.copy(
-            dialog = mutation.dialog,
-            isRequesting = false
+            ticket = mutation.ticket
         )
     }
+
+    return if (mutation is TicketRegisterMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}
 
 private fun String.toTicketCode(): String =
     uppercase().filter { it in 'A'..'Z' || it in '0'..'9' || it == '-' }

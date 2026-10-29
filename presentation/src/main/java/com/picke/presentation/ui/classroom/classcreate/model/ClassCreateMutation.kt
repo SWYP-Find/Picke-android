@@ -6,14 +6,18 @@ import java.time.LocalDateTime
 
 internal sealed interface ClassCreateMutation {
 
+    sealed interface RequestFinished : ClassCreateMutation
+
+    data class RequestFailed(val errorDialog: ClassCreateErrorDialog) : RequestFinished
+
     data class TicketEndDateLoaded(val ticketEndDate: LocalDate?) : ClassCreateMutation
 
-    data class BattlesLoaded(val battles: List<ClassBattleUiModel>) : ClassCreateMutation
+    data class BattlesLoaded(val battles: List<ClassBattleUiModel>) : RequestFinished
 
     data class SettingInvalid(
         val isClassNameInvalid: Boolean,
         val isDeadlineOutOfRange: Boolean
-    ) : ClassCreateMutation
+    ) : RequestFinished
 
     data class TopicDraftCreated(
         val draftId: Long,
@@ -24,16 +28,14 @@ internal sealed interface ClassCreateMutation {
         val batchNo: Int,
         val remainingSuggestions: Int,
         val battles: List<ClassBattleUiModel>
-    ) : ClassCreateMutation
+    ) : RequestFinished
 
     data class TopicClarificationNeeded(
         val remainingSuggestions: Int,
         val message: String?
-    ) : ClassCreateMutation
+    ) : RequestFinished
 
-    data object TopicSuggestLimitReached : ClassCreateMutation
+    data object TopicSuggestLimitReached : RequestFinished
 
     data class DeadlineReset(val deadline: LocalDateTime) : ClassCreateMutation
-
-    data class RequestFailed(val errorDialog: ClassCreateErrorDialog) : ClassCreateMutation
 }

@@ -32,8 +32,10 @@ internal fun reduce(state: ClassMemberUiState, action: ClassMemberUiAction): Cla
         ClassMemberUiAction.RemoveDialogDismiss -> state.copy(removingMember = null)
     }
 
-internal fun reduce(state: ClassMemberUiState, mutation: ClassMemberMutation): ClassMemberUiState =
-    when (mutation) {
+internal fun reduce(state: ClassMemberUiState, mutation: ClassMemberMutation): ClassMemberUiState {
+    val reduced = when (mutation) {
+        ClassMemberMutation.RequestFailed -> state
+
         is ClassMemberMutation.MembersLoaded -> state.copy(
             isOperatorViewer = mutation.isOperatorViewer,
             members = mutation.members
@@ -41,15 +43,14 @@ internal fun reduce(state: ClassMemberUiState, mutation: ClassMemberMutation): C
 
         is ClassMemberMutation.MyNameUpdated -> state.copy(
             members = state.members.map { if (it.isMe) it.copy(name = mutation.name) else it },
-            isNameSheetVisible = false,
-            isRequesting = false
+            isNameSheetVisible = false
         )
 
         is ClassMemberMutation.MemberRemoved -> state.copy(
             members = state.members.filterNot { it.memberId == mutation.memberId },
-            isRequesting = false,
             isMembersChanged = true
         )
-
-        ClassMemberMutation.RequestFailed -> state.copy(isRequesting = false)
     }
+
+    return if (mutation is ClassMemberMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}

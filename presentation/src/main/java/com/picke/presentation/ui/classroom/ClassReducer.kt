@@ -17,8 +17,10 @@ internal fun reduce(state: ClassUiState, action: ClassUiAction): ClassUiState =
         ClassUiAction.TicketDialogDismiss -> state.copy(ticketDialog = null)
     }
 
-internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState =
-    when (mutation) {
+internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState {
+    val reduced = when (mutation) {
+        ClassMutation.RequestFailed -> state
+
         is ClassMutation.TicketStatusLoaded -> state.copy(
             ticketStatus = mutation.ticketStatus,
             ticketDialog = when (mutation.ticketStatus) {
@@ -26,9 +28,9 @@ internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState 
                 ClassTicketStatus.UNREGISTERED -> ClassTicketDialog.UNREGISTERED
                 ClassTicketStatus.EXPIRED -> ClassTicketDialog.EXPIRED
                 ClassTicketStatus.ACTIVE -> null
-            },
-            isRequesting = false
+            }
         )
-
-        ClassMutation.RequestFailed -> state.copy(isRequesting = false)
     }
+
+    return if (mutation is ClassMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}

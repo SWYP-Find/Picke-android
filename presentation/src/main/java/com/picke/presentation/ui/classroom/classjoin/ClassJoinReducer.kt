@@ -27,26 +27,22 @@ internal fun reduce(state: ClassJoinUiState, action: ClassJoinUiAction): ClassJo
         ClassJoinUiAction.DialogDismiss -> state.copy(dialog = null)
     }
 
-internal fun reduce(state: ClassJoinUiState, mutation: ClassJoinMutation): ClassJoinUiState =
-    when (mutation) {
-        ClassJoinMutation.CodeVerified -> state.copy(
-            step = ClassJoinStep.NAME,
-            isRequesting = false
-        )
+internal fun reduce(state: ClassJoinUiState, mutation: ClassJoinMutation): ClassJoinUiState {
+    val reduced = when (mutation) {
+        ClassJoinMutation.RequestFailed -> state
+
+        ClassJoinMutation.CodeVerified -> state.copy(step = ClassJoinStep.NAME)
 
         is ClassJoinMutation.JoinFailed -> state.copy(
             isCodeInvalid = mutation.dialog == ClassJoinDialog.INVALID_CODE,
-            dialog = mutation.dialog,
-            isRequesting = false
+            dialog = mutation.dialog
         )
 
-        ClassJoinMutation.NameDuplicated -> state.copy(
-            isNameDuplicated = true,
-            isRequesting = false
-        )
-
-        ClassJoinMutation.RequestFailed -> state.copy(isRequesting = false)
+        ClassJoinMutation.NameDuplicated -> state.copy(isNameDuplicated = true)
     }
+
+    return if (mutation is ClassJoinMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}
 
 private fun String.toClassCode(): String =
     uppercase()

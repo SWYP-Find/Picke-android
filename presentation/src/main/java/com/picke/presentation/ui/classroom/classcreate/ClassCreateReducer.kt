@@ -105,21 +105,24 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         )
     }
 
-internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState =
-    when (mutation) {
+internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState {
+    val reduced = when (mutation) {
+        is ClassCreateMutation.RequestFailed -> state.copy(
+            step = if (state.isSelectionEmpty) ClassCreateStep.CONDITION else state.step,
+            errorDialog = mutation.errorDialog
+        )
+
         is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
 
         is ClassCreateMutation.BattlesLoaded -> state.copy(
             battles = mutation.battles,
             isRecommendationEmpty = mutation.battles.isEmpty(),
-            selectedBattleId = null,
-            isRequesting = false
+            selectedBattleId = null
         )
 
         is ClassCreateMutation.SettingInvalid -> state.copy(
             isClassNameInvalid = mutation.isClassNameInvalid,
-            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange,
-            isRequesting = false
+            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange
         )
 
         is ClassCreateMutation.TopicDraftCreated -> state.copy(
@@ -133,35 +136,29 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
             isRecommendationEmpty = mutation.battles.isEmpty(),
             topicBatchNo = mutation.batchNo,
             remainingSuggestions = mutation.remainingSuggestions,
-            selectedCandidateId = null,
-            isRequesting = false
+            selectedCandidateId = null
         )
 
         is ClassCreateMutation.TopicClarificationNeeded -> state.copy(
             step = ClassCreateStep.CONDITION,
             remainingSuggestions = mutation.remainingSuggestions,
             errorDialog = ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED,
-            clarificationMessage = mutation.message?.ifBlank { null },
-            isRequesting = false
+            clarificationMessage = mutation.message?.ifBlank { null }
         )
 
         ClassCreateMutation.TopicSuggestLimitReached -> state.copy(
             remainingSuggestions = 0,
-            errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED,
-            isRequesting = false
+            errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
         )
 
         is ClassCreateMutation.DeadlineReset -> state.copy(
             deadline = mutation.deadline,
             isDeadlineOutOfRange = false
         )
-
-        is ClassCreateMutation.RequestFailed -> state.copy(
-            step = if (state.isSelectionEmpty) ClassCreateStep.CONDITION else state.step,
-            errorDialog = mutation.errorDialog,
-            isRequesting = false
-        )
     }
+
+    return if (mutation is ClassCreateMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}
 
 private fun List<ClassCategory>.toggle(category: ClassCategory): List<ClassCategory> =
     when {

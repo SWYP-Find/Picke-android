@@ -10,6 +10,7 @@ enum class ClassResultTab(@param:StringRes val labelRes: Int) {
 
 enum class ClassReportState {
     BEFORE_CLOSE,
+    NOT_ELIGIBLE,
     PENDING,
     GENERATING,
     SUCCEEDED,
@@ -18,5 +19,15 @@ enum class ClassReportState {
 
     companion object {
         fun from(value: String): ClassReportState = entries.find { it.name == value } ?: PENDING
+    }
+}
+
+enum class ClassFeedbackCoverage(val apiValue: String) {
+    FULL("full"),
+    PARTIAL("partial");
+
+    companion object {
+        fun from(value: String): ClassFeedbackCoverage =
+            entries.find { it.apiValue == value } ?: FULL
     }
 }

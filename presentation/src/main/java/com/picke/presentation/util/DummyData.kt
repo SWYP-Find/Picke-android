@@ -3,6 +3,7 @@ package com.picke.presentation.util
 import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
 import com.picke.domain.feature.scenario.model.SpeakerType
+import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateMessageUiModel
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
@@ -10,7 +11,9 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiModel
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyReplyUiModel
+import com.picke.presentation.ui.classroom.classresult.model.ClassFeedbackCoverage
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultFeedbackItemUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultStanceUiModel
@@ -813,15 +816,28 @@ object DummyData {
     )
 
     val dummyClassResultReport = ClassResultReportUiModel(
+        state = ClassReportState.SUCCEEDED,
         preVoteStance = "낮춰야 한다",
         postVoteStance = "교정이 우선이다",
         commentCount = 1,
         replyCount = 2,
         receivedLikeCount = 12,
         judgmentBasis = "마지막 의견에서는 재범을 줄이는 방법으로 교육과 보호를 중요하게 봤어요.",
-        strength = "“처벌만으로는 해결되지 않는다”는 반대 의견에 그치지 않고, 교육과 보호라는 대안을 제시했어요. 해결 방법까지 논의를 이어 간 점이 좋았어요.",
-        nextFocus = "교육과 보호가 어떤 상황에서 효과적일지는 아직 설명되지 않았어요. 대안을 제시한 만큼, 그 대안이 효과를 낼 조건을 덧붙이면 주장이 더 분명해져요.",
-        nextQuestion = "교육과 보호가 재범을 줄이려면, 어떤 조건이 가장 먼저 갖춰져야 할까요?"
+        feedbackItems = listOf(
+            ClassResultFeedbackItemUiModel(
+                titleRes = R.string.class_result_strength,
+                content = "“처벌만으로는 해결되지 않는다”는 반대 의견에 그치지 않고, 교육과 보호라는 대안을 제시했어요. 해결 방법까지 논의를 이어 간 점이 좋았어요."
+            ),
+            ClassResultFeedbackItemUiModel(
+                titleRes = R.string.class_result_next_focus,
+                content = "교육과 보호가 어떤 상황에서 효과적일지는 아직 설명되지 않았어요. 대안을 제시한 만큼, 그 대안이 효과를 낼 조건을 덧붙이면 주장이 더 분명해져요."
+            ),
+            ClassResultFeedbackItemUiModel(
+                titleRes = R.string.class_result_next_question,
+                content = "교육과 보호가 재범을 줄이려면, 어떤 조건이 가장 먼저 갖춰져야 할까요?"
+            )
+        ),
+        coverage = ClassFeedbackCoverage.FULL
     )
 
     val dummyClassMyComments = listOf(

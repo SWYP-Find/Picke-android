@@ -148,6 +148,7 @@ private fun ClassResultContent(
                     ClassResultTab.REPORT -> uiState.report?.let { report ->
                         ClassResultReportSection(
                             report = report,
+                            deadline = uiState.deadline,
                             onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
                         )
                     }
@@ -262,6 +263,7 @@ private fun ClassResultSummarySection(
 @Composable
 private fun ClassResultReportSection(
     report: ClassResultReportUiModel,
+    deadline: LocalDateTime?,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -291,6 +293,7 @@ private fun ClassResultReportSection(
         ) {
             ClassResultFeedbackCard(
                 report = report,
+                deadline = deadline,
                 onMyOpinionClick = onMyOpinionClick
             )
         }

@@ -12,6 +12,7 @@ import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassResultInsightResponseDto
+import com.picke.data.feature.classroom.model.ClassResultMyReportResponseDto
 import com.picke.data.feature.classroom.model.ClassResultResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
@@ -173,6 +174,11 @@ interface ClassroomApi {
     suspend fun getClassResult(
         @Path("classId") classId: Long
     ): BaseResponse<ClassResultResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/my-report")
+    suspend fun getClassResultMyReport(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultMyReportResponseDto>
 
     @GET("/api/v1/classes/{classId}/result/insight")
     suspend fun getClassResultInsight(

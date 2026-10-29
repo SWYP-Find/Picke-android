@@ -66,7 +66,8 @@ private fun ClassResultInsightUiModel.insightText(deadlineText: String): String 
 
     ClassReportState.LIMITED -> stringResource(R.string.class_result_insight_limited)
 
-    ClassReportState.FAILED -> stringResource(R.string.class_result_insight_failed)
+    ClassReportState.NOT_ELIGIBLE, ClassReportState.FAILED ->
+        stringResource(R.string.class_result_insight_failed)
 }
 
 @Preview(name = "생성 완료", showBackground = true)

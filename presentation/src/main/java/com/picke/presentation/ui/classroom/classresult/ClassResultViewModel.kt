@@ -12,7 +12,6 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiState
 import com.picke.presentation.ui.classroom.classresult.model.toUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.classroom.model.toUiModel
-import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -113,8 +112,15 @@ class ClassResultViewModel @Inject constructor(
     }
 
     private fun fetchMyReport() {
-        // TODO: API 연동 - 내 AI 피드백 조회로 교체
-        val mutation = ClassResultMutation.MyReportLoaded(DummyData.dummyClassResultReport)
-        _uiState.update { reduce(it, mutation) }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            classroomUseCases.getClassResultMyReportUseCase(classId)
+                .onSuccess { report ->
+                    _uiState.update {
+                        reduce(it, ClassResultMutation.MyReportLoaded(report.toUiModel()))
+                    }
+                }
+                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
+        }
     }
 }

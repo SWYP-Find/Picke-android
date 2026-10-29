@@ -11,7 +11,6 @@ import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
-import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
@@ -180,10 +179,15 @@ class PerspectiveViewModel @Inject constructor(
 
     fun moveToNext() {
         val state = _uiState.value
-        val event = if (state.isCommentRequired && state.myPerspective == null) {
-            PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
-        } else {
-            PerspectiveUiEvent.NavigateNext(battleId)
+        val classSetting = state.classSetting
+        val event = when {
+            state.isClassBattle && classSetting == null ->
+                PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)
+
+            classSetting?.isCommentRequired == true && state.myPerspective == null ->
+                PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
+
+            else -> PerspectiveUiEvent.NavigateNext(battleId)
         }
         sendEvent(event)
     }
@@ -276,14 +280,9 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             classroomUseCases.getClassDetailUseCase(classTarget.classId)
                 .onSuccess { classDetail ->
-                    val battleType = ClassBattleType.from(classDetail.battleType)
-                    _uiState.update {
-                        it.copy(
-                            isAiBattle = battleType == ClassBattleType.CUSTOM,
-                            isCommentRequired = classDetail.commentRequired
-                        )
-                    }
+                    _uiState.update { it.copy(classSetting = classDetail.toUiModel()) }
                 }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)) }
         }
     }
 }

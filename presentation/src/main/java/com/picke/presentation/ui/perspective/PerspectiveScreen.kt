@@ -262,7 +262,7 @@ fun PerspectiveContent(
                 PerspectiveStatsSection(
                     voteOptions = uiState.voteOptions,
                     opinionChanged = uiState.opinionChanged,
-                    isOptionImageVisible = !uiState.isAiBattle
+                    isOptionImageVisible = uiState.classSetting?.isAiBattle != true
                 )
 
                 CustomTabBar(

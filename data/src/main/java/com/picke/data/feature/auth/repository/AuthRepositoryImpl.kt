@@ -4,6 +4,7 @@ import com.picke.data.common.local.PreferencesManager
 import com.picke.data.common.model.toResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.auth.datasource.AuthApi
+import com.picke.data.feature.auth.model.AuthResponseDto
 import com.picke.data.feature.auth.model.SocialLoginRequest
 import com.picke.data.feature.auth.model.WithdrawalRequest
 import com.picke.data.feature.auth.model.toDomain
@@ -26,10 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             authApi.refreshAccessToken(refreshToken)
                 .toResult("토큰을 갱신하지 못했습니다.")
-                .map { dto ->
-                    preferencesManager.saveAccessToken(dto.accessToken)
-                    preferencesManager.saveRefreshToken(dto.refreshToken)
-                }
+                .map { dto -> saveTokens(dto) }
         }
     }
 
@@ -45,8 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
         authApi.login(provider, request)
             .toResult("로그인하지 못했습니다.")
             .map { dto ->
-                preferencesManager.saveAccessToken(dto.accessToken)
-                preferencesManager.saveRefreshToken(dto.refreshToken)
+                saveTokens(dto)
                 dto.toDomain()
             }
     }
@@ -67,5 +64,13 @@ class AuthRepositoryImpl @Inject constructor(
                 if (!dto.withdrawn) throw ApiErrorException("회원 탈퇴를 하지 못했습니다.")
             }
             .onSuccess { preferencesManager.clearAll() }
+    }
+
+    private fun saveTokens(dto: AuthResponseDto) {
+        val accessToken = dto.accessToken
+        val refreshToken = dto.refreshToken
+        check(!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) { "인증 응답에 토큰이 없습니다." }
+        preferencesManager.saveAccessToken(accessToken)
+        preferencesManager.saveRefreshToken(refreshToken)
     }
 }

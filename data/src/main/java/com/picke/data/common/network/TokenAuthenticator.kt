@@ -84,11 +84,12 @@ class TokenAuthenticator @Inject constructor(
                 if (refreshResponse.isSuccessful && body != null) {
                     val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
                     val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
-                    val data = parsed.data
+                    val newAccessToken = parsed.data?.accessToken
+                    val newRefreshToken = parsed.data?.refreshToken
 
-                    if (parsed.statusCode == 200 && data != null) {
-                        preferencesManager.saveAccessToken(data.accessToken)
-                        preferencesManager.saveRefreshToken(data.refreshToken)
+                    if (parsed.statusCode == 200 && !newAccessToken.isNullOrEmpty() && !newRefreshToken.isNullOrEmpty()) {
+                        preferencesManager.saveAccessToken(newAccessToken)
+                        preferencesManager.saveRefreshToken(newRefreshToken)
                         if (BuildConfig.DEBUG) {
                             Handler(Looper.getMainLooper()).post {
                                 Toast.makeText(
@@ -100,7 +101,7 @@ class TokenAuthenticator @Inject constructor(
                         }
 
                         response.request.newBuilder()
-                            .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}${data.accessToken}")
+                            .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}$newAccessToken")
                             .build()
                     } else {
                         Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")

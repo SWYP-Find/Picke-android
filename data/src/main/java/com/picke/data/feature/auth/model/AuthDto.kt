@@ -11,15 +11,15 @@ import com.picke.domain.feature.auth.model.AuthBoard
  */
 data class AuthResponseDto(
     @SerializedName("access_token")
-    val accessToken: String,
+    val accessToken: String?,
     @SerializedName("refresh_token")
-    val refreshToken: String,
+    val refreshToken: String?,
     @SerializedName("user_tag")
-    val userTag: String,
+    val userTag: String?,
     @SerializedName("status")
-    val status: String,
+    val status: String?,
     @SerializedName("new_user")
-    val isNewUser: Boolean
+    val isNewUser: Boolean?
 )
 
 /**
@@ -63,10 +63,10 @@ data class WithdrawnResponseDto(
  */
 fun AuthResponseDto.toDomain(): AuthBoard {
     return AuthBoard(
-        accessToken = this.accessToken,
-        refreshToken = this.refreshToken,
-        userTag = this.userTag,
-        isNewUser = this.isNewUser,
-        status = this.status
+        accessToken = accessToken ?: "",
+        refreshToken = refreshToken ?: "",
+        userTag = userTag ?: "",
+        isNewUser = isNewUser ?: false,
+        status = status ?: ""
     )
 }

@@ -6,6 +6,10 @@ import java.time.LocalDateTime
 
 internal sealed interface ClassDetailMutation {
 
+    sealed interface RequestFinished : ClassDetailMutation
+
+    data object RequestFailed : RequestFinished
+
     data class ClassDetailLoaded(
         val isOperator: Boolean,
         val isInProgress: Boolean,
@@ -21,6 +25,4 @@ internal sealed interface ClassDetailMutation {
     ) : ClassDetailMutation
 
     data object ClassChanged : ClassDetailMutation
-
-    data object RequestFailed : ClassDetailMutation
 }

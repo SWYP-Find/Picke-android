@@ -41,8 +41,10 @@ internal fun reduce(state: ClassDetailUiState, action: ClassDetailUiAction): Cla
         ClassDetailUiAction.LeaveDialogDismiss -> state.copy(isLeaveDialogVisible = false)
     }
 
-internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): ClassDetailUiState =
-    when (mutation) {
+internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): ClassDetailUiState {
+    val reduced = when (mutation) {
+        ClassDetailMutation.RequestFailed -> state
+
         is ClassDetailMutation.ClassDetailLoaded -> state.copy(
             isOperator = mutation.isOperator,
             isInProgress = mutation.isInProgress,
@@ -58,6 +60,7 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
         )
 
         ClassDetailMutation.ClassChanged -> state.copy(isClassChanged = true)
-
-        ClassDetailMutation.RequestFailed -> state.copy(isRequesting = false)
     }
+
+    return if (mutation is ClassDetailMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}

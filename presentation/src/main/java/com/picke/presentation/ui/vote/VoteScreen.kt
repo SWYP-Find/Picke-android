@@ -140,7 +140,8 @@ fun VoteScreen(
     onTrackShare: (String) -> Unit,
     onGetShareLink: (Int, (String) -> Unit, (String) -> Unit) -> Unit,
     onDismissPointDialog: () -> Unit,
-    classInfo: VoteClassInfoUiModel? = null
+    classInfo: VoteClassInfoUiModel? = null,
+    isRequesting: Boolean = false
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -156,8 +157,11 @@ fun VoteScreen(
     val style = voteScreenStyle(voteType = voteType, classInfo = classInfo)
     val battleInfo = battleDetail.battleInfo
 
-    val backgroundColor =
-        if (selectedOptionId != null) PickeTheme.colors.primary500 else PickeTheme.colors.primary300
+    val backgroundColor = if (selectedOptionId != null && !isRequesting) {
+        PickeTheme.colors.primary500
+    } else {
+        PickeTheme.colors.primary300
+    }
 
     val onKakaoShareClick = {
         isSharing = true
@@ -269,7 +273,8 @@ fun VoteScreen(
                             }
                         },
                         backgroundColor = backgroundColor,
-                        textColor = PickeTheme.colors.surfaceBeigeDefault
+                        textColor = PickeTheme.colors.surfaceBeigeDefault,
+                        enabled = !isRequesting
                     )
                     if (style.deadlineText != null) {
                         VoteDeadlineRow(deadlineText = style.deadlineText)

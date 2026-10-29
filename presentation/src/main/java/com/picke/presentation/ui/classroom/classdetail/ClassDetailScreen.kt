@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.classroom.classdetail
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import java.time.LocalDateTime
 @Composable
 fun ClassDetailScreen(
     onBackClick: () -> Unit,
+    onClassChanged: () -> Unit,
     onMemberClick: (classId: Long) -> Unit,
     onNavigateToPreVote: (classId: Long) -> Unit,
     onNavigateToScenario: (classId: Long, battleId: Long) -> Unit,
@@ -68,22 +70,32 @@ fun ClassDetailScreen(
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
+    BackHandler { viewModel.onAction(ClassDetailUiAction.BackClick) }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassDetailUiEvent.NavigateBack -> onBackClick()
 
+                ClassDetailUiEvent.NavigateBackAfterClassChanged -> onClassChanged()
+
                 is ClassDetailUiEvent.NavigateToMember -> onMemberClick(event.classId)
 
                 is ClassDetailUiEvent.NavigateToPreVote -> onNavigateToPreVote(event.classId)
 
-                is ClassDetailUiEvent.NavigateToScenario -> onNavigateToScenario(event.classId, event.battleId)
+                is ClassDetailUiEvent.NavigateToScenario -> onNavigateToScenario(
+                    event.classId,
+                    event.battleId
+                )
 
                 is ClassDetailUiEvent.NavigateToDebate -> onNavigateToDebate(event.classId)
 
                 is ClassDetailUiEvent.NavigateToFinalVote -> onNavigateToFinalVote(event.classId)
 
-                is ClassDetailUiEvent.NavigateToPerspective -> onNavigateToPerspective(event.classId, event.battleId)
+                is ClassDetailUiEvent.NavigateToPerspective -> onNavigateToPerspective(
+                    event.classId,
+                    event.battleId
+                )
 
                 is ClassDetailUiEvent.NavigateToShare -> onShareCodeClick(event.classId)
 

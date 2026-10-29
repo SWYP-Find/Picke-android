@@ -17,5 +17,6 @@ data class ClassDetailUiState(
     val isManageSheetVisible: Boolean = false,
     val isDeleteDialogVisible: Boolean = false,
     val isLeaveDialogVisible: Boolean = false,
+    val isClassChanged: Boolean = false,
     val isRequesting: Boolean = false
 )

@@ -57,5 +57,7 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
             canParticipate = mutation.canParticipate
         )
 
+        ClassDetailMutation.ClassChanged -> state.copy(isClassChanged = true)
+
         ClassDetailMutation.RequestFailed -> state.copy(isRequesting = false)
     }

@@ -20,5 +20,7 @@ internal sealed interface ClassDetailMutation {
         val canParticipate: Boolean
     ) : ClassDetailMutation
 
+    data object ClassChanged : ClassDetailMutation
+
     data object RequestFailed : ClassDetailMutation
 }

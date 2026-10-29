@@ -48,6 +48,14 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
 
+        val sentAccessToken = response.request.header("Authorization")?.removePrefix("Bearer ")
+        val savedAccessToken = preferencesManager.getAccessToken()
+        if (!savedAccessToken.isNullOrEmpty() && savedAccessToken != sentAccessToken) {
+            return response.request.newBuilder()
+                .header("Authorization", "Bearer $savedAccessToken")
+                .build()
+        }
+
         val refreshToken = preferencesManager.getRefreshToken()
         if (refreshToken.isNullOrEmpty()) {
             Log.e(TAG, "[AUTH] 저장된 리프레시 토큰 없음. 재발급 불가.")

@@ -400,10 +400,10 @@
     <string name="class_result_comment_members">댓글을 남긴 멤버</string>
     <string name="class_result_rate">%1$s%%</string>
     <string name="class_result_member_ratio">%1$d / %2$d명</string>
+    <string name="class_result_no_participation">아직 참여 없음</string>
     <string name="class_result_stance">입장 분포</string>
     <string name="class_result_people_count">%1$d명</string>
     <string name="class_result_total_label">총 참여</string>
-    <string name="class_result_stance_percent">%1$d%%</string>
     <string name="class_result_opinions">주요 의견</string>
     <string name="class_result_best_comment">BEST 댓글</string>
     <string name="class_result_most_debated_comment">가장 논쟁이 활발했던 댓글</string>

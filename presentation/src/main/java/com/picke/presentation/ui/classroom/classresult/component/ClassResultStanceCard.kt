@@ -32,6 +32,7 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+import com.picke.presentation.util.formatRate
 import kotlin.math.roundToInt
 
 private object ClassResultStanceCardDimens {
@@ -42,6 +43,8 @@ private object ClassResultStanceCardDimens {
 
 private const val CHART_START_ANGLE = -90f
 private const val FULL_ANGLE = 360f
+private const val TOTAL_TENTHS = 1000
+private const val TENTHS_PER_PERCENT = 10f
 
 @Composable
 fun ClassResultStanceCard(
@@ -51,6 +54,7 @@ fun ClassResultStanceCard(
     val shape = RoundedCornerShape(RadiusTokens.default)
     val stanceColors = listOf(PickeTheme.colors.primary500, PickeTheme.colors.secondary500)
     val totalCount = stances.sumOf { it.count }
+    val rates = stanceRates(stances.map { it.count })
 
     Row(
         modifier = modifier
@@ -94,9 +98,6 @@ fun ClassResultStanceCard(
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
         ) {
             stances.forEachIndexed { index, stance ->
-                val percent =
-                    if (totalCount > 0) (stance.count * 100f / totalCount).roundToInt() else 0
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
                     verticalAlignment = Alignment.CenterVertically
@@ -123,7 +124,11 @@ fun ClassResultStanceCard(
                     }
 
                     Text(
-                        text = stringResource(R.string.class_result_stance_percent, percent),
+                        text = if (rates != null) {
+                            stringResource(R.string.class_result_rate, formatRate(rates[index]))
+                        } else {
+                            stringResource(R.string.class_result_no_participation)
+                        },
                         color = PickeTheme.colors.textDefault,
                         style = PickeTheme.typography.captionLgBold
                     )
@@ -177,10 +182,29 @@ private fun ClassResultStanceChart(
     }
 }
 
+private fun stanceRates(counts: List<Int>): List<Float>? {
+    val totalCount = counts.sum()
+    if (totalCount == 0) return null
+
+    val leadingTenths = counts.dropLast(1).map { (it * TOTAL_TENTHS.toFloat() / totalCount).roundToInt() }
+    val lastTenths = TOTAL_TENTHS - leadingTenths.sum()
+    return (leadingTenths + lastTenths).map { it / TENTHS_PER_PERCENT }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ClassResultStanceCardPreview() {
     PickeTheme {
         ClassResultStanceCard(stances = DummyData.dummyClassResultSummary.stances)
+    }
+}
+
+@Preview(name = "사후투표 없음", showBackground = true)
+@Composable
+private fun ClassResultStanceCardEmptyPreview() {
+    val stances = DummyData.dummyClassResultSummary.stances.map { it.copy(count = 0) }
+
+    PickeTheme {
+        ClassResultStanceCard(stances = stances)
     }
 }

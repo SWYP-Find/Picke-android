@@ -13,7 +13,7 @@ import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
 import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.toDomainModel
-import com.picke.data.feature.pollquiz.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteRequestDto
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassDebateBoard

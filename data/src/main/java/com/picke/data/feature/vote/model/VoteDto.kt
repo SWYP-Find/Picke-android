@@ -5,6 +5,10 @@ import com.picke.domain.feature.vote.model.VoteStatsBoard
 import com.picke.domain.feature.vote.model.VoteStatsOptionBoard
 import com.picke.domain.feature.vote.model.VotedOptionBoard
 
+data class VoteRequestDto(
+    val optionId: Long
+)
+
 // [응답 DTO] 투표 제출 성공
 data class VoteResponseDto(
     val voteId: Long?,

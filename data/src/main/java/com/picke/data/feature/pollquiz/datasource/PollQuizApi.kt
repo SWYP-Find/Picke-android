@@ -2,7 +2,7 @@ package com.picke.data.feature.pollquiz.datasource
 
 import com.picke.data.common.model.BaseResponse
 import com.picke.data.feature.pollquiz.model.PollQuizVoteResponseDto
-import com.picke.data.feature.pollquiz.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteRequestDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

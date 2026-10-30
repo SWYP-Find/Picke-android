@@ -23,7 +23,7 @@ import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicVersionResponseDto
 import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
 import com.picke.data.feature.classroom.model.MyClassResponseDto
-import com.picke.data.feature.pollquiz.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteRequestDto
 import com.picke.data.feature.vote.model.VoteResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE

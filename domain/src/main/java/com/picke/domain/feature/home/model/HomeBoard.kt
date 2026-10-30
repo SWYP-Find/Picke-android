@@ -1,7 +1,5 @@
 package com.picke.domain.feature.home.model
 
-import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
-
 enum class ContentDomainType {
     BATTLE, VOTE, QUIZ, UNKNOWN
 }
@@ -11,7 +9,6 @@ data class HomeBoard(
     val trendingBattles: List<HomeContent>,
     val bestBattles: List<HomeContent>,
     val bestComments: List<HomeBestCommentBoard>,
-    val todayPicks: List<TodayPick>,
     val newBattles: List<HomeContent>
 )
 
@@ -39,37 +36,3 @@ data class ContentOption(
     val philosopherName: String?,
     val imageUrl: String?
 )
-
-sealed class TodayPick {
-    abstract val contentId: String
-    abstract val title: String
-    abstract val summary: String
-    abstract val participantsCount: Int
-
-    abstract val selectedOptionId: Long?
-
-    abstract val options: List<PollQuizOptionStatBoard>
-    abstract val type: String
-
-    data class VotePick(
-        override val contentId: String,
-        override val title: String,
-        val titlePrefix: String,
-        val titleSuffix: String,
-        override val summary: String,
-        override val participantsCount: Int,
-        override val selectedOptionId: Long?,
-        override val options: List<PollQuizOptionStatBoard>,
-        override val type: String = "POLL"
-    ) : TodayPick()
-
-    data class QuizPick(
-        override val contentId: String,
-        override val title: String,
-        override val summary: String,
-        override val participantsCount: Int,
-        override val selectedOptionId: Long?,
-        override val options: List<PollQuizOptionStatBoard>,
-        override val type: String = "QUIZ"
-    ) : TodayPick()
-}

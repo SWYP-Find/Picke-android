@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -69,13 +70,17 @@ import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
+import com.picke.presentation.ui.home.component.HomeBestCommentItem
 import com.picke.presentation.ui.home.component.HomeSectionEmpty
 import com.picke.presentation.ui.home.component.HomeSkeleton
 import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
+import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -85,12 +90,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
     scrollToTopTrigger: Int = 0,
-    isNotificationSheetPending: Boolean = false,
+    isNotificationSheetPending: Boolean = false
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -116,10 +117,6 @@ fun HomeScreen(
         onNavigateToAlarm = onNavigateToAlarm,
         onNavigateToVote = onNavigateToVote,
         onTrackBattleTap = viewModel::trackBattleTap,
-        onNavigateToTrendingBattle = onNavigateToTrendingBattle,
-        onNavigateToBestBattle = onNavigateToBestBattle,
-        onNavigateToTodayPicke = onNavigateToTodayPicke,
-        onNavigateToNewBattle = onNavigateToNewBattle,
         onFetchHomeData = { viewModel.fetchHomeData() },
         onDismissAttendanceCheckSheet = { viewModel.dismissAttendanceCheckSheet() },
         scrollToTopTrigger = scrollToTopTrigger
@@ -132,19 +129,16 @@ fun HomeScreen(
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
     onTrackBattleTap: (action: String, contentId: String, section: String?) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
     onFetchHomeData: () -> Unit,
     onDismissAttendanceCheckSheet: () -> Unit,
-    scrollToTopTrigger: Int,
+    scrollToTopTrigger: Int
 ) {
     val scrollState = rememberScrollState()
 
     val isDataEmpty = uiState.editorPicks.isEmpty() &&
             uiState.trendingBattles.isEmpty() &&
             uiState.bestBattles.isEmpty() &&
+            uiState.bestComments.isEmpty() &&
             uiState.newBattles.isEmpty()
 
     LaunchedEffect(scrollToTopTrigger) {
@@ -248,8 +242,7 @@ fun HomeScreen(
                     Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_trending),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToTrendingBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
                     }
                     if (uiState.trendingBattles.isNotEmpty()) {
@@ -293,8 +286,7 @@ fun HomeScreen(
                     ) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_best),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToBestBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
 
                         uiState.bestBattles.take(3).forEachIndexed { index, item ->
@@ -315,34 +307,20 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(32.dp))
                 }
 
-                // 4. 오늘의 Pické (투표/퀴즈)
-                //  - 홈에서 오늘의 Pické 섹션을 노출하지 않기로 하여 전체 주석 처리.
-                //  - 백엔드에서 데이터를 내려주더라도 홈에서는 그리지 않는다. 필요 시 아래 블록을 복원하면 된다.
-                /*
-                if (uiState.todayPicks.isNotEmpty()) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_today_picke),
-                            highlightText = stringResource(R.string.home_highlight_picke),
-                            onMoreClick = onNavigateToTodayPicke
-                        )
-                        uiState.todayPicks.forEach { item ->
-                            TodayPickeCard(
-                                item = item,
-                                onVoteClick = { optionId ->
-                                    viewModel.submitTodayPickVote(
-                                        battleId = item.contentId,
-                                        optionId = optionId,
-                                        type = item.type
-                                    )
-                                }
+                if (uiState.bestComments.isNotEmpty()) {
+                    HomeBestCommentSection(
+                        comments = uiState.bestComments,
+                        onCommentClick = { item ->
+                            onTrackBattleTap(
+                                ContentActionType.BATTLE_CARD_TAP,
+                                item.battleId.toString(),
+                                ContentSection.BEST_COMMENT
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            onNavigateToVote(item.battleId.toString())
                         }
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
+                    )
+                    Spacer(modifier = Modifier.height(SpacingTokens.s32))
                 }
-                */
 
                 if (uiState.newBattles.isNotEmpty()) {
                     Column(
@@ -352,8 +330,7 @@ fun HomeScreen(
                     ) {
                         HomeSectionHeader(
                             title = stringResource(R.string.home_section_new),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToNewBattle
+                            highlightText = stringResource(R.string.home_highlight_battle)
                         )
                         uiState.newBattles.forEach { item ->
                             NewBattleCard(
@@ -386,10 +363,39 @@ fun HomeScreen(
 }
 
 @Composable
+private fun HomeBestCommentSection(
+    comments: List<HomeBestCommentUiModel>,
+    onCommentClick: (HomeBestCommentUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+            HomeSectionHeader(
+                title = stringResource(R.string.home_section_best_comment),
+                highlightText = stringResource(R.string.home_highlight_comment)
+            )
+        }
+
+        comments.forEachIndexed { index, item ->
+            HomeBestCommentItem(
+                item = item,
+                onClick = { onCommentClick(item) }
+            )
+            if (index < comments.lastIndex) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun HomeSectionHeader(
     title: String,
-    highlightText: String? = null,
-    onMoreClick: () -> Unit,
+    highlightText: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -419,12 +425,6 @@ fun HomeSectionHeader(
             style = PickeTheme.typography.headingMd,
             color = PickeTheme.colors.textDefault
         )
-        /*Text(
-            text = stringResource(R.string.more),
-            style = PickeTheme.typography.bodyXsMedium,
-            color = PickeTheme.colors.textSubtler,
-            modifier = Modifier.clickable { onMoreClick() }
-        )*/
     }
 }
 
@@ -623,7 +623,7 @@ fun EditorPickSection(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 2200)
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
@@ -631,16 +631,12 @@ fun HomeScreenPreview() {
             editorPicks = DummyData.dummyHomeContentItems,
             trendingBattles = DummyData.dummyHomeContentItems,
             bestBattles = DummyData.dummyHomeContentItems,
-            newBattles = DummyData.dummyHomeContentItems,
-            todayPicks = listOf(DummyData.dummyVotePick, DummyData.dummyQuizPick)
+            bestComments = DummyData.dummyBestComments,
+            newBattles = DummyData.dummyHomeContentItems
         ),
         onNavigateToAlarm = {},
         onNavigateToVote = {},
         onTrackBattleTap = { _, _, _ -> },
-        onNavigateToTrendingBattle = {},
-        onNavigateToBestBattle = {},
-        onNavigateToTodayPicke = {},
-        onNavigateToNewBattle = {},
         onFetchHomeData = {},
         onDismissAttendanceCheckSheet = {},
         scrollToTopTrigger = 0

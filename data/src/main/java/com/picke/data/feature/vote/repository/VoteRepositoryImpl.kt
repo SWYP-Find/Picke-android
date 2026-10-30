@@ -2,7 +2,7 @@ package com.picke.data.feature.vote.repository
 
 import android.util.Log
 import com.picke.data.common.error.toReportedFailure
-import com.picke.data.feature.pollquiz.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteRequestDto
 import com.picke.data.feature.vote.model.toDomainModel
 import com.picke.data.common.model.toResult
 import com.picke.data.common.network.apiCall

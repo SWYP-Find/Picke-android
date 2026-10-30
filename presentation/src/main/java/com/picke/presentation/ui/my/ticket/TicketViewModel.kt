@@ -65,8 +65,8 @@ class TicketViewModel @Inject constructor(
                     if ((exception as? ApiErrorException)?.code == ClassErrorCode.TICKET_404) {
                         sendEvent(TicketUiEvent.ReplaceWithRegister)
                     } else {
-                        _uiState.update { reduce(it, TicketMutation.TicketsLoadFailed) }
                         sendEvent(TicketUiEvent.ShowLoadFailedToast)
+                        sendEvent(TicketUiEvent.NavigateBackAfterLoadFailed)
                     }
                 }
         }

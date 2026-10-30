@@ -12,7 +12,6 @@ import com.picke.domain.feature.home.repository.HomeRepository
 import com.picke.domain.common.local.LocalPreferencesRepository
 import com.picke.domain.feature.mypage.repository.MyPageRepository
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
-import com.picke.domain.feature.pollquiz.repository.PollQuizRepository
 import com.picke.domain.feature.proposal.repository.ProposalRepository
 import com.picke.domain.feature.recommend.repository.RecommendRepository
 import com.picke.domain.feature.scenario.repository.ScenarioRepository
@@ -117,9 +116,6 @@ import com.picke.domain.feature.perspective.usecase.ReportPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.RetryModerationUseCase
 import com.picke.domain.feature.perspective.usecase.TogglePerspectiveLikeUseCase
 import com.picke.domain.feature.perspective.usecase.UpdatePerspectiveUseCase
-import com.picke.domain.feature.pollquiz.usecase.GetTodayPickVoteUseCase
-import com.picke.domain.feature.pollquiz.usecase.PollQuizUseCases
-import com.picke.domain.feature.pollquiz.usecase.SubmitTodayPickVoteUseCase
 import com.picke.domain.feature.proposal.usecase.ProposalUseCases
 import com.picke.domain.feature.proposal.usecase.SubmitProposalUseCase
 import com.picke.domain.feature.recommend.usecase.GetInterestingRecommendationsUseCase
@@ -299,16 +295,6 @@ object UseCaseModule {
             createPerspectiveUseCase = CreatePerspectiveUseCase(perspectiveRepository),
             togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository),
             updatePerspectiveUseCase = UpdatePerspectiveUseCase(perspectiveRepository)
-        )
-    }
-
-    @Provides
-    fun providePollQuizUseCases(
-        pollQuizRepository: PollQuizRepository
-    ): PollQuizUseCases {
-        return PollQuizUseCases(
-            getTodayPickVoteUseCase = GetTodayPickVoteUseCase(pollQuizRepository),
-            submitTodayPickVoteUseCase = SubmitTodayPickVoteUseCase(pollQuizRepository)
         )
     }
 

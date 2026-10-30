@@ -2,11 +2,13 @@ package com.picke.presentation.ui.classroom.classjoin.model
 
 internal sealed interface ClassJoinMutation {
 
-    data object CodeVerified : ClassJoinMutation
+    sealed interface RequestFinished : ClassJoinMutation
 
-    data class JoinFailed(val dialog: ClassJoinDialog) : ClassJoinMutation
+    data object RequestFailed : RequestFinished
 
-    data object NameDuplicated : ClassJoinMutation
+    data object CodeVerified : RequestFinished
 
-    data object RequestFailed : ClassJoinMutation
+    data class JoinFailed(val dialog: ClassJoinDialog) : RequestFinished
+
+    data object NameDuplicated : RequestFinished
 }

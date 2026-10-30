@@ -11,7 +11,6 @@ import com.picke.data.feature.explore.datasource.ExploreApi
 import com.picke.data.feature.home.datasource.HomeApi
 import com.picke.data.feature.mypage.datasource.MyPageApi
 import com.picke.data.feature.perspective.datasource.PerspectiveApi
-import com.picke.data.feature.pollquiz.datasource.PollQuizApi
 import com.picke.data.feature.proposal.datasource.ProposalApi
 import com.picke.data.feature.recommend.datasource.RecommendApi
 import com.picke.data.feature.scenario.datasource.ScenarioApi
@@ -98,12 +97,6 @@ object ApiModule {
     @Singleton
     fun provideAlarmApi(retrofit: Retrofit): AlarmApi {
         return retrofit.create(AlarmApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun providePollQuizApi(retrofit: Retrofit): PollQuizApi {
-        return retrofit.create(PollQuizApi::class.java)
     }
 
     @Provides

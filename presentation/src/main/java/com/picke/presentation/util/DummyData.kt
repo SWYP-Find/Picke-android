@@ -24,9 +24,8 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.home.model.ContentUiType
+import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
-import com.picke.presentation.ui.home.model.PollQuizOptionStatUiModel
-import com.picke.presentation.ui.home.model.TodayPickUiModel
 import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
@@ -224,67 +223,63 @@ object DummyData {
         )
     )
 
-    val dummyVotePick = TodayPickUiModel.VotePick(
-        contentId = "vote_001",
-        titlePrefix = "Q. ",
-        title = "평생 한 가지 음식만 먹어야 한다면?",
-        titleSuffix = "",
-        summary = "짜장면 vs 짬뽕, 당신의 영혼의 단짝은?",
-        participantsCount = 1542,
-        selectedOptionId = null,
-        type = "VOTE",
-        options = listOf(
-            PollQuizOptionStatUiModel(
-                optionId = 1L,
-                title = "윤기 좔좔 짜장면",
-                isCorrect = false,
-                stance = "짜장면",
-                voteCount = 848,
-                ratio = 55.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 2L,
-                title = "얼큰한 국물 짬뽕",
-                isCorrect = false,
-                stance = "짬뽕",
-                voteCount = 694,
-                ratio = 45.0f
-            )
+    val dummyBestBattles = listOf(
+        HomeContentUiModel(
+            contentId = "1",
+            type = ContentUiType.BATTLE,
+            title = "인간은 본래 선한가, 악한가?",
+            summary = "맹자와 순자가 말하는 인간의 본성",
+            thumbnailUrl = "",
+            viewCountText = "1,340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "맹자",
+            rightProfileName = "순자"
+        ),
+        HomeContentUiModel(
+            contentId = "2",
+            type = ContentUiType.BATTLE,
+            title = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            summary = "선의의 거짓말과 알 권리 사이",
+            thumbnailUrl = "",
+            viewCountText = "1,340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "칸트",
+            rightProfileName = "밀"
+        ),
+        HomeContentUiModel(
+            contentId = "3",
+            type = ContentUiType.BATTLE,
+            title = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            summary = "감정의 진정성은 상대가 사람이어야만 성립하는가",
+            thumbnailUrl = "",
+            viewCountText = "1,340",
+            timeInfoText = "8분",
+            tags = listOf("철학", "인문"),
+            leftProfileName = "플라톤",
+            rightProfileName = "튜링"
         )
     )
 
-    val dummyQuizPick = TodayPickUiModel.QuizPick(
-        contentId = "quiz_001",
-        title = "다음 중 안드로이드의 공식 마스코트 이름은?",
-        summary = "알쏭달쏭 IT 상식 퀴즈",
-        participantsCount = 820,
-        selectedOptionId = 1L,
-        type = "QUIZ",
-        options = listOf(
-            PollQuizOptionStatUiModel(
-                optionId = 1L,
-                title = "버그드로이드 (Bugdroid)",
-                isCorrect = true,
-                stance = "NONE",
-                voteCount = 697,
-                ratio = 85.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 2L,
-                title = "안디 (Andy)",
-                isCorrect = false,
-                stance = "NONE",
-                voteCount = 82,
-                ratio = 10.0f
-            ),
-            PollQuizOptionStatUiModel(
-                optionId = 3L,
-                title = "로보 (Robo)",
-                isCorrect = false,
-                stance = "NONE",
-                voteCount = 41,
-                ratio = 5.0f
-            )
+    val dummyBestComments = listOf(
+        HomeBestCommentUiModel(
+            battleId = 1L,
+            battleTitle = "인간은 본래 선한가, 악한가?",
+            optionTitle = "본성은 선하다",
+            content = "아이가 우물에 빠지려는 걸 보면 누구나 먼저 손을 뻗잖아요. 계산하기 전에 움직이는 그 마음이 본성이라고 생각해요."
+        ),
+        HomeBestCommentUiModel(
+            battleId = 2L,
+            battleTitle = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            optionTitle = "말해야 한다",
+            content = "남은 시간을 어떻게 쓸지는 본인이 정해야 해요. 진실을 숨기면 그 선택권까지 빼앗는 거라고 봐요."
+        ),
+        HomeBestCommentUiModel(
+            battleId = 3L,
+            battleTitle = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            optionTitle = "진짜 사랑이다",
+            content = "상대가 무엇이든 내가 느끼는 감정은 진짜잖아요. 사랑을 상대의 조건으로만 판단하는 건 좁은 기준 같아요."
         )
     )
 

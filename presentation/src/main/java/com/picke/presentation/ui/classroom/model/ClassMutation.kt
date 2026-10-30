@@ -2,7 +2,9 @@ package com.picke.presentation.ui.classroom.model
 
 internal sealed interface ClassMutation {
 
-    data class TicketStatusLoaded(val ticketStatus: ClassTicketStatus) : ClassMutation
+    sealed interface RequestFinished : ClassMutation
 
-    data object RequestFailed : ClassMutation
+    data object RequestFailed : RequestFinished
+
+    data class TicketStatusLoaded(val ticketStatus: ClassTicketStatus) : RequestFinished
 }

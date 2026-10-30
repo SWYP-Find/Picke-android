@@ -12,7 +12,6 @@ import com.picke.data.feature.home.repository.HomeRepositoryImpl
 import com.picke.data.common.local.LocalPreferencesRepositoryImpl
 import com.picke.data.feature.mypage.repository.MyPageRepositoryImpl
 import com.picke.data.feature.perspective.repository.PerspectiveRepositoryImpl
-import com.picke.data.feature.pollquiz.repository.PollQuizRepositoryImpl
 import com.picke.data.feature.proposal.repository.ProposalRepositoryImpl
 import com.picke.data.feature.recommend.repository.RecommendRepositoryImpl
 import com.picke.data.feature.scenario.repository.ScenarioRepositoryImpl
@@ -31,7 +30,6 @@ import com.picke.domain.feature.home.repository.HomeRepository
 import com.picke.domain.common.local.LocalPreferencesRepository
 import com.picke.domain.feature.mypage.repository.MyPageRepository
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
-import com.picke.domain.feature.pollquiz.repository.PollQuizRepository
 import com.picke.domain.feature.proposal.repository.ProposalRepository
 import com.picke.domain.feature.recommend.repository.RecommendRepository
 import com.picke.domain.feature.scenario.repository.ScenarioRepository
@@ -118,12 +116,6 @@ abstract class RepositoryModule {
     abstract fun bindAlarmRepository(
         alarmRepositoryImpl: AlarmRepositoryImpl
     ): AlarmRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindPollQuizRepository(
-        pollQuizRepositoryImpl: PollQuizRepositoryImpl
-    ): PollQuizRepository
 
     @Binds
     @Singleton

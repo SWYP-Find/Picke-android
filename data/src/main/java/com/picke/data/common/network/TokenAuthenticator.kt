@@ -22,6 +22,7 @@ import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class TokenAuthenticator @Inject constructor(
@@ -41,11 +42,23 @@ class TokenAuthenticator @Inject constructor(
             .build()
     }
 
+    private var rejectedRefreshToken: String? = null
+
     @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) >= 2) {
+        if (unauthorizedCount(response) >= 2) {
             Log.e(TAG, "[AUTH] 토큰 갱신 후에도 401 지속. 인증 실패 처리.")
             return null
+        }
+
+        val sentAccessToken = response.request.header(AuthHeader.AUTHORIZATION)
+            ?.removePrefix(AuthHeader.BEARER_PREFIX)
+            ?: return null
+        val savedAccessToken = preferencesManager.getAccessToken()
+        if (!savedAccessToken.isNullOrEmpty() && savedAccessToken != sentAccessToken) {
+            return response.request.newBuilder()
+                .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}$savedAccessToken")
+                .build()
         }
 
         val refreshToken = preferencesManager.getRefreshToken()
@@ -54,46 +67,56 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
 
+        if (refreshToken == rejectedRefreshToken) {
+            return null
+        }
+
         return try {
-            val client = refreshClient
             val refreshRequest = Request.Builder()
                 .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
                 .post(ByteArray(0).toRequestBody(null))
                 .header("X-Refresh-Token", refreshToken)
                 .build()
 
-            val refreshResponse = client.newCall(refreshRequest).execute()
-            val body = refreshResponse.body?.string()
+            refreshClient.newCall(refreshRequest).execute().use { refreshResponse ->
+                val body = refreshResponse.body?.string()
 
-            if (refreshResponse.isSuccessful && body != null) {
-                val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
-                val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
-                val data = parsed.data
+                if (refreshResponse.isSuccessful && body != null) {
+                    val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
+                    val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
+                    val newAccessToken = parsed.data?.accessToken
+                    val newRefreshToken = parsed.data?.refreshToken
 
-                if (parsed.statusCode == 200 && data != null) {
-                    preferencesManager.saveAccessToken(data.accessToken)
-                    preferencesManager.saveRefreshToken(data.refreshToken)
-                    if (BuildConfig.DEBUG) {
-                        Handler(Looper.getMainLooper()).post {
-                            Toast.makeText(
-                                context,
-                                "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                    if (parsed.statusCode == 200 && !newAccessToken.isNullOrEmpty() && !newRefreshToken.isNullOrEmpty()) {
+                        preferencesManager.saveAccessToken(newAccessToken)
+                        preferencesManager.saveRefreshToken(newRefreshToken)
+                        if (BuildConfig.DEBUG) {
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(
+                                    context,
+                                    "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
 
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer ${data.accessToken}")
-                        .build()
+                        response.request.newBuilder()
+                            .header(AuthHeader.AUTHORIZATION, "${AuthHeader.BEARER_PREFIX}$newAccessToken")
+                            .build()
+                    } else {
+                        Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                        null
+                    }
                 } else {
-                    Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                    Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
+                    if (refreshResponse.code == 401) {
+                        rejectedRefreshToken = refreshToken
+                    }
                     null
                 }
-            } else {
-                Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
-                null
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "[AUTH] 토큰 갱신 중 예외 발생: ${e.message}", e)
             reportIfUnexpected(e)
@@ -101,13 +124,6 @@ class TokenAuthenticator @Inject constructor(
         }
     }
 
-    private fun responseCount(response: Response): Int {
-        var count = 1
-        var prior = response.priorResponse
-        while (prior != null) {
-            count++
-            prior = prior.priorResponse
-        }
-        return count
-    }
+    private fun unauthorizedCount(response: Response): Int =
+        generateSequence(response) { it.priorResponse }.count { it.code == 401 }
 }

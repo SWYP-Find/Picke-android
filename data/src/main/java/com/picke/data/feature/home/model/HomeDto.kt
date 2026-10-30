@@ -2,18 +2,16 @@ package com.picke.data.feature.home.model
 
 import com.picke.domain.feature.home.model.ContentDomainType
 import com.picke.domain.feature.home.model.ContentOption
+import com.picke.domain.feature.home.model.HomeBestCommentBoard
 import com.picke.domain.feature.home.model.HomeBoard
 import com.picke.domain.feature.home.model.HomeContent
-import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
-import com.picke.domain.feature.home.model.TodayPick
 
 data class HomeResponseDto(
     val newNotice: Boolean?,
     val editorPicks: List<EditorPickDto>?,
     val trendingBattles: List<TrendingBattleDto>?,
     val bestBattles: List<BestBattleDto>?,
-    val todayQuizzes: List<TodayQuizDto>?,
-    val todayVotes: List<TodayVoteDto>?,
+    val bestComments: List<BestCommentDto>?,
     val newBattles: List<NewBattleDto>?
 )
 
@@ -53,30 +51,12 @@ data class BestBattleDto(
     val viewCount: Int?
 )
 
-data class TodayQuizDto(
+// TODO: API 연동 - 홈 API에 bestComments가 추가되면 필드 이름 확인
+data class BestCommentDto(
     val battleId: Long?,
-    val title: String?,
-    val summary: String?,
-    val participantsCount: Int?,
-    val itemA: String?,
-    val itemADesc: String?,
-    val isCorrectA: Boolean?,
-    val itemB: String?,
-    val itemBDesc: String?,
-    val isCorrectB: Boolean?
-)
-
-data class TodayVoteDto(
-    val battleId: Long?,
-    val titlePrefix: String?,
-    val titleSuffix: String?,
-    val summary: String?,
-    val participantsCount: Int?,
-    val options: List<OptionDto>?
-)
-
-data class OptionDto(
-    val title: String?
+    val battleTitle: String?,
+    val optionTitle: String?,
+    val content: String?
 )
 
 data class NewBattleDto(
@@ -99,8 +79,7 @@ fun HomeResponseDto.toDomainModel() = HomeBoard(
     editorPicks = editorPicks?.map { it.toDomainModel() } ?: emptyList(),
     trendingBattles = trendingBattles?.map { it.toDomainModel() } ?: emptyList(),
     bestBattles = bestBattles?.map { it.toDomainModel() } ?: emptyList(),
-    todayPicks = (todayQuizzes?.map { it.toTodayPickDomainModel() } ?: emptyList()) +
-        (todayVotes?.map { it.toTodayPickDomainModel() } ?: emptyList()),
+    bestComments = bestComments?.mapNotNull { it.toDomainModel() } ?: emptyList(),
     newBattles = newBattles?.map { it.toDomainModel() } ?: emptyList()
 )
 
@@ -154,52 +133,15 @@ fun NewBattleDto.toDomainModel() = HomeContent(
     )
 )
 
-fun TodayQuizDto.toTodayPickDomainModel() = TodayPick.QuizPick(
-    contentId = this.battleId?.toString() ?: "",
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    participantsCount = this.participantsCount ?: 0,
-    selectedOptionId = null,
-    options = listOf(
-        PollQuizOptionStatBoard(
-            optionId = 1L,
-            title = this.itemA ?: "",
-            isCorrect = this.isCorrectA ?: false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = this.itemADesc ?: "",
-        ),
-        PollQuizOptionStatBoard(
-            optionId = 2L,
-            title = this.itemB ?: "",
-            isCorrect = this.isCorrectB ?: false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = this.itemBDesc ?: "",
-        )
+fun BestCommentDto.toDomainModel(): HomeBestCommentBoard? {
+    val battleId = battleId ?: return null
+    return HomeBestCommentBoard(
+        battleId = battleId,
+        battleTitle = battleTitle ?: "",
+        optionTitle = optionTitle ?: "",
+        content = content ?: ""
     )
-)
-
-fun TodayVoteDto.toTodayPickDomainModel() = TodayPick.VotePick(
-    contentId = this.battleId?.toString() ?: "",
-    // 전체 문장이 필요할 때를 대비해 합쳐줍니다.
-    title = "${this.titlePrefix ?: ""} ${this.titleSuffix ?: ""}".trim(),
-    titlePrefix = this.titlePrefix ?: "",
-    titleSuffix = this.titleSuffix ?: "",
-    summary = this.summary ?: "",
-    participantsCount = this.participantsCount ?: 0,
-    selectedOptionId = null,
-    options = this.options?.mapIndexed { index, option ->
-        PollQuizOptionStatBoard(
-            optionId = (index + 1).toLong(),
-            title = option.title ?: "",
-            isCorrect = false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = "",
-        )
-    } ?: emptyList()
-)
+}
 
 fun BestBattleDto.toDomainModel() = HomeContent(
     contentId = this.battleId?.toString() ?: "",

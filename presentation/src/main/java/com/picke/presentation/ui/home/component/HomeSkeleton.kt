@@ -17,6 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.SkeletonLine
 import com.picke.presentation.ui.component.shimmer
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object HomeSkeletonDimens {
+    val sectionTitleWidth = 80.dp
+    val sectionTitleHeight = 20.dp
+    val lineHeight = 14.dp
+    val bestCommentTitleWidth = 160.dp
+    val bestCommentLineWidth = 280.dp
+    val bestCommentShortLineWidth = 200.dp
+}
 
 @Composable
 fun HomeSkeleton(modifier: Modifier = Modifier) {
@@ -44,6 +54,16 @@ fun HomeSkeleton(modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+            SkeletonLine(width = HomeSkeletonDimens.sectionTitleWidth, height = HomeSkeletonDimens.sectionTitleHeight)
+            Spacer(modifier = Modifier.height(SpacingTokens.s16))
+            repeat(3) {
+                BestCommentRowSkeleton()
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
+            }
+        }
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             SkeletonLine(width = 100.dp, height = 20.dp)
@@ -129,6 +149,18 @@ private fun BestBattleRowSkeleton() {
             Spacer(modifier = Modifier.height(8.dp))
             SkeletonLine(width = 100.dp, height = 14.dp)
         }
+    }
+}
+
+@Composable
+private fun BestCommentRowSkeleton() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
+    ) {
+        SkeletonLine(width = HomeSkeletonDimens.bestCommentTitleWidth, height = HomeSkeletonDimens.lineHeight)
+        SkeletonLine(width = HomeSkeletonDimens.bestCommentLineWidth, height = HomeSkeletonDimens.lineHeight)
+        SkeletonLine(width = HomeSkeletonDimens.bestCommentShortLineWidth, height = HomeSkeletonDimens.lineHeight)
     }
 }
 

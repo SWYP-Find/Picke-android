@@ -1,8 +1,8 @@
 package com.picke.data.feature.vote.datasource
 
 import com.picke.data.common.model.BaseResponse
-import com.picke.data.feature.pollquiz.model.VoteRequestDto
 import com.picke.data.feature.vote.model.MyVoteResponseDto
+import com.picke.data.feature.vote.model.VoteRequestDto
 import com.picke.data.feature.vote.model.VoteResponseDto
 import com.picke.data.feature.vote.model.VoteStatsDto
 import retrofit2.http.Body

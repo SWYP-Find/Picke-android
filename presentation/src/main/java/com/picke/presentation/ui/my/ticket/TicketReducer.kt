@@ -9,6 +9,4 @@ internal fun reduce(state: TicketUiState, mutation: TicketMutation): TicketUiSta
             isLoading = false,
             tickets = mutation.tickets
         )
-
-        TicketMutation.TicketsLoadFailed -> state.copy(isLoading = false)
     }

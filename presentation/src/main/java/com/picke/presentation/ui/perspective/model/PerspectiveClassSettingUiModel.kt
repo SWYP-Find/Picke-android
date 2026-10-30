@@ -9,6 +9,6 @@ data class PerspectiveClassSettingUiModel(
 )
 
 fun ClassDetailBoard.toUiModel() = PerspectiveClassSettingUiModel(
-    isAiBattle = ClassBattleType.from(battleType) == ClassBattleType.CUSTOM,
+    isAiBattle = ClassBattleType.from(battleType).isAiBattle,
     isCommentRequired = commentRequired
 )

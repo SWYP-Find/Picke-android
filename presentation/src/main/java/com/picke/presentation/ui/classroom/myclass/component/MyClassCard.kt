@@ -58,8 +58,8 @@ fun MyClassCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(PickeTheme.colors.surfaceBeigeDefault)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.borderBeigeDefault, shape)
+            .background(PickeTheme.colors.cardBaseBackgroundDefault)
+            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.cardBaseBorderDefault, shape)
             .clickable(onClick = onClick)
             .padding(SpacingTokens.s12),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
@@ -90,14 +90,14 @@ fun MyClassCard(
             Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
                 Text(
                     text = item.title,
-                    color = PickeTheme.colors.textSubtler,
+                    color = PickeTheme.colors.cardBaseTextTitle,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = PickeTheme.typography.headingSm
                 )
                 Text(
                     text = item.topic,
-                    color = PickeTheme.colors.textMuted,
+                    color = PickeTheme.colors.cardBaseTextDecription,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = PickeTheme.typography.bodyXsRegular
@@ -108,7 +108,7 @@ fun MyClassCard(
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
             HorizontalDivider(
                 thickness = ComponentNumberTokens.borderWidthRegular,
-                color = PickeTheme.colors.borderBeigeDefault
+                color = PickeTheme.colors.cardBaseBorderDefault
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -178,7 +178,7 @@ private fun MyClassMetaItem(
         )
         Text(
             text = text,
-            color = PickeTheme.colors.textMuted,
+            color = PickeTheme.colors.cardBaseTextDecription,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = PickeTheme.typography.captionLgRegular

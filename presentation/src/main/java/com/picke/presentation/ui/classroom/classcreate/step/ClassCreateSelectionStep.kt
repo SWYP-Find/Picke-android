@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classcreate.component.ClassCreateSelectionHeader
 import com.picke.presentation.ui.classroom.classcreate.component.ClassPillBadge
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
@@ -173,52 +174,6 @@ private fun ClassCreateSelectedConditionSection(
                 modifier = Modifier.size(ComponentNumberTokens.iconMd),
                 tint = PickeTheme.colors.textPrimary
             )
-        }
-    }
-}
-
-@Composable
-private fun ClassCreateSelectionHeader(
-    resultCount: Int,
-    showsRegenerate: Boolean,
-    isRegenerateEnabled: Boolean,
-    onRegenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(R.string.class_create_result_count, resultCount),
-            color = PickeTheme.colors.textDefault,
-            style = PickeTheme.typography.bodySmSemiBold
-        )
-
-        if (showsRegenerate) {
-            Row(
-                modifier = Modifier.clickable(
-                    interactionSource = null,
-                    indication = null,
-                    enabled = isRegenerateEnabled,
-                    onClick = onRegenerateClick
-                ),
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_replay),
-                    contentDescription = null,
-                    modifier = Modifier.size(ComponentNumberTokens.iconSm),
-                    tint = PickeTheme.colors.textMuted
-                )
-                Text(
-                    text = stringResource(R.string.class_create_regenerate),
-                    color = PickeTheme.colors.textMuted,
-                    style = PickeTheme.typography.bodyXsSemiBold
-                )
-            }
         }
     }
 }

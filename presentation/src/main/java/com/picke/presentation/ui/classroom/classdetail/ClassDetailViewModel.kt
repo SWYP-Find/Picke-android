@@ -109,7 +109,7 @@ class ClassDetailViewModel @Inject constructor(
                 return@launch
             }
             val mutation = ClassDetailMutation.ClassDetailLoaded(
-                isOperator = ClassRole.from(classDetail.myRole) == ClassRole.OWNER,
+                isOperator = ClassRole.from(classDetail.myRole).isOwner,
                 isInProgress = !classDetail.closed,
                 title = classDetail.name,
                 memberCount = classDetail.memberCount,

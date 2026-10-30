@@ -2,15 +2,14 @@ package com.picke.presentation.ui.classroom.classmember
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
@@ -85,68 +83,59 @@ private fun ClassMemberContent(
     onAction: (ClassMemberUiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            Column {
-                CustomTopAppBar(
-                    title = stringResource(R.string.class_detail_member),
-                    onBackClick = { onAction(ClassMemberUiAction.BackClick) },
-                    backgroundColor = PickeTheme.colors.backgroundBeige,
-                    titleColor = PickeTheme.colors.textSubtler
-                )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(PickeTheme.colors.backgroundBeige)
+    ) {
+        CustomTopAppBar(
+            title = stringResource(R.string.class_detail_member),
+            onBackClick = { onAction(ClassMemberUiAction.BackClick) },
+            backgroundColor = PickeTheme.colors.backgroundBeige,
+            titleColor = PickeTheme.colors.textSubtler
+        )
 
-                ClassMemberSearchSection(
-                    query = uiState.query,
-                    onQueryChange = { query -> onAction(ClassMemberUiAction.QueryChange(query)) },
-                    modifier = Modifier.padding(
-                        start = SpacingTokens.s16,
-                        top = SpacingTokens.s12,
-                        end = SpacingTokens.s16
-                    )
-                )
-            }
-        },
-        containerColor = PickeTheme.colors.backgroundBeige,
-        contentWindowInsets = WindowInsets(0.dp)
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            Text(
-                text = stringResource(R.string.class_member_count, uiState.members.size),
-                modifier = Modifier.padding(
-                    start = SpacingTokens.s16,
-                    top = SpacingTokens.s20,
-                    end = SpacingTokens.s16,
-                    bottom = SpacingTokens.s4
-                ),
-                color = PickeTheme.colors.textMuted,
-                style = PickeTheme.typography.bodySmMedium
+        ClassMemberSearchSection(
+            query = uiState.query,
+            onQueryChange = { query -> onAction(ClassMemberUiAction.QueryChange(query)) },
+            modifier = Modifier.padding(
+                start = SpacingTokens.s16,
+                top = SpacingTokens.s12,
+                end = SpacingTokens.s16
             )
+        )
 
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(
-                    start = SpacingTokens.s16,
-                    end = SpacingTokens.s16,
-                    bottom = SpacingTokens.s20
+        Text(
+            text = stringResource(R.string.class_member_count, uiState.members.size),
+            modifier = Modifier.padding(
+                start = SpacingTokens.s16,
+                top = SpacingTokens.s20,
+                end = SpacingTokens.s16,
+                bottom = SpacingTokens.s4
+            ),
+            color = PickeTheme.colors.textMuted,
+            style = PickeTheme.typography.bodySmMedium
+        )
+
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(
+                start = SpacingTokens.s16,
+                end = SpacingTokens.s16,
+                bottom = SpacingTokens.s20
+            )
+        ) {
+            items(items = uiState.filteredMembers, key = { it.memberId }) { member ->
+                ClassMemberItem(
+                    member = member,
+                    canRemove = uiState.isOperatorViewer && !member.isMe,
+                    onEditNameClick = { onAction(ClassMemberUiAction.EditNameClick) },
+                    onRemoveClick = { onAction(ClassMemberUiAction.RemoveClick(member)) }
                 )
-            ) {
-                items(items = uiState.filteredMembers, key = { it.memberId }) { member ->
-                    ClassMemberItem(
-                        member = member,
-                        canRemove = uiState.isOperatorViewer && !member.isMe,
-                        onEditNameClick = { onAction(ClassMemberUiAction.EditNameClick) },
-                        onRemoveClick = { onAction(ClassMemberUiAction.RemoveClick(member)) }
-                    )
-                    HorizontalDivider(
-                        thickness = ComponentNumberTokens.borderWidthRegular,
-                        color = PickeTheme.colors.borderBeigeDefault
-                    )
-                }
+                HorizontalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.borderBeigeDefault
+                )
             }
         }
     }

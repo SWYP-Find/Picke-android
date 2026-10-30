@@ -15,6 +15,6 @@ fun ClassMemberBoard.toUiModel() = ClassMemberUiModel(
     memberId = memberId,
     name = displayName,
     imageUrl = characterUrl.ifBlank { null },
-    isOperator = ClassRole.from(role) == ClassRole.OWNER,
+    isOperator = ClassRole.from(role).isOwner,
     isMe = me
 )

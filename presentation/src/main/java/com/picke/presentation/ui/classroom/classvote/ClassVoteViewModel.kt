@@ -82,7 +82,7 @@ class ClassVoteViewModel @Inject constructor(
                 className = classDetail.name,
                 deadline = parseServerDateTime(classBattle.closeAt),
                 battleId = classBattle.battle.battleInfo.battleId.toLongOrNull() ?: 0L,
-                isAiBattle = ClassBattleType.from(classDetail.battleType) == ClassBattleType.CUSTOM,
+                isAiBattle = ClassBattleType.from(classDetail.battleType).isAiBattle,
                 battle = classBattle.battle.toUiModel()
             )
             _uiState.update { reduce(it, mutation) }

@@ -22,5 +22,5 @@ fun MyClassBoard.toUiModel() = MyClassUiModel(
     isInProgress = !closed,
     memberCount = memberCount,
     deadline = parseServerDateTime(closeAt),
-    isOperator = ClassRole.from(myRole) == ClassRole.OWNER
+    isOperator = ClassRole.from(myRole).isOwner
 )

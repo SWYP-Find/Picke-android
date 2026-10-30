@@ -30,7 +30,7 @@ data class ClassBattleUiModel(
 
 fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUiModel {
     val battleInfo = battle.battleInfo
-    val isAiQuestion = battleType == ClassBattleType.CUSTOM
+    val isAiQuestion = battleType.isAiBattle
     val categoryName = battle.categoryTags.firstOrNull()?.name
     val durationMinutes = (battleInfo.audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
     return ClassBattleUiModel(

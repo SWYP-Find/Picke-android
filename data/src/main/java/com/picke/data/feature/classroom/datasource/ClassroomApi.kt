@@ -11,6 +11,7 @@ import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
+import com.picke.data.feature.classroom.model.ClassMidVoteRequestDto
 import com.picke.data.feature.classroom.model.ClassResultInsightResponseDto
 import com.picke.data.feature.classroom.model.ClassResultMyReportResponseDto
 import com.picke.data.feature.classroom.model.ClassResultResponseDto
@@ -148,6 +149,12 @@ interface ClassroomApi {
     suspend fun completeClassTts(
         @Path("classId") classId: Long
     ): BaseResponse<Unit>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/mid")
+    suspend fun submitClassMidVote(
+        @Path("classId") classId: Long,
+        @Body request: ClassMidVoteRequestDto
+    ): BaseResponse<VoteResponseDto>
 
     @GET("/api/v1/classes/{classId}/battle/debate")
     suspend fun getClassDebate(

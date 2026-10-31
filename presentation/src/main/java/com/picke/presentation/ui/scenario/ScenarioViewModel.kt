@@ -1,8 +1,11 @@
 package com.picke.presentation.ui.scenario
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.scenario.usecase.ScenarioUseCases
+import com.picke.presentation.AppRoute
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
@@ -11,6 +14,8 @@ import com.picke.presentation.ui.component.AudioPlayerDefaults.PLAYBACK_SPEEDS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SKIP_INTERVAL_MS
 import com.picke.presentation.ui.component.AudioPlayerDefaults.SYNC_INTERVAL_MS
 import com.picke.presentation.ui.scenario.model.PastChoice
+import com.picke.presentation.ui.scenario.model.ScenarioOptionUiModel
+import com.picke.presentation.ui.scenario.model.ScenarioUiEvent
 import com.picke.presentation.ui.scenario.model.ScenarioUiModel
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.scenario.model.toUiModel
@@ -18,10 +23,13 @@ import com.picke.presentation.util.ScenarioAudioKey
 import com.picke.presentation.util.splitScriptsBySentence
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -30,7 +38,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ScenarioViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val scenarioUseCases: ScenarioUseCases,
+    private val classroomUseCases: ClassroomUseCases,
     private val audioPlayerManager: AudioPlayerManager,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
@@ -38,6 +48,11 @@ class ScenarioViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ScenarioUiState())
     val uiState: StateFlow<ScenarioUiState> = _uiState.asStateFlow()
 
+    private val _uiEvent = Channel<ScenarioUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<ScenarioUiEvent> = _uiEvent.receiveAsFlow()
+
+    private val classId: Long? = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)
+    private var isMidVoteEnabled = false
     private var timerJob: Job? = null
     private var fullScenario: ScenarioUiModel? = null
     private var currentAudioKey: String? = null
@@ -48,6 +63,10 @@ class ScenarioViewModel @Inject constructor(
         audioPlayerManager.onPlaybackEnded = { handleNodeEnd() }
         observePlayingState()
         observePlaybackError()
+    }
+
+    private fun sendEvent(event: ScenarioUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
     }
 
     private fun observePlayingState() {
@@ -76,6 +95,13 @@ class ScenarioViewModel @Inject constructor(
                     pastChoices = emptyList(),
                     maxListenedPositionMs = 0L
                 )
+            }
+            if (classId != null) {
+                val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                    sendEvent(ScenarioUiEvent.ShowLoadFailedToast)
+                    return@launch
+                }
+                isMidVoteEnabled = classBattle.midVoteEnabled
             }
             scenarioUseCases.fetchBattleScenarioUseCase(battleId)
                 .onSuccess { board ->
@@ -147,18 +173,45 @@ class ScenarioViewModel @Inject constructor(
         seekAndPlay(0)
     }
 
-    fun selectOption(nextNodeId: String) {
+    fun selectOption(option: ScenarioOptionUiModel) {
+        if (_uiState.value.isRequesting) return
+
+        if (classId != null && isMidVoteEnabled) {
+            submitMidVote(classId, option)
+        } else {
+            moveToSelectedOption(option)
+        }
+    }
+
+    private fun submitMidVote(classId: Long, option: ScenarioOptionUiModel) {
+        val checkpointId = _uiState.value.currentNodeId.toLongOrNull() ?: return
+
+        _uiState.update { it.copy(isRequesting = true) }
+        viewModelScope.launch {
+            classroomUseCases.submitClassMidVoteUseCase(classId, checkpointId, option.optionId)
+                .onSuccess {
+                    _uiState.update { state -> state.copy(isRequesting = false) }
+                    moveToSelectedOption(option)
+                }
+                .onFailure {
+                    _uiState.update { state -> state.copy(isRequesting = false) }
+                    sendEvent(ScenarioUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
+
+    private fun moveToSelectedOption(option: ScenarioOptionUiModel) {
         val currentOptions = _uiState.value.interactiveOptions
         val totalScriptsSize = _uiState.value.pastScripts.size + _uiState.value.scripts.size
 
         val newChoice = PastChoice(
             scriptIndex = totalScriptsSize - 1,
             options = currentOptions,
-            selectedNextNodeId = nextNodeId
+            selectedOptionId = option.optionId
         )
 
         _uiState.update { it.copy(pastChoices = it.pastChoices + newChoice) }
-        loadNode(nextNodeId)
+        loadNode(option.nextNodeId)
     }
 
     private fun loadNode(nodeId: String) {

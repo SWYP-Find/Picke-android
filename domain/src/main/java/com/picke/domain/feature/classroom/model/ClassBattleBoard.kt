@@ -10,5 +10,6 @@ data class ClassBattleDetailBoard(
     val commentRequired: Boolean,
     val canParticipate: Boolean,
     val participationCompleted: Boolean,
+    val midVoteEnabled: Boolean,
     val battle: BattleDetailBoard
 )

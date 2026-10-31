@@ -457,33 +457,38 @@ object DummyData {
             scriptIndex = 5,
             options = listOf(
                 ScenarioOptionUiModel(
+                    optionId = 1L,
                     label = "짜장면 측 반론 듣기",
                     nextNodeId = "node_pro_rebuttal"
                 ),
                 ScenarioOptionUiModel(
+                    optionId = 2L,
                     label = "짬뽕 측 반론 듣기",
                     nextNodeId = "node_con_rebuttal"
                 )
             ),
-            selectedNextNodeId = "node_con_rebuttal"
+            selectedOptionId = 2L
         ),
         PastChoice(
             scriptIndex = 12,
             options = listOf(
                 ScenarioOptionUiModel(
+                    optionId = 3L,
                     label = "최종 결론 듣기",
                     nextNodeId = "node_conclusion"
                 ),
                 ScenarioOptionUiModel(
+                    optionId = 4L,
                     label = "전문가 의견 듣기",
                     nextNodeId = "node_expert"
                 ),
                 ScenarioOptionUiModel(
+                    optionId = 5L,
                     label = "바로 투표하기",
                     nextNodeId = "node_vote"
                 )
             ),
-            selectedNextNodeId = "node_conclusion"
+            selectedOptionId = 3L
         )
     )
 

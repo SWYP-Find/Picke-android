@@ -66,6 +66,7 @@ interface ClassroomRepository {
     suspend fun submitClassPreVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun submitClassPostVote(classId: Long, optionId: Long): Result<Unit>
     suspend fun completeClassTts(classId: Long): Result<Unit>
+    suspend fun submitClassMidVote(classId: Long, checkpointId: Long, optionId: Long): Result<Unit>
     suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard>
     suspend fun startClassDebate(classId: Long): Result<ClassDebateBoard>
     suspend fun submitClassDebateReply(

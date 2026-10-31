@@ -30,6 +30,7 @@ data class ScenarioScriptUiModel(
 )
 
 data class ScenarioOptionUiModel(
+    val optionId: Long,
     val label: String,
     val nextNodeId: String
 )
@@ -53,7 +54,11 @@ fun ScenarioBoard.toUiModel(): ScenarioUiModel {
                 audioDuration = node.audioDuration,
                 autoNextNodeId = node.autoNextNodeId,
                 interactiveOptions = node.interactiveOptions.map {
-                    ScenarioOptionUiModel(it.label, it.nextNodeId)
+                    ScenarioOptionUiModel(
+                        optionId = it.optionId,
+                        label = it.label,
+                        nextNodeId = it.nextNodeId
+                    )
                 },
                 scripts = node.scripts.map { script ->
                     ScenarioScriptUiModel(

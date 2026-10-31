@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.scenario
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,8 @@ import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
 import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
+import com.picke.presentation.ui.scenario.model.ScenarioOptionUiModel
+import com.picke.presentation.ui.scenario.model.ScenarioUiEvent
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -50,8 +54,25 @@ fun ScenarioScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     LaunchedEffect(battleId) {
         viewModel.loadScenario(battleId)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                ScenarioUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ScenarioUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
@@ -84,7 +105,7 @@ fun ScenarioScreen(
     onSpeedClick: () -> Unit,
     onReplayClick: () -> Unit,
     onSeekToPosition: (Float) -> Unit,
-    onSelectOption: (String) -> Unit,
+    onSelectOption: (ScenarioOptionUiModel) -> Unit,
     onDismissFinalDialog: () -> Unit,
     onRestartCurrentAudio: () -> Unit,
     onNextClick: () -> Unit
@@ -199,7 +220,7 @@ fun ScenarioScreen(
                     if (pastChoice != null) {
                         InteractiveOptionsUI(
                             options = pastChoice.options,
-                            selectedNodeId = pastChoice.selectedNextNodeId,
+                            selectedOptionId = pastChoice.selectedOptionId,
                             onOptionClick = {}
                         )
                     }
@@ -209,8 +230,9 @@ fun ScenarioScreen(
                     item {
                         InteractiveOptionsUI(
                             options = uiState.interactiveOptions,
-                            selectedNodeId = null,
-                            onOptionClick = onSelectOption
+                            selectedOptionId = null,
+                            onOptionClick = onSelectOption,
+                            isRequesting = uiState.isRequesting
                         )
                     }
                 }
@@ -252,7 +274,7 @@ fun ScenarioScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 1000)
 @Composable
 fun ScenarioScreenPreview() {
     PickeTheme {

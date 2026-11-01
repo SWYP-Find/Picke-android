@@ -211,7 +211,10 @@ class ClassroomRepositoryImpl @Inject constructor(
         checkpointId: Long,
         optionId: Long
     ): Result<Unit> = apiCall {
-        classroomApi.submitClassMidVote(classId, ClassMidVoteRequestDto(checkpointId, optionId))
+        classroomApi.submitClassMidVote(
+            classId,
+            ClassMidVoteRequestDto(checkpointId = checkpointId, optionId = optionId)
+        )
             .toResult("중간 투표를 하지 못했습니다.")
             .map { }
     }

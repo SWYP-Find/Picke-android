@@ -189,15 +189,17 @@ class ScenarioViewModel @Inject constructor(
 
         _uiState.update { it.copy(isRequesting = true) }
         viewModelScope.launch {
-            classroomUseCases.submitClassMidVoteUseCase(classId, checkpointId, option.optionId)
-                .onSuccess {
-                    _uiState.update { state -> state.copy(isRequesting = false) }
-                    moveToSelectedOption(option)
-                }
-                .onFailure {
-                    _uiState.update { state -> state.copy(isRequesting = false) }
-                    sendEvent(ScenarioUiEvent.ShowActionFailedToast)
-                }
+            classroomUseCases.submitClassMidVoteUseCase(
+                classId = classId,
+                checkpointId = checkpointId,
+                optionId = option.optionId
+            ).onSuccess {
+                _uiState.update { state -> state.copy(isRequesting = false) }
+                moveToSelectedOption(option)
+            }.onFailure {
+                _uiState.update { state -> state.copy(isRequesting = false) }
+                sendEvent(ScenarioUiEvent.ShowActionFailedToast)
+            }
         }
     }
 

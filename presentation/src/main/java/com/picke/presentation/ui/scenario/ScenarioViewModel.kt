@@ -110,6 +110,7 @@ class ScenarioViewModel @Inject constructor(
                     val firstNodeId = fullScenario?.startNodeId ?: return@onSuccess
                     loadNode(firstNodeId)
                 }
+                .onFailure { sendEvent(ScenarioUiEvent.ShowLoadFailedToast) }
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.ui.classroom.model.ClassErrorCode
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.my.ticket.model.toUiModel
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterDialog
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterMutation
@@ -69,7 +70,7 @@ class TicketRegisterViewModel @Inject constructor(
             classroomUseCases.previewClassTicketUseCase(code)
                 .onSuccess { preview ->
                     if (preview.registeredByMe) {
-                        sendEvent(TicketRegisterUiEvent.NavigateToTicket)
+                        checkMyTicket()
                     } else {
                         _uiState.update {
                             reduce(it, TicketRegisterMutation.CodeVerified(preview.toUiModel()))
@@ -85,6 +86,27 @@ class TicketRegisterViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private suspend fun checkMyTicket() {
+        classroomUseCases.getMyClassTicketUseCase()
+            .onSuccess { ticket ->
+                if (ClassTicketStatus.from(ticket.status) == ClassTicketStatus.ACTIVE) {
+                    sendEvent(TicketRegisterUiEvent.NavigateToTicket)
+                } else {
+                    _uiState.update {
+                        reduce(
+                            it,
+                            TicketRegisterMutation.RequestFailed(TicketRegisterDialog.EXPIRED)
+                        )
+                    }
+                }
+            }
+            .onFailure { exception ->
+                _uiState.update {
+                    reduce(it, TicketRegisterMutation.RequestFailed(exception.toRegisterDialog()))
+                }
+            }
     }
 
     private fun registerTicket(code: String) {

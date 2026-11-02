@@ -45,5 +45,5 @@ interface PerspectiveRepository {
     // 10. 관점 좋아요 취소
     suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard>
     // 11. 관점 신고
-    suspend fun reportPerspective(perspectiveId: Long): Result<String>
+    suspend fun reportPerspective(perspectiveId: Long): Result<Unit>
 }

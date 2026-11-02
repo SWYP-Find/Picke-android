@@ -1,13 +1,11 @@
 package com.picke.data.feature.perspective.repository
 
-import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.toResult
 import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.perspective.datasource.PerspectiveApi
 import com.picke.data.feature.perspective.model.PerspectiveRequestDto
 import com.picke.data.feature.perspective.model.toDomainModel
-import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
@@ -17,7 +15,6 @@ import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 class PerspectiveRepositoryImpl @Inject constructor(
     private val perspectiveApi: PerspectiveApi
@@ -111,22 +108,8 @@ class PerspectiveRepositoryImpl @Inject constructor(
                 .map { it.toDomainModel() }
         }
 
-    override suspend fun reportPerspective(perspectiveId: Long): Result<String> {
-        return try {
-            val response = perspectiveApi.reportPerspective(perspectiveId)
-            when (response.statusCode) {
-                200 -> Result.success(response.data ?: "Success")
-                409 -> Result.failure(Exception("ALREADY_REPORTED"))
-                else -> Result.failure(ApiErrorException("신고 실패(Code: ${response.statusCode}): ${response.error?.message ?: "알 수 없는 에러"}"))
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            if (e.message?.contains("409") == true) {
-                Result.failure(Exception("ALREADY_REPORTED"))
-            } else {
-                e.toReportedFailure()
-            }
-        }
+    override suspend fun reportPerspective(perspectiveId: Long): Result<Unit> = apiCall {
+        perspectiveApi.reportPerspective(perspectiveId)
+            .toUnitResult("관점을 신고하지 못했습니다.")
     }
 }

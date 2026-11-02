@@ -37,39 +37,26 @@ fun ClassMyReplyCard(
         modifier = modifier
             .fillMaxWidth()
             .background(PickeTheme.colors.cardBaseBackgroundDefault, shape)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.cardBaseBorderDefault, shape)
+            .border(
+                ComponentNumberTokens.borderWidthRegular,
+                PickeTheme.colors.cardBaseBorderDefault,
+                shape
+            )
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        Column(
+        Text(
+            text = reply.perspectiveTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(PickeTheme.colors.surfaceBeigeSubtle, shape)
                 .padding(SpacingTokens.s12),
-            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
-                Text(
-                    text = reply.parentAuthorName,
-                    color = PickeTheme.colors.textSubtler,
-                    style = PickeTheme.typography.bodyXxsSemiBold
-                )
-                Text(
-                    text = stringResource(R.string.class_my_opinion_parent_stance, reply.parentStance),
-                    color = PickeTheme.colors.textMuted,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = PickeTheme.typography.bodyXxsSemiBold
-                )
-            }
-            Text(
-                text = reply.parentContent,
-                color = PickeTheme.colors.textMuted,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                style = PickeTheme.typography.bodyXxsRegular
-            )
-        }
+            color = PickeTheme.colors.textMuted,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            style = PickeTheme.typography.bodyXxsSemiBold
+        )
+
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),

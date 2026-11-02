@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classmyopinion
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,10 +40,17 @@ fun ClassMyOpinionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassMyOpinionUiEvent.NavigateBack -> onBackClick()
+
+                ClassMyOpinionUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -96,8 +106,17 @@ private fun ClassMyOpinionContent(
                         modifier = if (uiState.comments.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
                     )
                 }
-                items(items = uiState.replies, key = { "reply_${it.replyId}" }) { reply ->
+                itemsIndexed(
+                    items = uiState.replies,
+                    key = { _, reply -> "reply_${reply.replyId}" }
+                ) { index, reply ->
                     ClassMyReplyCard(reply = reply)
+
+                    if (index == uiState.replies.lastIndex && uiState.canLoadMoreReplies) {
+                        LaunchedEffect(reply.replyId) {
+                            onAction(ClassMyOpinionUiAction.RepliesEndReach)
+                        }
+                    }
                 }
             }
         }

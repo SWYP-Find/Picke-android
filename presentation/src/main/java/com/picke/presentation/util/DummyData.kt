@@ -853,17 +853,13 @@ object DummyData {
     val dummyClassMyReplies = listOf(
         ClassMyReplyUiModel(
             replyId = 1L,
-            parentAuthorName = "김민지",
-            parentStance = "교정이 우선이다",
-            parentContent = "나이가 어리다는 이유만으로 책임을 덜어 주면 피해자는 누가 보호하나요?",
+            perspectiveTitle = "교정이 우선이다",
             authorName = "공은지",
             content = "피해자 보호도 중요하지만, 교정이 이루어져야 같은 피해가 다시 생기지 않는다고 생각해요."
         ),
         ClassMyReplyUiModel(
             replyId = 2L,
-            parentAuthorName = "이서준",
-            parentStance = "낮춰야 한다",
-            parentContent = "요즘 청소년 범죄는 예전보다 훨씬 계획적이에요.",
+            perspectiveTitle = "낮춰야 한다",
             authorName = "공은지",
             content = "계획적인 범죄라면 처벌 기준을 따로 두는 방법도 함께 생각해 볼 수 있을 것 같아요."
         )

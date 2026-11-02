@@ -11,8 +11,8 @@ import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionMu
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
-import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyPerspectiveStatus
 import com.picke.presentation.ui.classroom.classmyopinion.model.toUiModel
+import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -69,7 +69,7 @@ class ClassMyOpinionViewModel @Inject constructor(
             perspectiveUseCases.getMyPerspectivesUseCase(target)
                 .onSuccess { boards ->
                     val perspectives = boards
-                        .filter { ClassMyPerspectiveStatus.from(it.status) == ClassMyPerspectiveStatus.PUBLISHED }
+                        .filter { PerspectiveStatus.from(it.status) == PerspectiveStatus.PUBLISHED }
                         .map { it.toUiModel() }
                     _uiState.update {
                         reduce(it, ClassMyOpinionMutation.MyPerspectivesLoaded(perspectives))

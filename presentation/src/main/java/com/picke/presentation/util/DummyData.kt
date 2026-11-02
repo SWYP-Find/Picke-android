@@ -842,11 +842,11 @@ object DummyData {
 
     val dummyClassMyComments = listOf(
         ClassMyCommentUiModel(
-            commentId = 1L,
-            stance = "낮춰야 한다",
+            perspectiveId = 1L,
+            optionTitle = "낮춰야 한다",
             content = "처벌만 강화하면 재범을 막기 어렵다고 생각해요. 교육과 보호가 함께 가야 해요.",
             likeCount = 1340,
-            replyCount = 23
+            commentCount = 23
         )
     )
 

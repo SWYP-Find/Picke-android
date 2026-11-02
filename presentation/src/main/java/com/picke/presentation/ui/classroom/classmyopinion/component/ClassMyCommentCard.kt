@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
@@ -44,11 +45,13 @@ fun ClassMyCommentCard(
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        PickeBadge(text = comment.stance)
+        PickeBadge(text = comment.optionTitle)
         Text(
             text = comment.content,
             modifier = Modifier.padding(horizontal = SpacingTokens.s2),
             color = PickeTheme.colors.textBody,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 3,
             style = PickeTheme.typography.bodyXsRegular
         )
         Row(
@@ -64,7 +67,7 @@ fun ClassMyCommentCard(
             PickeIconCount(
                 iconRes = R.drawable.ic_message,
                 contentDescription = stringResource(R.string.class_my_opinion_reply),
-                count = comment.replyCount,
+                count = comment.commentCount,
                 contentColor = PickeTheme.colors.cardBaseTextDecription
             )
         }

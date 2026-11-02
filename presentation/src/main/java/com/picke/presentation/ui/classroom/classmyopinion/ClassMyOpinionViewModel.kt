@@ -3,14 +3,16 @@ package com.picke.presentation.ui.classroom.classmyopinion
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionMutation
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyPerspectiveStatus
 import com.picke.presentation.ui.classroom.classmyopinion.model.toUiModel
-import com.picke.presentation.util.DummyData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ClassMyOpinionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val classroomUseCases: ClassroomUseCases
+    private val classroomUseCases: ClassroomUseCases,
+    private val perspectiveUseCases: PerspectiveUseCases
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         ClassMyOpinionUiState(classId = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID) ?: 0L)
@@ -61,9 +64,19 @@ class ClassMyOpinionViewModel @Inject constructor(
     }
 
     private fun fetchMyComments() {
-        // TODO: API 연동 - 클래스에서 내가 남긴 댓글 조회로 교체
-        val mutation = ClassMyOpinionMutation.MyCommentsLoaded(DummyData.dummyClassMyComments)
-        _uiState.update { reduce(it, mutation) }
+        val target = BattleTarget.Class(_uiState.value.classId)
+        viewModelScope.launch {
+            perspectiveUseCases.getMyPerspectivesUseCase(target)
+                .onSuccess { perspectives ->
+                    val comments = perspectives
+                        .filter { ClassMyPerspectiveStatus.from(it.status) == ClassMyPerspectiveStatus.PUBLISHED }
+                        .map { it.toUiModel() }
+                    _uiState.update {
+                        reduce(it, ClassMyOpinionMutation.MyCommentsLoaded(comments))
+                    }
+                }
+                .onFailure { sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast) }
+        }
     }
 
     private fun fetchReplies() {

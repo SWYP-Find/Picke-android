@@ -95,7 +95,10 @@ private fun ClassMyOpinionContent(
                 item {
                     ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
                 }
-                items(items = uiState.comments, key = { "comment_${it.commentId}" }) { comment ->
+                items(
+                    items = uiState.comments,
+                    key = { "comment_${it.perspectiveId}" }
+                ) { comment ->
                     ClassMyCommentCard(comment = comment)
                 }
             }

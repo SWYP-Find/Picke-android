@@ -2,7 +2,6 @@ package com.picke.data.common.error
 
 import com.google.gson.stream.MalformedJsonException
 import com.picke.domain.common.exception.ApiErrorException
-import com.picke.domain.common.exception.NotEnoughPointsException
 import io.sentry.Sentry
 import retrofit2.HttpException
 import java.io.IOException
@@ -21,6 +20,5 @@ private fun Throwable.isUnexpected(): Boolean = when (this) {
     is IOException -> false
     is HttpException -> false
     is ApiErrorException -> false
-    is NotEnoughPointsException -> false
     else -> true
 }

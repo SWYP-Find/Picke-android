@@ -63,6 +63,7 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import com.picke.presentation.util.appendHighlighted
+import com.picke.presentation.util.hasFinalConsonant
 
 private object ClassDebateScreenDimens {
     val chatTopPadding = 28.dp
@@ -290,13 +291,23 @@ private fun ClassDebateIntroSection(
 ) {
     val choiceText = stringResource(R.string.class_debate_intro_choice, myChoice)
     val opponentText = stringResource(R.string.class_debate_intro_opponent, opponentName)
-    val choiceLine = stringResource(R.string.class_debate_intro_choice_format, choiceText)
-    val startLine =
-        stringResource(
-            R.string.class_debate_intro_start_format,
-            opponentText,
-            ClassDebateUiState.TOTAL_ROUNDS
-        )
+    val choiceLine = stringResource(
+        if (myChoice.hasFinalConsonant()) {
+            R.string.class_debate_intro_choice_format_eul
+        } else {
+            R.string.class_debate_intro_choice_format_reul
+        },
+        choiceText
+    )
+    val startLine = stringResource(
+        if (opponentName.hasFinalConsonant()) {
+            R.string.class_debate_intro_start_format_gwa
+        } else {
+            R.string.class_debate_intro_start_format_wa
+        },
+        opponentText,
+        ClassDebateUiState.TOTAL_ROUNDS
+    )
 
     val highlightStyle =
         SpanStyle(color = PickeTheme.colors.textDefault, fontWeight = FontWeight.Bold)
@@ -314,7 +325,7 @@ private fun ClassDebateIntroSection(
             .fillMaxWidth()
             .background(PickeTheme.colors.beige500, RoundedCornerShape(RadiusTokens.default))
             .padding(vertical = SpacingTokens.s12),
-        color = PickeTheme.colors.textBody,
+        color = PickeTheme.colors.textDefault,
         textAlign = TextAlign.Center,
         style = PickeTheme.typography.captionMdMedium
     )

@@ -1,13 +1,13 @@
 package com.picke.domain.feature.perspective.usecase
 
 data class PerspectiveUseCases(
-    val getMyPerspectivesUseCase: GetMyPerspectivesUseCase,
-    val deletePerspectiveUseCase: DeletePerspectiveUseCase,
-    val loadMainPerspectiveUseCase: LoadMainPerspectiveUseCase,
     val loadPerspectivesUseCase: LoadPerspectivesUseCase,
-    val reportPerspectiveUseCase: ReportPerspectiveUseCase,
-    val retryModerationUseCase: RetryModerationUseCase,
+    val getMyPerspectivesUseCase: GetMyPerspectivesUseCase,
+    val loadMainPerspectiveUseCase: LoadMainPerspectiveUseCase,
     val createPerspectiveUseCase: CreatePerspectiveUseCase,
+    val updatePerspectiveUseCase: UpdatePerspectiveUseCase,
+    val deletePerspectiveUseCase: DeletePerspectiveUseCase,
+    val retryModerationUseCase: RetryModerationUseCase,
     val togglePerspectiveLikeUseCase: TogglePerspectiveLikeUseCase,
-    val updatePerspectiveUseCase: UpdatePerspectiveUseCase
+    val reportPerspectiveUseCase: ReportPerspectiveUseCase
 )

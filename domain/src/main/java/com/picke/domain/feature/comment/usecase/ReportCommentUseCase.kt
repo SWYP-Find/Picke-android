@@ -1,5 +1,7 @@
 package com.picke.domain.feature.comment.usecase
 
+import com.picke.domain.common.exception.ApiErrorCode
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.comment.repository.CommentRepository
 
 sealed class ReportCommentResult {
@@ -14,7 +16,7 @@ class ReportCommentUseCase(
         return commentRepository.reportComment(perspectiveId, commentId)
             .map { ReportCommentResult.Reported as ReportCommentResult }
             .recoverCatching { error ->
-                if (error.message == "ALREADY_REPORTED") {
+                if ((error as? ApiErrorException)?.code == ApiErrorCode.REPORT_409) {
                     ReportCommentResult.AlreadyReported
                 } else {
                     throw error

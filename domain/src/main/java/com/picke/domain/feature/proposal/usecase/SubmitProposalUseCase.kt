@@ -1,6 +1,7 @@
 package com.picke.domain.feature.proposal.usecase
 
-import com.picke.domain.common.exception.NotEnoughPointsException
+import com.picke.domain.common.exception.ApiErrorCode
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.proposal.repository.ProposalRepository
 
 sealed class SubmitProposalResult {
@@ -27,7 +28,7 @@ class SubmitProposalUseCase(
         )
             .map { SubmitProposalResult.Success(it.id) as SubmitProposalResult }
             .recoverCatching { error ->
-                if (error is NotEnoughPointsException) {
+                if ((error as? ApiErrorException)?.code == ApiErrorCode.CREDIT_400_INSUFFICIENT) {
                     SubmitProposalResult.NotEnoughPoints
                 } else {
                     throw error

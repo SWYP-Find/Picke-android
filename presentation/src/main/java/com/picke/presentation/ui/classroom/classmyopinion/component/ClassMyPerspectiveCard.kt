@@ -26,6 +26,8 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
+private const val CONTENT_MAX_LINES = 3
+
 private object ClassMyPerspectiveCardDimens {
     val countGroupSpacing = 11.dp
 }
@@ -51,7 +53,7 @@ fun ClassMyPerspectiveCard(
             modifier = Modifier.padding(horizontal = SpacingTokens.s2),
             color = PickeTheme.colors.textBody,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 3,
+            maxLines = CONTENT_MAX_LINES,
             style = PickeTheme.typography.bodyXsRegular
         )
         Row(

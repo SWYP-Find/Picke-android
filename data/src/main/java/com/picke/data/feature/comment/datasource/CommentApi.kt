@@ -17,12 +17,11 @@ import retrofit2.http.Query
 interface CommentApi {
 
     // 1. 댓글 목록 조회 (페이지네이션)
-    //@GET("/api/v1/perspectives/{perspectiveId}/comments")
     @GET("/api/v1/perspectives/{perspectiveId}/comments/labeled")
     suspend fun getComments(
         @Path("perspectiveId") perspectiveId: Long,
-        @Query("cursor") cursor: String? = null,
-        @Query("size") size: Int = 10
+        @Query("cursor") cursor: String?,
+        @Query("size") size: Int
     ): BaseResponse<CommentListResponseDto>
 
     // 2. 댓글 생성

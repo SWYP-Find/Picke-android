@@ -46,6 +46,7 @@ import com.picke.domain.feature.classroom.usecase.GetClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultInsightUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultMyActivityUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultMyReportUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
@@ -223,6 +224,7 @@ object UseCaseModule {
             getClassResultUseCase = GetClassResultUseCase(classroomRepository),
             getClassResultMyReportUseCase = GetClassResultMyReportUseCase(classroomRepository),
             getClassResultInsightUseCase = GetClassResultInsightUseCase(classroomRepository),
+            getClassResultMyActivityUseCase = GetClassResultMyActivityUseCase(classroomRepository),
             retryClassResultInsightUseCase = RetryClassResultInsightUseCase(classroomRepository)
         )
     }

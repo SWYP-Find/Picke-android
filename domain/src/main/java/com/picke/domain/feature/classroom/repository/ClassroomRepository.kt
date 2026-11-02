@@ -8,6 +8,7 @@ import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassResultBoard
 import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
+import com.picke.domain.feature.classroom.model.ClassResultMyActivityBoard
 import com.picke.domain.feature.classroom.model.ClassResultMyReportBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
@@ -80,5 +81,10 @@ interface ClassroomRepository {
     suspend fun getClassResult(classId: Long): Result<ClassResultBoard>
     suspend fun getClassResultMyReport(classId: Long): Result<ClassResultMyReportBoard>
     suspend fun getClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
+    suspend fun getClassResultMyActivity(
+        classId: Long,
+        cursor: String?
+    ): Result<ClassResultMyActivityBoard>
+
     suspend fun retryClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
 }

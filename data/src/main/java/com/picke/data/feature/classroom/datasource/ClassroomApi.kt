@@ -13,6 +13,7 @@ import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberResponseDto
 import com.picke.data.feature.classroom.model.ClassMidVoteRequestDto
 import com.picke.data.feature.classroom.model.ClassResultInsightResponseDto
+import com.picke.data.feature.classroom.model.ClassResultMyActivityResponseDto
 import com.picke.data.feature.classroom.model.ClassResultMyReportResponseDto
 import com.picke.data.feature.classroom.model.ClassResultResponseDto
 import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
@@ -191,6 +192,12 @@ interface ClassroomApi {
     suspend fun getClassResultInsight(
         @Path("classId") classId: Long
     ): BaseResponse<ClassResultInsightResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/my-activity")
+    suspend fun getClassResultMyActivity(
+        @Path("classId") classId: Long,
+        @Query("cursor") cursor: String?
+    ): BaseResponse<ClassResultMyActivityResponseDto>
 
     @POST("/api/v1/classes/{classId}/result/insight/retry")
     suspend fun retryClassResultInsight(

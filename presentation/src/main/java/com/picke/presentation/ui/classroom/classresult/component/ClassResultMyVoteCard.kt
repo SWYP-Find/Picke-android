@@ -29,6 +29,7 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassResultMyVoteCard(
     report: ClassResultReportUiModel,
+    receivedLikeCount: Int,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
@@ -100,17 +101,15 @@ fun ClassResultMyVoteCard(
                 label = stringResource(R.string.class_result_reply_count),
                 modifier = Modifier.weight(1f)
             )
-            if (report.receivedLikeCount != null) {
-                VerticalDivider(
-                    thickness = ComponentNumberTokens.borderWidthRegular,
-                    color = PickeTheme.colors.cardBaseBorderDefault
-                )
-                ClassResultStatColumn(
-                    count = report.receivedLikeCount,
-                    label = stringResource(R.string.class_result_received_like_count),
-                    modifier = Modifier.weight(1f)
-                )
-            }
+            VerticalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.cardBaseBorderDefault
+            )
+            ClassResultStatColumn(
+                count = receivedLikeCount,
+                label = stringResource(R.string.class_result_received_like_count),
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
@@ -167,7 +166,10 @@ private fun ClassResultStatColumn(
 @Composable
 private fun ClassResultMyVoteCardPreview() {
     PickeTheme {
-        ClassResultMyVoteCard(report = DummyData.dummyClassResultReport)
+        ClassResultMyVoteCard(
+            report = DummyData.dummyClassResultReport,
+            receivedLikeCount = 12
+        )
     }
 }
 
@@ -177,6 +179,9 @@ private fun ClassResultMyVoteCardKeptPreview() {
     val report = DummyData.dummyClassResultReport
 
     PickeTheme {
-        ClassResultMyVoteCard(report = report.copy(postVoteStance = report.preVoteStance))
+        ClassResultMyVoteCard(
+            report = report.copy(postVoteStance = report.preVoteStance),
+            receivedLikeCount = 0
+        )
     }
 }

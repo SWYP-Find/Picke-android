@@ -29,6 +29,7 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassResultMyVoteCard(
     report: ClassResultReportUiModel,
+    receivedLikeCount: Int?,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
@@ -100,17 +101,15 @@ fun ClassResultMyVoteCard(
                 label = stringResource(R.string.class_result_reply_count),
                 modifier = Modifier.weight(1f)
             )
-            if (report.receivedLikeCount != null) {
-                VerticalDivider(
-                    thickness = ComponentNumberTokens.borderWidthRegular,
-                    color = PickeTheme.colors.cardBaseBorderDefault
-                )
-                ClassResultStatColumn(
-                    count = report.receivedLikeCount,
-                    label = stringResource(R.string.class_result_received_like_count),
-                    modifier = Modifier.weight(1f)
-                )
-            }
+            VerticalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.cardBaseBorderDefault
+            )
+            ClassResultStatColumn(
+                count = receivedLikeCount,
+                label = stringResource(R.string.class_result_received_like_count),
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
@@ -142,7 +141,7 @@ private fun ClassResultVoteColumn(
 
 @Composable
 private fun ClassResultStatColumn(
-    count: Int,
+    count: Int?,
     label: String,
     modifier: Modifier = Modifier
 ) {
@@ -151,7 +150,7 @@ private fun ClassResultStatColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = count.toString(),
+            text = count?.toString() ?: stringResource(R.string.class_result_count_placeholder),
             color = PickeTheme.colors.textDefault,
             style = PickeTheme.typography.bodyLgBold
         )
@@ -167,7 +166,21 @@ private fun ClassResultStatColumn(
 @Composable
 private fun ClassResultMyVoteCardPreview() {
     PickeTheme {
-        ClassResultMyVoteCard(report = DummyData.dummyClassResultReport)
+        ClassResultMyVoteCard(
+            report = DummyData.dummyClassResultReport,
+            receivedLikeCount = 12
+        )
+    }
+}
+
+@Preview(name = "받은 추천 불러오는 중", showBackground = true)
+@Composable
+private fun ClassResultMyVoteCardLikeLoadingPreview() {
+    PickeTheme {
+        ClassResultMyVoteCard(
+            report = DummyData.dummyClassResultReport,
+            receivedLikeCount = null
+        )
     }
 }
 
@@ -177,6 +190,9 @@ private fun ClassResultMyVoteCardKeptPreview() {
     val report = DummyData.dummyClassResultReport
 
     PickeTheme {
-        ClassResultMyVoteCard(report = report.copy(postVoteStance = report.preVoteStance))
+        ClassResultMyVoteCard(
+            report = report.copy(postVoteStance = report.preVoteStance),
+            receivedLikeCount = 0
+        )
     }
 }

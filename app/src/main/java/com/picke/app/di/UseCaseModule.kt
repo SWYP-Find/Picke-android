@@ -46,6 +46,7 @@ import com.picke.domain.feature.classroom.usecase.GetClassDebateUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultInsightUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultMyActivityUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultMyReportUseCase
 import com.picke.domain.feature.classroom.usecase.GetClassResultUseCase
 import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
@@ -109,7 +110,7 @@ import com.picke.domain.feature.mypage.usecase.MyPageUseCases
 import com.picke.domain.feature.mypage.usecase.UpdateNotificationSettingsUseCase
 import com.picke.domain.feature.perspective.usecase.CreatePerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.DeletePerspectiveUseCase
-import com.picke.domain.feature.perspective.usecase.GetMyPerspectiveUseCase
+import com.picke.domain.feature.perspective.usecase.GetMyPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.LoadMainPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.LoadPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
@@ -223,6 +224,7 @@ object UseCaseModule {
             getClassResultUseCase = GetClassResultUseCase(classroomRepository),
             getClassResultMyReportUseCase = GetClassResultMyReportUseCase(classroomRepository),
             getClassResultInsightUseCase = GetClassResultInsightUseCase(classroomRepository),
+            getClassResultMyActivityUseCase = GetClassResultMyActivityUseCase(classroomRepository),
             retryClassResultInsightUseCase = RetryClassResultInsightUseCase(classroomRepository)
         )
     }
@@ -288,7 +290,7 @@ object UseCaseModule {
         perspectiveRepository: PerspectiveRepository
     ): PerspectiveUseCases {
         return PerspectiveUseCases(
-            getMyPerspectiveUseCase = GetMyPerspectiveUseCase(perspectiveRepository),
+            getMyPerspectivesUseCase = GetMyPerspectivesUseCase(perspectiveRepository),
             deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
             loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
             loadPerspectivesUseCase = LoadPerspectivesUseCase(perspectiveRepository),

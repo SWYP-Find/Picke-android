@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.classmyopinion
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyCommentCard
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSectionTitle
-import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyReplyCard
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPerspectiveCard
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
@@ -37,10 +39,17 @@ fun ClassMyOpinionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassMyOpinionUiEvent.NavigateBack -> onBackClick()
+
+                ClassMyOpinionUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -69,6 +78,7 @@ private fun ClassMyOpinionContent(
             backgroundColor = PickeTheme.colors.backgroundBeige,
             titleColor = PickeTheme.colors.textSubtler
         )
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,23 +91,40 @@ private fun ClassMyOpinionContent(
             ),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
         ) {
-            if (uiState.comments.isNotEmpty()) {
+            if (uiState.perspectives.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
                 }
-                items(items = uiState.comments, key = { "comment_${it.commentId}" }) { comment ->
-                    ClassMyCommentCard(comment = comment)
+
+                items(
+                    items = uiState.perspectives,
+                    key = { "perspective_${it.perspectiveId}" }
+                ) { perspective ->
+                    ClassMyPerspectiveCard(perspective = perspective)
                 }
             }
-            if (uiState.replies.isNotEmpty()) {
+
+            if (uiState.comments.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(
                         text = stringResource(R.string.class_my_opinion_replies),
-                        modifier = if (uiState.comments.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
+                        modifier = if (uiState.perspectives.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
                     )
                 }
-                items(items = uiState.replies, key = { "reply_${it.replyId}" }) { reply ->
-                    ClassMyReplyCard(reply = reply)
+
+                items(
+                    items = uiState.comments,
+                    key = { "comment_${it.commentId}" }
+                ) { comment ->
+                    ClassMyCommentCard(comment = comment)
+                }
+
+                if (uiState.canLoadMoreComments) {
+                    item {
+                        LaunchedEffect(Unit) {
+                            onAction(ClassMyOpinionUiAction.CommentsEndReach)
+                        }
+                    }
                 }
             }
         }
@@ -111,8 +138,8 @@ private fun ClassMyOpinionContentPreview() {
         ClassMyOpinionContent(
             uiState = ClassMyOpinionUiState(
                 classId = DummyData.dummyMyClasses.first().id,
-                comments = DummyData.dummyClassMyComments,
-                replies = DummyData.dummyClassMyReplies
+                perspectives = DummyData.dummyClassMyPerspectives,
+                comments = DummyData.dummyClassMyComments
             ),
             onAction = {}
         )

@@ -31,5 +31,6 @@ data class ClassroomUseCases(
     val getClassResultUseCase: GetClassResultUseCase,
     val getClassResultMyReportUseCase: GetClassResultMyReportUseCase,
     val getClassResultInsightUseCase: GetClassResultInsightUseCase,
+    val getClassResultMyActivityUseCase: GetClassResultMyActivityUseCase,
     val retryClassResultInsightUseCase: RetryClassResultInsightUseCase
 )

@@ -8,7 +8,6 @@ data class ClassResultReportUiModel(
     val postVoteStance: String,
     val perspectiveCount: Int,
     val commentCount: Int,
-    val receivedLikeCount: Int?,
     val judgmentBasis: String,
     val feedbackItems: List<ClassResultFeedbackItemUiModel>,
     val coverage: ClassFeedbackCoverage
@@ -26,8 +25,6 @@ fun ClassResultMyReportBoard.toUiModel() = ClassResultReportUiModel(
     postVoteStance = postOption?.title ?: "",
     perspectiveCount = perspectiveCount,
     commentCount = commentCount,
-    // TODO: API 연동 - 내 AI 피드백에 받은 추천 수 필드가 생기면 연결
-    receivedLikeCount = null,
     judgmentBasis = feedback?.judgmentBasis ?: "",
     feedbackItems = feedback?.toFeedbackItems() ?: emptyList(),
     coverage = ClassFeedbackCoverage.from(feedback?.coverage ?: "")

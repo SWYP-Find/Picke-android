@@ -23,5 +23,7 @@ internal sealed interface ClassResultMutation {
 
     data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation
 
+    data class MyActivityLoaded(val receivedLikeCount: Int) : ClassResultMutation
+
     data class InsightRetried(val insight: ClassResultInsightUiModel) : RequestFinished
 }

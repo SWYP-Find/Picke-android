@@ -10,8 +10,11 @@ internal fun reduce(state: ClassResultUiState, action: ClassResultUiAction): Cla
 
         is ClassResultUiAction.TabSelect -> state.copy(selectedTab = action.tab)
 
-        ClassResultUiAction.InsightRetryClick ->
-            if (state.isInsightRetryEnabled) state.copy(isRequesting = true) else state
+        ClassResultUiAction.InsightRetryClick -> if (state.isInsightRetryEnabled) {
+            state.copy(isRequesting = true)
+        } else {
+            state
+        }
     }
 
 internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): ClassResultUiState {
@@ -32,6 +35,8 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
         is ClassResultMutation.InsightLoaded -> state.copy(insight = mutation.insight)
 
         is ClassResultMutation.MyReportLoaded -> state.copy(report = mutation.report)
+
+        is ClassResultMutation.MyActivityLoaded -> state.copy(receivedLikeCount = mutation.receivedLikeCount)
 
         is ClassResultMutation.InsightRetried -> state.copy(insight = mutation.insight)
     }

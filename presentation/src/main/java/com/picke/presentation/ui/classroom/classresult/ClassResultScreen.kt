@@ -155,6 +155,7 @@ private fun ClassResultContent(
                     ClassResultTab.REPORT -> uiState.report?.let { report ->
                         ClassResultReportSection(
                             report = report,
+                            receivedLikeCount = uiState.receivedLikeCount,
                             deadline = uiState.deadline,
                             onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
                         )
@@ -274,6 +275,7 @@ private fun ClassResultSummarySection(
 @Composable
 private fun ClassResultReportSection(
     report: ClassResultReportUiModel,
+    receivedLikeCount: Int?,
     deadline: LocalDateTime?,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -295,7 +297,10 @@ private fun ClassResultReportSection(
             title = stringResource(R.string.class_result_my_vote),
             titleStyle = titleStyle
         ) {
-            ClassResultMyVoteCard(report = report)
+            ClassResultMyVoteCard(
+                report = report,
+                receivedLikeCount = receivedLikeCount
+            )
         }
 
         ClassTitledBlock(
@@ -376,6 +381,7 @@ private fun ClassResultContentPreview(
                 summary = summary,
                 insight = insight,
                 report = report,
+                receivedLikeCount = 12,
                 selectedTab = selectedTab
             ),
             onAction = {}

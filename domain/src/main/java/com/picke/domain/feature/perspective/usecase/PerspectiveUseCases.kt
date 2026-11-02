@@ -1,7 +1,7 @@
 package com.picke.domain.feature.perspective.usecase
 
 data class PerspectiveUseCases(
-    val getMyPerspectiveUseCase: GetMyPerspectiveUseCase,
+    val getMyPerspectivesUseCase: GetMyPerspectivesUseCase,
     val deletePerspectiveUseCase: DeletePerspectiveUseCase,
     val loadMainPerspectiveUseCase: LoadMainPerspectiveUseCase,
     val loadPerspectivesUseCase: LoadPerspectivesUseCase,

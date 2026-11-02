@@ -23,6 +23,7 @@ import com.picke.domain.feature.classroom.model.ClassJoinPreviewBoard
 import com.picke.domain.feature.classroom.model.ClassMemberBoard
 import com.picke.domain.feature.classroom.model.ClassResultBoard
 import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
+import com.picke.domain.feature.classroom.model.ClassResultMyActivityBoard
 import com.picke.domain.feature.classroom.model.ClassResultMyReportBoard
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
@@ -274,6 +275,15 @@ class ClassroomRepositoryImpl @Inject constructor(
     ): Result<ClassResultInsightBoard> = apiCall {
         classroomApi.getClassResultInsight(classId)
             .toResult("클래스 인사이트를 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
+
+    override suspend fun getClassResultMyActivity(
+        classId: Long,
+        cursor: String?
+    ): Result<ClassResultMyActivityBoard> = apiCall {
+        classroomApi.getClassResultMyActivity(classId, cursor)
+            .toResult("내 활동을 불러오지 못했습니다.")
             .map { it.toDomainModel() }
     }
 

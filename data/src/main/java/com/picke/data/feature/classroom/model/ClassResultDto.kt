@@ -6,6 +6,8 @@ import com.picke.domain.feature.classroom.model.ClassResultFeedbackEvidenceBoard
 import com.picke.domain.feature.classroom.model.ClassResultFeedbackPointBoard
 import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
 import com.picke.domain.feature.classroom.model.ClassResultInsightEvidenceBoard
+import com.picke.domain.feature.classroom.model.ClassResultMyActivityBoard
+import com.picke.domain.feature.classroom.model.ClassResultMyActivityCommentBoard
 import com.picke.domain.feature.classroom.model.ClassResultMyReportBoard
 import com.picke.domain.feature.classroom.model.ClassResultOptionBoard
 import com.picke.domain.feature.classroom.model.ClassResultReportOptionBoard
@@ -105,6 +107,25 @@ data class ClassResultInsightEvidenceDto(
     val optionId: Long?,
     val stance: String?,
     val content: String?,
+    val createdAt: String?
+)
+
+data class ClassResultMyActivityResponseDto(
+    val classId: Long?,
+    val receivedLikeCount: Int?,
+    val commentCount: Int?,
+    val comments: List<ClassResultMyActivityCommentDto>?,
+    val nextCursor: String?,
+    val hasNext: Boolean?
+)
+
+data class ClassResultMyActivityCommentDto(
+    val commentId: Long?,
+    val perspectiveId: Long?,
+    val perspectiveTitle: String?,
+    val stance: String?,
+    val content: String?,
+    val likeCount: Int?,
     val createdAt: String?
 )
 
@@ -212,3 +233,24 @@ fun ClassResultInsightEvidenceDto.toDomainModel() = ClassResultInsightEvidenceBo
     content = content ?: "",
     createdAt = createdAt ?: ""
 )
+
+fun ClassResultMyActivityResponseDto.toDomainModel() = ClassResultMyActivityBoard(
+    classId = classId ?: 0L,
+    receivedLikeCount = receivedLikeCount ?: 0,
+    commentCount = commentCount ?: 0,
+    comments = comments?.mapNotNull { it.toDomainModel() } ?: emptyList(),
+    nextCursor = nextCursor,
+    hasNext = hasNext ?: false
+)
+
+fun ClassResultMyActivityCommentDto.toDomainModel(): ClassResultMyActivityCommentBoard? {
+    return ClassResultMyActivityCommentBoard(
+        commentId = commentId ?: return null,
+        perspectiveId = perspectiveId ?: return null,
+        perspectiveTitle = perspectiveTitle ?: "",
+        stance = stance ?: "",
+        content = content ?: "",
+        likeCount = likeCount ?: 0,
+        createdAt = createdAt ?: ""
+    )
+}

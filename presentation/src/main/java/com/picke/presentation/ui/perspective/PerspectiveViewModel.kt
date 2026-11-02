@@ -76,7 +76,6 @@ class PerspectiveViewModel @Inject constructor(
             perspectiveUseCases.loadPerspectivesUseCase(
                 target = target,
                 cursor = cursor,
-                size = 10,
                 optionId = state.selectedOptionId,
                 sort = state.sort.apiValue
             ).onSuccess { page ->
@@ -118,12 +117,13 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchMyPerspective() {
         viewModelScope.launch {
-            perspectiveUseCases.getMyPerspectiveUseCase(target)
-                .onSuccess { myData ->
-                    _uiState.update { it.copy(myPerspective = myData.toUiModel()) }
+            perspectiveUseCases.getMyPerspectivesUseCase(target)
+                .onSuccess { perspectives ->
+                    _uiState.update { it.copy(myPerspective = perspectives.firstOrNull()?.toUiModel()) }
                 }
                 .onFailure {
                     _uiState.update { it.copy(myPerspective = null) }
+                    sendEvent(PerspectiveUiEvent.ShowToast(R.string.toast_load_failed))
                 }
         }
     }

@@ -96,3 +96,22 @@ data class ClassResultInsightEvidenceBoard(
     val content: String,
     val createdAt: String
 )
+
+data class ClassResultMyActivityBoard(
+    val classId: Long,
+    val receivedLikeCount: Int,
+    val commentCount: Int,
+    val comments: List<ClassResultMyActivityCommentBoard>,
+    val nextCursor: String?,
+    val hasNext: Boolean
+)
+
+data class ClassResultMyActivityCommentBoard(
+    val commentId: Long,
+    val perspectiveId: Long,
+    val perspectiveTitle: String,
+    val stance: String,
+    val content: String,
+    val likeCount: Int,
+    val createdAt: String
+)

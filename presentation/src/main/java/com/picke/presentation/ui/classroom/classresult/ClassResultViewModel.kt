@@ -97,7 +97,10 @@ class ClassResultViewModel @Inject constructor(
             _uiState.update { reduce(it, mutation) }
 
             if (hasSummaryTab) fetchInsight()
-            if (hasReportTab) fetchMyReport()
+            if (hasReportTab) {
+                fetchMyReport()
+                fetchMyActivity()
+            }
         }
     }
 
@@ -121,6 +124,19 @@ class ClassResultViewModel @Inject constructor(
                 .onSuccess { report ->
                     _uiState.update {
                         reduce(it, ClassResultMutation.MyReportLoaded(report.toUiModel()))
+                    }
+                }
+                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
+        }
+    }
+
+    private fun fetchMyActivity() {
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            classroomUseCases.getClassResultMyActivityUseCase(classId)
+                .onSuccess { activity ->
+                    _uiState.update {
+                        reduce(it, ClassResultMutation.MyActivityLoaded(activity.receivedLikeCount))
                     }
                 }
                 .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }

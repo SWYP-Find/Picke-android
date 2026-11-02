@@ -41,7 +41,10 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard> = apiCall {
+    override suspend fun createPerspective(
+        target: BattleTarget,
+        content: String
+    ): Result<PerspectiveStatusBoard> = apiCall {
         val request = PerspectiveRequestDto(content)
         when (target) {
             is BattleTarget.General -> perspectiveApi.createPerspective(target.battleId, request)
@@ -51,27 +54,32 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun getMyPerspective(target: BattleTarget): Result<PerspectiveDetailBoard> = apiCall {
-        when (target) {
-            is BattleTarget.General -> perspectiveApi.getMyPerspective(target.battleId)
-            is BattleTarget.Class -> perspectiveApi.getClassMyPerspective(target.classId)
+    override suspend fun getMyPerspectives(target: BattleTarget): Result<List<PerspectiveDetailBoard>> =
+        apiCall {
+            when (target) {
+                is BattleTarget.General -> perspectiveApi.getMyPerspectives(target.battleId)
+                is BattleTarget.Class -> perspectiveApi.getClassMyPerspectives(target.classId)
+            }
+                .toResult("내 관점을 불러오지 못했습니다.")
+                .map { perspectives -> perspectives.map { it.toDomainModel() } }
         }
-            .toResult("내 관점을 불러오지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
 
-    override suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard> = apiCall {
-        perspectiveApi.getPerspective(perspectiveId)
-            .toResult("관점 상세 정보를 불러오지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard> =
+        apiCall {
+            perspectiveApi.getPerspective(perspectiveId)
+                .toResult("관점 상세 정보를 불러오지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
     override suspend fun deletePerspective(perspectiveId: Long): Result<Unit> = apiCall {
         perspectiveApi.deletePerspective(perspectiveId)
             .toUnitResult("관점을 삭제하지 못했습니다.")
     }
 
-    override suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard> = apiCall {
+    override suspend fun updatePerspective(
+        perspectiveId: Long,
+        content: String
+    ): Result<PerspectiveUpdateBoard> = apiCall {
         perspectiveApi.updatePerspective(perspectiveId, PerspectiveRequestDto(content))
             .toResult("관점을 수정하지 못했습니다.")
             .map { it.toDomainModel() }
@@ -82,23 +90,26 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .toUnitResult("검토 재요청을 하지 못했습니다.")
     }
 
-    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> = apiCall {
-        perspectiveApi.getPerspectiveLikeCount(perspectiveId)
-            .toResult("좋아요 수를 불러오지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> =
+        apiCall {
+            perspectiveApi.getPerspectiveLikeCount(perspectiveId)
+                .toResult("좋아요 수를 불러오지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
-    override suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> = apiCall {
-        perspectiveApi.likePerspective(perspectiveId)
-            .toResult("좋아요를 등록하지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> =
+        apiCall {
+            perspectiveApi.likePerspective(perspectiveId)
+                .toResult("좋아요를 등록하지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
-    override suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> = apiCall {
-        perspectiveApi.unlikePerspective(perspectiveId)
-            .toResult("좋아요를 취소하지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
+    override suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> =
+        apiCall {
+            perspectiveApi.unlikePerspective(perspectiveId)
+                .toResult("좋아요를 취소하지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
 
     override suspend fun reportPerspective(perspectiveId: Long): Result<String> {
         return try {

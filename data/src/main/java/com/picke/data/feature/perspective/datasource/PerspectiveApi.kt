@@ -34,11 +34,11 @@ interface PerspectiveApi {
         @Body request: PerspectiveRequestDto
     ): BaseResponse<PerspectiveCreateResponseDto>
 
-    // 3. 내 관점 조회 -> ????
+    // 3. 내 관점 조회
     @GET("/api/v1/battles/{battleId}/perspectives/me")
-    suspend fun getMyPerspective(
+    suspend fun getMyPerspectives(
         @Path("battleId") battleId: Long
-    ): BaseResponse<PerspectiveDetailResponseDto>
+    ): BaseResponse<List<PerspectiveDetailResponseDto>>
 
     // 4. 특정 관점 단건 조회 -> 저장해둔 perspectiveId 꺼내서 새로고침
     @GET("/api/v1/perspectives/{perspectiveId}")
@@ -105,7 +105,7 @@ interface PerspectiveApi {
     ): BaseResponse<PerspectiveCreateResponseDto>
 
     @GET("/api/v1/classes/{classId}/battle/perspectives/me")
-    suspend fun getClassMyPerspective(
+    suspend fun getClassMyPerspectives(
         @Path("classId") classId: Long
-    ): BaseResponse<PerspectiveDetailResponseDto>
+    ): BaseResponse<List<PerspectiveDetailResponseDto>>
 }

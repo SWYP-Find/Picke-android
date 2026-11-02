@@ -22,7 +22,7 @@ interface PerspectiveRepository {
     suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard>
 
     // 3. 내 관점 조회
-    suspend fun getMyPerspective(target: BattleTarget): Result<PerspectiveDetailBoard>
+    suspend fun getMyPerspectives(target: BattleTarget): Result<List<PerspectiveDetailBoard>>
 
     // 4. 관점 단건 조회
     suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard>

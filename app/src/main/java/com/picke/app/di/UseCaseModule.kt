@@ -110,7 +110,7 @@ import com.picke.domain.feature.mypage.usecase.MyPageUseCases
 import com.picke.domain.feature.mypage.usecase.UpdateNotificationSettingsUseCase
 import com.picke.domain.feature.perspective.usecase.CreatePerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.DeletePerspectiveUseCase
-import com.picke.domain.feature.perspective.usecase.GetMyPerspectiveUseCase
+import com.picke.domain.feature.perspective.usecase.GetMyPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.LoadMainPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.LoadPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
@@ -290,7 +290,7 @@ object UseCaseModule {
         perspectiveRepository: PerspectiveRepository
     ): PerspectiveUseCases {
         return PerspectiveUseCases(
-            getMyPerspectiveUseCase = GetMyPerspectiveUseCase(perspectiveRepository),
+            getMyPerspectivesUseCase = GetMyPerspectivesUseCase(perspectiveRepository),
             deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
             loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
             loadPerspectivesUseCase = LoadPerspectivesUseCase(perspectiveRepository),

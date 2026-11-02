@@ -40,6 +40,7 @@ data class ScenarioScript(
 )
 
 data class ScenarioOption(
+    val optionId: Long,
     val label: String,
     val nextNodeId: String
 )

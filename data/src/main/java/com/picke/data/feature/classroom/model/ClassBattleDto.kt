@@ -14,7 +14,13 @@ data class ClassBattleDetailResponseDto(
     val commentRequired: Boolean?,
     val canParticipate: Boolean?,
     val participationCompleted: Boolean?,
+    val midVoteEnabled: Boolean?,
     val battle: BattleDetailDto?
+)
+
+data class ClassMidVoteRequestDto(
+    val checkpointId: Long,
+    val optionId: Long
 )
 
 fun ClassBattleDetailResponseDto.toDomainModel() = ClassBattleDetailBoard(
@@ -25,6 +31,7 @@ fun ClassBattleDetailResponseDto.toDomainModel() = ClassBattleDetailBoard(
     commentRequired = commentRequired ?: false,
     canParticipate = canParticipate ?: false,
     participationCompleted = participationCompleted ?: false,
+    midVoteEnabled = midVoteEnabled ?: false,
     battle = battle?.toDomainModel() ?: BattleDetailBoard(
         battleInfo = BattleInfoBoard.empty(),
         description = "",

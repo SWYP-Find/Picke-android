@@ -23,6 +23,7 @@ data class ClassroomUseCases(
     val submitClassPreVoteUseCase: SubmitClassPreVoteUseCase,
     val submitClassPostVoteUseCase: SubmitClassPostVoteUseCase,
     val completeClassTtsUseCase: CompleteClassTtsUseCase,
+    val submitClassMidVoteUseCase: SubmitClassMidVoteUseCase,
     val getClassDebateUseCase: GetClassDebateUseCase,
     val startClassDebateUseCase: StartClassDebateUseCase,
     val submitClassDebateReplyUseCase: SubmitClassDebateReplyUseCase,

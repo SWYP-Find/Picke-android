@@ -43,9 +43,19 @@ data class ScenarioScriptDto(
 )
 
 data class ScenarioOptionDto(
+    val optionId: Long?,
     val label: String,
     val nextNodeId: Long
 )
+
+private fun ScenarioOptionDto.toDomainModel(): ScenarioOption? {
+    val optionId = optionId ?: return null
+    return ScenarioOption(
+        optionId = optionId,
+        label = label,
+        nextNodeId = nextNodeId.toString()
+    )
+}
 
 fun ScenarioResponseDto.toDomainModel(): ScenarioBoard {
     return ScenarioBoard(
@@ -69,12 +79,7 @@ fun ScenarioResponseDto.toDomainModel(): ScenarioBoard {
                 nodeName = node.nodeName,
                 audioDuration = node.audioDuration,
                 autoNextNodeId = node.autoNextNodeId?.toString(),
-                interactiveOptions = node.interactiveOptions.map {
-                    ScenarioOption(
-                        label = it.label,
-                        nextNodeId = it.nextNodeId.toString()
-                    )
-                },
+                interactiveOptions = node.interactiveOptions.mapNotNull { it.toDomainModel() },
                 scripts = node.scripts.map { script ->
                     ScenarioScript(
                         scriptId = script.scriptId.toString(),

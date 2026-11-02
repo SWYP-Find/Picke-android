@@ -8,6 +8,7 @@ import com.picke.data.feature.classroom.model.ClassCreateRequestDto
 import com.picke.data.feature.classroom.model.ClassDebateReplyRequestDto
 import com.picke.data.feature.classroom.model.ClassJoinRequestDto
 import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
+import com.picke.data.feature.classroom.model.ClassMidVoteRequestDto
 import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
 import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
@@ -203,6 +204,19 @@ class ClassroomRepositoryImpl @Inject constructor(
     override suspend fun completeClassTts(classId: Long): Result<Unit> = apiCall {
         classroomApi.completeClassTts(classId)
             .toUnitResult("시나리오 청취 완료를 저장하지 못했습니다.")
+    }
+
+    override suspend fun submitClassMidVote(
+        classId: Long,
+        checkpointId: Long,
+        optionId: Long
+    ): Result<Unit> = apiCall {
+        classroomApi.submitClassMidVote(
+            classId,
+            ClassMidVoteRequestDto(checkpointId = checkpointId, optionId = optionId)
+        )
+            .toResult("중간 투표를 하지 못했습니다.")
+            .map { }
     }
 
     override suspend fun getClassDebate(classId: Long): Result<ClassDebateBoard> = apiCall {

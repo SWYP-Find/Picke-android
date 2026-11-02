@@ -19,5 +19,6 @@ data class ScenarioUiState(
     val showOptions: Boolean = false,
     val showFinalVoteDialog: Boolean = false,
     val showAudioError: Boolean = false,
-    val isReviewing: Boolean = false
+    val isReviewing: Boolean = false,
+    val isRequesting: Boolean = false
 )

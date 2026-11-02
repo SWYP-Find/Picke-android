@@ -21,10 +21,10 @@ interface PerspectiveApi {
     @GET("/api/v1/battles/{battleId}/perspectives")
     suspend fun getPerspectives(
         @Path("battleId") battleId: Long,
-        @Query("cursor") cursor: String? = null,
-        @Query("size") size: Int = 10,
-        @Query("optionId") optionId: Long? = null,
-        @Query("sort") sort: String = "latest"
+        @Query("cursor") cursor: String?,
+        @Query("size") size: Int,
+        @Query("optionId") optionId: Long?,
+        @Query("sort") sort: String
     ): BaseResponse<PerspectivePageDto>
 
     // 2. 관점 생성 -> 여기서 perspectiveId 저장해놔야함

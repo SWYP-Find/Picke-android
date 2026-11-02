@@ -9,8 +9,8 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiModel
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
-import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyPerspectiveUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyPerspectiveUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassFeedbackCoverage
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultFeedbackItemUiModel

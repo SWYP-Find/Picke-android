@@ -76,7 +76,6 @@ class PerspectiveViewModel @Inject constructor(
             perspectiveUseCases.loadPerspectivesUseCase(
                 target = target,
                 cursor = cursor,
-                size = 10,
                 optionId = state.selectedOptionId,
                 sort = state.sort.apiValue
             ).onSuccess { page ->

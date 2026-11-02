@@ -12,10 +12,10 @@ interface PerspectiveRepository {
     // 1. 관점 목록 조회
     suspend fun getPerspectives(
         target: BattleTarget,
-        cursor: String? = null,
-        size: Int = 10,
-        optionId: Long? = null,
-        sort: String = "latest"
+        cursor: String?,
+        size: Int,
+        optionId: Long?,
+        sort: String
     ): Result<PerspectivePage>
 
     // 2. 관점 생성

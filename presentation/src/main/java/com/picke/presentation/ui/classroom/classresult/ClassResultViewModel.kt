@@ -133,7 +133,7 @@ class ClassResultViewModel @Inject constructor(
     private fun fetchMyActivity() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            classroomUseCases.getClassResultMyActivityUseCase(classId, cursor = null)
+            classroomUseCases.getClassResultMyActivityUseCase(classId)
                 .onSuccess { activity ->
                     _uiState.update {
                         reduce(it, ClassResultMutation.MyActivityLoaded(activity.receivedLikeCount))

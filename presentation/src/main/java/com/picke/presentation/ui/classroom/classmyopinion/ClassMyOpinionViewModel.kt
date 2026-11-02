@@ -73,12 +73,10 @@ class ClassMyOpinionViewModel @Inject constructor(
                 sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
                 return@launch
             }
-            val activity =
-                classroomUseCases.getClassResultMyActivityUseCase(classId = classId, cursor = null)
-                    .getOrElse {
-                        sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
-                        return@launch
-                    }
+            val activity = classroomUseCases.getClassResultMyActivityUseCase(classId).getOrElse {
+                sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
             val myDisplayName = members.firstOrNull { it.me }?.displayName ?: ""
             val mutation = ClassMyOpinionMutation.RepliesLoaded(
                 myDisplayName = myDisplayName,

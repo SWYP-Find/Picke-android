@@ -8,7 +8,7 @@ class GetClassResultMyActivityUseCase(
 ) {
     suspend operator fun invoke(
         classId: Long,
-        cursor: String?
+        cursor: String? = null
     ): Result<ClassResultMyActivityBoard> =
         classroomRepository.getClassResultMyActivity(classId, cursor)
 }

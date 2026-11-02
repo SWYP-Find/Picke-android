@@ -380,9 +380,11 @@
     <!-- 클래스 - AI 토론 -->
     <string name="class_debate_round_format">ROUND %1$d · 입장에 반박해보세요</string>
     <string name="class_debate_intro_choice">‘%1$s’</string>
-    <string name="class_debate_intro_choice_format">사전투표에서 %1$s를 선택하셨네요.</string>
+    <string name="class_debate_intro_choice_format_eul">사전투표에서 %1$s을 선택하셨네요.</string>
+    <string name="class_debate_intro_choice_format_reul">사전투표에서 %1$s를 선택하셨네요.</string>
     <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
-    <string name="class_debate_intro_start_format">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_intro_start_format_gwa">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_intro_start_format_wa">%1$s와 %2$d라운드 토론을 시작해보세요.</string>
     <string name="class_debate_input_placeholder">내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
     <string name="class_debate_reply_too_short">%1$d자 이상 입력해주세요</string>

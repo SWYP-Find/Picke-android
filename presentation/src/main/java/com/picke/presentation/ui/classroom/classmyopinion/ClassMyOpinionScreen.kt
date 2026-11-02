@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPerspectiveCard
-import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSectionTitle
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyCommentCard
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSectionTitle
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPerspectiveCard
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
@@ -79,6 +78,7 @@ private fun ClassMyOpinionContent(
             backgroundColor = PickeTheme.colors.backgroundBeige,
             titleColor = PickeTheme.colors.textSubtler
         )
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,6 +95,7 @@ private fun ClassMyOpinionContent(
                 item {
                     ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
                 }
+
                 items(
                     items = uiState.perspectives,
                     key = { "perspective_${it.perspectiveId}" }
@@ -102,6 +103,7 @@ private fun ClassMyOpinionContent(
                     ClassMyPerspectiveCard(perspective = perspective)
                 }
             }
+
             if (uiState.comments.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(
@@ -109,14 +111,17 @@ private fun ClassMyOpinionContent(
                         modifier = if (uiState.perspectives.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
                     )
                 }
-                itemsIndexed(
-                    items = uiState.comments,
-                    key = { _, comment -> "comment_${comment.commentId}" }
-                ) { index, comment ->
-                    ClassMyCommentCard(comment = comment)
 
-                    if (index == uiState.comments.lastIndex && uiState.canLoadMoreComments) {
-                        LaunchedEffect(comment.commentId) {
+                items(
+                    items = uiState.comments,
+                    key = { "comment_${it.commentId}" }
+                ) { comment ->
+                    ClassMyCommentCard(comment = comment)
+                }
+
+                if (uiState.canLoadMoreComments) {
+                    item {
+                        LaunchedEffect(Unit) {
                             onAction(ClassMyOpinionUiAction.CommentsEndReach)
                         }
                     }

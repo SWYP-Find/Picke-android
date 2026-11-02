@@ -52,14 +52,19 @@ fun MyClassCard(
     val deadlineText = rememberClassDeadlineText(item.deadline, R.string.class_deadline_full_format)
 
     val shape = RoundedCornerShape(RadiusTokens.default)
-    val statusTextRes = if (item.isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
+    val statusTextRes =
+        if (item.isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
             .background(PickeTheme.colors.cardBaseBackgroundDefault)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.cardBaseBorderDefault, shape)
+            .border(
+                ComponentNumberTokens.borderWidthRegular,
+                PickeTheme.colors.cardBaseBorderDefault,
+                shape
+            )
             .clickable(onClick = onClick)
             .padding(SpacingTokens.s12),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
@@ -74,7 +79,8 @@ fun MyClassCard(
             ) {
                 PickeBadge(
                     text = stringResource(statusTextRes),
-                    isMuted = !item.isInProgress
+                    isMuted = !item.isInProgress,
+                    horizontalPadding = SpacingTokens.s4
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_more),
@@ -112,46 +118,22 @@ fun MyClassCard(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.weight(1f, fill = false),
-                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                MyClassMetaItem(
+                    iconResId = R.drawable.ic_class_member,
+                    text = stringResource(R.string.my_class_member_count, item.memberCount)
+                )
+                if (item.deadline != null) {
+                    Box(
+                        modifier = Modifier
+                            .size(MyClassCardDimens.metaDotSize)
+                            .background(PickeTheme.colors.textMuted, CircleShape)
+                    )
                     MyClassMetaItem(
-                        iconResId = R.drawable.ic_class_member,
-                        text = stringResource(R.string.my_class_member_count, item.memberCount)
-                    )
-                    if (item.deadline != null) {
-                        Box(
-                            modifier = Modifier
-                                .size(MyClassCardDimens.metaDotSize)
-                                .background(PickeTheme.colors.textMuted, CircleShape)
-                        )
-                        MyClassMetaItem(
-                            iconResId = R.drawable.ic_class_deadline,
-                            text = stringResource(R.string.class_deadline_until, deadlineText)
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.padding(start = SpacingTokens.s8),
-                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.my_class_view),
-                        color = PickeTheme.colors.textPrimary,
-                        style = PickeTheme.typography.captionLgBold
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_right_a),
-                        contentDescription = null,
-                        modifier = Modifier.size(ComponentNumberTokens.iconXs),
-                        tint = PickeTheme.colors.textPrimary
+                        iconResId = R.drawable.ic_class_deadline,
+                        text = stringResource(R.string.class_deadline_until, deadlineText)
                     )
                 }
             }

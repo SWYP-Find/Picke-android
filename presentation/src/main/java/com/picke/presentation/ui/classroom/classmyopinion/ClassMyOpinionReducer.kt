@@ -11,7 +11,7 @@ internal fun reduce(
     when (action) {
         is ClassMyOpinionUiAction.SideEffectOnly -> state
 
-        ClassMyOpinionUiAction.RepliesEndReach -> if (state.canLoadMoreReplies) {
+        ClassMyOpinionUiAction.CommentsEndReach -> if (state.canLoadMoreComments) {
             state.copy(isRequesting = true)
         } else {
             state
@@ -25,17 +25,17 @@ internal fun reduce(
     val reduced = when (mutation) {
         ClassMyOpinionMutation.RequestFailed -> state.copy(hasNext = false)
 
-        is ClassMyOpinionMutation.MyCommentsLoaded -> state.copy(comments = mutation.comments)
+        is ClassMyOpinionMutation.MyPerspectivesLoaded -> state.copy(perspectives = mutation.perspectives)
 
-        is ClassMyOpinionMutation.RepliesLoaded -> state.copy(
-            replies = mutation.replies,
+        is ClassMyOpinionMutation.MyCommentsLoaded -> state.copy(
+            comments = mutation.comments,
             myDisplayName = mutation.myDisplayName,
             nextCursor = mutation.nextCursor,
             hasNext = mutation.hasNext
         )
 
-        is ClassMyOpinionMutation.MoreRepliesLoaded -> state.copy(
-            replies = state.replies + mutation.replies,
+        is ClassMyOpinionMutation.MoreMyCommentsLoaded -> state.copy(
+            comments = state.comments + mutation.comments,
             nextCursor = mutation.nextCursor,
             hasNext = mutation.hasNext
         )

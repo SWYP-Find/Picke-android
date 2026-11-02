@@ -21,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyCommentCard
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPerspectiveCard
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSectionTitle
-import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyReplyCard
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyCommentCard
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
@@ -91,33 +91,33 @@ private fun ClassMyOpinionContent(
             ),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
         ) {
-            if (uiState.comments.isNotEmpty()) {
+            if (uiState.perspectives.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
                 }
                 items(
-                    items = uiState.comments,
-                    key = { "comment_${it.perspectiveId}" }
-                ) { comment ->
-                    ClassMyCommentCard(comment = comment)
+                    items = uiState.perspectives,
+                    key = { "perspective_${it.perspectiveId}" }
+                ) { perspective ->
+                    ClassMyPerspectiveCard(perspective = perspective)
                 }
             }
-            if (uiState.replies.isNotEmpty()) {
+            if (uiState.comments.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(
                         text = stringResource(R.string.class_my_opinion_replies),
-                        modifier = if (uiState.comments.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
+                        modifier = if (uiState.perspectives.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
                     )
                 }
                 itemsIndexed(
-                    items = uiState.replies,
-                    key = { _, reply -> "reply_${reply.replyId}" }
-                ) { index, reply ->
-                    ClassMyReplyCard(reply = reply)
+                    items = uiState.comments,
+                    key = { _, comment -> "comment_${comment.commentId}" }
+                ) { index, comment ->
+                    ClassMyCommentCard(comment = comment)
 
-                    if (index == uiState.replies.lastIndex && uiState.canLoadMoreReplies) {
-                        LaunchedEffect(reply.replyId) {
-                            onAction(ClassMyOpinionUiAction.RepliesEndReach)
+                    if (index == uiState.comments.lastIndex && uiState.canLoadMoreComments) {
+                        LaunchedEffect(comment.commentId) {
+                            onAction(ClassMyOpinionUiAction.CommentsEndReach)
                         }
                     }
                 }
@@ -133,8 +133,8 @@ private fun ClassMyOpinionContentPreview() {
         ClassMyOpinionContent(
             uiState = ClassMyOpinionUiState(
                 classId = DummyData.dummyMyClasses.first().id,
-                comments = DummyData.dummyClassMyComments,
-                replies = DummyData.dummyClassMyReplies
+                perspectives = DummyData.dummyClassMyPerspectives,
+                comments = DummyData.dummyClassMyComments
             ),
             onAction = {}
         )

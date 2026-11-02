@@ -9,8 +9,8 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateSpeaker
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateStatus
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiModel
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiModel
+import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyPerspectiveUiModel
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
-import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyReplyUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassFeedbackCoverage
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultFeedbackItemUiModel
@@ -840,8 +840,8 @@ object DummyData {
         coverage = ClassFeedbackCoverage.FULL
     )
 
-    val dummyClassMyComments = listOf(
-        ClassMyCommentUiModel(
+    val dummyClassMyPerspectives = listOf(
+        ClassMyPerspectiveUiModel(
             perspectiveId = 1L,
             optionTitle = "낮춰야 한다",
             content = "처벌만 강화하면 재범을 막기 어렵다고 생각해요. 교육과 보호가 함께 가야 해요.",
@@ -850,15 +850,15 @@ object DummyData {
         )
     )
 
-    val dummyClassMyReplies = listOf(
-        ClassMyReplyUiModel(
-            replyId = 1L,
+    val dummyClassMyComments = listOf(
+        ClassMyCommentUiModel(
+            commentId = 1L,
             perspectiveTitle = "교정이 우선이다",
             authorName = "공은지",
             content = "피해자 보호도 중요하지만, 교정이 이루어져야 같은 피해가 다시 생기지 않는다고 생각해요."
         ),
-        ClassMyReplyUiModel(
-            replyId = 2L,
+        ClassMyCommentUiModel(
+            commentId = 2L,
             perspectiveTitle = "낮춰야 한다",
             authorName = "공은지",
             content = "계획적인 범죄라면 처벌 기준을 따로 두는 방법도 함께 생각해 볼 수 있을 것 같아요."

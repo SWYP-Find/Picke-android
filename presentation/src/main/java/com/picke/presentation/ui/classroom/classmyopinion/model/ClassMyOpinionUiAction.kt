@@ -6,5 +6,5 @@ sealed interface ClassMyOpinionUiAction {
 
     data object BackClick : SideEffectOnly
 
-    data object RepliesEndReach : ClassMyOpinionUiAction
+    data object CommentsEndReach : ClassMyOpinionUiAction
 }

@@ -39,8 +39,8 @@ class ClassMyOpinionViewModel @Inject constructor(
     val uiEvent: Flow<ClassMyOpinionUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
+        fetchMyPerspectives()
         fetchMyComments()
-        fetchReplies()
     }
 
     fun onAction(action: ClassMyOpinionUiAction) {
@@ -53,8 +53,8 @@ class ClassMyOpinionViewModel @Inject constructor(
         when (action) {
             ClassMyOpinionUiAction.BackClick -> sendEvent(ClassMyOpinionUiEvent.NavigateBack)
 
-            ClassMyOpinionUiAction.RepliesEndReach -> if (state.canLoadMoreReplies) {
-                fetchMoreReplies(state)
+            ClassMyOpinionUiAction.CommentsEndReach -> if (state.canLoadMoreComments) {
+                fetchMoreMyComments(state)
             }
         }
     }
@@ -63,23 +63,23 @@ class ClassMyOpinionViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun fetchMyComments() {
+    private fun fetchMyPerspectives() {
         val target = BattleTarget.Class(_uiState.value.classId)
         viewModelScope.launch {
             perspectiveUseCases.getMyPerspectivesUseCase(target)
-                .onSuccess { perspectives ->
-                    val comments = perspectives
+                .onSuccess { boards ->
+                    val perspectives = boards
                         .filter { ClassMyPerspectiveStatus.from(it.status) == ClassMyPerspectiveStatus.PUBLISHED }
                         .map { it.toUiModel() }
                     _uiState.update {
-                        reduce(it, ClassMyOpinionMutation.MyCommentsLoaded(comments))
+                        reduce(it, ClassMyOpinionMutation.MyPerspectivesLoaded(perspectives))
                     }
                 }
                 .onFailure { sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast) }
         }
     }
 
-    private fun fetchReplies() {
+    private fun fetchMyComments() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val members = classroomUseCases.getClassMembersUseCase(classId).getOrElse {
@@ -91,9 +91,9 @@ class ClassMyOpinionViewModel @Inject constructor(
                 return@launch
             }
             val myDisplayName = members.firstOrNull { it.me }?.displayName ?: ""
-            val mutation = ClassMyOpinionMutation.RepliesLoaded(
+            val mutation = ClassMyOpinionMutation.MyCommentsLoaded(
                 myDisplayName = myDisplayName,
-                replies = activity.comments.map { it.toUiModel(myDisplayName) },
+                comments = activity.comments.map { it.toUiModel(myDisplayName) },
                 nextCursor = activity.nextCursor,
                 hasNext = activity.hasNext
             )
@@ -101,12 +101,12 @@ class ClassMyOpinionViewModel @Inject constructor(
         }
     }
 
-    private fun fetchMoreReplies(state: ClassMyOpinionUiState) {
+    private fun fetchMoreMyComments(state: ClassMyOpinionUiState) {
         viewModelScope.launch {
             classroomUseCases.getClassResultMyActivityUseCase(state.classId, state.nextCursor)
                 .onSuccess { activity ->
-                    val mutation = ClassMyOpinionMutation.MoreRepliesLoaded(
-                        replies = activity.comments.map { it.toUiModel(state.myDisplayName) },
+                    val mutation = ClassMyOpinionMutation.MoreMyCommentsLoaded(
+                        comments = activity.comments.map { it.toUiModel(state.myDisplayName) },
                         nextCursor = activity.nextCursor,
                         hasNext = activity.hasNext
                     )

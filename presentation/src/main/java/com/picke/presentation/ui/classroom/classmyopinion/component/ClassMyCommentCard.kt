@@ -7,28 +7,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyCommentUiModel
-import com.picke.presentation.ui.component.PickeBadge
-import com.picke.presentation.ui.component.PickeIconCount
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
-
-private object ClassMyCommentCardDimens {
-    val countGroupSpacing = 11.dp
-}
 
 @Composable
 fun ClassMyCommentCard(
@@ -41,34 +37,47 @@ fun ClassMyCommentCard(
         modifier = modifier
             .fillMaxWidth()
             .background(PickeTheme.colors.cardBaseBackgroundDefault, shape)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.cardBaseBorderDefault, shape)
+            .border(
+                ComponentNumberTokens.borderWidthRegular,
+                PickeTheme.colors.cardBaseBorderDefault,
+                shape
+            )
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
     ) {
-        PickeBadge(text = comment.optionTitle)
         Text(
-            text = comment.content,
-            modifier = Modifier.padding(horizontal = SpacingTokens.s2),
-            color = PickeTheme.colors.textBody,
+            text = comment.perspectiveTitle,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(PickeTheme.colors.surfaceBeigeSubtle, shape)
+                .padding(SpacingTokens.s12),
+            color = PickeTheme.colors.textMuted,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 3,
-            style = PickeTheme.typography.bodyXsRegular
+            maxLines = 1,
+            style = PickeTheme.typography.bodyXxsSemiBold
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(ClassMyCommentCardDimens.countGroupSpacing),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PickeIconCount(
-                iconRes = R.drawable.ic_heart_plus,
-                contentDescription = stringResource(R.string.class_my_opinion_like),
-                count = comment.likeCount,
-                contentColor = PickeTheme.colors.cardBaseTextDecription
-            )
-            PickeIconCount(
-                iconRes = R.drawable.ic_message,
-                contentDescription = stringResource(R.string.class_my_opinion_reply),
-                count = comment.commentCount,
-                contentColor = PickeTheme.colors.cardBaseTextDecription
+
+        Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_reply),
+                    contentDescription = null,
+                    modifier = Modifier.size(ComponentNumberTokens.iconXs),
+                    tint = PickeTheme.colors.textPrimary
+                )
+                Text(
+                    text = stringResource(R.string.class_my_opinion_reply_author, comment.authorName),
+                    color = PickeTheme.colors.textPrimary,
+                    style = PickeTheme.typography.captionLgSemiBold
+                )
+            }
+            Text(
+                text = comment.content,
+                color = PickeTheme.colors.textBody,
+                style = PickeTheme.typography.bodyXsRegular
             )
         }
     }

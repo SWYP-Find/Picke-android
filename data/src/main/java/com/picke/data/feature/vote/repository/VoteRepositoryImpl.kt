@@ -1,84 +1,30 @@
 package com.picke.data.feature.vote.repository
 
-import android.util.Log
-import com.picke.data.common.error.toReportedFailure
 import com.picke.data.feature.vote.model.VoteRequestDto
 import com.picke.data.feature.vote.model.toDomainModel
 import com.picke.data.common.model.toResult
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.vote.datasource.VoteApi
-import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.vote.model.MyVoteBoard
 import com.picke.domain.feature.vote.model.VoteStatsBoard
 import com.picke.domain.feature.vote.repository.VoteRepository
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 class VoteRepositoryImpl @Inject constructor(
     private val voteApi: VoteApi
 ) : VoteRepository {
 
-    companion object {
-        private const val TAG = "VoteRepositoryImpl_Picke"
+    override suspend fun submitPreVote(battleId: Long, optionId: Long): Result<Boolean> = apiCall {
+        voteApi.submitPreVote(battleId, VoteRequestDto(optionId))
+            .toResult("사전 투표를 하지 못했습니다.")
+            .map { true }
     }
 
-    override suspend fun submitPreVote(battleId: Long, optionId: Long): Result<Boolean> {
-        return try {
-            val requestDto = VoteRequestDto(optionId)
-            Log.d(TAG, "[API_REQ] 사전 투표(PreVote) 통신 시작 - battleId: $battleId, payload: $requestDto")
-            val response = voteApi.submitPreVote(battleId, requestDto)
-            when (response.statusCode) {
-                200 -> {
-                    Log.d(TAG, "[API_RES] 사전 투표 성공!")
-                    Result.success(true)
-                }
-                400 -> {
-                    Log.w(TAG, "[API_RES] 사전 투표 실패 - 포인트 부족")
-                    Result.failure(Exception("CREDIT_400_INSUFFICIENT: ${response.error?.message}"))
-                }
-                else -> {
-                    Log.e(TAG, "[API_RES] 사전 투표 실패 - 에러: ${response.error?.message}")
-                    Result.failure(ApiErrorException(response.error?.message ?: "사전 투표에 실패했습니다."))
-                }
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 사전 투표 예외 발생: ${e.message}")
-            if (e.message?.contains("400") == true) {
-                Result.failure(Exception("CREDIT_400_INSUFFICIENT"))
-            } else {
-                e.toReportedFailure()
-            }
-        }
-    }
-
-    override suspend fun submitPostVote(battleId: Long, optionId: Long): Result<Boolean> {
-        return try {
-            val requestDto = VoteRequestDto(optionId)
-            Log.d(TAG, "[API_REQ] 최종 투표(PostVote) 통신 시작 - battleId: $battleId, payload: $requestDto")
-            val response = voteApi.submitPostVote(battleId, requestDto)
-            when (response.statusCode) {
-                200 -> {
-                    Log.d(TAG, "[API_RES] 최종 투표 성공!")
-                    Result.success(true)
-                }
-                400 -> {
-                    Log.w(TAG, "[API_RES] 최종 투표 실패 - 포인트 부족")
-                    Result.failure(Exception("CREDIT_400_INSUFFICIENT: ${response.error?.message}"))
-                }
-                else -> {
-                    Log.e(TAG, "[API_RES] 최종 투표 실패 - 에러: ${response.error?.message}")
-                    Result.failure(ApiErrorException(response.error?.message ?: "최종 투표에 실패했습니다."))
-                }
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.e(TAG, "[API_ERR] 최종 투표 예외 발생: ${e.message}")
-            e.toReportedFailure()
-        }
+    override suspend fun submitPostVote(battleId: Long, optionId: Long): Result<Boolean> = apiCall {
+        voteApi.submitPostVote(battleId, VoteRequestDto(optionId))
+            .toResult("최종 투표를 하지 못했습니다.")
+            .map { true }
     }
 
     override suspend fun getVoteStats(target: BattleTarget): Result<VoteStatsBoard> = apiCall {

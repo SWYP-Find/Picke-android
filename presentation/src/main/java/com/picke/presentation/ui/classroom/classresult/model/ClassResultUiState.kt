@@ -14,7 +14,7 @@ data class ClassResultUiState(
     val summary: ClassResultSummaryUiModel? = null,
     val insight: ClassResultInsightUiModel? = null,
     val report: ClassResultReportUiModel? = null,
-    val receivedLikeCount: Int = 0,
+    val receivedLikeCount: Int? = null,
     val selectedTab: ClassResultTab = ClassResultTab.SUMMARY,
     val isRequesting: Boolean = false
 ) {

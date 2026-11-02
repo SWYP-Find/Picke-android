@@ -275,7 +275,7 @@ private fun ClassResultSummarySection(
 @Composable
 private fun ClassResultReportSection(
     report: ClassResultReportUiModel,
-    receivedLikeCount: Int,
+    receivedLikeCount: Int?,
     deadline: LocalDateTime?,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier

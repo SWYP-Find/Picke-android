@@ -29,7 +29,7 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassResultMyVoteCard(
     report: ClassResultReportUiModel,
-    receivedLikeCount: Int,
+    receivedLikeCount: Int?,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
@@ -141,7 +141,7 @@ private fun ClassResultVoteColumn(
 
 @Composable
 private fun ClassResultStatColumn(
-    count: Int,
+    count: Int?,
     label: String,
     modifier: Modifier = Modifier
 ) {
@@ -150,7 +150,7 @@ private fun ClassResultStatColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = count.toString(),
+            text = count?.toString() ?: stringResource(R.string.class_result_count_placeholder),
             color = PickeTheme.colors.textDefault,
             style = PickeTheme.typography.bodyLgBold
         )
@@ -169,6 +169,17 @@ private fun ClassResultMyVoteCardPreview() {
         ClassResultMyVoteCard(
             report = DummyData.dummyClassResultReport,
             receivedLikeCount = 12
+        )
+    }
+}
+
+@Preview(name = "받은 추천 불러오는 중", showBackground = true)
+@Composable
+private fun ClassResultMyVoteCardLikeLoadingPreview() {
+    PickeTheme {
+        ClassResultMyVoteCard(
+            report = DummyData.dummyClassResultReport,
+            receivedLikeCount = null
         )
     }
 }

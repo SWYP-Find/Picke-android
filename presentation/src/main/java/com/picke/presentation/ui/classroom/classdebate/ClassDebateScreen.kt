@@ -314,7 +314,7 @@ private fun ClassDebateIntroSection(
             .fillMaxWidth()
             .background(PickeTheme.colors.beige500, RoundedCornerShape(RadiusTokens.default))
             .padding(vertical = SpacingTokens.s12),
-        color = PickeTheme.colors.textBody,
+        color = PickeTheme.colors.textDefault,
         textAlign = TextAlign.Center,
         style = PickeTheme.typography.captionMdMedium
     )

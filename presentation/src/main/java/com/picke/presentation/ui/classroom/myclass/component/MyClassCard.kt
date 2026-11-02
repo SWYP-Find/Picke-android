@@ -116,6 +116,7 @@ fun MyClassCard(
                 thickness = ComponentNumberTokens.borderWidthRegular,
                 color = PickeTheme.colors.cardBaseBorderDefault
             )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
@@ -131,6 +132,7 @@ fun MyClassCard(
                             .size(MyClassCardDimens.metaDotSize)
                             .background(PickeTheme.colors.textMuted, CircleShape)
                     )
+
                     MyClassMetaItem(
                         iconResId = R.drawable.ic_class_deadline,
                         text = stringResource(R.string.class_deadline_until, deadlineText)

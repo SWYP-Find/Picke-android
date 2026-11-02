@@ -29,15 +29,15 @@ class CommentRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun deleteComment(perspectiveId: Long, commentId: Long): Result<Unit> = apiCall {
-        commentApi.deleteComment(perspectiveId, commentId)
-            .toUnitResult("댓글을 삭제하지 못했습니다.")
-    }
-
     override suspend fun updateComment(perspectiveId: Long, commentId: Long, content: String): Result<CommentUpdateBoard> = apiCall {
         commentApi.updateComment(perspectiveId, commentId, CommentRequestDto(content))
             .toResult("댓글을 수정하지 못했습니다.")
             .map { it.toDomainModel() }
+    }
+
+    override suspend fun deleteComment(perspectiveId: Long, commentId: Long): Result<Unit> = apiCall {
+        commentApi.deleteComment(perspectiveId, commentId)
+            .toUnitResult("댓글을 삭제하지 못했습니다.")
     }
 
     override suspend fun likeComment(commentId: Long): Result<CommentLikeToggleBoard> = apiCall {

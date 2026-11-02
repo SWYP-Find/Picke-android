@@ -38,19 +38,6 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
-    override suspend fun createPerspective(
-        target: BattleTarget,
-        content: String
-    ): Result<PerspectiveStatusBoard> = apiCall {
-        val request = PerspectiveRequestDto(content)
-        when (target) {
-            is BattleTarget.General -> perspectiveApi.createPerspective(target.battleId, request)
-            is BattleTarget.Class -> perspectiveApi.createClassPerspective(target.classId, request)
-        }
-            .toResult("관점을 작성하지 못했습니다.")
-            .map { it.toDomainModel() }
-    }
-
     override suspend fun getMyPerspectives(target: BattleTarget): Result<List<PerspectiveDetailBoard>> =
         apiCall {
             when (target) {
@@ -68,9 +55,24 @@ class PerspectiveRepositoryImpl @Inject constructor(
                 .map { it.toDomainModel() }
         }
 
-    override suspend fun deletePerspective(perspectiveId: Long): Result<Unit> = apiCall {
-        perspectiveApi.deletePerspective(perspectiveId)
-            .toUnitResult("관점을 삭제하지 못했습니다.")
+    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> =
+        apiCall {
+            perspectiveApi.getPerspectiveLikeCount(perspectiveId)
+                .toResult("좋아요 수를 불러오지 못했습니다.")
+                .map { it.toDomainModel() }
+        }
+
+    override suspend fun createPerspective(
+        target: BattleTarget,
+        content: String
+    ): Result<PerspectiveStatusBoard> = apiCall {
+        val request = PerspectiveRequestDto(content)
+        when (target) {
+            is BattleTarget.General -> perspectiveApi.createPerspective(target.battleId, request)
+            is BattleTarget.Class -> perspectiveApi.createClassPerspective(target.classId, request)
+        }
+            .toResult("관점을 작성하지 못했습니다.")
+            .map { it.toDomainModel() }
     }
 
     override suspend fun updatePerspective(
@@ -82,17 +84,15 @@ class PerspectiveRepositoryImpl @Inject constructor(
             .map { it.toDomainModel() }
     }
 
+    override suspend fun deletePerspective(perspectiveId: Long): Result<Unit> = apiCall {
+        perspectiveApi.deletePerspective(perspectiveId)
+            .toUnitResult("관점을 삭제하지 못했습니다.")
+    }
+
     override suspend fun retryModeration(perspectiveId: Long): Result<Unit> = apiCall {
         perspectiveApi.retryModeration(perspectiveId)
             .toUnitResult("검토 재요청을 하지 못했습니다.")
     }
-
-    override suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard> =
-        apiCall {
-            perspectiveApi.getPerspectiveLikeCount(perspectiveId)
-                .toResult("좋아요 수를 불러오지 못했습니다.")
-                .map { it.toDomainModel() }
-        }
 
     override suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard> =
         apiCall {

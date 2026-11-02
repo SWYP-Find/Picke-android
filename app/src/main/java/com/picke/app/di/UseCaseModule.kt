@@ -235,11 +235,11 @@ object UseCaseModule {
     ): CommentUseCases {
         return CommentUseCases(
             loadCommentsUseCase = LoadCommentsUseCase(commentRepository),
-            deleteCommentUseCase = DeleteCommentUseCase(commentRepository),
-            reportCommentUseCase = ReportCommentUseCase(commentRepository),
             createCommentUseCase = CreateCommentUseCase(commentRepository),
+            updateCommentUseCase = UpdateCommentUseCase(commentRepository),
+            deleteCommentUseCase = DeleteCommentUseCase(commentRepository),
             toggleCommentLikeUseCase = ToggleCommentLikeUseCase(commentRepository),
-            updateCommentUseCase = UpdateCommentUseCase(commentRepository)
+            reportCommentUseCase = ReportCommentUseCase(commentRepository)
         )
     }
 
@@ -290,15 +290,15 @@ object UseCaseModule {
         perspectiveRepository: PerspectiveRepository
     ): PerspectiveUseCases {
         return PerspectiveUseCases(
-            getMyPerspectivesUseCase = GetMyPerspectivesUseCase(perspectiveRepository),
-            deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
-            loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
             loadPerspectivesUseCase = LoadPerspectivesUseCase(perspectiveRepository),
-            reportPerspectiveUseCase = ReportPerspectiveUseCase(perspectiveRepository),
-            retryModerationUseCase = RetryModerationUseCase(perspectiveRepository),
+            getMyPerspectivesUseCase = GetMyPerspectivesUseCase(perspectiveRepository),
+            loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
             createPerspectiveUseCase = CreatePerspectiveUseCase(perspectiveRepository),
+            updatePerspectiveUseCase = UpdatePerspectiveUseCase(perspectiveRepository),
+            deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
+            retryModerationUseCase = RetryModerationUseCase(perspectiveRepository),
             togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository),
-            updatePerspectiveUseCase = UpdatePerspectiveUseCase(perspectiveRepository)
+            reportPerspectiveUseCase = ReportPerspectiveUseCase(perspectiveRepository)
         )
     }
 
@@ -355,8 +355,8 @@ object UseCaseModule {
         voteRepository: VoteRepository
     ): VoteUseCases {
         return VoteUseCases(
-            getMyVoteHistoryUseCase = GetMyVoteHistoryUseCase(voteRepository),
             getVoteStatsUseCase = GetVoteStatsUseCase(voteRepository),
+            getMyVoteHistoryUseCase = GetMyVoteHistoryUseCase(voteRepository),
             submitVoteUseCase = SubmitVoteUseCase(voteRepository)
         )
     }

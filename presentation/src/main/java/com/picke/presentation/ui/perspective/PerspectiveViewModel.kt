@@ -261,6 +261,7 @@ class PerspectiveViewModel @Inject constructor(
                         }
                     }
                 }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowActionFailedToast) }
         }
     }
 

@@ -168,6 +168,7 @@ class CommentViewModel @Inject constructor(
                         }
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -185,6 +186,7 @@ class CommentViewModel @Inject constructor(
                         }
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 

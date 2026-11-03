@@ -91,6 +91,8 @@ fun PerspectiveScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -103,6 +105,9 @@ fun PerspectiveScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                PerspectiveUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

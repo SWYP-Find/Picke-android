@@ -6,4 +6,6 @@ sealed interface CommentUiEvent {
     data object NavigateBack : CommentUiEvent
 
     data class ShowToast(@param:StringRes val messageResId: Int) : CommentUiEvent
+
+    data object ShowActionFailedToast : CommentUiEvent
 }

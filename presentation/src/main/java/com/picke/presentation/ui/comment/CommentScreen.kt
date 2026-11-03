@@ -65,6 +65,8 @@ fun CommentScreen(
     val context = LocalContext.current
     val inputFieldState = rememberTextFieldState()
 
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
     var commentToDelete by remember { mutableStateOf<Long?>(null) }
     var commentToReport by remember { mutableStateOf<Long?>(null) }
     var isMainDeleteDialogVisible by remember { mutableStateOf(false) }
@@ -85,6 +87,9 @@ fun CommentScreen(
                 is CommentUiEvent.ShowToast -> {
                     Toast.makeText(context, context.getString(event.messageResId), Toast.LENGTH_SHORT).show()
                 }
+
+                CommentUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

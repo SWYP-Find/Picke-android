@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,9 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.auth.AuthCodeClient
 import com.kakao.sdk.auth.model.Prompt
 import com.kakao.sdk.common.model.ClientError
@@ -64,20 +59,18 @@ fun LoginScreen(
         (context as? Activity)?.finish()
     }
 
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            val account = task.getResult(ApiException::class.java)
-            account.serverAuthCode?.let { authCode ->
-                viewModel.handleSocialLoginSuccess(Provider.GOOGLE, authCode)
-            }
-        } catch (e: ApiException) {
-            Toast.makeText(context, "구글 로그인에 실패했습니다. \n다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+    val googleLoginFailedMessage = stringResource(R.string.login_google_failed)
+
+    val launchGoogleLogin = rememberGoogleLoginLauncher(
+        onAuthCodeReceive = { authCode ->
+            viewModel.handleSocialLoginSuccess(Provider.GOOGLE, authCode)
+        },
+        onFailure = {
+            Toast.makeText(context, googleLoginFailedMessage, Toast.LENGTH_SHORT).show()
             viewModel.resetState()
-        }
-    }
+        },
+        onCancel = { viewModel.resetState() }
+    )
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
@@ -122,14 +115,7 @@ fun LoginScreen(
                 Toast.makeText(context, "로그인 설정 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.onGoogleLoginStart()
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestServerAuthCode(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-                    .requestEmail()
-                    .build()
-                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                googleSignInClient.signOut().addOnCompleteListener {
-                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                }
+                launchGoogleLogin()
             }
         },
     )

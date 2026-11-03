@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.home
 
+import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -77,6 +78,7 @@ import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
 import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
 import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeUiEvent
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -96,6 +98,8 @@ fun HomeScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(isNotificationSheetPending) {
         if (!isNotificationSheetPending) {
             viewModel.checkInAndShowAttendanceSheetIfNeeded()
@@ -109,6 +113,15 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         (context as? FragmentActivity)?.let { activity ->
             showAdFitTransitionPopupAd(activity, BuildConfig.ADFIT_APP_TRANSITION)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                HomeUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

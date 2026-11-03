@@ -89,6 +89,7 @@ class AlarmViewModel @Inject constructor(
             }.onFailure { exception ->
                 Log.e(TAG, "알림 목록 조회 실패", exception)
                 _uiState.update { it.copy(isLoading = false, isPagingLoading = false) }
+                _uiEvent.emit(AlarmUiEvent.ShowLoadFailedToast)
             }
         }
     }

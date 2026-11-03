@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.explore
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +64,18 @@ fun ExploreScreen(
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val selectedSort by viewModel.selectedSort.collectAsState()
     val pagingItems = viewModel.explorePagingData.collectAsLazyPagingItems()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
+    val refreshState = pagingItems.loadState.refresh
+    val appendState = pagingItems.loadState.append
+
+    LaunchedEffect(refreshState, appendState) {
+        if (refreshState is LoadState.Error || appendState is LoadState.Error) {
+            Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     ExploreScreen(
         selectedCategory = selectedCategory,

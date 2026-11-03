@@ -8,12 +8,16 @@ import com.picke.domain.feature.attendance.usecase.AttendanceUseCases
 import com.picke.domain.feature.home.usecase.HomeUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.attendance.toAttendanceCheckUiState
+import com.picke.presentation.ui.home.model.HomeUiEvent
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.home.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -30,6 +34,9 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<HomeUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<HomeUiEvent> = _uiEvent.receiveAsFlow()
 
     private var isAttendanceFlowTriggered = false
 
@@ -82,6 +89,7 @@ class HomeViewModel @Inject constructor(
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(HomeUiEvent.ShowLoadFailedToast)
                 }
         }
     }

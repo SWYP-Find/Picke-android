@@ -97,25 +97,32 @@ fun PerspectiveScreen(
     val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
+    var lastToast by remember { mutableStateOf<Toast?>(null) }
+
+    val showToast: (String) -> Unit = { message ->
+        lastToast?.cancel()
+        lastToast = Toast.makeText(context, message, Toast.LENGTH_SHORT).apply { show() }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
                 is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
 
                 PerspectiveUiEvent.ShowLoadFailedToast ->
-                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(loadFailedMessage)
 
                 PerspectiveUiEvent.ShowCommentRequiredToast ->
-                    Toast.makeText(context, commentRequiredMessage, Toast.LENGTH_SHORT).show()
+                    showToast(commentRequiredMessage)
 
                 PerspectiveUiEvent.ShowReportedToast ->
-                    Toast.makeText(context, reportedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(reportedMessage)
 
                 PerspectiveUiEvent.ShowAlreadyReportedToast ->
-                    Toast.makeText(context, alreadyReportedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(alreadyReportedMessage)
 
                 PerspectiveUiEvent.ShowActionFailedToast ->
-                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(actionFailedMessage)
             }
         }
     }

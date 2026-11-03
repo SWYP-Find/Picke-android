@@ -5,4 +5,6 @@ sealed interface AlarmUiEvent {
     data object ShowReadAllFailedToast : AlarmUiEvent
 
     data object ShowActionFailedToast : AlarmUiEvent
+
+    data object ShowLoadFailedToast : AlarmUiEvent
 }

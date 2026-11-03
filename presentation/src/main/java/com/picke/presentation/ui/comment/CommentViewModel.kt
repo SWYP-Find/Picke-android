@@ -222,6 +222,7 @@ class CommentViewModel @Inject constructor(
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
+                    sendEvent(CommentUiEvent.ShowLoadFailedToast)
                 }
         }
     }
@@ -236,6 +237,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowLoadFailedToast) }
         }
     }
 

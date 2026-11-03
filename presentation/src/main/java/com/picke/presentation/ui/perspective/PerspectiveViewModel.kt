@@ -93,6 +93,7 @@ class PerspectiveViewModel @Inject constructor(
                 }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
+                sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
             }
         }
     }
@@ -133,6 +134,7 @@ class PerspectiveViewModel @Inject constructor(
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
                 }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowLoadFailedToast) }
         }
     }
 

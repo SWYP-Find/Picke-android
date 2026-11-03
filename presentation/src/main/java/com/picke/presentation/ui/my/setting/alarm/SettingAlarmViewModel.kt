@@ -18,8 +18,7 @@ import javax.inject.Inject
 
 data class SettingAlarmUiState(
     val isLoading: Boolean = false,
-    val settings: NotificationSettingsBoard? = null,
-    val errorMessage: String? = null
+    val settings: NotificationSettingsBoard? = null
 )
 
 @HiltViewModel
@@ -39,13 +38,14 @@ class SettingAlarmViewModel @Inject constructor(
 
     private fun loadNotificationSettings() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true) }
             myPageUseCases.getNotificationSettingsUseCase()
                 .onSuccess { settings ->
                     _uiState.update { it.copy(isLoading = false, settings = settings) }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(SettingAlarmUiEvent.ShowLoadFailedToast)
                 }
         }
     }

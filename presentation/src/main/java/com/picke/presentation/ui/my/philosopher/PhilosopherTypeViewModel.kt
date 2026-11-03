@@ -8,10 +8,14 @@ import com.picke.domain.feature.mypage.usecase.MyPageUseCases
 import com.picke.domain.feature.share.usecase.ShareUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.ShareTarget
+import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,6 +39,9 @@ class PhilosopherTypeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(PhilosopherTypeUiState())
     val uiState: StateFlow<PhilosopherTypeUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<PhilosopherTypeUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<PhilosopherTypeUiEvent> = _uiEvent.receiveAsFlow()
 
     // 나의 철학자 유형 정보 가져오기
     fun fetchPhilosopherReport() {
@@ -100,6 +107,7 @@ class PhilosopherTypeViewModel @Inject constructor(
                         isLocked = true
                     )
                 }
+                _uiEvent.send(PhilosopherTypeUiEvent.ShowLoadFailedToast)
             }
         }
     }

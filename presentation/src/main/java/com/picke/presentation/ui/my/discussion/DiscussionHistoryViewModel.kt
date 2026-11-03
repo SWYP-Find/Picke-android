@@ -5,10 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.MyBattleRecordItem
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
+import com.picke.presentation.ui.my.discussion.model.DiscussionHistoryUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +31,9 @@ class DiscussionHistoryViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiscussionHistoryUiState())
     val uiState: StateFlow<DiscussionHistoryUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<DiscussionHistoryUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<DiscussionHistoryUiEvent> = _uiEvent.receiveAsFlow()
 
     private val TAG = "DiscussionHistoryFlow"
 
@@ -48,6 +55,7 @@ class DiscussionHistoryViewModel @Inject constructor(
                 )
             }.onFailure { exception ->
                 Log.e(TAG, "배틀 기록 불러오기 실패: ${exception.message}")
+                _uiEvent.send(DiscussionHistoryUiEvent.ShowLoadFailedToast)
             }
 
             _uiState.update { state ->
@@ -89,6 +97,7 @@ class DiscussionHistoryViewModel @Inject constructor(
             }.onFailure { exception ->
                 Log.e(TAG, "페이징 실패: 에러=${exception.message}")
                 _uiState.update { it.copy(isPagingLoading = false) }
+                _uiEvent.send(DiscussionHistoryUiEvent.ShowLoadFailedToast)
             }
         }
     }

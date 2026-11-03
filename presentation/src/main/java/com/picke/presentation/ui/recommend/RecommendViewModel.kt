@@ -4,12 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.recommend.usecase.RecommendUseCases
+import com.picke.presentation.ui.recommend.model.RecommendUiEvent
 import com.picke.presentation.ui.recommend.model.RecommendUiState
 import com.picke.presentation.ui.recommend.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +28,9 @@ class RecommendViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(RecommendUiState(battleId = receivedBattleId))
     val uiState: StateFlow<RecommendUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<RecommendUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<RecommendUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
         loadRecommendations()
@@ -47,6 +54,7 @@ class RecommendViewModel @Inject constructor(
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(RecommendUiEvent.ShowLoadFailedToast)
                 }
         }
     }

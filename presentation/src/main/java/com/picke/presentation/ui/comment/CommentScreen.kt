@@ -67,12 +67,19 @@ fun CommentScreen(
     val reportedMessage = stringResource(R.string.comment_report_success)
     val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     var commentToDelete by remember { mutableStateOf<Long?>(null) }
     var commentToReport by remember { mutableStateOf<Long?>(null) }
     var isMainDeleteDialogVisible by remember { mutableStateOf(false) }
     var isMainReportDialogVisible by remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
+    var lastToast by remember { mutableStateOf<Toast?>(null) }
+
+    val showToast: (String) -> Unit = { message ->
+        lastToast?.cancel()
+        lastToast = Toast.makeText(context, message, Toast.LENGTH_SHORT).apply { show() }
+    }
 
     LaunchedEffect(uiState.isLoading) {
         if (!uiState.isLoading) {
@@ -86,13 +93,16 @@ fun CommentScreen(
                 CommentUiEvent.NavigateBack -> onBackClick()
 
                 CommentUiEvent.ShowReportedToast ->
-                    Toast.makeText(context, reportedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(reportedMessage)
 
                 CommentUiEvent.ShowAlreadyReportedToast ->
-                    Toast.makeText(context, alreadyReportedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(alreadyReportedMessage)
 
                 CommentUiEvent.ShowActionFailedToast ->
-                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
+                    showToast(actionFailedMessage)
+
+                CommentUiEvent.ShowLoadFailedToast ->
+                    showToast(loadFailedMessage)
             }
         }
     }

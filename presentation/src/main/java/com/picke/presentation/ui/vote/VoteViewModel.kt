@@ -12,12 +12,16 @@ import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
 import com.picke.presentation.analytics.ShareTarget
 import com.picke.presentation.ui.vote.model.VoteType
+import com.picke.presentation.ui.vote.model.VoteUiEvent
 import com.picke.presentation.ui.vote.model.VoteUiState
 import com.picke.presentation.ui.vote.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,6 +39,9 @@ class VoteViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(VoteUiState(isLoading = true))
     val uiState: StateFlow<VoteUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<VoteUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<VoteUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
         fetchVoteDetail()
@@ -56,10 +63,9 @@ class VoteViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update {
-                        it.copy(isLoading = false, error = error.message)
-                    }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(VoteUiEvent.ShowLoadFailedToast)
                 }
         }
     }

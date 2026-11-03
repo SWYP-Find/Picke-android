@@ -5,10 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.CreditHistoryItem
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
+import com.picke.presentation.ui.my.point.model.PointUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,6 +36,9 @@ class PointViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(PointUiState())
     val uiState: StateFlow<PointUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<PointUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<PointUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
         loadPointHistory()
@@ -72,6 +79,7 @@ class PointViewModel @Inject constructor(
                 .onFailure { error ->
                     Log.e(TAG, "포인트 내역 실패: ${error.message}", error)
                     _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+                    _uiEvent.send(PointUiEvent.ShowLoadFailedToast)
                 }
         }
     }

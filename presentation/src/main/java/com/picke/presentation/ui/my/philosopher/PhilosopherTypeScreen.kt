@@ -69,6 +69,7 @@ import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.dialog.ShareDialog
+import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.captureBitmap
 import com.picke.presentation.util.launchBitmapShare
@@ -96,6 +97,9 @@ fun PhilosopherTypeScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
 
@@ -106,6 +110,15 @@ fun PhilosopherTypeScreen(
             viewModel.fetchPhilosopherReport()
         } else {
             viewModel.fetchOtherPhilosopherReport(shareKey = reportId!!)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                PhilosopherTypeUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

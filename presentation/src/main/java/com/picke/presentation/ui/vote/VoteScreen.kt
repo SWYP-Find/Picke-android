@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +68,7 @@ import com.picke.presentation.ui.vote.component.VoteOptionCard
 import com.picke.presentation.ui.vote.component.VoteSkeleton
 import com.picke.presentation.ui.vote.model.BattleDetailUiModel
 import com.picke.presentation.ui.vote.model.VoteClassInfoUiModel
+import com.picke.presentation.ui.vote.model.VoteUiEvent
 import com.picke.presentation.ui.vote.model.voteScreenStyle
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiState
@@ -90,8 +92,20 @@ fun VoteRoute(
     viewModel: VoteViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     BackHandler { onBackClick() }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                VoteUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     if (uiState.isLoading) {
         VoteSkeleton(voteType = voteType, modifier = Modifier.fillMaxSize())

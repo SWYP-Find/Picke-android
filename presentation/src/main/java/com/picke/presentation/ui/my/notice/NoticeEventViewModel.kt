@@ -7,11 +7,15 @@ import com.picke.domain.feature.alarm.model.AlarmDetailBoard
 import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.presentation.ui.my.notice.model.NoticeEventItem
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
+import com.picke.presentation.ui.my.notice.model.NoticeEventUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,6 +34,9 @@ class NoticeEventViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NoticeEventUiState())
     val uiState: StateFlow<NoticeEventUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<NoticeEventUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<NoticeEventUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
         fetchNoticeEvents()
@@ -73,6 +80,10 @@ class NoticeEventViewModel @Inject constructor(
                     isLoading = false
                 )
             }
+
+            if (noticeResult.isFailure || eventResult.isFailure) {
+                _uiEvent.send(NoticeEventUiEvent.ShowLoadFailedToast)
+            }
         }
     }
 
@@ -107,6 +118,7 @@ class NoticeEventViewModel @Inject constructor(
                 _uiState.update { it.copy(initialDetailItem = detailData.toNoticeEventItem()) }
             }.onFailure { error ->
                 Log.e("NoticeEventFlow", "❌ [알림 진입 실패] ${error.message}")
+                _uiEvent.send(NoticeEventUiEvent.ShowLoadFailedToast)
             }
         }
     }

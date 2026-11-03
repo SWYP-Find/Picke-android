@@ -5,11 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
+import com.picke.presentation.ui.my.content.model.ContentActivityUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +37,9 @@ class ContentActivityViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ContentActivityUiState())
     val uiState: StateFlow<ContentActivityUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<ContentActivityUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<ContentActivityUiEvent> = _uiEvent.receiveAsFlow()
 
     private val TAG = "ContentActivityFlow"
 
@@ -92,6 +99,10 @@ class ContentActivityViewModel @Inject constructor(
                     isLoading = false
                 )
             }
+
+            if (commentsResult.isFailure || likesResult.isFailure) {
+                _uiEvent.send(ContentActivityUiEvent.ShowLoadFailedToast)
+            }
         }
     }
 
@@ -143,6 +154,7 @@ class ContentActivityViewModel @Inject constructor(
             }.onFailure { exception ->
                 Log.e(TAG, "페이징 실패: 타입=$activityType, 에러=${exception.message}")
                 _uiState.update { it.copy(isPagingLoading = false) }
+                _uiEvent.send(ContentActivityUiEvent.ShowLoadFailedToast)
             }
         }
     }

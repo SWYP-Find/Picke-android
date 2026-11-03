@@ -78,24 +78,22 @@ class CommentViewModel @Inject constructor(
                     onSuccess()
                     fetchComments(isRefresh = true)
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
     fun deleteComment(commentId: Long) {
-        _uiState.update { state ->
-            state.copy(
-                comments = state.comments.filter { it.commentId != commentId }
-            )
-        }
-
         viewModelScope.launch {
             commentUseCases.deleteCommentUseCase(targetId, commentId)
                 .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            comments = state.comments.filter { it.commentId != commentId }
+                        )
+                    }
                     fetchMainPerspective()
                 }
-                .onFailure {
-                    fetchComments(isRefresh = true)
-                }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -116,6 +114,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -133,6 +132,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -150,6 +150,7 @@ class CommentViewModel @Inject constructor(
                 .onSuccess {
                     sendEvent(CommentUiEvent.NavigateBack)
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -247,6 +248,7 @@ class CommentViewModel @Inject constructor(
                     onSuccess()
                     fetchMainPerspective()
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 }

@@ -122,6 +122,7 @@ class AlarmViewModel @Inject constructor(
                     }
                 }.onFailure { error ->
                     Log.e(TAG, "알림 읽음 처리 실패", error)
+                    _uiEvent.emit(AlarmUiEvent.ShowActionFailedToast)
                 }
         }
     }

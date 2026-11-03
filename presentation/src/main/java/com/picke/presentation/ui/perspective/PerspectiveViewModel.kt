@@ -201,26 +201,22 @@ class PerspectiveViewModel @Inject constructor(
                     fetchMyPerspective()
                     fetchPerspectives(isRefresh = true)
                 }
-                .onFailure {
-                    fetchMyPerspective()
-                }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowActionFailedToast) }
         }
     }
 
     fun deletePerspective(perspectiveId: Long) {
-        _uiState.update { state ->
-            state.copy(
-                perspectives = state.perspectives.filter { it.perspectiveId != perspectiveId },
-                myPerspective = if (state.myPerspective?.perspectiveId == perspectiveId) null else state.myPerspective
-            )
-        }
-
         viewModelScope.launch {
             perspectiveUseCases.deletePerspectiveUseCase(perspectiveId)
-                .onFailure {
-                    fetchMyPerspective()
-                    fetchPerspectives(isRefresh = true)
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            perspectives = state.perspectives.filter { it.perspectiveId != perspectiveId },
+                            myPerspective = if (state.myPerspective?.perspectiveId == perspectiveId) null else state.myPerspective
+                        )
+                    }
                 }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -243,6 +239,7 @@ class PerspectiveViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowActionFailedToast) }
         }
     }
 

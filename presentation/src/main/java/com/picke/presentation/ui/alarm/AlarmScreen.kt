@@ -55,12 +55,16 @@ fun AlarmScreen(
     val context = LocalContext.current
 
     val readAllFailedMessage = stringResource(R.string.alarm_read_all_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
                 AlarmUiEvent.ShowReadAllFailedToast ->
                     Toast.makeText(context, readAllFailedMessage, Toast.LENGTH_SHORT).show()
+
+                AlarmUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

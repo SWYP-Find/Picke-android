@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.scenario.model
 
 data class ScenarioUiState(
+    val isLoading: Boolean = true,
     val title: String = "",
     val pastScripts: List<ScenarioScriptUiModel> = emptyList(),
     val pastChoices: List<PastChoice> = emptyList(),

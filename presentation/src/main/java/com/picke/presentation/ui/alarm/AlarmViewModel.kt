@@ -159,7 +159,7 @@ class AlarmViewModel @Inject constructor(
             }.onFailure { error ->
                 Log.e("AlarmFlow", "❌ 전체 알림 읽음 처리 실패: ${error.message}", error)
                 _uiState.update { state -> state.copy(alarmList = previousAlarmList) }
-                _uiEvent.emit(AlarmUiEvent.ShowToast("알림 읽음 처리에 실패했습니다. 다시 시도해주세요."))
+                _uiEvent.emit(AlarmUiEvent.ShowReadAllFailedToast)
             }
         }
     }

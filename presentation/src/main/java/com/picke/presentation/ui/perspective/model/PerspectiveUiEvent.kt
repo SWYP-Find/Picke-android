@@ -1,12 +1,16 @@
 package com.picke.presentation.ui.perspective.model
 
-import androidx.annotation.StringRes
-
 sealed interface PerspectiveUiEvent {
 
     data class NavigateNext(val battleId: Long) : PerspectiveUiEvent
 
-    data class ShowToast(@param:StringRes val messageResId: Int) : PerspectiveUiEvent
+    data object ShowLoadFailedToast : PerspectiveUiEvent
+
+    data object ShowCommentRequiredToast : PerspectiveUiEvent
+
+    data object ShowReportedToast : PerspectiveUiEvent
+
+    data object ShowAlreadyReportedToast : PerspectiveUiEvent
 
     data object ShowActionFailedToast : PerspectiveUiEvent
 }

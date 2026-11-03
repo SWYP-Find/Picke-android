@@ -8,7 +8,6 @@ import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.presentation.AppRoute
-import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiState
@@ -160,11 +159,11 @@ class CommentViewModel @Inject constructor(
                 .onSuccess { result ->
                     when (result) {
                         is ReportPerspectiveResult.Reported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                            sendEvent(CommentUiEvent.ShowReportedToast)
                         }
 
                         is ReportPerspectiveResult.AlreadyReported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                            sendEvent(CommentUiEvent.ShowAlreadyReportedToast)
                         }
                     }
                 }
@@ -178,11 +177,11 @@ class CommentViewModel @Inject constructor(
                 .onSuccess { result ->
                     when (result) {
                         is ReportCommentResult.Reported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                            sendEvent(CommentUiEvent.ShowReportedToast)
                         }
 
                         is ReportCommentResult.AlreadyReported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                            sendEvent(CommentUiEvent.ShowAlreadyReportedToast)
                         }
                     }
                 }

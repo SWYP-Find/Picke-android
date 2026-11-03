@@ -91,6 +91,10 @@ fun PerspectiveScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val commentRequiredMessage = stringResource(R.string.class_comment_required)
+    val reportedMessage = stringResource(R.string.comment_report_success)
+    val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(Unit) {
@@ -98,13 +102,17 @@ fun PerspectiveScreen(
             when (event) {
                 is PerspectiveUiEvent.NavigateNext -> onNextClick(event.battleId)
 
-                is PerspectiveUiEvent.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(event.messageResId),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                PerspectiveUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                PerspectiveUiEvent.ShowCommentRequiredToast ->
+                    Toast.makeText(context, commentRequiredMessage, Toast.LENGTH_SHORT).show()
+
+                PerspectiveUiEvent.ShowReportedToast ->
+                    Toast.makeText(context, reportedMessage, Toast.LENGTH_SHORT).show()
+
+                PerspectiveUiEvent.ShowAlreadyReportedToast ->
+                    Toast.makeText(context, alreadyReportedMessage, Toast.LENGTH_SHORT).show()
 
                 PerspectiveUiEvent.ShowActionFailedToast ->
                     Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
@@ -400,7 +408,9 @@ fun PerspectiveContent(
                                         val emptyMsg = if (pageIndex == 0) {
                                             stringResource(R.string.comment_empty_all)
                                         } else {
-                                            stringResource(R.string.comment_empty_option, tabList.getOrElse(pageIndex) { "" })
+                                            stringResource(
+                                                R.string.comment_empty_option,
+                                                tabList.getOrElse(pageIndex) { "" })
                                         }
 
                                         PickeEmptyState(

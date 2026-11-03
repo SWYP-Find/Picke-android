@@ -63,6 +63,8 @@ fun WithdrawScreen(
         stringResource(R.string.setting_withdraw_reason_etc)
     )
     val reasonRequiredMessage = stringResource(R.string.setting_withdraw_reason_required)
+    val logoutFailedMessage = stringResource(R.string.setting_logout_error)
+    val withdrawFailedMessage = stringResource(R.string.setting_withdraw_error)
 
     var selectedReason by remember { mutableStateOf<String?>(null) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
@@ -71,13 +73,12 @@ fun WithdrawScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 SettingUiEvent.NavigateToLogin -> onNavigateToLogin()
-                is SettingUiEvent.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(event.messageResId),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+
+                SettingUiEvent.ShowLogoutFailedToast ->
+                    Toast.makeText(context, logoutFailedMessage, Toast.LENGTH_SHORT).show()
+
+                SettingUiEvent.ShowWithdrawFailedToast ->
+                    Toast.makeText(context, withdrawFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

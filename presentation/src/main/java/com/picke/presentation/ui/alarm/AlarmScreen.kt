@@ -54,12 +54,13 @@ fun AlarmScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val readAllFailedMessage = stringResource(R.string.alarm_read_all_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
-                is AlarmUiEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
+                AlarmUiEvent.ShowReadAllFailedToast ->
+                    Toast.makeText(context, readAllFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

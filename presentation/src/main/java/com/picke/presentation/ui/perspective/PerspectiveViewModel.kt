@@ -9,7 +9,6 @@ import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.AppRoute
-import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
@@ -123,7 +122,7 @@ class PerspectiveViewModel @Inject constructor(
                 }
                 .onFailure {
                     _uiState.update { it.copy(myPerspective = null) }
-                    sendEvent(PerspectiveUiEvent.ShowToast(R.string.toast_load_failed))
+                    sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
                 }
         }
     }
@@ -144,7 +143,7 @@ class PerspectiveViewModel @Inject constructor(
                 .onSuccess { classDetail ->
                     _uiState.update { it.copy(classSetting = classDetail.toUiModel()) }
                 }
-                .onFailure { sendEvent(PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)) }
+                .onFailure { sendEvent(PerspectiveUiEvent.ShowLoadFailedToast) }
         }
     }
 
@@ -253,11 +252,11 @@ class PerspectiveViewModel @Inject constructor(
                 .onSuccess { result ->
                     when (result) {
                         is ReportPerspectiveResult.Reported -> {
-                            sendEvent(PerspectiveUiEvent.ShowToast(R.string.comment_report_success))
+                            sendEvent(PerspectiveUiEvent.ShowReportedToast)
                         }
 
                         is ReportPerspectiveResult.AlreadyReported -> {
-                            sendEvent(PerspectiveUiEvent.ShowToast(R.string.comment_report_duplicate))
+                            sendEvent(PerspectiveUiEvent.ShowAlreadyReportedToast)
                         }
                     }
                 }
@@ -270,10 +269,10 @@ class PerspectiveViewModel @Inject constructor(
         val classSetting = state.classSetting
         val event = when {
             state.isClassBattle && classSetting == null ->
-                PerspectiveUiEvent.ShowToast(R.string.toast_load_failed)
+                PerspectiveUiEvent.ShowLoadFailedToast
 
             classSetting?.isCommentRequired == true && state.myPerspective == null ->
-                PerspectiveUiEvent.ShowToast(R.string.class_comment_required)
+                PerspectiveUiEvent.ShowCommentRequiredToast
 
             else -> PerspectiveUiEvent.NavigateNext(battleId)
         }

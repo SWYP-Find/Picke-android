@@ -48,6 +48,7 @@ fun AudioPlayerBar(
     currentPositionMs: Long,
     totalDurationMs: Long,
     playbackSpeed: Float,
+    isForwardEnabled: Boolean,
     onPlayPauseClick: () -> Unit,
     onSeek: (Float) -> Unit,
     onRewindClick: () -> Unit,
@@ -174,7 +175,8 @@ fun AudioPlayerBar(
                 ControlSkipButton(
                     iconResId = R.drawable.ic_play_forward,
                     label = stringResource(R.string.scenario_audio_skip_15_seconds),
-                    onClick = onForwardClick
+                    onClick = onForwardClick,
+                    enabled = isForwardEnabled
                 )
             }
 
@@ -235,19 +237,20 @@ private fun ControlSkipButton(
     iconResId: Int,
     label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .clickable(interactionSource = null, indication = null, onClick = onClick),
+            .clickable(interactionSource = null, indication = null, enabled = enabled, onClick = onClick),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             painter = painterResource(iconResId),
             contentDescription = label,
-            tint = PickeTheme.colors.gray600,
+            tint = if (enabled) PickeTheme.colors.gray600 else PickeTheme.colors.gray200,
             modifier = Modifier.size(20.dp)
         )
 
@@ -255,7 +258,7 @@ private fun ControlSkipButton(
         Text(
             text = label,
             style = PickeTheme.typography.bodyXxsMedium,
-            color = PickeTheme.colors.textMuted
+            color = if (enabled) PickeTheme.colors.textMuted else PickeTheme.colors.gray200
         )
     }
 }
@@ -269,6 +272,7 @@ fun AudioPlayerBarPreview() {
             currentPositionMs = 12,
             totalDurationMs = 40,
             playbackSpeed = 1.0f,
+            isForwardEnabled = true,
             onPlayPauseClick = { },
             onSeek = { },
             onRewindClick = { },

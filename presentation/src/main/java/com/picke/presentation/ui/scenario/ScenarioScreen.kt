@@ -164,6 +164,7 @@ fun ScenarioScreen(
                 currentPositionMs = uiState.currentPositionMs,
                 totalDurationMs = uiState.totalDurationMs,
                 playbackSpeed = uiState.playbackSpeed,
+                isForwardEnabled = uiState.isForwardEnabled,
                 onPlayPauseClick = onPlayPauseClick,
                 onSeek = onSeek,
                 onRewindClick = onRewindClick,

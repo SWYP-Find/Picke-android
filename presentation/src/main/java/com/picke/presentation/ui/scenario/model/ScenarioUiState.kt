@@ -21,4 +21,7 @@ data class ScenarioUiState(
     val showAudioError: Boolean = false,
     val isReviewing: Boolean = false,
     val isRequesting: Boolean = false
-)
+) {
+    val isForwardEnabled: Boolean
+        get() = !showOptions && !showFinalVoteDialog && !showAudioError
+}

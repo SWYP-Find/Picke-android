@@ -100,6 +100,7 @@ private fun ClassBattlePreviewContent(
                 currentPositionMs = uiState.currentPositionMs,
                 totalDurationMs = uiState.totalDurationMs,
                 playbackSpeed = uiState.playbackSpeed,
+                isForwardEnabled = true,
                 onPlayPauseClick = { onAction(ClassBattlePreviewUiAction.PlayPauseClick) },
                 onSeek = { ratio -> onAction(ClassBattlePreviewUiAction.Seek(ratio)) },
                 onRewindClick = { onAction(ClassBattlePreviewUiAction.RewindClick) },

@@ -154,7 +154,7 @@ class ScenarioViewModel @Inject constructor(
     }
 
     fun seekForward() {
-        if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
+        if (!_uiState.value.isForwardEnabled) return
         val safePos = minOf(
             audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
             _uiState.value.nodeEndTimeMs

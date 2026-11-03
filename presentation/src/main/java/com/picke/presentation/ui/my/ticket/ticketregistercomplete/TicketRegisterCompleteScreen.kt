@@ -21,6 +21,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.my.ticket.component.TicketBottomAction
 import com.picke.presentation.ui.my.ticket.component.TicketCard
+import com.picke.presentation.ui.my.ticket.component.TicketCardSkeleton
 import com.picke.presentation.ui.my.ticket.component.TicketHeadline
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiAction
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiEvent
@@ -94,7 +95,11 @@ private fun TicketRegisterCompleteContent(
                     isCentered = true
                 )
 
-                uiState.ticket?.let { ticket -> TicketCard(ticket = ticket) }
+                if (uiState.isLoading) {
+                    TicketCardSkeleton()
+                } else {
+                    uiState.ticket?.let { ticket -> TicketCard(ticket = ticket) }
+                }
             }
 
             TicketBottomAction(
@@ -112,6 +117,7 @@ private fun TicketRegisterCompleteContentPreview() {
     PickeTheme {
         TicketRegisterCompleteContent(
             uiState = TicketRegisterCompleteUiState(
+                isLoading = false,
                 ticketId = 1L,
                 ticket = DummyData.dummyRegisteredTicket
             ),

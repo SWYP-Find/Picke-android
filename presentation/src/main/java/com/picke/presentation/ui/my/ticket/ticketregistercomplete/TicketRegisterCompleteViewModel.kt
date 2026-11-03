@@ -58,12 +58,17 @@ class TicketRegisterCompleteViewModel @Inject constructor(
         viewModelScope.launch {
             classroomUseCases.getMyClassTicketUseCase()
                 .onSuccess { ticket ->
-                    if (ticket.ticketId != _uiState.value.ticketId) return@onSuccess
-                    _uiState.update {
-                        reduce(it, TicketRegisterCompleteMutation.TicketLoaded(ticket.toUiModel()))
+                    val mutation = if (ticket.ticketId == _uiState.value.ticketId) {
+                        TicketRegisterCompleteMutation.TicketLoaded(ticket.toUiModel())
+                    } else {
+                        TicketRegisterCompleteMutation.TicketLoadFailed
                     }
+                    _uiState.update { reduce(it, mutation) }
                 }
-                .onFailure { sendEvent(TicketRegisterCompleteUiEvent.ShowLoadFailedToast) }
+                .onFailure {
+                    _uiState.update { reduce(it, TicketRegisterCompleteMutation.TicketLoadFailed) }
+                    sendEvent(TicketRegisterCompleteUiEvent.ShowLoadFailedToast)
+                }
         }
     }
 }

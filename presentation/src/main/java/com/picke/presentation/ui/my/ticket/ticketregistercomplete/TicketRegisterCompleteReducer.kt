@@ -8,5 +8,7 @@ internal fun reduce(
     mutation: TicketRegisterCompleteMutation
 ): TicketRegisterCompleteUiState =
     when (mutation) {
-        is TicketRegisterCompleteMutation.TicketLoaded -> state.copy(ticket = mutation.ticket)
+        is TicketRegisterCompleteMutation.TicketLoaded -> state.copy(isLoading = false, ticket = mutation.ticket)
+
+        TicketRegisterCompleteMutation.TicketLoadFailed -> state.copy(isLoading = false)
     }

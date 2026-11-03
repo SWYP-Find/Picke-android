@@ -5,6 +5,7 @@
     <string name="setting">설정</string>
     <string name="login_your_think">당신의 생각을</string>
     <string name="login_with_kakao">카카오로 로그인</string>
+    <string name="login_kakao_failed">카카오 로그인에 실패했습니다.</string>
     <string name="login_with_google">구글로 로그인</string>
     <string name="login_google_failed">구글 로그인에 실패했습니다. \n다시 시도해 주세요.</string>
     <string name="onboarding_start">시작하기</string>

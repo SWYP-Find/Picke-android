@@ -4,6 +4,7 @@ import com.picke.presentation.ui.attendance.AttendanceCheckUiState
 
 data class HomeUiState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val hasNewNotice: Boolean = false,
     val isAlarmStatusLoading: Boolean = true,
     val editorPicks: List<HomeContentUiModel> = emptyList(),

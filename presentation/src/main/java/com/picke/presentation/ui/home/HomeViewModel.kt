@@ -41,7 +41,7 @@ class HomeViewModel @Inject constructor(
     private var isAttendanceFlowTriggered = false
 
     init {
-        fetchHomeData()
+        fetchHomeData(isRefresh = false)
     }
 
     fun checkInAndShowAttendanceSheetIfNeeded() {
@@ -71,15 +71,16 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(attendanceCheckUiState = null) }
     }
 
-    fun fetchHomeData() {
+    fun fetchHomeData(isRefresh: Boolean) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { if (isRefresh) it.copy(isRefreshing = true) else it.copy(isLoading = true) }
 
             homeUseCases.fetchHomeDataUseCase()
                 .onSuccess { boardData ->
                     _uiState.update { state ->
                         state.copy(
                             isLoading = false,
+                            isRefreshing = false,
                             editorPicks = boardData.editorPicks.map { it.toUiModel() },
                             trendingBattles = boardData.trendingBattles.map { it.toUiModel() },
                             bestBattles = boardData.bestBattles.map { it.toUiModel() },
@@ -89,7 +90,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
                     _uiEvent.send(HomeUiEvent.ShowLoadFailedToast)
                 }
         }

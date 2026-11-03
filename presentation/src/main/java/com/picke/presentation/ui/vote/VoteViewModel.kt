@@ -58,8 +58,7 @@ class VoteViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            battleDetail = detailBoard.toUiModel(),
-                            error = null
+                            battleDetail = detailBoard.toUiModel()
                         )
                     }
                 }
@@ -116,8 +115,9 @@ class VoteViewModel @Inject constructor(
                         }
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(error = error.message, isLoading = false) }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(VoteUiEvent.ShowActionFailedToast)
                 }
         }
     }

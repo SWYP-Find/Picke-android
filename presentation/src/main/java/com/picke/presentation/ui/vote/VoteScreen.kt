@@ -95,6 +95,7 @@ fun VoteRoute(
     val context = LocalContext.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     BackHandler { onBackClick() }
 
@@ -103,6 +104,9 @@ fun VoteRoute(
             when (event) {
                 VoteUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                VoteUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

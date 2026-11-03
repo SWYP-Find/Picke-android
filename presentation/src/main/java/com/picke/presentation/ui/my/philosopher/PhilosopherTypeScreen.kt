@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.my.philosopher
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
@@ -47,11 +48,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,6 +78,9 @@ import com.picke.presentation.util.shareCapturedImageToKakao
 import com.picke.presentation.util.shareToInstagramStory
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlinx.coroutines.launch
+
+private const val CLIP_LABEL = "recap_link"
 
 @Composable
 fun PhilosopherTypeScreen(
@@ -96,7 +100,7 @@ fun PhilosopherTypeScreen(
 
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
@@ -273,9 +277,11 @@ fun PhilosopherTypeScreen(
                         onSuccess = { shareKey ->
                             val shareUrl = "${BuildConfig.BASE_URL}recap/$shareKey"
 
-                            clipboardManager.setText(AnnotatedString(shareUrl))
-                            Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
-                            viewModel.trackRecapShare(ShareChannel.LINK)
+                            coroutineScope.launch {
+                                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, shareUrl)))
+                                Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                                viewModel.trackRecapShare(ShareChannel.LINK)
+                            }
                         },
                         onError = { errorMessage ->
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()

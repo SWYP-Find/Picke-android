@@ -51,6 +51,7 @@ class HomeViewModel @Inject constructor(
         isAttendanceFlowTriggered = true
 
         viewModelScope.launch {
+            // TODO: 성공·실패 처리 - 출석 체크 결과(지급 포인트·이미 출석)를 쓰지 않고, 실패해도 주간 출석 시트를 띄움
             attendanceUseCases.checkAttendanceUseCase()
             attendanceUseCases.getWeeklyAttendanceUseCase()
                 .onSuccess { weeklyAttendance ->

@@ -88,6 +88,7 @@ class LoginViewModel @Inject constructor(
                     .addOnSuccessListener { fcmToken ->
                         preferencesUseCases.saveFcmToken(fcmToken)
                         viewModelScope.launch {
+                            // TODO: 성공·실패 처리 - 기기 등록 결과를 확인하지 않아 실패하면 푸시를 받지 못함
                             deviceUseCases.registerDeviceUseCase(fcmToken)
                         }
                     }

@@ -82,6 +82,7 @@ class NoticeEventViewModel @Inject constructor(
                 )
             }
 
+            // TODO: 성공 처리 - 상세 응답을 쓰지 않음 (화면은 목록 본문을 표시), 읽음 처리 용도인지 확인
             val result = alarmUseCases.getAlarmDetailUseCase(notificationId)
 
             result.onFailure {

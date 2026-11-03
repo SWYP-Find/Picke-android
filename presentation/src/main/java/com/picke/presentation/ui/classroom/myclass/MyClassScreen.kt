@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.myclass.component.MyClassCard
+import com.picke.presentation.ui.classroom.myclass.component.MyClassSkeleton
 import com.picke.presentation.ui.classroom.myclass.model.MyClassFilter
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
@@ -33,6 +34,8 @@ import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private const val MY_CLASS_SKELETON_COUNT = 3
 
 @Composable
 fun MyClassScreen(
@@ -110,6 +113,12 @@ private fun MyClassContent(
                     selectedFilter = uiState.selectedFilter,
                     onFilterSelect = { filter -> onAction(MyClassUiAction.FilterSelect(filter)) }
                 )
+            }
+
+            if (uiState.isLoading && uiState.classes.isEmpty()) {
+                items(count = MY_CLASS_SKELETON_COUNT) {
+                    MyClassSkeleton()
+                }
             }
 
             if (!uiState.isLoading && uiState.filteredClasses.isEmpty()) {

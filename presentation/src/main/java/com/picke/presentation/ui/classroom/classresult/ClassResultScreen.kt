@@ -27,6 +27,7 @@ import com.picke.presentation.ui.classroom.classresult.component.ClassResultFeed
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultMyVoteCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultOpinionCard
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultParticipationCard
+import com.picke.presentation.ui.classroom.classresult.component.ClassResultSkeleton
 import com.picke.presentation.ui.classroom.classresult.component.ClassResultStanceCard
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultInsightUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
@@ -110,6 +111,11 @@ private fun ClassResultContent(
             backgroundColor = PickeTheme.colors.backgroundBeige,
             titleColor = PickeTheme.colors.textSubtler
         )
+
+        if (uiState.isLoading) {
+            ClassResultSkeleton(modifier = Modifier.weight(1f))
+            return@Column
+        }
 
         LazyColumn(
             modifier = Modifier
@@ -370,6 +376,7 @@ private fun ClassResultContentPreview(
     PickeTheme {
         ClassResultContent(
             uiState = ClassResultUiState(
+                isLoading = false,
                 classId = classItem.id,
                 className = classItem.title,
                 isInProgress = classItem.isInProgress,

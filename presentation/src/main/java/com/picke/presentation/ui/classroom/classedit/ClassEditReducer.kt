@@ -31,12 +31,15 @@ internal fun reduce(state: ClassEditUiState, mutation: ClassEditMutation): Class
         ClassEditMutation.RequestFailed -> state
 
         is ClassEditMutation.ClassLoaded -> state.copy(
+            isLoading = false,
             originalClassName = mutation.className,
             className = mutation.className,
             originalDeadline = mutation.deadline,
             deadline = mutation.deadline,
             ticketEndDate = mutation.ticketEndDate
         )
+
+        ClassEditMutation.ClassLoadFailed -> state.copy(isLoading = false)
 
         is ClassEditMutation.BattleLoaded -> state.copy(battle = mutation.battle)
 

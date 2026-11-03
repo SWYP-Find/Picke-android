@@ -22,6 +22,7 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
         ClassResultMutation.RequestFailed -> state
 
         is ClassResultMutation.ClassResultLoaded -> state.copy(
+            isLoading = false,
             className = mutation.className,
             isInProgress = mutation.isInProgress,
             tag = mutation.tag,
@@ -31,6 +32,8 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
             hasReportTab = mutation.hasReportTab,
             summary = mutation.summary
         )
+
+        ClassResultMutation.ClassResultLoadFailed -> state.copy(isLoading = false)
 
         is ClassResultMutation.InsightLoaded -> state.copy(insight = mutation.insight)
 

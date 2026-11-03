@@ -79,10 +79,12 @@ class ClassDebateViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassDebateMutation.DebateLoadFailed) }
                 sendEvent(ClassDebateUiEvent.ShowLoadFailedToast)
                 return@launch
             }
             val debate = startOrGetDebate(classId, classBattle.canParticipate).getOrElse {
+                _uiState.update { reduce(it, ClassDebateMutation.DebateLoadFailed) }
                 sendEvent(ClassDebateUiEvent.ShowLoadFailedToast)
                 return@launch
             }

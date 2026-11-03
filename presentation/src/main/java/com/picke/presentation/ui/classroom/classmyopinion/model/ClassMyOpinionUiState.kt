@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classmyopinion.model
 
 data class ClassMyOpinionUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val perspectives: List<ClassMyPerspectiveUiModel> = emptyList(),
     val comments: List<ClassMyCommentUiModel> = emptyList(),
     val myDisplayName: String = "",

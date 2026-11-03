@@ -18,6 +18,8 @@ internal sealed interface ClassDetailMutation {
         val deadline: LocalDateTime?
     ) : ClassDetailMutation
 
+    data object ClassDetailLoadFailed : ClassDetailMutation
+
     data class BattleLoaded(
         val battle: ClassBattleUiModel,
         val battleStep: ClassBattleStep,

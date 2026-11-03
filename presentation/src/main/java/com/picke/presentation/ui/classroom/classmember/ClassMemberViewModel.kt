@@ -82,7 +82,10 @@ class ClassMemberViewModel @Inject constructor(
                     )
                     _uiState.update { reduce(it, mutation) }
                 }
-                .onFailure { sendEvent(ClassMemberUiEvent.ShowLoadFailedToast) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassMemberMutation.MembersLoadFailed) }
+                    sendEvent(ClassMemberUiEvent.ShowLoadFailedToast)
+                }
         }
     }
 

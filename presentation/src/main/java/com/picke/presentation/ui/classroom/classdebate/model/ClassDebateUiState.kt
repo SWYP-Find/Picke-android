@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classdebate.model
 
 data class ClassDebateUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val battleTitle: String = "",
     val debate: ClassDebateUiModel = ClassDebateUiModel(),
     val input: String = "",

@@ -19,6 +19,8 @@ internal sealed interface ClassResultMutation {
         val summary: ClassResultSummaryUiModel
     ) : ClassResultMutation
 
+    data object ClassResultLoadFailed : ClassResultMutation
+
     data class InsightLoaded(val insight: ClassResultInsightUiModel) : ClassResultMutation
 
     data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation

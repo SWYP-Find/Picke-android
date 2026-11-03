@@ -56,6 +56,7 @@ import com.picke.presentation.ui.component.ChatBubble
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -159,6 +160,11 @@ private fun ClassDebateContent(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
+        if (uiState.isLoading) {
+            PickeChatSkeleton(modifier = Modifier.padding(innerPadding))
+            return@Scaffold
+        }
+
         ClassDebateChatSection(
             myChoice = uiState.debate.myChoice,
             opponentName = uiState.debate.opponentName,
@@ -424,6 +430,7 @@ private fun ClassDebateContentPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = debate.copy(
                     round = 2,
@@ -445,6 +452,7 @@ private fun ClassDebateReplyDisabledPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = DummyData.dummyClassDebate.copy(canReply = false)
             ),
@@ -462,6 +470,7 @@ private fun ClassDebateGeneratingPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = debate.copy(
                     round = 2,
@@ -484,6 +493,7 @@ private fun ClassDebateFailedPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = debate.copy(
                     round = 2,
@@ -507,6 +517,7 @@ private fun ClassDebateFinishedPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = debate.copy(
                     round = ClassDebateUiState.TOTAL_ROUNDS,
@@ -529,6 +540,7 @@ private fun ClassDebateFinalVoteDialogPreview() {
     PickeTheme {
         ClassDebateContent(
             uiState = ClassDebateUiState(
+                isLoading = false,
                 battleTitle = battle.title,
                 debate = debate.copy(
                     round = ClassDebateUiState.TOTAL_ROUNDS,

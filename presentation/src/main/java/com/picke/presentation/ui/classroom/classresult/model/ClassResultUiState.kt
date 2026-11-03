@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 data class ClassResultUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val className: String = "",
     val isInProgress: Boolean = false,
     val tag: String = "",

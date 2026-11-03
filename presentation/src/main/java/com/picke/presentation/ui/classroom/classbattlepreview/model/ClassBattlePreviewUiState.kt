@@ -4,6 +4,7 @@ import com.picke.presentation.ui.scenario.model.ScenarioScriptUiModel
 
 data class ClassBattlePreviewUiState(
     val battleId: Long = 0L,
+    val isLoading: Boolean = true,
     val title: String = "",
     val scripts: List<ScenarioScriptUiModel> = emptyList(),
     val isPlaying: Boolean = false,

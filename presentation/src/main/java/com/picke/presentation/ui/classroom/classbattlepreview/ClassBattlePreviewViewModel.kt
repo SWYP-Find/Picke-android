@@ -102,6 +102,7 @@ class ClassBattlePreviewViewModel @Inject constructor(
                     val startNode = scenario.nodes[scenario.startNodeId]
                     val audioUrl = scenario.audios.values.firstOrNull()
                     if (startNode == null || audioUrl == null) {
+                        _uiState.update { reduce(it, ClassBattlePreviewMutation.BattlePreviewLoadFailed) }
                         sendEvent(ClassBattlePreviewUiEvent.ShowLoadFailedToast)
                         return@onSuccess
                     }
@@ -122,7 +123,10 @@ class ClassBattlePreviewViewModel @Inject constructor(
                     audioPlayerManager.loadAudio(fullAudioUrl)
                     play()
                 }
-                .onFailure { sendEvent(ClassBattlePreviewUiEvent.ShowLoadFailedToast) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassBattlePreviewMutation.BattlePreviewLoadFailed) }
+                    sendEvent(ClassBattlePreviewUiEvent.ShowLoadFailedToast)
+                }
         }
     }
 

@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 data class ClassDetailUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val isOperator: Boolean = false,
     val isInProgress: Boolean = true,
     val title: String = "",

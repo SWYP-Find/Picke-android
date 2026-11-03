@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 data class ClassVoteUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val voteType: VoteType = VoteType.PRE,
     val className: String = "",
     val deadline: LocalDateTime? = null,

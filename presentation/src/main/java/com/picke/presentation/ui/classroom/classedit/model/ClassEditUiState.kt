@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 data class ClassEditUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val originalClassName: String = "",
     val className: String = "",
     val isClassNameInvalid: Boolean = false,

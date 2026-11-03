@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classvote
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiState
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.vote.VoteScreen
+import com.picke.presentation.ui.vote.component.VoteSkeleton
 import com.picke.presentation.ui.vote.model.VoteClassInfoUiModel
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiState
@@ -86,6 +88,14 @@ private fun ClassVoteContent(
         null
     }
 
+    if (uiState.isLoading) {
+        VoteSkeleton(
+            voteType = uiState.voteType,
+            modifier = modifier.fillMaxSize()
+        )
+        return
+    }
+
     val battle = uiState.battle ?: return
     val classInfo = VoteClassInfoUiModel(
         className = uiState.className,
@@ -122,6 +132,7 @@ private fun ClassVotePreVotePreview() {
     PickeTheme {
         ClassVoteContent(
             uiState = ClassVoteUiState(
+                isLoading = false,
                 classId = classItem.id,
                 voteType = VoteType.PRE,
                 className = classItem.title,
@@ -144,6 +155,7 @@ private fun ClassVoteFinalVotePreview() {
     PickeTheme {
         ClassVoteContent(
             uiState = ClassVoteUiState(
+                isLoading = false,
                 classId = classItem.id,
                 voteType = VoteType.POST,
                 className = classItem.title,

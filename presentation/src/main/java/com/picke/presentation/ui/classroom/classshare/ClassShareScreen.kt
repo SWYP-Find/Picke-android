@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classshare.component.ClassShareSkeleton
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
@@ -140,14 +141,18 @@ private fun ClassShareContent(
         ) {
             ClassShareHeaderSection()
 
-            ClassShareCodeSection(
-                uiState = uiState,
-                onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
-                onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
-            )
+            if (uiState.isLoading) {
+                ClassShareSkeleton()
+            } else {
+                ClassShareCodeSection(
+                    uiState = uiState,
+                    onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
+                    onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
+                )
 
-            uiState.battle?.let { battle ->
-                ClassShareBattleSection(battle = battle)
+                uiState.battle?.let { battle ->
+                    ClassShareBattleSection(battle = battle)
+                }
             }
         }
     }
@@ -296,6 +301,7 @@ private fun ClassShareContentPreview() {
     PickeTheme {
         ClassShareContent(
             uiState = ClassShareUiState(
+                isLoading = false,
                 classId = classItem.id,
                 className = classItem.title,
                 deadline = DummyData.dummyClassDeadline,
@@ -315,6 +321,7 @@ private fun ClassShareContentNoDeadlinePreview() {
     PickeTheme {
         ClassShareContent(
             uiState = ClassShareUiState(
+                isLoading = false,
                 classId = classItem.id,
                 className = classItem.title,
                 code = DummyData.dummyClassCode,

@@ -16,12 +16,15 @@ internal fun reduce(state: ClassVoteUiState, mutation: ClassVoteMutation): Class
         ClassVoteMutation.RequestFailed -> state
 
         is ClassVoteMutation.ClassVoteLoaded -> state.copy(
+            isLoading = false,
             className = mutation.className,
             deadline = mutation.deadline,
             battleId = mutation.battleId,
             isAiBattle = mutation.isAiBattle,
             battle = mutation.battle
         )
+
+        ClassVoteMutation.ClassVoteLoadFailed -> state.copy(isLoading = false)
     }
 
     return if (mutation is ClassVoteMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced

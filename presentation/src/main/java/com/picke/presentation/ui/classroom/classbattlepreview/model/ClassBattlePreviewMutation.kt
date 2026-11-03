@@ -10,6 +10,8 @@ internal sealed interface ClassBattlePreviewMutation {
         val totalDurationMs: Long
     ) : ClassBattlePreviewMutation
 
+    data object BattlePreviewLoadFailed : ClassBattlePreviewMutation
+
     data class PlayingChanged(val isPlaying: Boolean) : ClassBattlePreviewMutation
 
     data class PositionSynced(val positionMs: Long) : ClassBattlePreviewMutation

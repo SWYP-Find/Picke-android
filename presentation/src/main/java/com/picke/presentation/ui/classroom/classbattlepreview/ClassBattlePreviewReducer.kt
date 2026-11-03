@@ -24,10 +24,13 @@ internal fun reduce(
 ): ClassBattlePreviewUiState =
     when (mutation) {
         is ClassBattlePreviewMutation.BattlePreviewLoaded -> state.copy(
+            isLoading = false,
             title = mutation.title,
             scripts = mutation.scripts,
             totalDurationMs = mutation.totalDurationMs
         )
+
+        ClassBattlePreviewMutation.BattlePreviewLoadFailed -> state.copy(isLoading = false)
 
         is ClassBattlePreviewMutation.PlayingChanged -> state.copy(isPlaying = mutation.isPlaying)
 

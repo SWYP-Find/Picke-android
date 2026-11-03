@@ -83,10 +83,12 @@ class ClassMyOpinionViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val members = classroomUseCases.getClassMembersUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassMyOpinionMutation.MyCommentsLoadFailed) }
                 sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
                 return@launch
             }
             val activity = classroomUseCases.getClassResultMyActivityUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassMyOpinionMutation.MyCommentsLoadFailed) }
                 sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
                 return@launch
             }

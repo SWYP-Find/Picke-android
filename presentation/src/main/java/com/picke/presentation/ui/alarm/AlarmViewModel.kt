@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.alarm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
@@ -24,10 +23,6 @@ class AlarmViewModel @Inject constructor(
     private val alarmsUseCases: AlarmUseCases,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
-
-    companion object {
-        private const val TAG = "AlarmViewModel_Picke"
-    }
 
     private val _uiState = MutableStateFlow(AlarmUiState())
     val uiState: StateFlow<AlarmUiState> = _uiState.asStateFlow()
@@ -86,8 +81,7 @@ class AlarmViewModel @Inject constructor(
                         unreadCount = data.items.count { !it.isRead }
                     )
                 }
-            }.onFailure { exception ->
-                Log.e(TAG, "알림 목록 조회 실패", exception)
+            }.onFailure {
                 _uiState.update { it.copy(isLoading = false, isPagingLoading = false) }
                 _uiEvent.emit(AlarmUiEvent.ShowLoadFailedToast)
             }
@@ -101,8 +95,8 @@ class AlarmViewModel @Inject constructor(
 
             result.onSuccess { detailData ->
                 // TODO: 받아온 detailData를 활용해 팝업을 띄우거나 화면을 이동하는 상태 추가
-            }.onFailure { error ->
-                Log.e(TAG, "알림 상세 조회 실패", error)
+            }.onFailure {
+                // TODO: 실패 처리 - 알림 상세 조회 실패 시 안내 방식 결정
             }
         }
     }
@@ -121,8 +115,7 @@ class AlarmViewModel @Inject constructor(
                             }
                         )
                     }
-                }.onFailure { error ->
-                    Log.e(TAG, "알림 읽음 처리 실패", error)
+                }.onFailure {
                     _uiEvent.emit(AlarmUiEvent.ShowActionFailedToast)
                 }
         }

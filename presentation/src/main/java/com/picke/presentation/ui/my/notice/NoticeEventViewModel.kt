@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.my.notice
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.alarm.model.AlarmDetailBoard
@@ -46,8 +45,6 @@ class NoticeEventViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            Log.d("NoticeEventFlow", "🚀 [목록 API 호출] 공지사항, 이벤트 요청 시작")
-
             val noticeDeferred =
                 async { alarmUseCases.getAlarmsUseCase(category = "NOTICE", page = 0, size = 50) }
             val eventDeferred =
@@ -55,18 +52,6 @@ class NoticeEventViewModel @Inject constructor(
 
             val noticeResult = noticeDeferred.await()
             val eventResult = eventDeferred.await()
-
-            noticeResult.onSuccess { data ->
-                Log.d("NoticeEventFlow", "✅ [목록 성공] 공지사항 수신: ${data.items.size}개")
-            }.onFailure { error ->
-                Log.e("NoticeEventFlow", "❌ [목록 실패] 공지사항 에러: ${error.message}")
-            }
-
-            eventResult.onSuccess { data ->
-                Log.d("NoticeEventFlow", "✅ [목록 성공] 이벤트 수신: ${data.items.size}개")
-            }.onFailure { error ->
-                Log.e("NoticeEventFlow", "❌ [목록 실패] 이벤트 에러: ${error.message}")
-            }
 
             val notices =
                 noticeResult.getOrNull()?.items?.map { it.toNoticeEventItem("공지사항") } ?: emptyList()
@@ -89,8 +74,6 @@ class NoticeEventViewModel @Inject constructor(
 
     fun fetchNoticeEventDetail(notificationId: Long) {
         viewModelScope.launch {
-            Log.d("NoticeEventFlow", "🚀 [상세 API 호출] ID($notificationId) 정보 요청 시작!")
-
             _uiState.update { state ->
                 val targetId = notificationId.toString()
                 state.copy(
@@ -101,23 +84,18 @@ class NoticeEventViewModel @Inject constructor(
 
             val result = alarmUseCases.getAlarmDetailUseCase(notificationId)
 
-            result.onSuccess { detailData ->
-                Log.d("NoticeEventFlow", "✅ [상세 성공] 받아온 데이터: $detailData")
-            }.onFailure { error ->
-                Log.e("NoticeEventFlow", "❌ [상세 실패] 에러 발생: ${error.message}")
+            result.onFailure {
+                // TODO: 실패 처리 - 목록 본문은 이미 보이는 상태라 상세 조회 실패 시 안내 방식 결정
             }
         }
     }
 
     fun fetchInitialDetail(noticeId: Long) {
         viewModelScope.launch {
-            Log.d("NoticeEventFlow", "🚀 [알림 진입] ID($noticeId) 상세 요청 시작")
             val result = alarmUseCases.getAlarmDetailUseCase(noticeId)
             result.onSuccess { detailData ->
-                Log.d("NoticeEventFlow", "✅ [알림 진입 성공] $detailData")
                 _uiState.update { it.copy(initialDetailItem = detailData.toNoticeEventItem()) }
-            }.onFailure { error ->
-                Log.e("NoticeEventFlow", "❌ [알림 진입 실패] ${error.message}")
+            }.onFailure {
                 _uiEvent.send(NoticeEventUiEvent.ShowLoadFailedToast)
             }
         }

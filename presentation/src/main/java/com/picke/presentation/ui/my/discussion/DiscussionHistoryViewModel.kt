@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.my.discussion
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.MyBattleRecordItem
@@ -35,8 +34,6 @@ class DiscussionHistoryViewModel @Inject constructor(
     private val _uiEvent = Channel<DiscussionHistoryUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<DiscussionHistoryUiEvent> = _uiEvent.receiveAsFlow()
 
-    private val TAG = "DiscussionHistoryFlow"
-
     init {
         fetchDiscussionHistory()
     }
@@ -48,13 +45,7 @@ class DiscussionHistoryViewModel @Inject constructor(
             val result =
                 myPageUseCases.getMyBattleRecordsUseCase(offset = 0, size = 20, voteSide = null)
 
-            result.onSuccess { data ->
-                Log.d(
-                    TAG,
-                    "배틀 기록 불러오기 성공! 아이템 개수: ${data.items.size}, nextOffset: ${data.nextOffset}"
-                )
-            }.onFailure { exception ->
-                Log.e(TAG, "배틀 기록 불러오기 실패: ${exception.message}")
+            result.onFailure {
                 _uiEvent.send(DiscussionHistoryUiEvent.ShowLoadFailedToast)
             }
 
@@ -76,7 +67,6 @@ class DiscussionHistoryViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isPagingLoading = true) }
-            Log.d(TAG, "페이징 시작: offset=${currentState.nextOffset}")
 
             val result = myPageUseCases.getMyBattleRecordsUseCase(
                 offset = currentState.nextOffset,
@@ -85,7 +75,6 @@ class DiscussionHistoryViewModel @Inject constructor(
             )
 
             result.onSuccess { pageData ->
-                Log.d(TAG, "페이징 성공: 추가된 개수=${pageData.items.size}")
                 _uiState.update { state ->
                     state.copy(
                         items = state.items + pageData.items,
@@ -94,8 +83,7 @@ class DiscussionHistoryViewModel @Inject constructor(
                         isPagingLoading = false
                     )
                 }
-            }.onFailure { exception ->
-                Log.e(TAG, "페이징 실패: 에러=${exception.message}")
+            }.onFailure {
                 _uiState.update { it.copy(isPagingLoading = false) }
                 _uiEvent.send(DiscussionHistoryUiEvent.ShowLoadFailedToast)
             }

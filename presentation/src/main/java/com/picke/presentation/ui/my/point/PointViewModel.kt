@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.my.point
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.CreditHistoryItem
@@ -30,10 +29,6 @@ class PointViewModel @Inject constructor(
     private val myPageUseCases: MyPageUseCases
 ) : ViewModel() {
 
-    companion object {
-        private const val TAG = "PointViewModel"
-    }
-
     private val _uiState = MutableStateFlow(PointUiState())
     val uiState: StateFlow<PointUiState> = _uiState.asStateFlow()
 
@@ -58,12 +53,8 @@ class PointViewModel @Inject constructor(
         viewModelScope.launch {
             val offset = if (isRefresh) null else currentState.nextOffset
 
-            Log.d(TAG, "포인트 내역 요청 시작 - offset: $offset, isRefresh: $isRefresh")
-
             myPageUseCases.getCreditHistoryUseCase(offset = offset, size = 15)
                 .onSuccess { page ->
-                    Log.d(TAG, "포인트 내역 성공 - 가져온 개수: ${page.items.size}")
-
                     val newUiItems = page.items.map { it.toUiModel() }
 
                     _uiState.update { state ->
@@ -76,8 +67,7 @@ class PointViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { error ->
-                    Log.e(TAG, "포인트 내역 실패: ${error.message}", error)
+                .onFailure {
                     _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
                     _uiEvent.send(PointUiEvent.ShowLoadFailedToast)
                 }

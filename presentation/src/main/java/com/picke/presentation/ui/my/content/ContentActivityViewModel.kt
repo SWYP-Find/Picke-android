@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.my.content
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
@@ -41,8 +40,6 @@ class ContentActivityViewModel @Inject constructor(
     private val _uiEvent = Channel<ContentActivityUiEvent>(Channel.BUFFERED)
     val uiEvent: Flow<ContentActivityUiEvent> = _uiEvent.receiveAsFlow()
 
-    private val TAG = "ContentActivityFlow"
-
     init {
         fetchContentActivity()
     }
@@ -68,20 +65,6 @@ class ContentActivityViewModel @Inject constructor(
 
             val commentsResult = commentsDeferred.await()
             val likesResult = likesDeferred.await()
-
-            commentsResult.onSuccess { data ->
-                Log.d(TAG, "댓글 불러오기 성공! 아이템 개수: ${data.items.size}")
-                Log.d(TAG, "댓글 데이터 상세: $data")
-            }.onFailure { exception ->
-                Log.e(TAG, "댓글 불러오기 실패: ${exception.message}")
-            }
-
-            likesResult.onSuccess { data ->
-                Log.d(TAG, "좋아요 불러오기 성공! 아이템 개수: ${data.items.size}")
-                Log.d(TAG, "좋아요 데이터 상세: $data")
-            }.onFailure { exception ->
-                Log.e(TAG, "좋아요 불러오기 실패: ${exception.message}")
-            }
 
             val comments = commentsResult.getOrNull()?.items ?: emptyList()
             val likes = likesResult.getOrNull()?.items ?: emptyList()
@@ -121,7 +104,6 @@ class ContentActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isPagingLoading = true) }
-            Log.d(TAG, "페이징 시작: 타입=$activityType, offset=$currentOffset")
 
             val result = myPageUseCases.getMyContentActivitiesUseCase(
                 offset = currentOffset,
@@ -130,10 +112,6 @@ class ContentActivityViewModel @Inject constructor(
             )
 
             result.onSuccess { pageData ->
-                Log.d(
-                    TAG,
-                    "페이징 성공: 타입=$activityType, 추가된 개수=${pageData.items.size}, 다음 offset=${pageData.nextOffset}"
-                )
                 _uiState.update { state ->
                     if (activityType == "COMMENT") {
                         state.copy(
@@ -151,8 +129,7 @@ class ContentActivityViewModel @Inject constructor(
                         )
                     }
                 }
-            }.onFailure { exception ->
-                Log.e(TAG, "페이징 실패: 타입=$activityType, 에러=${exception.message}")
+            }.onFailure {
                 _uiState.update { it.copy(isPagingLoading = false) }
                 _uiEvent.send(ContentActivityUiEvent.ShowLoadFailedToast)
             }

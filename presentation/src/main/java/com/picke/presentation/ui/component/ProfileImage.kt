@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
@@ -23,11 +24,16 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 private const val IMAGE_SIZE_RATIO = 2f / 3f
 
+object ProfileImageDefaults {
+    val philosopherImageSize = 28.dp
+}
+
 @Composable
 fun ProfileImage(
     model: Any?,
     size: Dp,
     modifier: Modifier = Modifier,
+    imageSize: Dp = size * IMAGE_SIZE_RATIO,
     backgroundColor: Color = PickeTheme.colors.borderBeigeDefault
 ) {
     Box(
@@ -40,7 +46,7 @@ fun ProfileImage(
         AsyncImage(
             model = model,
             contentDescription = null,
-            modifier = Modifier.size(size * IMAGE_SIZE_RATIO),
+            modifier = Modifier.size(imageSize),
             contentScale = ContentScale.Fit
         )
     }
@@ -61,6 +67,11 @@ private fun ProfileImagePreview() {
             ProfileImage(
                 model = R.drawable.illust_owl,
                 size = ComponentNumberTokens.avatarLg
+            )
+            ProfileImage(
+                model = R.drawable.illust_mengzi,
+                size = ComponentNumberTokens.avatarMd,
+                imageSize = ProfileImageDefaults.philosopherImageSize
             )
         }
     }

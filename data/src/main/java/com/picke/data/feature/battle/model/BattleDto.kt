@@ -45,39 +45,39 @@ data class BattleTagDto(
 
 // Data -> Domain
 fun BattleDetailDto.toDomainModel() = BattleDetailBoard(
-    battleInfo = this.battleInfo?.toDomainModel() ?: BattleInfoBoard.empty(),
-    description = this.description ?: "",
-    shareUrl = this.shareUrl ?: "",
-    userVoteStatus = this.userVoteStatus ?: "NONE",
-    currentStep = this.currentStep ?: "",
-    categoryTags = this.categoryTags?.map { it.toDomainModel() } ?: emptyList(),
-    philosopherTags = this.philosopherTags?.map { it.toDomainModel() } ?: emptyList(),
-    valueTags = this.valueTags?.map { it.toDomainModel() } ?: emptyList()
+    battleInfo = battleInfo?.toDomainModel() ?: BattleInfoBoard.empty(),
+    description = description ?: "",
+    shareUrl = shareUrl ?: "",
+    userVoteStatus = userVoteStatus ?: "NONE",
+    currentStep = currentStep ?: "",
+    categoryTags = categoryTags?.map { it.toDomainModel() } ?: emptyList(),
+    philosopherTags = philosopherTags?.map { it.toDomainModel() } ?: emptyList(),
+    valueTags = valueTags?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun BattleInfoDto.toDomainModel() = BattleInfoBoard(
-    battleId = this.battleId.toString() ?: "1",
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    participantsCount = this.participantsCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.map { it.toDomainModel() } ?: emptyList(),
-    options = this.options?.map { it.toDomainModel() } ?: emptyList()
+    battleId = battleId.toString() ?: "1",
+    title = title ?: "",
+    summary = summary ?: "",
+    thumbnailUrl = thumbnailUrl ?: "",
+    viewCount = viewCount ?: 0,
+    participantsCount = participantsCount ?: 0,
+    audioDuration = audioDuration ?: 0,
+    tags = tags?.map { it.toDomainModel() } ?: emptyList(),
+    options = options?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun BattleOptionDto.toDomainModel() = BattleOptionBoard(
-    optionId = this.optionId.toString() ?: "1",
-    title = this.title ?: "",
-    stance = this.stance ?: "",
-    representative = this.representative ?: "",
-    imageUrl = this.imageUrl ?: "",
-    tags = this.tags?.map { it.toDomainModel() } ?: emptyList()
+    optionId = optionId.toString() ?: "1",
+    title = title ?: "",
+    stance = stance ?: "",
+    representative = representative ?: "",
+    imageUrl = imageUrl ?: "",
+    tags = tags?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun BattleTagDto.toDomainModel() = BattleTagBoard(
-    tagId = this.tagId.toString() ?: "",
-    name = this.name ?: "",
-    type = this.type ?: ""
+    tagId = tagId.toString() ?: "",
+    name = name ?: "",
+    type = type ?: ""
 )

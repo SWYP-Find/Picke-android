@@ -159,75 +159,75 @@ data class CreditHistoryPageDto(
 )
 
 fun CreditHistoryItemDto.toDomainModel() = CreditHistoryItem(
-    id = this.id ?: 0L,
-    creditType = this.creditType ?: "UNKNOWN",
-    amount = this.amount ?: 0,
-    referenceId = this.referenceId ?: 0L,
-    createdAt = this.createdAt?.take(10) ?: ""
+    id = id ?: 0L,
+    creditType = creditType ?: "UNKNOWN",
+    amount = amount ?: 0,
+    referenceId = referenceId ?: 0L,
+    createdAt = createdAt?.take(10) ?: ""
 )
 
 fun CreditHistoryPageDto.toDomainModel() = CreditHistoryPage(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextOffset = this.nextOffset,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextOffset = nextOffset,
+    hasNext = hasNext ?: false
 )
 
 // Mappers DTO -> Domain
 fun MyBattleRecordItemDto.toDomainModel() = MyBattleRecordItem(
-    battleId = this.battleId ?: "",
-    recordId = this.recordId ?: "",
-    voteSide = this.voteSide ?: "PRO",
-    category = this.category ?: "",
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    createdAt = this.createdAt?.take(10) ?: ""
+    battleId = battleId ?: "",
+    recordId = recordId ?: "",
+    voteSide = voteSide ?: "PRO",
+    category = category ?: "",
+    title = title ?: "",
+    summary = summary ?: "",
+    createdAt = createdAt?.take(10) ?: ""
 )
 
 fun MyBattleRecordPageDto.toDomainModel() = MyBattleRecordPage(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextOffset = this.nextOffset,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextOffset = nextOffset,
+    hasNext = hasNext ?: false
 )
 
 fun MyContentActivityItemDto.toDomainModel() = MyContentActivityItem(
-    activityId = this.activityId ?: "",
-    activityType = this.activityType ?: "COMMENT",
-    perspectiveId = this.perspectiveId ?: "",
-    battleId = this.battleId ?: "",
-    battleTitle = this.battleTitle ?: "",
+    activityId = activityId ?: "",
+    activityType = activityType ?: "COMMENT",
+    perspectiveId = perspectiveId ?: "",
+    battleId = battleId ?: "",
+    battleTitle = battleTitle ?: "",
     author = MyContentActivityAuthor(
-        userTag = this.author?.userTag ?: "",
-        nickname = this.author?.nickname ?: "알 수 없음",
-        characterType = this.author?.characterType ?: "UNKNOWN",
-        characterImageUrl = this.author?.characterImageUrl ?: ""
+        userTag = author?.userTag ?: "",
+        nickname = author?.nickname ?: "알 수 없음",
+        characterType = author?.characterType ?: "UNKNOWN",
+        characterImageUrl = author?.characterImageUrl ?: ""
     ),
-    voteSide = this.voteSide,
-    optionTitle = this.optionTitle,
-    content = this.content ?: "",
-    likeCount = this.likeCount ?: 0,
-    createdAt = this.createdAt ?: ""
+    voteSide = voteSide,
+    optionTitle = optionTitle,
+    content = content ?: "",
+    likeCount = likeCount ?: 0,
+    createdAt = createdAt ?: ""
 )
 
 fun MyContentActivityPageDto.toDomainModel() = MyContentActivityPage(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextOffset = this.nextOffset,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextOffset = nextOffset,
+    hasNext = hasNext ?: false
 )
 
 fun MyPageInfoDto.toDomainModel() = MyPageInfoBoard(
     profile = MyProfile(
-        userTag = this.profile?.userTag ?: "",
-        nickname = this.profile?.nickname ?: "알 수 없음",
-        characterType = this.profile?.characterType ?: "UNKNOWN",
-        characterLabel = this.profile?.characterLabel ?: "",
-        characterImageUrl = this.profile?.characterImageUrl ?: "",
-        mannerTemperature = this.profile?.mannerTemperature ?: 0.0
+        userTag = profile?.userTag ?: "",
+        nickname = profile?.nickname ?: "알 수 없음",
+        characterType = profile?.characterType ?: "UNKNOWN",
+        characterLabel = profile?.characterLabel ?: "",
+        characterImageUrl = profile?.characterImageUrl ?: "",
+        mannerTemperature = profile?.mannerTemperature ?: 0.0
     ),
-    philosopher = this.philosopher.toDomainModel(),
+    philosopher = philosopher.toDomainModel(),
     tier = MyTier(
-        tierCode = this.tier?.tierCode ?: "UNKNOWN",
-        tierLabel = this.tier?.tierLabel ?: "",
-        currentPoint = this.tier?.currentPoint ?: 0
+        tierCode = tier?.tierCode ?: "UNKNOWN",
+        tierLabel = tier?.tierLabel ?: "",
+        currentPoint = tier?.currentPoint ?: 0
     )
 )
 
@@ -241,48 +241,48 @@ fun MyPhilosopherDto?.toDomainModel() = MyPhilosopher(
 )
 
 fun NotificationSettingsDto.toDomainModel() = NotificationSettingsBoard(
-    newBattleEnabled = this.newBattleEnabled ?: false,
-    battleResultEnabled = this.battleResultEnabled ?: true,
-    commentReplyEnabled = this.commentReplyEnabled ?: true,
-    newCommentEnabled = this.newCommentEnabled ?: false,
-    contentLikeEnabled = this.contentLikeEnabled ?: false,
-    marketingEventEnabled = this.marketingEventEnabled ?: true
+    newBattleEnabled = newBattleEnabled ?: false,
+    battleResultEnabled = battleResultEnabled ?: true,
+    commentReplyEnabled = commentReplyEnabled ?: true,
+    newCommentEnabled = newCommentEnabled ?: false,
+    contentLikeEnabled = contentLikeEnabled ?: false,
+    marketingEventEnabled = marketingEventEnabled ?: true
 )
 
 // Request DTO 변환 (Domain -> DTO)
 fun NotificationSettingsBoard.toDto() = NotificationSettingsDto(
-    newBattleEnabled = this.newBattleEnabled,
-    battleResultEnabled = this.battleResultEnabled,
-    commentReplyEnabled = this.commentReplyEnabled,
-    newCommentEnabled = this.newCommentEnabled,
-    contentLikeEnabled = this.contentLikeEnabled,
-    marketingEventEnabled = this.marketingEventEnabled
+    newBattleEnabled = newBattleEnabled,
+    battleResultEnabled = battleResultEnabled,
+    commentReplyEnabled = commentReplyEnabled,
+    newCommentEnabled = newCommentEnabled,
+    contentLikeEnabled = contentLikeEnabled,
+    marketingEventEnabled = marketingEventEnabled
 )
 
 fun ProfileUpdateResponseDto.toDomainModel() = ProfileUpdateBoard(
-    userTag = this.userTag ?: "",
-    nickname = this.nickname ?: "",
-    characterType = this.characterType ?: "",
-    updatedAt = this.updatedAt ?: ""
+    userTag = userTag ?: "",
+    nickname = nickname ?: "",
+    characterType = characterType ?: "",
+    updatedAt = updatedAt ?: ""
 )
 
 fun MyRecapDto.toDomainModel() = MyRecapBoard(
-    myCard = this.myCard.toDomainModel(),
-    bestMatchCard = this.bestMatchCard.toDomainModel(),
-    worstMatchCard = this.worstMatchCard.toDomainModel(),
+    myCard = myCard.toDomainModel(),
+    bestMatchCard = bestMatchCard.toDomainModel(),
+    worstMatchCard = worstMatchCard.toDomainModel(),
     scores = RecapScores(
-        principle = this.scores?.principle ?: 0,
-        reason = this.scores?.reason ?: 0,
-        individual = this.scores?.individual ?: 0,
-        change = this.scores?.change ?: 0,
-        inner = this.scores?.inner ?: 0,
-        ideal = this.scores?.ideal ?: 0
+        principle = scores?.principle ?: 0,
+        reason = scores?.reason ?: 0,
+        individual = scores?.individual ?: 0,
+        change = scores?.change ?: 0,
+        inner = scores?.inner ?: 0,
+        ideal = scores?.ideal ?: 0
     ),
     preferenceReport = PreferenceReport(
-        totalParticipation = this.preferenceReport?.totalParticipation ?: 0,
-        opinionChanges = this.preferenceReport?.opinionChanges ?: 0,
-        battleWinRate = this.preferenceReport?.battleWinRate ?: 0,
-        favoriteTopics = this.preferenceReport?.favoriteTopics?.map {
+        totalParticipation = preferenceReport?.totalParticipation ?: 0,
+        opinionChanges = preferenceReport?.opinionChanges ?: 0,
+        battleWinRate = preferenceReport?.battleWinRate ?: 0,
+        favoriteTopics = preferenceReport?.favoriteTopics?.map {
             FavoriteTopic(it.rank ?: 0, it.tagName ?: "", it.participationCount ?: 0)
         } ?: emptyList()
     )

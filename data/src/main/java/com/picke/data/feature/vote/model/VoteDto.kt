@@ -49,30 +49,30 @@ data class VotedOptionDto(
 // DTO -> Domain
 
 fun VoteStatsOptionDto.toDomainModel() = VoteStatsOptionBoard(
-    optionId = this.optionId ?: 0L,
-    title = this.title ?: "",
-    imageUrl = this.imageUrl ?: "",
-    isCorrect = this.isCorrect ?: false,
-    voteCount = this.voteCount ?: 0,
-    ratio = this.ratio ?: 0f,
-    stance = this.stance ?: ""
+    optionId = optionId ?: 0L,
+    title = title ?: "",
+    imageUrl = imageUrl ?: "",
+    isCorrect = isCorrect ?: false,
+    voteCount = voteCount ?: 0,
+    ratio = ratio ?: 0f,
+    stance = stance ?: ""
 )
 
 fun VoteStatsDto.toDomainModel() = VoteStatsBoard(
-    totalCount = this.totalCount ?: 0,
-    updatedAt = this.updatedAt ?: "",
-    options = this.options?.map { it.toDomainModel() } ?: emptyList()
+    totalCount = totalCount ?: 0,
+    updatedAt = updatedAt ?: "",
+    options = options?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun VotedOptionDto.toDomainModel() = VotedOptionBoard(
-    optionId = this.optionId ?: 0L,
-    title = this.title ?: ""
+    optionId = optionId ?: 0L,
+    title = title ?: ""
 )
 
 fun MyVoteResponseDto.toDomainModel() = MyVoteBoard(
-    battleTitle = this.battleTitle ?: "",
-    preVote = this.preVote?.toDomainModel(),
-    postVote = this.postVote?.toDomainModel(),
-    status = this.status ?: "NONE",
-    opinionChanged = this.opinionChanged ?: false
+    battleTitle = battleTitle ?: "",
+    preVote = preVote?.toDomainModel(),
+    postVote = postVote?.toDomainModel(),
+    status = status ?: "NONE",
+    opinionChanged = opinionChanged ?: false
 )

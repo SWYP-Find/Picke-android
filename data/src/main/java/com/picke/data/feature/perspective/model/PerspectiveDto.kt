@@ -90,62 +90,62 @@ data class PerspectiveUpdateResponseDto(
 // ==========================================
 
 fun PerspectivePageDto.toDomainModel() = PerspectivePage(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextCursor = this.nextCursor,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextCursor = nextCursor,
+    hasNext = hasNext ?: false
 )
 
 fun PerspectiveDto.toDomainModel() = PerspectiveBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    nickname = this.user?.nickname ?: "알 수 없음",
-    characterType = this.user?.characterType ?: "",
-    characterImageUrl = this.user?.characterImageUrl ?: "",
-    content = this.content ?: "",
-    isMine = this.isMyPerspective ?: false,
-    createdAt = this.createdAt ?: "",
-    optionTitle = this.option?.title ?: "",
-    optionId = this.option?.optionId ?: 0L,
-    replyCount = this.commentCount ?: 0,
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false
+    perspectiveId = perspectiveId ?: 0L,
+    nickname = user?.nickname ?: "알 수 없음",
+    characterType = user?.characterType ?: "",
+    characterImageUrl = user?.characterImageUrl ?: "",
+    content = content ?: "",
+    isMine = isMyPerspective ?: false,
+    createdAt = createdAt ?: "",
+    optionTitle = option?.title ?: "",
+    optionId = option?.optionId ?: 0L,
+    replyCount = commentCount ?: 0,
+    likeCount = likeCount ?: 0,
+    isLiked = isLiked ?: false
 )
 
 fun PerspectiveCreateResponseDto.toDomainModel() = PerspectiveStatusBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    status = this.status ?: "UNKNOWN",
-    createdAt = this.createdAt ?: ""
+    perspectiveId = perspectiveId ?: 0L,
+    status = status ?: "UNKNOWN",
+    createdAt = createdAt ?: ""
 )
 
 // 내 관점 단건, 일반 단건 매퍼 통합
 fun PerspectiveDetailResponseDto.toDomainModel() = PerspectiveDetailBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    userTag = this.user?.userTag ?: "",
-    nickname = this.user?.nickname ?: "알 수 없음",
-    characterImageUrl = this.user?.characterImageUrl ?: "",
-    optionTitle = this.option?.title ?: "",
-    optionId = this.option?.optionId ?: 0L,
-    content = this.content ?: "",
-    likeCount = this.likeCount ?: 0,
-    commentCount = this.commentCount ?: 0,
-    isLiked = this.isLiked ?: false,
-    status = this.status ?: "PUBLISHED",
-    isMine = this.isMyPerspective ?: true,
-    createdAt = this.createdAt ?: ""
+    perspectiveId = perspectiveId ?: 0L,
+    userTag = user?.userTag ?: "",
+    nickname = user?.nickname ?: "알 수 없음",
+    characterImageUrl = user?.characterImageUrl ?: "",
+    optionTitle = option?.title ?: "",
+    optionId = option?.optionId ?: 0L,
+    content = content ?: "",
+    likeCount = likeCount ?: 0,
+    commentCount = commentCount ?: 0,
+    isLiked = isLiked ?: false,
+    status = status ?: "PUBLISHED",
+    isMine = isMyPerspective ?: true,
+    createdAt = createdAt ?: ""
 )
 
 fun PerspectiveUpdateResponseDto.toDomainModel() = PerspectiveUpdateBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    content = this.content ?: "",
-    updatedAt = this.updatedAt ?: ""
+    perspectiveId = perspectiveId ?: 0L,
+    content = content ?: "",
+    updatedAt = updatedAt ?: ""
 )
 
 fun PerspectiveLikeCountResponseDto.toDomainModel() = PerspectiveLikeCountBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    likeCount = this.likeCount ?: 0
+    perspectiveId = perspectiveId ?: 0L,
+    likeCount = likeCount ?: 0
 )
 
 fun PerspectiveLikeToggleResponseDto.toDomainModel() = PerspectiveLikeToggleBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false
+    perspectiveId = perspectiveId ?: 0L,
+    likeCount = likeCount ?: 0,
+    isLiked = isLiked ?: false
 )

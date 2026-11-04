@@ -36,31 +36,31 @@ data class RecommendationPageResponseDto(
 )
 
 fun RecommendTagDto.toDomainModel() = RecommendTagBoard(
-    tagId = this.tagId ?: 0L,
-    name = this.name ?: ""
+    tagId = tagId ?: 0L,
+    name = name ?: ""
 )
 
 fun RecommendOptionDto.toDomainModel() = RecommendOptionBoard(
-    optionId = this.optionId ?: 0L,
-    title = this.title ?: "",
-    stance = this.stance ?: "",
-    representative = this.representative ?: "",
-    imageUrl = this.imageUrl ?: ""
+    optionId = optionId ?: 0L,
+    title = title ?: "",
+    stance = stance ?: "",
+    representative = representative ?: "",
+    imageUrl = imageUrl ?: ""
 )
 
 fun RecommendationItemDto.toDomainModel() = RecommendBoard(
-    battleId = this.battleId ?: 0L,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    audioDuration = this.audioDuration ?: 0,
-    viewCount = this.viewCount ?: 0,
-    tags = this.tags?.map { it.toDomainModel() } ?: emptyList(),
-    participantsCount = this.participantsCount ?: 0,
-    options = this.options?.map { it.toDomainModel() } ?: emptyList()
+    battleId = battleId ?: 0L,
+    title = title ?: "",
+    summary = summary ?: "",
+    audioDuration = audioDuration ?: 0,
+    viewCount = viewCount ?: 0,
+    tags = tags?.map { it.toDomainModel() } ?: emptyList(),
+    participantsCount = participantsCount ?: 0,
+    options = options?.map { it.toDomainModel() } ?: emptyList()
 )
 
 fun RecommendationPageResponseDto.toDomainModel() = RecommendPageBoard(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextCursor = this.nextCursor,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextCursor = nextCursor,
+    hasNext = hasNext ?: false
 )

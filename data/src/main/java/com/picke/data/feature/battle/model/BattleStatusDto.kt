@@ -8,6 +8,6 @@ data class BattleStatusDto(
 )
 
 fun BattleStatusDto.toDomainModel() = BattleStatusBoard(
-    battleId = this.battleId ?: 0L,
-    step = this.step ?: "NONE"
+    battleId = battleId ?: 0L,
+    step = step ?: "NONE"
 )

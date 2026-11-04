@@ -7,5 +7,5 @@ data class ShareKeyDto(
 )
 
 fun ShareKeyDto.toDomainModel() = ShareKey(
-    shareKey = this.shareKey ?: ""
+    shareKey = shareKey ?: ""
 )

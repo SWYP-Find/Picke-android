@@ -38,32 +38,32 @@ data class TodayBattleOptionDto(
 // DTO -> Domain Model
 fun TodayBattleResponseDto.toDomainModel(): TodayBattleBoard{
     return TodayBattleBoard(
-        items = this.items.map { it.toDomainModel() },
-        totalCount = this.totalCount
+        items = items.map { it.toDomainModel() },
+        totalCount = totalCount
     )
 }
 
 fun TodayBattleItemDto.toDomainModel(): TodayBattleItem {
     return TodayBattleItem(
-        battleId = this.battleId.toString(),
-        title = this.title,
-        summary = this.summary,
-        thumbnailUrl = this.thumbnailUrl ?: "",
+        battleId = battleId.toString(),
+        title = title,
+        summary = summary,
+        thumbnailUrl = thumbnailUrl ?: "",
         type = "",
-        viewCount = this.viewCount,
-        participantsCount = this.participantsCount,
-        audioDuration = this.audioDuration,
-        tags = this.tags.map { it.name },
-        options = this.options.map { it.toDomainModel() }
+        viewCount = viewCount,
+        participantsCount = participantsCount,
+        audioDuration = audioDuration,
+        tags = tags.map { it.name },
+        options = options.map { it.toDomainModel() }
     )
 }
 
 fun TodayBattleOptionDto.toDomainModel(): TodayBattleOption {
     return TodayBattleOption(
-        optionId = this.optionId.toString(),
-        title = this.title,
-        representative = this.representative ?: "",
-        stance = this.stance,
-        imageUrl = this.imageUrl
+        optionId = optionId.toString(),
+        title = title,
+        representative = representative ?: "",
+        stance = stance,
+        imageUrl = imageUrl
     )
 }

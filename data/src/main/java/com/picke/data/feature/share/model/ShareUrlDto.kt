@@ -8,5 +8,5 @@ data class ShareUrlDto(
 
 // DTO -> Domain 매퍼
 fun ShareUrlDto.toDomainModel() = ShareUrl(
-    shareUrl = this.shareUrl ?: "",
+    shareUrl = shareUrl ?: "",
 )

@@ -40,31 +40,31 @@ data class AlarmDetailDto(
 
 // DTO -> Domain Mapper
 fun AlarmDetailDto.toDomainModel() = AlarmDetailBoard(
-    notificationId = this.notificationId ?: 0L,
-    category = this.category ?: "ALL",
-    detailCode = this.detailCode ?: "",
-    title = this.title ?: "",
-    body = this.body ?: "",
-    referenceId = this.referenceId ?: 0L,
-    perspectiveId = this.perspectiveId ?: 0L,
-    isRead = this.isRead ?: false,
-    createdAt = this.createdAt?.take(10) ?: "",
-    readAt = this.readAt?.take(10) ?: ""
+    notificationId = notificationId ?: 0L,
+    category = category ?: "ALL",
+    detailCode = detailCode ?: "",
+    title = title ?: "",
+    body = body ?: "",
+    referenceId = referenceId ?: 0L,
+    perspectiveId = perspectiveId ?: 0L,
+    isRead = isRead ?: false,
+    createdAt = createdAt?.take(10) ?: "",
+    readAt = readAt?.take(10) ?: ""
 )
 
 fun AlarmItemDto.toDomainModel() = AlarmItemBoard(
-    notificationId = this.notificationId ?: 0L,
-    category = this.category ?: "ALL",
-    detailCode = this.detailCode ?: "",
-    title = this.title ?: "",
-    body = this.body ?: "",
-    referenceId = this.referenceId ?: 0L,
-    perspectiveId = this.perspectiveId ?: 0L,
-    isRead = this.isRead ?: false,
-    createdAt = this.createdAt ?: ""
+    notificationId = notificationId ?: 0L,
+    category = category ?: "ALL",
+    detailCode = detailCode ?: "",
+    title = title ?: "",
+    body = body ?: "",
+    referenceId = referenceId ?: 0L,
+    perspectiveId = perspectiveId ?: 0L,
+    isRead = isRead ?: false,
+    createdAt = createdAt ?: ""
 )
 
 fun AlarmPageDto.toDomainModel() = AlarmPageBoard(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    hasNext = hasNext ?: false
 )

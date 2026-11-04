@@ -14,6 +14,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.Scopes
@@ -23,6 +24,7 @@ import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.picke.presentation.BuildConfig
+import io.sentry.Sentry
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -59,6 +61,7 @@ fun rememberGoogleLoginLauncher(
                         authorizationClient.getAuthorizationResultFromIntent(result.data)
                     onAuthCode(authorizationResult.serverAuthCode)
                 } catch (e: ApiException) {
+                    Sentry.captureException(e)
                     onFailure()
                 }
             }
@@ -82,7 +85,10 @@ fun rememberGoogleLoginLauncher(
                     onAuthCode(authorizationResult.serverAuthCode)
                 }
             }
-            .addOnFailureListener { onFailure() }
+            .addOnFailureListener { e ->
+                Sentry.captureException(e)
+                onFailure()
+            }
     }
 
     return {
@@ -106,9 +112,13 @@ fun rememberGoogleLoginLauncher(
                 throw e
             } catch (e: GetCredentialCancellationException) {
                 onCancel()
+            } catch (e: NoCredentialException) {
+                onFailure()
             } catch (e: GetCredentialException) {
+                Sentry.captureException(e)
                 onFailure()
             } catch (e: GoogleIdTokenParsingException) {
+                Sentry.captureException(e)
                 onFailure()
             }
         }

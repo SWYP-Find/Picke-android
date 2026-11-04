@@ -5,6 +5,7 @@ import com.kakao.sdk.auth.AuthCodeClient
 import com.kakao.sdk.auth.model.Prompt
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import io.sentry.Sentry
 
 fun loginWithKakao(
     context: Context,
@@ -14,6 +15,8 @@ fun loginWithKakao(
 ) {
     val accountCallback: (String?, Throwable?) -> Unit = { authCode, error ->
         if (error != null) {
+            val isCancelled = error is ClientError && error.reason == ClientErrorCause.Cancelled
+            if (!isCancelled) Sentry.captureException(error)
             onFailure()
         } else if (authCode != null) {
             onAuthCodeReceive(authCode)

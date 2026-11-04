@@ -63,7 +63,7 @@ import com.picke.presentation.share.shareBattleToKakao
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeTopAppBarAction
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
@@ -494,7 +494,7 @@ fun VoteScreen(
         }
 
         if (uiState.isInsufficientPoints) {
-            CustomSingleActionDialog(
+            PickeSingleActionDialog(
                 message = stringResource(R.string.vote_point_shortage_message),
                 subMessage = stringResource(R.string.vote_point_shortage_sub_message),
                 buttonText = stringResource(R.string.vote_point_shortage_button),

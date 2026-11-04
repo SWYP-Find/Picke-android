@@ -26,12 +26,12 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomSingleActionDialogDimens {
+private object PickeSingleActionDialogDimens {
     val messageLineHeight = 24.sp
 }
 
 @Composable
-fun CustomSingleActionDialog(
+fun PickeSingleActionDialog(
     message: String,
     buttonText: String,
     onConfirm: () -> Unit,
@@ -61,7 +61,7 @@ fun CustomSingleActionDialog(
                         text = message,
                         color = pointColor,
                         textAlign = TextAlign.Center,
-                        lineHeight = CustomSingleActionDialogDimens.messageLineHeight,
+                        lineHeight = PickeSingleActionDialogDimens.messageLineHeight,
                         style = PickeTheme.typography.headingSm
                     )
 
@@ -102,9 +102,9 @@ fun CustomSingleActionDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomSingleActionDialogPreview() {
+private fun PickeSingleActionDialogPreview() {
     PickeTheme {
-        CustomSingleActionDialog(
+        PickeSingleActionDialog(
             message = "컨텐츠를 시청하기 위한\n포인트가 부족해요!",
             buttonText = "배틀 주제 구경하러 가기",
             onConfirm = {},

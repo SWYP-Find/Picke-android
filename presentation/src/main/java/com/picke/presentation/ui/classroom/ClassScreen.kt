@@ -40,8 +40,8 @@ import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.component.dialog.PickeReverseConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -164,7 +164,7 @@ private fun ClassContent(
     val ticketDialog = uiState.ticketDialog
     if (ticketDialog != null) {
         when (ticketDialog) {
-            ClassTicketDialog.NO_PERMISSION -> CustomSingleActionDialog(
+            ClassTicketDialog.NO_PERMISSION -> PickeSingleActionDialog(
                 message = stringResource(ticketDialog.messageRes()),
                 buttonText = stringResource(R.string.dialog_dismiss),
                 onConfirm = { onAction(ClassUiAction.TicketDialogDismiss) },

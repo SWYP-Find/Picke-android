@@ -18,8 +18,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterDialog
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterStep
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterUiAction
@@ -118,7 +118,7 @@ private fun TicketRegisterContent(
 
             TicketRegisterDialog.INVALID_CODE,
             TicketRegisterDialog.REGISTER_FAILED,
-            TicketRegisterDialog.EXPIRED -> CustomSingleActionDialog(
+            TicketRegisterDialog.EXPIRED -> PickeSingleActionDialog(
                 message = stringResource(dialog.messageRes()),
                 buttonText = stringResource(R.string.ticket_register_dialog_confirm),
                 onConfirm = { onAction(TicketRegisterUiAction.DialogDismiss) },

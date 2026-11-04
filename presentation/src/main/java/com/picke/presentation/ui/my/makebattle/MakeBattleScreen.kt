@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -203,7 +203,7 @@ fun MakeBattleScreen(
         }
 
         if (showPointDialog) {
-            CustomSingleActionDialog(
+            PickeSingleActionDialog(
                 message = "배틀 주제를 제안하기 위한\n포인트가 부족해요!",
                 subMessage = "매일 출석체크만 해도 5P를 받을 수 있어요!",
                 buttonText = "배틀 주제 구경하러 가기",

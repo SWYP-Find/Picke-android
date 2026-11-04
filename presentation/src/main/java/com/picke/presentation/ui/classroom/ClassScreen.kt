@@ -40,8 +40,8 @@ import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.dialog.PickeReverseConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -172,7 +172,7 @@ private fun ClassContent(
             )
 
             ClassTicketDialog.UNREGISTERED,
-            ClassTicketDialog.EXPIRED -> CustomReverseConfirmDialog(
+            ClassTicketDialog.EXPIRED -> PickeReverseConfirmDialog(
                 message = stringResource(ticketDialog.messageRes()),
                 onConfirm = { onAction(ClassUiAction.TicketDialogRegisterClick) },
                 onDismiss = { onAction(ClassUiAction.TicketDialogDismiss) },

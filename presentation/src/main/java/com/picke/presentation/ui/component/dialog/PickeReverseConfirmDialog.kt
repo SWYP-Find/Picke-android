@@ -31,12 +31,12 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomReverseConfirmDialogDimens {
+private object PickeReverseConfirmDialogDimens {
     val messageLineHeight = 24.sp
 }
 
 @Composable
-fun CustomReverseConfirmDialog(
+fun PickeReverseConfirmDialog(
     message: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
@@ -76,7 +76,7 @@ fun CustomReverseConfirmDialog(
                         text = message,
                         color = pointColor,
                         textAlign = TextAlign.Center,
-                        lineHeight = CustomReverseConfirmDialogDimens.messageLineHeight,
+                        lineHeight = PickeReverseConfirmDialogDimens.messageLineHeight,
                         style = if (title != null) PickeTheme.typography.bodySmRegular else PickeTheme.typography.bodySmSemiBold
                     )
                 }
@@ -126,9 +126,9 @@ fun CustomReverseConfirmDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomReverseConfirmDialogPreview() {
+private fun PickeReverseConfirmDialogPreview() {
     PickeTheme {
-        CustomReverseConfirmDialog(
+        PickeReverseConfirmDialog(
             message = "-30P를 사용해 원하는 주제를 제안하고,\n채택되면 +100P를 돌려받아요.",
             onConfirm = {},
             onDismiss = {},

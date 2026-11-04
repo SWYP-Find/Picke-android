@@ -14,9 +14,10 @@ fun loginWithKakao(
     onCancel: () -> Unit
 ) {
     val accountCallback: (String?, Throwable?) -> Unit = { authCode, error ->
-        if (error != null) {
-            val isCancelled = error is ClientError && error.reason == ClientErrorCause.Cancelled
-            if (!isCancelled) Sentry.captureException(error)
+        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+            onCancel()
+        } else if (error != null) {
+            Sentry.captureException(error)
             onFailure()
         } else if (authCode != null) {
             onAuthCodeReceive(authCode)

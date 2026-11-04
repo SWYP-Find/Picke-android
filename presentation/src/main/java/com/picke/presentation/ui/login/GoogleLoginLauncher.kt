@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.login
 
 import android.accounts.Account
+import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,12 +51,16 @@ fun rememberGoogleLoginLauncher(
 
     val authorizationLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            try {
-                val authorizationResult =
-                    authorizationClient.getAuthorizationResultFromIntent(result.data)
-                onAuthCode(authorizationResult.serverAuthCode)
-            } catch (e: ApiException) {
-                onFailure()
+            if (result.resultCode == Activity.RESULT_CANCELED) {
+                onCancel()
+            } else {
+                try {
+                    val authorizationResult =
+                        authorizationClient.getAuthorizationResultFromIntent(result.data)
+                    onAuthCode(authorizationResult.serverAuthCode)
+                } catch (e: ApiException) {
+                    onFailure()
+                }
             }
         }
 

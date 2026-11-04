@@ -27,7 +27,7 @@ import com.picke.presentation.ui.classroom.classmember.component.ClassNameSheet
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiAction
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiEvent
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiState
-import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -175,7 +175,7 @@ private fun ClassMemberSearchSection(
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CustomTextField(
+    PickeTextField(
         value = query,
         onValueChange = onQueryChange,
         minHeight = ComponentNumberTokens.inputTextfieldHeight,

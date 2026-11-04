@@ -36,7 +36,7 @@ import com.picke.presentation.ui.classroom.component.ClassDeadlineField
 import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
-import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -167,7 +167,7 @@ private fun ClassEditFormSection(
             contentSpacing = SpacingTokens.s8
         ) {
             Column {
-                CustomTextField(
+                PickeTextField(
                     value = uiState.className,
                     onValueChange = onClassNameChange,
                     minHeight = ComponentNumberTokens.inputTextfieldHeight,

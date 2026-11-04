@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -43,7 +43,7 @@ fun TicketCodeField(
             color = PickeTheme.colors.textDefault,
             style = PickeTheme.typography.bodyMdSemiBold
         )
-        CustomTextField(
+        PickeTextField(
             value = code,
             onValueChange = onCodeChange,
             minHeight = ComponentNumberTokens.inputTextfieldHeight,

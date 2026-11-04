@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassBottomSheet
-import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -68,7 +68,7 @@ private fun ClassNameSheetContent(
             )
         }
 
-        CustomTextField(
+        PickeTextField(
             value = name,
             onValueChange = onNameChange,
             minHeight = ClassNameSheetDimens.textFieldMinHeight,

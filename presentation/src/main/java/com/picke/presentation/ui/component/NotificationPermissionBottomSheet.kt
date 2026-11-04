@@ -126,15 +126,13 @@ fun NotificationPermissionBottomSheet(
                     text = "동의하지 않음",
                     onClick = onDisagree,
                     modifier = Modifier.weight(1f),
-                    backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDisabled,
-                    textColor = PickeTheme.colors.textInverse
+                    backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDisabled
                 )
                 CustomButton(
                     text = "동의함",
                     onClick = onAgree,
                     modifier = Modifier.weight(1f),
-                    backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundPressed,
-                    textColor = PickeTheme.colors.textInverse
+                    backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundPressed
                 )
             }
         }

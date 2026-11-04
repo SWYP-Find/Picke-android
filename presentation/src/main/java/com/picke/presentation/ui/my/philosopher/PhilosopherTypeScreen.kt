@@ -244,17 +244,13 @@ fun PhilosopherTypeScreen(
                             CustomButton(
                                 text = stringResource(R.string.my_share),
                                 onClick = { showShareDialog = true },
-                                modifier = Modifier.padding(bottom = 24.dp),
-                                backgroundColor = PickeTheme.colors.primary500,
-                                textColor = Color.White,
+                                modifier = Modifier.padding(bottom = 24.dp)
                             )
                         } else {
                             CustomButton(
                                 text = "나의 철학자 유형 알아보기",
                                 onClick = { onGoToSplashClick() },
-                                modifier = Modifier.padding(bottom = 24.dp),
-                                backgroundColor = PickeTheme.colors.primary500,
-                                textColor = Color.White
+                                modifier = Modifier.padding(bottom = 24.dp)
                             )
                             Spacer(modifier = Modifier.height(20.dp))
                         }

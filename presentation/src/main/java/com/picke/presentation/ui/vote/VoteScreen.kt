@@ -184,12 +184,6 @@ fun VoteScreen(
     val captureFailedMessage = stringResource(R.string.share_capture_failed)
     val linkCopiedMessage = stringResource(R.string.share_link_copied)
 
-    val backgroundColor = if (selectedOptionId != null && !isRequesting) {
-        PickeTheme.colors.primary500
-    } else {
-        PickeTheme.colors.primary300
-    }
-
     val onKakaoShareClick = {
         isSharing = true
         coroutineScope.launchBitmapShare(
@@ -289,9 +283,9 @@ fun VoteScreen(
                                 }
                             }
                         },
-                        backgroundColor = backgroundColor,
-                        textColor = PickeTheme.colors.surfaceBeigeDefault,
-                        enabled = !isRequesting
+                        enabled = selectedOptionId != null && !isRequesting,
+                        disabledBackgroundColor = PickeTheme.colors.primary300,
+                        textColor = PickeTheme.colors.surfaceBeigeDefault
                     )
                     if (style.deadlineText != null) {
                         VoteDeadlineRow(deadlineText = style.deadlineText)

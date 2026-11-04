@@ -329,8 +329,6 @@ private fun ClassDetailActionSection(
         CustomButton(
             text = stringResource(R.string.class_detail_view_result),
             onClick = onResultClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

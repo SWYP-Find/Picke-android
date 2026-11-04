@@ -156,10 +156,9 @@ fun TermsOfServiceBottomSheet(
             // Confirm Button
             CustomButton(
                 text = stringResource(R.string.terms_sheet_agree),
-                onClick = { if (isAllAgreed) onConfirm() },
-                backgroundColor = if (isAllAgreed) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled,
-                textColor = PickeTheme.colors.textInverse,
-                modifier = Modifier.fillMaxWidth()
+                onClick = onConfirm,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isAllAgreed
             )
         }
     }

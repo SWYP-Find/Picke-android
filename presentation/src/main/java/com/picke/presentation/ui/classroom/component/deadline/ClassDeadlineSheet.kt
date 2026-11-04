@@ -78,8 +78,6 @@ private fun ClassDeadlineSheetContent(
         CustomButton(
             text = stringResource(R.string.class_deadline_sheet_confirm),
             onClick = { onConfirm(pickerState.selectedDeadline) },
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

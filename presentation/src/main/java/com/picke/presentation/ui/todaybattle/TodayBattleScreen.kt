@@ -289,10 +289,8 @@ fun TodayBattleScreen(
                 CustomButton(
                     text = stringResource(R.string.battle_start),
                     onClick = {
-                        if (isButtonEnabled) {
-                            val currentBattleId = battleList[pagerState.currentPage].battleId
-                            onEnterBattle(currentBattleId, selectedOptionId)
-                        }
+                        val currentBattleId = battleList[pagerState.currentPage].battleId
+                        onEnterBattle(currentBattleId, selectedOptionId)
                     },
                     modifier = Modifier
                         .navigationBarsPadding()
@@ -302,8 +300,8 @@ fun TodayBattleScreen(
                             end = SpacingTokens.s16,
                             bottom = SpacingTokens.s20
                         ),
-                    backgroundColor = if (isButtonEnabled) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = PickeTheme.colors.textInverse
+                    enabled = isButtonEnabled,
+                    disabledBackgroundColor = PickeTheme.colors.primary300
                 )
             }
         ) { innerPadding ->

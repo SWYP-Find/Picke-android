@@ -97,7 +97,7 @@ fun MakeBattleScreen(
                 CustomButton(
                     text = "제안하기 (-30P)",
                     onClick = {
-                        if (isFormValid && !uiState.isLoading) {
+                        if (!uiState.isLoading) {
                             viewModel.submitProposal(
                                 category = selectedCategory,
                                 topic = topic,
@@ -108,8 +108,8 @@ fun MakeBattleScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
-                    backgroundColor = if (isFormValid) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = Color.White
+                    enabled = isFormValid,
+                    disabledBackgroundColor = PickeTheme.colors.primary300
                 )
             }
         }

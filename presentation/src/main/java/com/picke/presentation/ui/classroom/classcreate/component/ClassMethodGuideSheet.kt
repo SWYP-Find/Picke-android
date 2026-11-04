@@ -108,8 +108,6 @@ private fun ClassMethodGuideSheetContent(
             text = stringResource(R.string.class_guide_confirm),
             onClick = onConfirmClick,
             modifier = Modifier.padding(top = ClassMethodGuideSheetDimens.contentBottomSpacing),
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

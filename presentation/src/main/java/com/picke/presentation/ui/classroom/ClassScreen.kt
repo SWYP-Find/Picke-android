@@ -243,8 +243,6 @@ private fun ClassMenuSection(
             CustomButton(
                 text = stringResource(R.string.class_create_title),
                 onClick = onCreateClick,
-                backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-                textColor = PickeTheme.colors.buttonPrimaryTextDefault,
                 minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
             )
             Text(

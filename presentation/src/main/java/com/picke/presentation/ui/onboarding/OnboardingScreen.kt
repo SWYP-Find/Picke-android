@@ -87,9 +87,7 @@ fun OnboardingScreen(onNavigateToLogin: () -> Unit) {
 
             CustomButton(
                 text = stringResource(R.string.onboarding_start),
-                onClick = onNavigateToLogin,
-                backgroundColor = PickeTheme.colors.primary500,
-                textColor = Color.White
+                onClick = onNavigateToLogin
             )
         }
     }

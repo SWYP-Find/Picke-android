@@ -414,8 +414,6 @@ private fun ClassDebateFinalVoteSection(
         CustomButton(
             text = stringResource(R.string.class_debate_final_vote),
             onClick = onFinalVoteClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

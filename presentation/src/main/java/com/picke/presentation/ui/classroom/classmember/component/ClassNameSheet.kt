@@ -51,9 +51,6 @@ private fun ClassNameSheetContent(
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor =
-        if (isConfirmEnabled) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled
-
     Column(
         modifier = modifier.padding(top = SpacingTokens.s20, bottom = SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
@@ -83,8 +80,6 @@ private fun ClassNameSheetContent(
         CustomButton(
             text = stringResource(R.string.class_name_sheet_edit),
             onClick = onConfirm,
-            backgroundColor = backgroundColor,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = isConfirmEnabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

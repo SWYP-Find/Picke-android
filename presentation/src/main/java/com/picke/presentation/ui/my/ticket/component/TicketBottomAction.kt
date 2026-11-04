@@ -33,8 +33,6 @@ fun TicketBottomAction(
         CustomButton(
             text = buttonText,
             onClick = onClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

@@ -42,12 +42,6 @@ fun ClassBottomButton(
         CustomButton(
             text = text,
             onClick = onClick,
-            backgroundColor = if (enabled) {
-                PickeTheme.colors.buttonPrimaryBackgroundDefault
-            } else {
-                PickeTheme.colors.buttonPrimaryBackgroundDisabled
-            },
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = enabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

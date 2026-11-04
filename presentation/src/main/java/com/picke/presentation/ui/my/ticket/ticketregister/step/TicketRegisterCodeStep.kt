@@ -26,13 +26,6 @@ internal fun TicketRegisterCodeStep(
     modifier: Modifier = Modifier,
     initiallyExpandedGuides: Boolean = false
 ) {
-    // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
-    val buttonBackgroundColor = if (isCodeCheckEnabled) {
-        PickeTheme.colors.buttonPrimaryBackgroundDefault
-    } else {
-        PickeTheme.colors.buttonPrimaryBackgroundDisabled
-    }
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s40)
@@ -58,11 +51,10 @@ internal fun TicketRegisterCodeStep(
             }
         }
 
+        // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
         CustomButton(
             text = stringResource(R.string.ticket_register_code_check),
             onClick = onCodeCheckClick,
-            backgroundColor = buttonBackgroundColor,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = isCodeCheckEnabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

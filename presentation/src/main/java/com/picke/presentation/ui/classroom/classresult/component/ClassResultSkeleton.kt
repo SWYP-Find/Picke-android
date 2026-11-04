@@ -35,6 +35,7 @@ fun ClassResultSkeleton(modifier: Modifier = Modifier) {
             SkeletonLine(width = ClassResultSkeletonDimens.titleWidth, height = ClassResultSkeletonDimens.titleHeight)
             SkeletonLine(width = ClassResultSkeletonDimens.deadlineWidth, height = ClassResultSkeletonDimens.lineHeight)
         }
+
         PickeSkeletonBlock(height = ClassResultSkeletonDimens.tabHeight)
         PickeSkeletonBlock(height = ClassResultSkeletonDimens.participationHeight)
         PickeSkeletonBlock(height = ClassResultSkeletonDimens.stanceHeight)

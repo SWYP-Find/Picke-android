@@ -32,8 +32,10 @@ fun ClassDetailSkeleton(modifier: Modifier = Modifier) {
             SkeletonLine(width = ClassDetailSkeletonDimens.badgeWidth, height = ClassDetailSkeletonDimens.badgeHeight)
             SkeletonLine(width = ClassDetailSkeletonDimens.titleWidth, height = ClassDetailSkeletonDimens.titleHeight)
         }
+
         PickeSkeletonBlock(height = ClassDetailSkeletonDimens.infoHeight)
         PickeSkeletonBlock(height = ClassDetailSkeletonDimens.battleHeight)
+
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
             PickeSkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
             PickeSkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)

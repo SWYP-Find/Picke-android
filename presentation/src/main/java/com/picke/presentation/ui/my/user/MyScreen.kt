@@ -68,10 +68,10 @@ fun MyScreen(
     onNavigateToTicket: () -> Unit,
     viewModel: MyViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
 

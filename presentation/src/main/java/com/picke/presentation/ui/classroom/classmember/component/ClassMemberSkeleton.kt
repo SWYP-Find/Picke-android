@@ -45,6 +45,7 @@ fun ClassMemberSkeleton(modifier: Modifier = Modifier) {
             )
             SkeletonLine(width = ClassMemberSkeletonDimens.nameWidth, height = ClassMemberSkeletonDimens.nameHeight)
         }
+
         HorizontalDivider(
             thickness = ComponentNumberTokens.borderWidthRegular,
             color = PickeTheme.colors.borderBeigeDefault

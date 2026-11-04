@@ -25,11 +25,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -620,17 +620,13 @@ fun TasteReportSection(report: PreferenceReport) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 ReportStatItem(report.totalParticipation.toString(), "총 참여")
-                Divider(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .width(1.dp),
+                VerticalDivider(
+                    modifier = Modifier.height(40.dp),
                     color = PickeTheme.colors.surfaceBeigeStrong
                 )
                 ReportStatItem(report.opinionChanges.toString(), "의견 전환")
-                Divider(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .width(1.dp),
+                VerticalDivider(
+                    modifier = Modifier.height(40.dp),
                     color = PickeTheme.colors.surfaceBeigeStrong
                 )
                 ReportStatItem("${report.battleWinRate}%", "배틀 승률")

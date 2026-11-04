@@ -59,7 +59,7 @@ fun MakeBattleScreen(
     val isFormValid = topic.isNotBlank() && stanceA.isNotBlank() && stanceB.isNotBlank()
 
     LaunchedEffect(Unit) {
-        viewModel.eventFlow.collect { event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
                 is MakeBattleEvent.Success -> {
                     Toast.makeText(context, "배틀 제안이 완료되었습니다!", Toast.LENGTH_SHORT).show()

@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -72,7 +72,7 @@ fun AppNavigation(
     deepLinkHandler: DeepLinkHandler
 ) {
     val rootNavController = rememberNavController()
-    val uiState by splashViewModel.uiState.collectAsState()
+    val uiState by splashViewModel.uiState.collectAsStateWithLifecycle()
     val analyticsTracker = rememberAnalyticsTracker()
 
     // §2 화면 enum에 등재된 화면의 screen_view 자동 전송

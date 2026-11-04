@@ -1,0 +1,100 @@
+package com.picke.data.common.network
+
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.picke.data.BuildConfig
+import com.picke.data.common.local.PreferencesManager
+import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.auth.model.AuthResponseDto
+import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class TokenRefresher @Inject constructor(
+    @param:ApplicationContext private val context: Context,
+    private val preferencesManager: PreferencesManager,
+    private val gson: Gson,
+    private val loggingInterceptor: HttpLoggingInterceptor
+) {
+
+    companion object {
+        private const val TAG = "TokenRefresher_Picke"
+    }
+
+    private val refreshClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    private var rejectedRefreshToken: String? = null
+
+    @Synchronized
+    fun refresh(staleAccessToken: String?): String? {
+        val savedAccessToken = preferencesManager.getAccessToken()
+        if (!savedAccessToken.isNullOrEmpty() && savedAccessToken != staleAccessToken) {
+            return savedAccessToken
+        }
+
+        val refreshToken = preferencesManager.getRefreshToken()
+        if (refreshToken.isNullOrEmpty()) {
+            Log.e(TAG, "[AUTH] 저장된 리프레시 토큰 없음. 재발급 불가.")
+            return null
+        }
+
+        if (refreshToken == rejectedRefreshToken) {
+            return null
+        }
+
+        val refreshRequest = Request.Builder()
+            .url("${BuildConfig.BASE_URL}api/v1/auth/refresh")
+            .post(ByteArray(0).toRequestBody(null))
+            .header("X-Refresh-Token", refreshToken)
+            .build()
+
+        return refreshClient.newCall(refreshRequest).execute().use { refreshResponse ->
+            val body = refreshResponse.body?.string()
+
+            if (refreshResponse.isSuccessful && body != null) {
+                val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
+                val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
+                val newAccessToken = parsed.data?.accessToken
+                val newRefreshToken = parsed.data?.refreshToken
+
+                if (parsed.statusCode == 200 && !newAccessToken.isNullOrEmpty() && !newRefreshToken.isNullOrEmpty()) {
+                    preferencesManager.saveAccessToken(newAccessToken)
+                    preferencesManager.saveRefreshToken(newRefreshToken)
+                    if (BuildConfig.DEBUG) {
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(
+                                context,
+                                "[DEBUG] 액세스 토큰이 자동 갱신되었습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    newAccessToken
+                } else {
+                    Log.e(TAG, "[AUTH] 토큰 갱신 응답 실패: ${parsed.error?.message}")
+                    null
+                }
+            } else {
+                Log.e(TAG, "[AUTH] 토큰 갱신 HTTP 실패: ${refreshResponse.code}")
+                if (refreshResponse.code == 401) {
+                    rejectedRefreshToken = refreshToken
+                }
+                null
+            }
+        }
+    }
+}

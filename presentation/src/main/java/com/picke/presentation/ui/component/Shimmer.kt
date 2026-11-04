@@ -87,7 +87,7 @@ fun SkeletonLine(
 }
 
 @Composable
-fun SkeletonBlock(
+fun PickeSkeletonBlock(
     height: Dp,
     modifier: Modifier = Modifier
 ) {
@@ -109,7 +109,7 @@ private fun SkeletonPreview() {
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
             SkeletonLine(width = 120.dp, height = 16.dp)
-            SkeletonBlock(height = 80.dp)
+            PickeSkeletonBlock(height = 80.dp)
         }
     }
 }

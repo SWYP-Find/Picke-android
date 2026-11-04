@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonBlock
+import com.picke.presentation.ui.component.PickeSkeletonBlock
 import com.picke.presentation.ui.component.SkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -32,11 +32,11 @@ fun ClassDetailSkeleton(modifier: Modifier = Modifier) {
             SkeletonLine(width = ClassDetailSkeletonDimens.badgeWidth, height = ClassDetailSkeletonDimens.badgeHeight)
             SkeletonLine(width = ClassDetailSkeletonDimens.titleWidth, height = ClassDetailSkeletonDimens.titleHeight)
         }
-        SkeletonBlock(height = ClassDetailSkeletonDimens.infoHeight)
-        SkeletonBlock(height = ClassDetailSkeletonDimens.battleHeight)
+        PickeSkeletonBlock(height = ClassDetailSkeletonDimens.infoHeight)
+        PickeSkeletonBlock(height = ClassDetailSkeletonDimens.battleHeight)
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
-            SkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
-            SkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
+            PickeSkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
+            PickeSkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
         }
     }
 }

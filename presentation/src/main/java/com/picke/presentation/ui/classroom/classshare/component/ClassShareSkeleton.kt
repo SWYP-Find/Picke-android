@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonBlock
+import com.picke.presentation.ui.component.PickeSkeletonBlock
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
@@ -22,8 +22,8 @@ fun ClassShareSkeleton(modifier: Modifier = Modifier) {
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32)
     ) {
-        SkeletonBlock(height = ClassShareSkeletonDimens.codeHeight)
-        SkeletonBlock(height = ClassShareSkeletonDimens.battleHeight)
+        PickeSkeletonBlock(height = ClassShareSkeletonDimens.codeHeight)
+        PickeSkeletonBlock(height = ClassShareSkeletonDimens.battleHeight)
     }
 }
 

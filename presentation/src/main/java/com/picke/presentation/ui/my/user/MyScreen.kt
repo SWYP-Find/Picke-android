@@ -196,7 +196,7 @@ fun MyScreen(
             ) {
                 Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
                     ProfileSection(
-                        nickname = uiState.profile?.nickname ?: "사용자",
+                        nickname = uiState.profile?.nickname ?: stringResource(R.string.my_nickname_default),
                         userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
                         profileImage = uiState.profile?.characterImageUrl
                     )
@@ -288,9 +288,11 @@ fun PhilosopherTypeSection(
     philosopher: MyPhilosopherUiModel?,
     onClick: () -> Unit
 ) {
+    val lockedName = stringResource(R.string.my_philosopher_locked)
+
     val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
     val displayImage = if (isLocked) R.drawable.img_lock else philosopher?.imageUrl
-    val displayName = if (isLocked) "??형" else philosopher?.philosopherLabel ?: ""
+    val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
     val shape = RoundedCornerShape(RadiusTokens.default)
 
     // TODO: 토큰 동기화 - color/surface/beige-dark

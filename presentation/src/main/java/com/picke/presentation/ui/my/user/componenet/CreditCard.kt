@@ -50,7 +50,7 @@ fun CreditCard(
             ) {
                 // TODO: 토큰 동기화 - color/text/basic
                 Text(
-                    text = "P",
+                    text = stringResource(R.string.my_point_symbol),
                     color = PickeTheme.colors.textDefault,
                     style = PickeTheme.typography.captionMdBold
                 )

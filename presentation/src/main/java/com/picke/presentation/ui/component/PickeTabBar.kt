@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomTabBarDimens {
+private object PickeTabBarDimens {
     val dividerThickness = 2.dp
 }
 
 @Composable
-fun CustomTabBar(
+fun PickeTabBar(
     tabs: List<String>,
     selectedTab: String,
     onTabSelected: (String) -> Unit,
@@ -78,7 +78,7 @@ fun CustomTabBar(
             },
             divider = {
                 HorizontalDivider(
-                    thickness = CustomTabBarDimens.dividerThickness,
+                    thickness = PickeTabBarDimens.dividerThickness,
                     color = PickeTheme.colors.surfaceBeigeStrong
                 )
             }
@@ -98,7 +98,7 @@ fun CustomTabBar(
             },
             divider = {
                 HorizontalDivider(
-                    thickness = CustomTabBarDimens.dividerThickness,
+                    thickness = PickeTabBarDimens.dividerThickness,
                     color = PickeTheme.colors.borderBeigeDefault
                 )
             }
@@ -110,9 +110,9 @@ fun CustomTabBar(
 
 @Preview(name = "고정 탭", showBackground = true)
 @Composable
-private fun CustomTabBarPreview() {
+private fun PickeTabBarPreview() {
     PickeTheme {
-        CustomTabBar(
+        PickeTabBar(
             tabs = listOf("클래스 요약", "내 리포트"),
             selectedTab = "클래스 요약",
             onTabSelected = {}
@@ -122,9 +122,9 @@ private fun CustomTabBarPreview() {
 
 @Preview(name = "스크롤 탭", showBackground = true)
 @Composable
-private fun CustomTabBarScrollablePreview() {
+private fun PickeTabBarScrollablePreview() {
     PickeTheme {
-        CustomTabBar(
+        PickeTabBar(
             tabs = listOf("전체", "철학", "사회", "문학", "과학", "예술", "역사"),
             selectedTab = "사회",
             isScrollable = true,

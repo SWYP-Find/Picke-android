@@ -40,8 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.PickeIconCount
+import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.my.content.model.ContentActivityUiEvent
@@ -92,7 +92,7 @@ fun ContentActivityScreen(
                 .fillMaxSize()
         ) {
             // 탭바
-            CustomTabBar(
+            PickeTabBar(
                 tabs = tabs,
                 selectedTab = tabs[pagerState.currentPage],
                 onTabSelected = { selectedTab ->

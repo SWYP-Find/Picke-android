@@ -46,8 +46,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
-import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.explore.component.ExploreCard
@@ -169,7 +169,7 @@ fun ExploreScreen(
                 .padding(top = innerPadding.calculateTopPadding()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CustomTabBar(
+            PickeTabBar(
                 tabs = exploreCategories,
                 selectedTab = selectedCategory,
                 onTabSelected = { clickedCategory ->

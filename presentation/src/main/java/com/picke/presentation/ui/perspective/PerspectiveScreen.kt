@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTabBar
+import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.PickeCommentInput
@@ -285,7 +285,7 @@ fun PerspectiveContent(
                     isOptionImageVisible = uiState.classSetting?.isAiBattle != true
                 )
 
-                CustomTabBar(
+                PickeTabBar(
                     tabs = tabList,
                     selectedTab = tabList[pagerState.currentPage],
                     onTabSelected = { selected ->

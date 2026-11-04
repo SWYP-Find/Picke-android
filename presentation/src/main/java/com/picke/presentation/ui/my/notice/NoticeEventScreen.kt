@@ -44,10 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.my.notice.model.NoticeEventItem
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.my.notice.model.NoticeEventUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import kotlinx.coroutines.launch
@@ -114,7 +114,7 @@ fun NoticeEventScreen(
                 .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxSize()
         ) {
-            CustomTabBar(
+            PickeTabBar(
                 tabs = tabs,
                 selectedTab = tabs[pagerState.currentPage],
                 onTabSelected = { selectedTab ->

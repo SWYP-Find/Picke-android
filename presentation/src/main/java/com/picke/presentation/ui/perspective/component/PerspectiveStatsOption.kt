@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.ProfileImage
-import com.picke.presentation.ui.component.ProfileImageDefaults
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -42,7 +42,7 @@ fun PerspectiveStatsOption(
             ProfileImage(
                 model = imageUrl,
                 size = ComponentNumberTokens.avatarMd,
-                imageSize = ProfileImageDefaults.philosopherImageSize
+                kind = ProfileImageKind.PHILOSOPHER
             )
         }
 

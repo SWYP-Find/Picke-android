@@ -46,7 +46,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
-import com.picke.presentation.ui.component.ProfileImageDefaults
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.my.user.componenet.CreditCard
 import com.picke.presentation.ui.my.user.componenet.MyPageMenuItem
@@ -58,10 +58,6 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-
-private object MyScreenDimens {
-    val lockImageSize = 30.dp
-}
 
 @Composable
 fun MyScreen(
@@ -318,7 +314,7 @@ fun PhilosopherTypeSection(
         ProfileImage(
             model = displayImage,
             size = ComponentNumberTokens.avatarMd,
-            imageSize = if (isLocked) MyScreenDimens.lockImageSize else ProfileImageDefaults.philosopherImageSize
+            kind = if (isLocked) ProfileImageKind.LOCKED else ProfileImageKind.PHILOSOPHER
         )
 
         Spacer(modifier = Modifier.width(SpacingTokens.s12))

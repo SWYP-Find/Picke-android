@@ -15,17 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private const val IMAGE_SIZE_RATIO = 2f / 3f
-
-object ProfileImageDefaults {
-    val philosopherImageSize = 28.dp
+enum class ProfileImageKind(val imageRatio: Float) {
+    CHARACTER(2f / 3f),
+    PHILOSOPHER(28f / 40f),
+    LOCKED(30f / 40f)
 }
 
 @Composable
@@ -33,7 +32,7 @@ fun ProfileImage(
     model: Any?,
     size: Dp,
     modifier: Modifier = Modifier,
-    imageSize: Dp = size * IMAGE_SIZE_RATIO,
+    kind: ProfileImageKind = ProfileImageKind.CHARACTER,
     backgroundColor: Color = PickeTheme.colors.borderBeigeDefault
 ) {
     Box(
@@ -46,7 +45,7 @@ fun ProfileImage(
         AsyncImage(
             model = model,
             contentDescription = null,
-            modifier = Modifier.size(imageSize),
+            modifier = Modifier.size(size * kind.imageRatio),
             contentScale = ContentScale.Fit
         )
     }
@@ -71,7 +70,7 @@ private fun ProfileImagePreview() {
             ProfileImage(
                 model = R.drawable.illust_mengzi,
                 size = ComponentNumberTokens.avatarMd,
-                imageSize = ProfileImageDefaults.philosopherImageSize
+                kind = ProfileImageKind.PHILOSOPHER
             )
         }
     }

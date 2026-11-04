@@ -164,7 +164,7 @@ private fun ChatBubbleAvatar(
             model = avatarUrl ?: defaultAvatarRes,
             size = ChatBubbleDimens.avatarSize,
             modifier = modifier,
-            imageSize = ProfileImageDefaults.philosopherImageSize
+            kind = ProfileImageKind.PHILOSOPHER
         )
     } else {
         Spacer(modifier = modifier.size(ChatBubbleDimens.avatarSize))

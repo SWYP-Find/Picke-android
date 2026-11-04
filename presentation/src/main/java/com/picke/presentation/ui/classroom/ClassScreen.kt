@@ -38,8 +38,8 @@ import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -240,7 +240,7 @@ private fun ClassMenuSection(
         }
 
         Column {
-            CustomButton(
+            PickeButton(
                 text = stringResource(R.string.class_create_title),
                 onClick = onCreateClick,
                 minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight

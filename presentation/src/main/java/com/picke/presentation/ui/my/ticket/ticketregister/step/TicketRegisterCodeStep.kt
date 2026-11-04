@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.my.ticket.component.TicketHeadline
 import com.picke.presentation.ui.my.ticket.ticketregister.component.TicketCodeField
 import com.picke.presentation.ui.my.ticket.ticketregister.component.TicketCodeGuideItem
@@ -52,7 +52,7 @@ internal fun TicketRegisterCodeStep(
         }
 
         // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.ticket_register_code_check),
             onClick = onCodeCheckClick,
             enabled = isCodeCheckEnabled,

@@ -33,8 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -94,7 +94,7 @@ fun MakeBattleScreen(
                     //.navigationBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                CustomButton(
+                PickeButton(
                     text = "제안하기 (-30P)",
                     onClick = {
                         if (!uiState.isLoading) {

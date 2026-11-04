@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassBottomSheet
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -77,7 +77,7 @@ private fun ClassNameSheetContent(
             horizontalPadding = SpacingTokens.s12
         )
 
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_name_sheet_edit),
             onClick = onConfirm,
             enabled = isConfirmEnabled,

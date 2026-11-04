@@ -69,9 +69,9 @@ import com.picke.presentation.share.captureBitmap
 import com.picke.presentation.share.launchBitmapShare
 import com.picke.presentation.share.shareCapturedImageToKakao
 import com.picke.presentation.share.shareToInstagramStory
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
@@ -241,13 +241,13 @@ fun PhilosopherTypeScreen(
 
                         // 하단: 공유하기 버튼
                         if (isMyReport) {
-                            CustomButton(
+                            PickeButton(
                                 text = stringResource(R.string.my_share),
                                 onClick = { showShareDialog = true },
                                 modifier = Modifier.padding(bottom = 24.dp)
                             )
                         } else {
-                            CustomButton(
+                            PickeButton(
                                 text = "나의 철학자 유형 알아보기",
                                 onClick = { onGoToSplashClick() },
                                 modifier = Modifier.padding(bottom = 24.dp)

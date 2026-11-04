@@ -62,9 +62,9 @@ import com.picke.presentation.share.launchBitmapShare
 import com.picke.presentation.share.loadBitmapFromUrl
 import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.share.shareBattleToKakao
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
@@ -286,7 +286,7 @@ fun TodayBattleScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Black,
             bottomBar = {
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.battle_start),
                     onClick = {
                         val currentBattleId = battleList[pagerState.currentPage].battleId

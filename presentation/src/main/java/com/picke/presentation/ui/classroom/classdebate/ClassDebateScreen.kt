@@ -53,9 +53,9 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.component.ChatBubble
-import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -411,7 +411,7 @@ private fun ClassDebateFinalVoteSection(
             .navigationBarsPadding()
             .padding(SpacingTokens.s16)
     ) {
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_debate_final_vote),
             onClick = onFinalVoteClick,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight

@@ -154,7 +154,7 @@ fun TermsOfServiceBottomSheet(
             Spacer(modifier = Modifier.height(32.dp))
 
             // Confirm Button
-            CustomButton(
+            PickeButton(
                 text = stringResource(R.string.terms_sheet_agree),
                 onClick = onConfirm,
                 modifier = Modifier.fillMaxWidth(),

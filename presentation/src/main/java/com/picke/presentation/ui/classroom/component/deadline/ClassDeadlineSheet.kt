@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassBottomSheet
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -75,7 +75,7 @@ private fun ClassDeadlineSheetContent(
             )
         }
 
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_deadline_sheet_confirm),
             onClick = { onConfirm(pickerState.selectedDeadline) },
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight

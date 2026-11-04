@@ -51,7 +51,7 @@ import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.PickeTopAppBarTextAction
 import com.picke.presentation.ui.component.SortFilterChip
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.perspective.component.PerspectiveHeaderSkeleton
 import com.picke.presentation.ui.perspective.component.PerspectiveItemCard
@@ -496,7 +496,7 @@ fun PerspectiveContent(
         }
 
         if (perspectiveToDelete != null) {
-            CustomConfirmDialog(
+            PickeConfirmDialog(
                 message = stringResource(R.string.comment_perspective_delete_message),
                 onConfirm = {
                     onDeletePerspective(perspectiveToDelete!!)

@@ -57,7 +57,7 @@ import com.picke.presentation.ui.component.CustomTextField
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -179,7 +179,7 @@ private fun ClassDebateContent(
     }
 
     if (uiState.isFinalVoteDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_debate_final_vote_dialog_message),
             onConfirm = { onAction(ClassDebateUiAction.FinalVoteDialogReplayClick) },
             onDismiss = { onAction(ClassDebateUiAction.FinalVoteDialogVoteClick) },

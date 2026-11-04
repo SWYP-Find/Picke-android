@@ -18,8 +18,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterDialog
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterStep
 import com.picke.presentation.ui.my.ticket.ticketregister.model.TicketRegisterUiAction
@@ -108,7 +108,7 @@ private fun TicketRegisterContent(
     val dialog = uiState.dialog
     if (dialog != null) {
         when (dialog) {
-            TicketRegisterDialog.ALREADY_REGISTERED -> CustomConfirmDialog(
+            TicketRegisterDialog.ALREADY_REGISTERED -> PickeConfirmDialog(
                 message = stringResource(dialog.messageRes()),
                 onConfirm = { onAction(TicketRegisterUiAction.DialogBackClick) },
                 onDismiss = { onAction(TicketRegisterUiAction.DialogDismiss) },

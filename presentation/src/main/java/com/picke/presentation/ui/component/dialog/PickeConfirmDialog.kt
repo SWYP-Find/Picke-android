@@ -30,12 +30,12 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomConfirmDialogDimens {
+private object PickeConfirmDialogDimens {
     val messageLineHeight = 24.sp
 }
 
 @Composable
-fun CustomConfirmDialog(
+fun PickeConfirmDialog(
     message: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
@@ -65,7 +65,7 @@ fun CustomConfirmDialog(
                         text = message,
                         color = pointColor,
                         textAlign = TextAlign.Center,
-                        lineHeight = CustomConfirmDialogDimens.messageLineHeight,
+                        lineHeight = PickeConfirmDialogDimens.messageLineHeight,
                         style = PickeTheme.typography.bodySmSemiBold
                     )
                 }
@@ -121,9 +121,9 @@ fun CustomConfirmDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomConfirmDialogPreview() {
+private fun PickeConfirmDialogPreview() {
     PickeTheme {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = "삭제 후에는 복구할 수 없어요.\n그럼에도 삭제하시겠습니까?",
             onConfirm = {},
             onDismiss = {},

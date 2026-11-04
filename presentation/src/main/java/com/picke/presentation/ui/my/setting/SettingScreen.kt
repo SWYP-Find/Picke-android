@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.PickeTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -118,7 +118,7 @@ fun SettingScreen(
             }
 
             if (showLogoutDialog) {
-                CustomConfirmDialog(
+                PickeConfirmDialog(
                     message = "로그아웃 시 원활한 이용이 어려울 수 있습니다.\n그럼에도 로그아웃하시겠습니까?",
                     confirmText = "네, 로그아웃합니다",
                     dismissText = "뒤로가기",
@@ -133,7 +133,7 @@ fun SettingScreen(
             }
 
             if (showWithdrawDialog) {
-                CustomConfirmDialog(
+                PickeConfirmDialog(
                     message = "탈퇴 시 지금까지의 이용기록이 영구 삭제 됩니다.\n그럼에도 탈퇴하시겠습니까?",
                     confirmText = "네, 탈퇴합니다",
                     dismissText = "뒤로가기",

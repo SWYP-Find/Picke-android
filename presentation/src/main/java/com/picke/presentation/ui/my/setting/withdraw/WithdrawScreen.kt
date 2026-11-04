@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.my.setting.SettingViewModel
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
@@ -186,7 +186,7 @@ fun WithdrawScreen(
     }
 
     if (showWithdrawDialog) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.setting_withdraw_confirm_message),
             confirmText = stringResource(R.string.setting_withdraw_confirm),
             onConfirm = {

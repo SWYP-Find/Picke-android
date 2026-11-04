@@ -30,7 +30,7 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
 import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -152,7 +152,7 @@ private fun MyClassContent(
     }
 
     if (uiState.isDeleteDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_delete_confirm),
             onConfirm = { onAction(MyClassUiAction.DeleteConfirm) },
             onDismiss = { onAction(MyClassUiAction.DeleteDialogDismiss) },
@@ -161,7 +161,7 @@ private fun MyClassContent(
     }
 
     if (uiState.isLeaveDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_leave_confirm),
             onConfirm = { onAction(MyClassUiAction.LeaveConfirm) },
             onDismiss = { onAction(MyClassUiAction.LeaveDialogDismiss) },

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -61,6 +62,8 @@ import com.picke.presentation.ui.component.CustomTopAppBarAction
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.todaybattle.component.OpinionCard
 import com.picke.presentation.ui.todaybattle.component.TodayBattleSkeleton
@@ -73,6 +76,13 @@ import com.picke.presentation.util.launchBitmapShare
 import com.picke.presentation.util.loadBitmapFromUrl
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
+
+private object TodayBattleScreenDimens {
+    val tagMinHeight = 20.dp
+    val timerHorizontalPadding = 13.dp
+    val timerVerticalPadding = 7.dp
+    val vsSize = 40.dp
+}
 
 @Composable
 fun TodayBattleScreen(
@@ -271,9 +281,14 @@ fun TodayBattleScreen(
                     },
                     modifier = Modifier
                         .navigationBarsPadding()
-                        .padding(20.dp),
+                        .padding(
+                            start = SpacingTokens.s16,
+                            top = SpacingTokens.s16,
+                            end = SpacingTokens.s16,
+                            bottom = SpacingTokens.s20
+                        ),
                     backgroundColor = if (isButtonEnabled) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = PickeTheme.colors.surfaceBeigeDefault
+                    textColor = PickeTheme.colors.textInverse
                 )
             }
         ) { innerPadding ->
@@ -419,77 +434,90 @@ fun BattleContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(horizontal = SpacingTokens.s16),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
                     item.tags.forEach { tag ->
+                        // TODO: 토큰 동기화 - color/element/beige
                         Surface(
-                            color = Color.White,
-                            shape = RoundedCornerShape(2.dp)
+                            shape = RoundedCornerShape(RadiusTokens.default),
+                            color = PickeTheme.colors.beige600
                         ) {
-                            Text(
-                                text = "#$tag",
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                style = PickeTheme.typography.captionLgMedium,
-                                color = PickeTheme.colors.primary500
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .heightIn(min = TodayBattleScreenDimens.tagMinHeight)
+                                    .padding(horizontal = SpacingTokens.s4),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "#$tag",
+                                    color = PickeTheme.colors.textPrimary,
+                                    style = PickeTheme.typography.bodyXxsSemiBold
+                                )
+                            }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s20))
                 Text(
                     text = item.title,
-                    style = PickeTheme.typography.displayMd,
-                    color = PickeTheme.colors.surfaceBeigeDefault,
-                    textAlign = TextAlign.Center
+                    color = PickeTheme.colors.textInverse,
+                    textAlign = TextAlign.Center,
+                    style = PickeTheme.typography.headingXlBold
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s12))
                 Text(
                     text = item.description,
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.gray400,
-                    textAlign = TextAlign.Center
+                    color = PickeTheme.colors.textMuted,
+                    textAlign = TextAlign.Center,
+                    style = PickeTheme.typography.bodySmRegular
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
+                // TODO: 토큰 동기화 - color/border/gray-dark
                 Surface(
+                    shape = RoundedCornerShape(RadiusTokens.default),
                     color = Color.Transparent,
-                    shape = RoundedCornerShape(2.dp),
-                    border = BorderStroke(1.dp, PickeTheme.colors.textSubtle)
+                    border = BorderStroke(
+                        width = ComponentNumberTokens.borderWidthRegular,
+                        color = PickeTheme.colors.gray300
+                    )
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        modifier = Modifier.padding(
+                            horizontal = TodayBattleScreenDimens.timerHorizontalPadding,
+                            vertical = TodayBattleScreenDimens.timerVerticalPadding
+                        ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_clock),
                             contentDescription = null,
-                            modifier = Modifier.size(12.dp),
-                            tint = Color.Gray
+                            modifier = Modifier.size(ComponentNumberTokens.iconSm),
+                            tint = PickeTheme.colors.textMuted
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(SpacingTokens.s4))
                         Text(
-                            item.timeLeft,
-                            style = PickeTheme.typography.captionSmSemiBold,
-                            color = Color.LightGray
+                            text = item.timeLeft,
+                            color = PickeTheme.colors.textMuted,
+                            style = PickeTheme.typography.bodyXxsSemiBold
                         )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s32))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = SpacingTokens.s16),
             contentAlignment = Alignment.Center
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
                 if (item.options.isNotEmpty()) {
                     val optionA = item.options[0]
                     OpinionCard(
@@ -501,7 +529,6 @@ fun BattleContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
                 if (item.options.size > 1) {
                     val optionB = item.options[1]
                     OpinionCard(
@@ -515,16 +542,21 @@ fun BattleContent(
             }
 
             Surface(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(TodayBattleScreenDimens.vsSize),
                 shape = CircleShape,
                 color = PickeTheme.colors.secondary200
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text("VS", style = PickeTheme.typography.bodySmSemiBold, color = Color.Black)
+                    // TODO: 토큰 동기화 - color/text/basic
+                    Text(
+                        text = stringResource(R.string.class_battle_versus),
+                        color = PickeTheme.colors.textDefault,
+                        style = PickeTheme.typography.bodySmSemiBold
+                    )
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
     }
 }
 

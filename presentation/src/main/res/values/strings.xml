@@ -40,6 +40,9 @@
 
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
+    <string name="my_point_symbol">P</string>
+    <string name="my_nickname_default">사용자</string>
+    <string name="my_philosopher_locked">\?\?형</string>
     <string name="my_charge_free">무료 충전</string>
     <string name="my_menu_discussion">내 배틀 기록</string>
     <string name="my_menu_philosopher">나의 철학자 유형</string>

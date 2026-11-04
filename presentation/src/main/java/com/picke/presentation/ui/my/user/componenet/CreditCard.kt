@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun CreditCard(
@@ -29,16 +31,16 @@ fun CreditCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
+            .clip(RoundedCornerShape(RadiusTokens.default))
             .background(PickeTheme.colors.primary800)
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 20.dp),
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s20),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
         ) {
             Box(
                 modifier = Modifier
@@ -46,23 +48,24 @@ fun CreditCard(
                     .background(color = PickeTheme.colors.secondary300, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
+                // TODO: 토큰 동기화 - color/text/basic
                 Text(
-                    text = "P",
-                    style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.textSubtle
+                    text = stringResource(R.string.my_point_symbol),
+                    color = PickeTheme.colors.textDefault,
+                    style = PickeTheme.typography.captionMdBold
                 )
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
                 Text(
                     text = stringResource(R.string.my_point),
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.surfaceBeigeDefault
+                    color = PickeTheme.colors.textInverse,
+                    style = PickeTheme.typography.bodyXxsSemiBold
                 )
                 Text(
                     text = credit.toString(),
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.secondary700
+                    color = PickeTheme.colors.textSecondary,
+                    style = PickeTheme.typography.bodyXxsSemiBold
                 )
             }
         }

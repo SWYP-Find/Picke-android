@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,6 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object OpinionCardDimens {
+    val minHeight = 140.dp
+    val quoteTopSpacing = 10.dp
+}
 
 @Composable
 fun OpinionCard(
@@ -29,44 +38,52 @@ fun OpinionCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val borderColor = if (isSelected) PickeTheme.colors.secondary700 else Color.Transparent
-    val bgColor = if (isSelected) PickeTheme.colors.textDefault else PickeTheme.colors.textDefault
+    // TODO: 토큰 동기화 - color/border/secondary
+    val borderColor = if (isSelected) PickeTheme.colors.secondary500 else Color.Transparent
+    // TODO: 토큰 동기화 - color/element/gray-darker, color/element/gray-dark
+    val backgroundColor = if (isSelected) PickeTheme.colors.gray900 else PickeTheme.colors.gray700
+    val shape = RoundedCornerShape(RadiusTokens.default)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(4.dp))
-            .background(bgColor)
+            .heightIn(min = OpinionCardDimens.minHeight)
+            .clip(shape)
+            .border(
+                width = ComponentNumberTokens.borderWidthRegular,
+                color = borderColor,
+                shape = shape
+            )
+            .background(backgroundColor)
             .clickable { onClick() }
-            .padding(vertical = 18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(horizontal = SpacingTokens.s20, vertical = SpacingTokens.s24),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = name,
-            style = PickeTheme.typography.captionSmSemiBold,
-            color = PickeTheme.colors.secondary500,
+            modifier = Modifier.fillMaxWidth(),
+            color = PickeTheme.colors.textSecondary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            style = PickeTheme.typography.captionSmBold
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s8))
         Text(
             text = opinion,
-            style = PickeTheme.typography.headingMd,
-            color = Color.White,
+            modifier = Modifier.fillMaxWidth(),
+            color = PickeTheme.colors.textInverse,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            style = PickeTheme.typography.headingMd
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(OpinionCardDimens.quoteTopSpacing))
         Text(
             text = "\"$quote\"",
-            style = PickeTheme.typography.captionSmSemiBold,
-            color = Color.White.copy(0.3f),
+            modifier = Modifier.fillMaxWidth(),
+            color = PickeTheme.colors.textMuted,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            style = PickeTheme.typography.bodyXxsMedium
         )
     }
 }

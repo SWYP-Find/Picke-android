@@ -15,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
@@ -37,22 +37,24 @@ fun MyPageMenuItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // TODO: 토큰 동기화 - color/text/basic
             Text(
                 text = title,
-                style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textSubtle
+                color = PickeTheme.colors.textDefault,
+                style = PickeTheme.typography.bodySmSemiBold
             )
             Icon(
-                painterResource(R.drawable.ic_arrow_right_a),
+                painter = painterResource(R.drawable.ic_arrow_right_a),
                 contentDescription = null,
-                modifier = Modifier.size(12.dp),
+                modifier = Modifier.size(ComponentNumberTokens.iconSm),
                 tint = PickeTheme.colors.textDefault
             )
         }
+        // TODO: 토큰 동기화 - color/border/beige-dark
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = SpacingTokens.s16),
-            color = PickeTheme.colors.borderBeigeDefault,
-            thickness = 1.dp
+            thickness = ComponentNumberTokens.borderWidthRegular,
+            color = PickeTheme.colors.beige700
         )
     }
 }

@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.SkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun MySkeleton(modifier: Modifier = Modifier) {
@@ -32,16 +34,15 @@ fun MySkeleton(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
         ProfileSectionSkeleton()
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         CreditCardSkeleton()
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         PhilosopherTypeCardSkeleton()
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         repeat(3) {
             MyPageMenuItemSkeleton()
         }
@@ -63,7 +64,7 @@ private fun ProfileSectionSkeleton() {
         Spacer(modifier = Modifier.width(12.dp))
         Column {
             SkeletonLine(width = 100.dp, height = 20.dp)
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s2))
             SkeletonLine(width = 60.dp, height = 14.dp)
         }
     }
@@ -88,7 +89,7 @@ private fun PhilosopherTypeCardSkeleton() {
             .clip(RoundedCornerShape(2.dp))
             .background(PickeTheme.colors.surfaceBeigeStrong)
             .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(SpacingTokens.s16),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(
@@ -118,7 +119,11 @@ private fun MyPageMenuItemSkeleton() {
         ) {
             SkeletonLine(width = 120.dp, height = 18.dp)
         }
-        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
+        // TODO: 토큰 동기화 - color/border/beige-dark
+        HorizontalDivider(
+            thickness = ComponentNumberTokens.borderWidthRegular,
+            color = PickeTheme.colors.beige700
+        )
     }
 }
 

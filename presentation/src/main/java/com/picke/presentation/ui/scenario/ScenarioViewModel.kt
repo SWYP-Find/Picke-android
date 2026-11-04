@@ -91,6 +91,7 @@ class ScenarioViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
+                    isLoading = true,
                     pastScripts = emptyList(),
                     pastChoices = emptyList(),
                     maxListenedPositionMs = 0L
@@ -98,6 +99,7 @@ class ScenarioViewModel @Inject constructor(
             }
             if (classId != null) {
                 val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                    _uiState.update { it.copy(isLoading = false) }
                     sendEvent(ScenarioUiEvent.ShowLoadFailedToast)
                     return@launch
                 }
@@ -106,11 +108,14 @@ class ScenarioViewModel @Inject constructor(
             scenarioUseCases.fetchBattleScenarioUseCase(battleId)
                 .onSuccess { board ->
                     fullScenario = board.toUiModel()
-                    _uiState.update { it.copy(title = board.title) }
+                    _uiState.update { it.copy(isLoading = false, title = board.title) }
                     val firstNodeId = fullScenario?.startNodeId ?: return@onSuccess
                     loadNode(firstNodeId)
                 }
-                .onFailure { sendEvent(ScenarioUiEvent.ShowLoadFailedToast) }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    sendEvent(ScenarioUiEvent.ShowLoadFailedToast)
+                }
         }
     }
 
@@ -154,7 +159,7 @@ class ScenarioViewModel @Inject constructor(
     }
 
     fun seekForward() {
-        if (_uiState.value.showOptions || _uiState.value.showFinalVoteDialog) return
+        if (!_uiState.value.isForwardEnabled) return
         val safePos = minOf(
             audioPlayerManager.currentPosition + SKIP_INTERVAL_MS,
             _uiState.value.nodeEndTimeMs

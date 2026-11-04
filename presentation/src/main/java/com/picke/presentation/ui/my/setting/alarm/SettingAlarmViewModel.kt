@@ -4,18 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.mypage.model.NotificationSettingsBoard
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
+import com.picke.presentation.ui.my.setting.alarm.model.SettingAlarmUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SettingAlarmUiState(
     val isLoading: Boolean = false,
-    val settings: NotificationSettingsBoard? = null,
-    val errorMessage: String? = null
+    val settings: NotificationSettingsBoard? = null
 )
 
 @HiltViewModel
@@ -26,19 +29,23 @@ class SettingAlarmViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingAlarmUiState())
     val uiState: StateFlow<SettingAlarmUiState> = _uiState.asStateFlow()
 
+    private val _uiEvent = Channel<SettingAlarmUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<SettingAlarmUiEvent> = _uiEvent.receiveAsFlow()
+
     init {
         loadNotificationSettings()
     }
 
     private fun loadNotificationSettings() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true) }
             myPageUseCases.getNotificationSettingsUseCase()
                 .onSuccess { settings ->
                     _uiState.update { it.copy(isLoading = false, settings = settings) }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(SettingAlarmUiEvent.ShowLoadFailedToast)
                 }
         }
     }
@@ -51,6 +58,7 @@ class SettingAlarmViewModel @Inject constructor(
             myPageUseCases.updateNotificationSettingsUseCase(updated)
                 .onFailure {
                     _uiState.update { it.copy(settings = previous) }
+                    _uiEvent.send(SettingAlarmUiEvent.ShowActionFailedToast)
                 }
         }
     }

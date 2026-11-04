@@ -35,6 +35,7 @@ import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattleP
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
 import com.picke.presentation.ui.component.AudioPlayerBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
 import com.picke.presentation.ui.scenario.model.ScenarioScriptUiModel
 import com.picke.presentation.ui.theme.PickeTheme
@@ -100,6 +101,7 @@ private fun ClassBattlePreviewContent(
                 currentPositionMs = uiState.currentPositionMs,
                 totalDurationMs = uiState.totalDurationMs,
                 playbackSpeed = uiState.playbackSpeed,
+                isForwardEnabled = true,
                 onPlayPauseClick = { onAction(ClassBattlePreviewUiAction.PlayPauseClick) },
                 onSeek = { ratio -> onAction(ClassBattlePreviewUiAction.Seek(ratio)) },
                 onRewindClick = { onAction(ClassBattlePreviewUiAction.RewindClick) },
@@ -119,15 +121,19 @@ private fun ClassBattlePreviewContent(
         ) {
             ClassBattlePreviewBadge(modifier = Modifier.padding(top = SpacingTokens.s8))
 
-            ClassBattlePreviewScriptSection(
-                scripts = uiState.visibleScripts,
-                activeIndex = uiState.activeIndex,
-                isPlaying = uiState.isPlaying,
-                onScriptClick = { startTimeMs ->
-                    onAction(ClassBattlePreviewUiAction.ScriptClick(startTimeMs))
-                },
-                modifier = Modifier.weight(1f)
-            )
+            if (uiState.isLoading) {
+                PickeChatSkeleton(modifier = Modifier.weight(1f))
+            } else {
+                ClassBattlePreviewScriptSection(
+                    scripts = uiState.visibleScripts,
+                    activeIndex = uiState.activeIndex,
+                    isPlaying = uiState.isPlaying,
+                    onScriptClick = { startTimeMs ->
+                        onAction(ClassBattlePreviewUiAction.ScriptClick(startTimeMs))
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
@@ -186,6 +192,7 @@ private fun ClassBattlePreviewContentPlayingPreview() {
     PickeTheme {
         ClassBattlePreviewContent(
             uiState = ClassBattlePreviewUiState(
+                isLoading = false,
                 battleId = battle.battleId,
                 title = battle.title,
                 scripts = scripts,
@@ -210,6 +217,7 @@ private fun ClassBattlePreviewContentEndedPreview() {
     PickeTheme {
         ClassBattlePreviewContent(
             uiState = ClassBattlePreviewUiState(
+                isLoading = false,
                 battleId = battle.battleId,
                 title = battle.title,
                 scripts = scripts,

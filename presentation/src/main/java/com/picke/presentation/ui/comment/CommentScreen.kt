@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,11 +64,22 @@ fun CommentScreen(
     val context = LocalContext.current
     val inputFieldState = rememberTextFieldState()
 
+    val reportedMessage = stringResource(R.string.comment_report_success)
+    val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     var commentToDelete by remember { mutableStateOf<Long?>(null) }
     var commentToReport by remember { mutableStateOf<Long?>(null) }
     var isMainDeleteDialogVisible by remember { mutableStateOf(false) }
     var isMainReportDialogVisible by remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
+    var lastToast by remember { mutableStateOf<Toast?>(null) }
+
+    val showToast: (String) -> Unit = { message ->
+        lastToast?.cancel()
+        lastToast = Toast.makeText(context, message, Toast.LENGTH_SHORT).apply { show() }
+    }
 
     LaunchedEffect(uiState.isLoading) {
         if (!uiState.isLoading) {
@@ -82,9 +92,17 @@ fun CommentScreen(
             when (event) {
                 CommentUiEvent.NavigateBack -> onBackClick()
 
-                is CommentUiEvent.ShowToast -> {
-                    Toast.makeText(context, context.getString(event.messageResId), Toast.LENGTH_SHORT).show()
-                }
+                CommentUiEvent.ShowReportedToast ->
+                    showToast(reportedMessage)
+
+                CommentUiEvent.ShowAlreadyReportedToast ->
+                    showToast(alreadyReportedMessage)
+
+                CommentUiEvent.ShowActionFailedToast ->
+                    showToast(actionFailedMessage)
+
+                CommentUiEvent.ShowLoadFailedToast ->
+                    showToast(loadFailedMessage)
             }
         }
     }
@@ -110,7 +128,11 @@ fun CommentScreen(
         },
         onMainLikeClick = { mainContent ->
             if (mainContent.isMine) {
-                Toast.makeText(context, context.getString(R.string.comment_like_own_perspective), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.comment_like_own_perspective),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 viewModel.toggleMainPerspectiveLike()
             }
@@ -137,7 +159,11 @@ fun CommentScreen(
         },
         onLikeComment = { commentId, isLiked, isMine ->
             if (isMine) {
-                Toast.makeText(context, context.getString(R.string.comment_like_own_reply), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.comment_like_own_reply),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 viewModel.toggleLike(commentId = commentId, isCurrentlyLiked = isLiked)
             }
@@ -242,7 +268,8 @@ private fun CommentContent(
                 textFieldState = inputFieldState,
                 hintText = inputHint,
                 onSubmit = onSubmit,
-                editingId = uiState.editingCommentId ?: uiState.targetId.takeIf { uiState.isEditingMainPerspective }
+                editingId = uiState.editingCommentId
+                    ?: uiState.targetId.takeIf { uiState.isEditingMainPerspective }
             )
         }
     ) { innerPadding ->
@@ -299,7 +326,11 @@ private fun CommentContent(
                                     onRequestReport(comment.commentId)
                                 },
                                 onLikeClick = {
-                                    onLikeComment(comment.commentId, comment.isLiked, comment.isMine)
+                                    onLikeComment(
+                                        comment.commentId,
+                                        comment.isLiked,
+                                        comment.isMine
+                                    )
                                 }
                             )
                         }

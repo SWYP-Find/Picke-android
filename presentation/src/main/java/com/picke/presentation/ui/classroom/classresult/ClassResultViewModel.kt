@@ -70,14 +70,17 @@ class ClassResultViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classResult = classroomUseCases.getClassResultUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
                 sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
                 return@launch
             }
             val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
                 sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
                 return@launch
             }
             val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
                 sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
                 return@launch
             }

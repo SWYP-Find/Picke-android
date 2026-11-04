@@ -7,7 +7,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,10 +27,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 // 로딩 스켈레톤에 좌->우로 흐르는 반짝임 효과를 입히는 Modifier.
 // 뷰의 실제 크기(size)를 알아야 그라데이션이 뷰 폭에 맞게 흐르므로, onGloballyPositioned로 크기를 잰다.
@@ -77,4 +84,32 @@ fun SkeletonLine(
             .clip(RoundedCornerShape(4.dp))
             .shimmer(baseColor, highlightColor)
     )
+}
+
+@Composable
+fun PickeSkeletonBlock(
+    height: Dp,
+    modifier: Modifier = Modifier
+) {
+    Spacer(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height)
+            .clip(RoundedCornerShape(RadiusTokens.default))
+            .shimmer()
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SkeletonPreview() {
+    PickeTheme {
+        Column(
+            modifier = Modifier.padding(SpacingTokens.s16),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
+        ) {
+            SkeletonLine(width = 120.dp, height = 16.dp)
+            PickeSkeletonBlock(height = 80.dp)
+        }
+    }
 }

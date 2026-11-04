@@ -1,6 +1,5 @@
 package com.picke.presentation.ui.alarm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
@@ -61,19 +60,11 @@ class AlarmViewModel @Inject constructor(
             val targetPage = if (isRefresh) 0 else _uiState.value.page
             val category = _uiState.value.selectedCategory
 
-            Log.d("AlarmFlow", "🚀 [API 호출] category: $category, page: $targetPage")
-
-            val result = alarmsUseCases.getAlarmsUseCase(
+            alarmsUseCases.getAlarmsUseCase(
                 category = category,
                 page = targetPage,
                 size = 20
-            )
-
-            result.onSuccess { data ->
-                Log.d(
-                    "AlarmFlow",
-                    "✅ [호출 성공] 아이템 개수: ${data.items.size}, 다음 페이지 존재: ${data.hasNext}"
-                )
+            ).onSuccess { data ->
                 _uiState.update { state ->
                     state.copy(
                         alarmList = if (isRefresh) data.items else state.alarmList + data.items,
@@ -90,12 +81,9 @@ class AlarmViewModel @Inject constructor(
                         unreadCount = data.items.count { !it.isRead }
                     )
                 }
-            }.onFailure { exception ->
-                Log.e("AlarmFlow", "❌ [호출 실패] 에러 발생!", exception)
-                Log.e("AlarmFlow", "실패 메시지: ${exception.message}")
-                Log.e("AlarmFlow", "원인(Cause): ${exception.cause}")
-
+            }.onFailure {
                 _uiState.update { it.copy(isLoading = false, isPagingLoading = false) }
+                _uiEvent.emit(AlarmUiEvent.ShowLoadFailedToast)
             }
         }
     }
@@ -103,14 +91,12 @@ class AlarmViewModel @Inject constructor(
     // 알림 상세 조회
     fun fetchAlarmDetail(notificationId: Long) {
         viewModelScope.launch {
-            Log.d("AlarmFlow", "▶️ 개별 알림 상세 정보 요청 시작! (ID: $notificationId)")
             val result = alarmsUseCases.getAlarmDetailUseCase(notificationId)
 
             result.onSuccess { detailData ->
-                Log.d("AlarmFlow", "✅ 알림 상세 조회 성공: $detailData")
                 // TODO: 받아온 detailData를 활용해 팝업을 띄우거나 화면을 이동하는 상태 추가
-            }.onFailure { error ->
-                Log.e("AlarmFlow", "❌ 알림 상세 조회 실패: ${error.message}")
+            }.onFailure {
+                // TODO: 실패 처리 - 알림 상세 조회 실패 시 안내 방식 결정
             }
         }
     }
@@ -119,22 +105,19 @@ class AlarmViewModel @Inject constructor(
     fun readAlarm(notificationId: Long) {
         analyticsTracker.trackNotificationAction(NotificationActionType.ITEM_TAP)
         viewModelScope.launch {
-            Log.d("AlarmFlow", "▶️ 개별 알림 읽음 처리 API 호출 시작! (notificationId: $notificationId)")
-            val result = alarmsUseCases.readAlarmUseCase(notificationId)
-
-            result.onSuccess {
-                Log.d("AlarmFlow", "✅ 개별 알림 읽음 처리 성공!")
-                _uiState.update { state ->
-                    state.copy(
-                        alarmList = state.alarmList.map { item ->
-                            if (item.notificationId == notificationId) item.copy(isRead = true)
-                            else item
-                        }
-                    )
+            alarmsUseCases.readAlarmUseCase(notificationId)
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            alarmList = state.alarmList.map { item ->
+                                if (item.notificationId == notificationId) item.copy(isRead = true)
+                                else item
+                            }
+                        )
+                    }
+                }.onFailure {
+                    _uiEvent.emit(AlarmUiEvent.ShowActionFailedToast)
                 }
-            }.onFailure { error ->
-                Log.e("AlarmFlow", "❌ 개별 알림 읽음 처리 실패...")
-            }
         }
     }
 
@@ -147,20 +130,16 @@ class AlarmViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            Log.d("AlarmFlow", "▶️ 전체 알림 읽음 처리 API 호출 시작!")
-            val result = alarmsUseCases.readAllAlarmsUseCase()
-
-            result.onSuccess {
-                Log.d("AlarmFlow", "✅ 전체 알림 읽음 처리 성공!")
-                analyticsTracker.trackNotificationAction(
-                    action = NotificationActionType.READ_ALL,
-                    unreadCount = unreadCount
-                )
-            }.onFailure { error ->
-                Log.e("AlarmFlow", "❌ 전체 알림 읽음 처리 실패: ${error.message}", error)
-                _uiState.update { state -> state.copy(alarmList = previousAlarmList) }
-                _uiEvent.emit(AlarmUiEvent.ShowToast("알림 읽음 처리에 실패했습니다. 다시 시도해주세요."))
-            }
+            alarmsUseCases.readAllAlarmsUseCase()
+                .onSuccess {
+                    analyticsTracker.trackNotificationAction(
+                        action = NotificationActionType.READ_ALL,
+                        unreadCount = unreadCount
+                    )
+                }.onFailure {
+                    _uiState.update { state -> state.copy(alarmList = previousAlarmList) }
+                    _uiEvent.emit(AlarmUiEvent.ShowReadAllFailedToast)
+                }
         }
     }
 }

@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyCommentCard
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSectionTitle
+import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyOpinionSkeleton
 import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPerspectiveCard
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
@@ -30,6 +31,8 @@ import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private const val CLASS_MY_OPINION_SKELETON_COUNT = 3
 
 @Composable
 fun ClassMyOpinionScreen(
@@ -91,6 +94,12 @@ private fun ClassMyOpinionContent(
             ),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
         ) {
+            if (uiState.isLoading && uiState.perspectives.isEmpty() && uiState.comments.isEmpty()) {
+                items(count = CLASS_MY_OPINION_SKELETON_COUNT) {
+                    ClassMyOpinionSkeleton()
+                }
+            }
+
             if (uiState.perspectives.isNotEmpty()) {
                 item {
                     ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))

@@ -28,11 +28,14 @@ internal fun reduce(
         is ClassMyOpinionMutation.MyPerspectivesLoaded -> state.copy(perspectives = mutation.perspectives)
 
         is ClassMyOpinionMutation.MyCommentsLoaded -> state.copy(
+            isLoading = false,
             comments = mutation.comments,
             myDisplayName = mutation.myDisplayName,
             nextCursor = mutation.nextCursor,
             hasNext = mutation.hasNext
         )
+
+        ClassMyOpinionMutation.MyCommentsLoadFailed -> state.copy(isLoading = false)
 
         is ClassMyOpinionMutation.MoreMyCommentsLoaded -> state.copy(
             comments = state.comments + mutation.comments,

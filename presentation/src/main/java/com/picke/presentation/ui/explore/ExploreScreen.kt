@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.explore
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +15,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,14 +68,37 @@ fun ExploreScreen(
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val selectedSort by viewModel.selectedSort.collectAsState()
     val pagingItems = viewModel.explorePagingData.collectAsLazyPagingItems()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    val refreshState = pagingItems.loadState.refresh
+    val appendState = pagingItems.loadState.append
+
+    LaunchedEffect(refreshState) {
+        if (refreshState !is LoadState.Loading) isRefreshing = false
+    }
+
+    LaunchedEffect(refreshState, appendState) {
+        if (refreshState is LoadState.Error || appendState is LoadState.Error) {
+            Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     ExploreScreen(
         selectedCategory = selectedCategory,
         selectedSort = selectedSort,
         pagingItems = pagingItems,
+        isRefreshing = isRefreshing,
         scrollToTopTrigger = scrollToTopTrigger,
         onCategoryChange = { viewModel.updateCategory(it) },
         onSortChange = { viewModel.updateSort(it) },
+        onRefresh = {
+            isRefreshing = true
+            pagingItems.refresh()
+        },
         onNavigateToAlarm = onNavigateToAlarm,
         onNavigateToVote = onNavigateToVote
     )
@@ -80,9 +109,11 @@ fun ExploreScreen(
     selectedCategory: String,
     selectedSort: String,
     pagingItems: LazyPagingItems<ExploreUiModel>,
+    isRefreshing: Boolean,
     scrollToTopTrigger: Int,
     onCategoryChange: (String) -> Unit,
     onSortChange: (String) -> Unit,
+    onRefresh: () -> Unit,
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit
 ) {
@@ -91,7 +122,7 @@ fun ExploreScreen(
     val coroutineScope = rememberCoroutineScope()
     var hasUnreadNotification by remember { mutableStateOf(false) }
 
-    val isLoading = pagingItems.loadState.refresh is LoadState.Loading
+    val isLoading = pagingItems.loadState.refresh is LoadState.Loading && !isRefreshing
 
     LaunchedEffect(pagerState.currentPage) {
         val currentCategory = exploreCategories[pagerState.currentPage]
@@ -157,9 +188,11 @@ fun ExploreScreen(
                 ExploreList(
                     pagingItems = pagingItems,
                     isLoading = isLoading,
+                    isRefreshing = isRefreshing,
                     selectedSort = selectedSort,
                     scrollToTopTrigger = scrollToTopTrigger,
                     onSortChanged = onSortChange,
+                    onRefresh = onRefresh,
                     onNavigateToVote = onNavigateToVote
                 )
             }
@@ -167,16 +200,20 @@ fun ExploreScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreList(
     pagingItems: LazyPagingItems<ExploreUiModel>,
     isLoading: Boolean,
+    isRefreshing: Boolean,
     selectedSort: String,
     scrollToTopTrigger: Int = 0,
     onSortChanged: (String) -> Unit,
+    onRefresh: () -> Unit,
     onNavigateToVote: (String) -> Unit
 ) {
     val listState = rememberLazyListState()
+    val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(scrollToTopTrigger) {
         if (scrollToTopTrigger > 0) {
@@ -203,69 +240,89 @@ fun ExploreList(
             )
         }
 
-        if (isLoading) {
-            ExploreSkeleton(modifier = Modifier.fillMaxSize())
-        } else if (pagingItems.itemCount == 0) {
-            PickeEmptyState(
-                message = stringResource(R.string.explore_empty),
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                val adCount = pagingItems.itemCount / 3
-                val totalCount = pagingItems.itemCount + adCount
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.fillMaxSize(),
+            state = pullToRefreshState,
+            indicator = {
+                PullToRefreshDefaults.Indicator(
+                    state = pullToRefreshState,
+                    isRefreshing = isRefreshing,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    containerColor = PickeTheme.colors.surfaceBeigeDefault,
+                    color = PickeTheme.colors.primary500
+                )
+            }
+        ) {
+            if (isLoading) {
+                ExploreSkeleton(modifier = Modifier.fillMaxSize())
+            } else if (pagingItems.itemCount == 0) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        PickeEmptyState(
+                            message = stringResource(R.string.explore_empty),
+                            modifier = Modifier.fillParentMaxSize()
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    val adCount = pagingItems.itemCount / 3
+                    val totalCount = pagingItems.itemCount + adCount
 
-                items(count = totalCount) { displayIndex ->
-                    val cycleIndex = displayIndex % 4
-                    val cycleNumber = displayIndex / 4
+                    items(count = totalCount) { displayIndex ->
+                        val cycleIndex = displayIndex % 4
+                        val cycleNumber = displayIndex / 4
 
-                    if (cycleIndex < 3) {
-                        val battleIndex = cycleNumber * 3 + cycleIndex
-                        if (battleIndex < pagingItems.itemCount) {
-                            pagingItems[battleIndex]?.let { item ->
-                                HorizontalDivider(
-                                    thickness = 1.dp,
-                                    color = PickeTheme.colors.borderBeigeDefault,
-                                )
-                                ExploreCard(
-                                    item = item,
-                                    onClick = { id -> onNavigateToVote(id) }
-                                )
-                                if (battleIndex == pagingItems.itemCount - 1) {
+                        if (cycleIndex < 3) {
+                            val battleIndex = cycleNumber * 3 + cycleIndex
+                            if (battleIndex < pagingItems.itemCount) {
+                                pagingItems[battleIndex]?.let { item ->
                                     HorizontalDivider(
                                         thickness = 1.dp,
                                         color = PickeTheme.colors.borderBeigeDefault,
                                     )
+                                    ExploreCard(
+                                        item = item,
+                                        onClick = { id -> onNavigateToVote(id) }
+                                    )
+                                    if (battleIndex == pagingItems.itemCount - 1) {
+                                        HorizontalDivider(
+                                            thickness = 1.dp,
+                                            color = PickeTheme.colors.borderBeigeDefault,
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_EXPLORE)
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_EXPLORE)
+                            }
                         }
                     }
-                }
 
-                if (pagingItems.loadState.append is LoadState.Loading) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = PickeTheme.colors.primary900,
-                                modifier = Modifier.size(24.dp)
-                            )
+                    if (pagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    color = PickeTheme.colors.primary900,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -285,9 +342,11 @@ fun ExploreScreenPreview() {
             selectedCategory = "전체",
             selectedSort = "POPULAR",
             pagingItems = dummyPagingItems,
+            isRefreshing = false,
             scrollToTopTrigger = 0,
             onCategoryChange = {},
             onSortChange = {},
+            onRefresh = {},
             onNavigateToAlarm = {},
             onNavigateToVote = {}
         )

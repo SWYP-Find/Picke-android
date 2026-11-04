@@ -1,5 +1,10 @@
 package com.picke.presentation.ui.alarm.model
 
-sealed class AlarmUiEvent {
-    data class ShowToast(val message: String) : AlarmUiEvent()
+sealed interface AlarmUiEvent {
+
+    data object ShowReadAllFailedToast : AlarmUiEvent
+
+    data object ShowActionFailedToast : AlarmUiEvent
+
+    data object ShowLoadFailedToast : AlarmUiEvent
 }

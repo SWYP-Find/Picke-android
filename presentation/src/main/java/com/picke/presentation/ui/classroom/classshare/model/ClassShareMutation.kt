@@ -11,5 +11,7 @@ internal sealed interface ClassShareMutation {
         val code: String
     ) : ClassShareMutation
 
+    data object ClassShareLoadFailed : ClassShareMutation
+
     data class BattleLoaded(val battle: ClassBattleUiModel) : ClassShareMutation
 }

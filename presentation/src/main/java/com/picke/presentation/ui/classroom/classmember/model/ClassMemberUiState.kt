@@ -2,6 +2,7 @@ package com.picke.presentation.ui.classroom.classmember.model
 
 data class ClassMemberUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val isOperatorViewer: Boolean = false,
     val query: String = "",
     val members: List<ClassMemberUiModel> = emptyList(),

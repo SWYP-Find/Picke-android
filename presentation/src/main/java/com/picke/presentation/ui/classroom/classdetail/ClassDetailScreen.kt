@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfoRow
+import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailSkeleton
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
@@ -151,37 +152,41 @@ private fun ClassDetailContent(
             }
         )
 
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(SpacingTokens.s16),
-            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
-        ) {
-            ClassDetailHeaderSection(
-                isInProgress = uiState.isInProgress,
-                title = uiState.title
-            )
+        if (uiState.isLoading) {
+            ClassDetailSkeleton(modifier = Modifier.weight(1f))
+        } else {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(SpacingTokens.s16),
+                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
+            ) {
+                ClassDetailHeaderSection(
+                    isInProgress = uiState.isInProgress,
+                    title = uiState.title
+                )
 
-            ClassDetailInfoSection(
-                memberCount = uiState.memberCount,
-                deadline = uiState.deadline,
-                isOperator = uiState.isOperator,
-                onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
-                onDeadlineEditClick = { onAction(ClassDetailUiAction.DeadlineEditClick) }
-            )
+                ClassDetailInfoSection(
+                    memberCount = uiState.memberCount,
+                    deadline = uiState.deadline,
+                    isOperator = uiState.isOperator,
+                    onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
+                    onDeadlineEditClick = { onAction(ClassDetailUiAction.DeadlineEditClick) }
+                )
 
-            uiState.battle?.let { battle ->
-                ClassDetailBattleSection(
-                    battle = battle,
-                    onBattleClick = { onAction(ClassDetailUiAction.BattleClick) }
+                uiState.battle?.let { battle ->
+                    ClassDetailBattleSection(
+                        battle = battle,
+                        onBattleClick = { onAction(ClassDetailUiAction.BattleClick) }
+                    )
+                }
+
+                ClassDetailActionSection(
+                    onBattleClick = { onAction(ClassDetailUiAction.BattleClick) },
+                    onResultClick = { onAction(ClassDetailUiAction.ResultClick) }
                 )
             }
-
-            ClassDetailActionSection(
-                onBattleClick = { onAction(ClassDetailUiAction.BattleClick) },
-                onResultClick = { onAction(ClassDetailUiAction.ResultClick) }
-            )
         }
     }
 
@@ -354,6 +359,7 @@ private fun ClassDetailContentPreview(isOperator: Boolean) {
     ClassDetailContent(
         uiState = ClassDetailUiState(
             classId = classItem.id,
+            isLoading = false,
             isOperator = isOperator,
             isInProgress = classItem.isInProgress,
             title = classItem.title,

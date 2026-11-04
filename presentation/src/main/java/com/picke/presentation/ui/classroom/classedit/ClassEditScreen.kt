@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classedit.component.ClassEditSkeleton
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditUiAction
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditUiEvent
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditUiState
@@ -127,11 +128,15 @@ private fun ClassEditContent(
 
             Spacer(modifier = Modifier.height(SpacingTokens.s32))
 
-            ClassEditFormSection(
-                uiState = uiState,
-                onClassNameChange = { name -> onAction(ClassEditUiAction.ClassNameChange(name)) },
-                onDeadlineClick = { onAction(ClassEditUiAction.DeadlineFieldClick) }
-            )
+            if (uiState.isLoading) {
+                ClassEditSkeleton()
+            } else {
+                ClassEditFormSection(
+                    uiState = uiState,
+                    onClassNameChange = { name -> onAction(ClassEditUiAction.ClassNameChange(name)) },
+                    onDeadlineClick = { onAction(ClassEditUiAction.DeadlineFieldClick) }
+                )
+            }
         }
     }
 
@@ -209,6 +214,7 @@ private fun ClassEditContentPreview() {
     PickeTheme {
         ClassEditContent(
             uiState = ClassEditUiState(
+                isLoading = false,
                 originalClassName = "3학년 2반 철학 토론",
                 className = "3학년 2반 철학 토론",
                 originalDeadline = LocalDateTime.of(2026, 11, 2, 14, 0),
@@ -227,6 +233,7 @@ private fun ClassEditContentErrorPreview() {
     PickeTheme {
         ClassEditContent(
             uiState = ClassEditUiState(
+                isLoading = false,
                 className = " ",
                 isClassNameInvalid = true,
                 originalDeadline = LocalDateTime.of(2026, 11, 2, 14, 0),

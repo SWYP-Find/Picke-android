@@ -15,4 +15,6 @@ internal sealed interface ClassVoteMutation {
         val isAiBattle: Boolean,
         val battle: BattleDetailUiModel
     ) : ClassVoteMutation
+
+    data object ClassVoteLoadFailed : ClassVoteMutation
 }

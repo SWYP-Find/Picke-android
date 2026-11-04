@@ -8,6 +8,8 @@ internal sealed interface ClassMemberMutation {
 
     data class MembersLoaded(val isOperatorViewer: Boolean, val members: List<ClassMemberUiModel>) : ClassMemberMutation
 
+    data object MembersLoadFailed : ClassMemberMutation
+
     data class MyNameUpdated(val name: String) : RequestFinished
 
     data class MemberRemoved(val memberId: Long) : RequestFinished

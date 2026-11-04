@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.discussion
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyBattleRecordItem
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.my.discussion.model.DiscussionHistoryUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -46,6 +49,18 @@ fun DiscussionHistoryScreen(
     viewModel: DiscussionHistoryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                DiscussionHistoryUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,

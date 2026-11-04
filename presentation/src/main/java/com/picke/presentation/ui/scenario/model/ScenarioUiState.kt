@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.scenario.model
 
 data class ScenarioUiState(
+    val isLoading: Boolean = true,
     val title: String = "",
     val pastScripts: List<ScenarioScriptUiModel> = emptyList(),
     val pastChoices: List<PastChoice> = emptyList(),
@@ -21,4 +22,7 @@ data class ScenarioUiState(
     val showAudioError: Boolean = false,
     val isReviewing: Boolean = false,
     val isRequesting: Boolean = false
-)
+) {
+    val isForwardEnabled: Boolean
+        get() = !showOptions && !showFinalVoteDialog && !showAudioError
+}

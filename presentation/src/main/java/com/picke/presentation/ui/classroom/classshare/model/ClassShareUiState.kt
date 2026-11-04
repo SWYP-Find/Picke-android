@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 data class ClassShareUiState(
     val classId: Long = 0L,
+    val isLoading: Boolean = true,
     val className: String = "",
     val deadline: LocalDateTime? = null,
     val code: String = "",

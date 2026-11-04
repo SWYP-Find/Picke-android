@@ -105,6 +105,7 @@ class ClassDetailViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassDetailMutation.ClassDetailLoadFailed) }
                 sendEvent(ClassDetailUiEvent.ShowLoadFailedToast)
                 return@launch
             }

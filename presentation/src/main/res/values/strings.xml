@@ -5,7 +5,9 @@
     <string name="setting">설정</string>
     <string name="login_your_think">당신의 생각을</string>
     <string name="login_with_kakao">카카오로 로그인</string>
+    <string name="login_kakao_failed">카카오 로그인에 실패했습니다.</string>
     <string name="login_with_google">구글로 로그인</string>
+    <string name="login_google_failed">구글 로그인에 실패했습니다. \n다시 시도해 주세요.</string>
     <string name="onboarding_start">시작하기</string>
 
     <!-- 상단 바 -->
@@ -34,6 +36,7 @@
     <string name="share_failed">공유 실패</string>
     <string name="share_capture_failed">캡처 실패</string>
     <string name="share_link_copied">링크가 클립보드에 복사되었습니다.</string>
+    <string name="alarm_read_all_failed">알림 읽음 처리에 실패했습니다. 다시 시도해주세요.</string>
 
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>

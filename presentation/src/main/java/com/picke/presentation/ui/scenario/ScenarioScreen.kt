@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.AudioPlayerBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.PickeErrorBanner
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
@@ -164,6 +165,7 @@ fun ScenarioScreen(
                 currentPositionMs = uiState.currentPositionMs,
                 totalDurationMs = uiState.totalDurationMs,
                 playbackSpeed = uiState.playbackSpeed,
+                isForwardEnabled = uiState.isForwardEnabled,
                 onPlayPauseClick = onPlayPauseClick,
                 onSeek = onSeek,
                 onRewindClick = onRewindClick,
@@ -178,75 +180,79 @@ fun ScenarioScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = SpacingTokens.s16),
-                contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                itemsIndexed(allDisplayScripts) { index, script ->
-                    val isNewSpeaker =
-                        index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
-                    val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
-                    val showAvatarAndName = isNewSpeaker || isNewNode
+            if (uiState.isLoading) {
+                PickeChatSkeleton()
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = SpacingTokens.s16),
+                    contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    itemsIndexed(allDisplayScripts) { index, script ->
+                        val isNewSpeaker =
+                            index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
+                        val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
+                        val showAvatarAndName = isNewSpeaker || isNewNode
 
-                    val isPastScript = index < uiState.pastScripts.size
-                    val currentAudioScriptIndex = index - uiState.pastScripts.size
+                        val isPastScript = index < uiState.pastScripts.size
+                        val currentAudioScriptIndex = index - uiState.pastScripts.size
 
-                    if (showAvatarAndName && index > 0) {
-                        Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
-                    }
-
-                    ScenarioChatBubble(
-                        script = script,
-                        isActive = uiState.isPlaying && if (isPastScript) {
-                            index == uiState.activePastIndex
-                        } else {
-                            currentAudioScriptIndex == uiState.activeIndex
-                        },
-                        showAvatarAndName = showAvatarAndName,
-                        onClick = {
-                            if (!isPastScript && uiState.totalDurationMs > 0) {
-                                val targetRatio =
-                                    script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
-                                onSeekToPosition(targetRatio)
-                            }
+                        if (showAvatarAndName && index > 0) {
+                            Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
                         }
-                    )
 
-                    val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
-                    if (pastChoice != null) {
-                        InteractiveOptionsUI(
-                            options = pastChoice.options,
-                            selectedOptionId = pastChoice.selectedOptionId,
-                            onOptionClick = {}
+                        ScenarioChatBubble(
+                            script = script,
+                            isActive = uiState.isPlaying && if (isPastScript) {
+                                index == uiState.activePastIndex
+                            } else {
+                                currentAudioScriptIndex == uiState.activeIndex
+                            },
+                            showAvatarAndName = showAvatarAndName,
+                            onClick = {
+                                if (!isPastScript && uiState.totalDurationMs > 0) {
+                                    val targetRatio =
+                                        script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
+                                    onSeekToPosition(targetRatio)
+                                }
+                            }
                         )
-                    }
-                }
 
-                if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
-                    item {
-                        InteractiveOptionsUI(
-                            options = uiState.interactiveOptions,
-                            selectedOptionId = null,
-                            onOptionClick = onSelectOption,
-                            isRequesting = uiState.isRequesting
-                        )
+                        val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
+                        if (pastChoice != null) {
+                            InteractiveOptionsUI(
+                                options = pastChoice.options,
+                                selectedOptionId = pastChoice.selectedOptionId,
+                                onOptionClick = {}
+                            )
+                        }
                     }
-                }
-                if (uiState.isReviewing) {
-                    item {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        OptionConfirmButton(
-                            text = stringResource(R.string.scenario_go_to_final_vote),
-                            isEnabled = true,
-                            onClick = onNextClick
-                        )
-                    }
-                }
 
+                    if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
+                        item {
+                            InteractiveOptionsUI(
+                                options = uiState.interactiveOptions,
+                                selectedOptionId = null,
+                                onOptionClick = onSelectOption,
+                                isRequesting = uiState.isRequesting
+                            )
+                        }
+                    }
+                    if (uiState.isReviewing) {
+                        item {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            OptionConfirmButton(
+                                text = stringResource(R.string.scenario_go_to_final_vote),
+                                isEnabled = true,
+                                onClick = onNextClick
+                            )
+                        }
+                    }
+
+                }
             }
 
             if (uiState.showAudioError) {
@@ -280,6 +286,7 @@ fun ScenarioScreenPreview() {
     PickeTheme {
         ScenarioScreen(
             uiState = ScenarioUiState(
+                isLoading = false,
                 pastScripts = DummyData.dummyScripts,
                 pastChoices = DummyData.dummyPastChoices,
                 scripts = DummyData.dummyScripts,

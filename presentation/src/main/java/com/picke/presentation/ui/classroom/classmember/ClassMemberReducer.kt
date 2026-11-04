@@ -37,9 +37,12 @@ internal fun reduce(state: ClassMemberUiState, mutation: ClassMemberMutation): C
         ClassMemberMutation.RequestFailed -> state
 
         is ClassMemberMutation.MembersLoaded -> state.copy(
+            isLoading = false,
             isOperatorViewer = mutation.isOperatorViewer,
             members = mutation.members
         )
+
+        ClassMemberMutation.MembersLoadFailed -> state.copy(isLoading = false)
 
         is ClassMemberMutation.MyNameUpdated -> state.copy(
             members = state.members.map { if (it.isMe) it.copy(name = mutation.name) else it },

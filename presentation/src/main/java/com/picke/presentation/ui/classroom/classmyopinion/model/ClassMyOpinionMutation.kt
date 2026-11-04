@@ -15,6 +15,8 @@ internal sealed interface ClassMyOpinionMutation {
         val hasNext: Boolean
     ) : ClassMyOpinionMutation
 
+    data object MyCommentsLoadFailed : ClassMyOpinionMutation
+
     data class MoreMyCommentsLoaded(
         val comments: List<ClassMyCommentUiModel>,
         val nextCursor: String?,

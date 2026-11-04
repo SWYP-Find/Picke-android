@@ -16,6 +16,8 @@ internal sealed interface ClassEditMutation {
         val ticketEndDate: LocalDate?
     ) : ClassEditMutation
 
+    data object ClassLoadFailed : ClassEditMutation
+
     data class BattleLoaded(val battle: ClassBattleUiModel) : ClassEditMutation
 
     data class SettingInvalid(

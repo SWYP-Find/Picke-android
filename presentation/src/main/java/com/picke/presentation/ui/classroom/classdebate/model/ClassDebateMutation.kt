@@ -11,6 +11,8 @@ internal sealed interface ClassDebateMutation {
         val debate: ClassDebateUiModel
     ) : ClassDebateMutation
 
+    data object DebateLoadFailed : ClassDebateMutation
+
     data class DebateRetried(val debate: ClassDebateUiModel) : RequestFinished
 
     data class ReplySubmitted(val debate: ClassDebateUiModel) : RequestFinished

@@ -53,17 +53,19 @@ fun SettingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val logoutFailedMessage = stringResource(R.string.setting_logout_error)
+    val withdrawFailedMessage = stringResource(R.string.setting_withdraw_error)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 SettingUiEvent.NavigateToLogin -> onNavigateToLogin()
-                is SettingUiEvent.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(event.messageResId),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+
+                SettingUiEvent.ShowLogoutFailedToast ->
+                    Toast.makeText(context, logoutFailedMessage, Toast.LENGTH_SHORT).show()
+
+                SettingUiEvent.ShowWithdrawFailedToast ->
+                    Toast.makeText(context, withdrawFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

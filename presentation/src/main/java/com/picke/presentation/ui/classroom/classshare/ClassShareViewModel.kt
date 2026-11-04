@@ -59,6 +59,7 @@ class ClassShareViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassShareMutation.ClassShareLoadFailed) }
                 sendEvent(ClassShareUiEvent.ShowLoadFailedToast)
                 return@launch
             }

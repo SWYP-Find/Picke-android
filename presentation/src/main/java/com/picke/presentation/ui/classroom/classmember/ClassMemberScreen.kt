@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classmember.component.ClassMemberItem
+import com.picke.presentation.ui.classroom.classmember.component.ClassMemberSkeleton
 import com.picke.presentation.ui.classroom.classmember.component.ClassNameSheet
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiAction
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiEvent
@@ -33,6 +34,8 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private const val CLASS_MEMBER_SKELETON_COUNT = 6
 
 @Composable
 fun ClassMemberScreen(
@@ -125,6 +128,12 @@ private fun ClassMemberContent(
                 bottom = SpacingTokens.s20
             )
         ) {
+            if (uiState.isLoading && uiState.members.isEmpty()) {
+                items(count = CLASS_MEMBER_SKELETON_COUNT) {
+                    ClassMemberSkeleton()
+                }
+            }
+
             items(items = uiState.filteredMembers, key = { it.memberId }) { member ->
                 ClassMemberItem(
                     member = member,

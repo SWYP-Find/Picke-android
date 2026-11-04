@@ -68,6 +68,7 @@ class ClassEditViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassEditMutation.ClassLoadFailed) }
                 sendEvent(ClassEditUiEvent.ShowLoadFailedToast)
                 return@launch
             }

@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.notice
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +48,7 @@ import com.picke.presentation.ui.my.notice.model.NoticeEventItem
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
 import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.my.notice.model.NoticeEventUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import kotlinx.coroutines.launch
 
@@ -57,6 +61,9 @@ fun NoticeEventScreen(
 ) {
     val tabs = listOf("공지사항", "이벤트")
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
@@ -69,6 +76,15 @@ fun NoticeEventScreen(
 
     LaunchedEffect(uiState.initialDetailItem) {
         uiState.initialDetailItem?.let { selectedItem = it }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                NoticeEventUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     BackHandler(enabled = selectedItem != null) {

@@ -71,10 +71,12 @@ class ClassVoteViewModel @Inject constructor(
         val classId = _uiState.value.classId
         viewModelScope.launch {
             val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassVoteMutation.ClassVoteLoadFailed) }
                 sendEvent(ClassVoteUiEvent.ShowLoadFailedToast)
                 return@launch
             }
             val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
+                _uiState.update { reduce(it, ClassVoteMutation.ClassVoteLoadFailed) }
                 sendEvent(ClassVoteUiEvent.ShowLoadFailedToast)
                 return@launch
             }

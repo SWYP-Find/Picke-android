@@ -8,7 +8,6 @@ import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.presentation.AppRoute
-import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiState
@@ -79,24 +78,22 @@ class CommentViewModel @Inject constructor(
                     onSuccess()
                     fetchComments(isRefresh = true)
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
     fun deleteComment(commentId: Long) {
-        _uiState.update { state ->
-            state.copy(
-                comments = state.comments.filter { it.commentId != commentId }
-            )
-        }
-
         viewModelScope.launch {
             commentUseCases.deleteCommentUseCase(targetId, commentId)
                 .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(
+                            comments = state.comments.filter { it.commentId != commentId }
+                        )
+                    }
                     fetchMainPerspective()
                 }
-                .onFailure {
-                    fetchComments(isRefresh = true)
-                }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -117,6 +114,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -134,6 +132,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -151,6 +150,7 @@ class CommentViewModel @Inject constructor(
                 .onSuccess {
                     sendEvent(CommentUiEvent.NavigateBack)
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -160,14 +160,15 @@ class CommentViewModel @Inject constructor(
                 .onSuccess { result ->
                     when (result) {
                         is ReportPerspectiveResult.Reported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                            sendEvent(CommentUiEvent.ShowReportedToast)
                         }
 
                         is ReportPerspectiveResult.AlreadyReported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                            sendEvent(CommentUiEvent.ShowAlreadyReportedToast)
                         }
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -177,14 +178,15 @@ class CommentViewModel @Inject constructor(
                 .onSuccess { result ->
                     when (result) {
                         is ReportCommentResult.Reported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_success))
+                            sendEvent(CommentUiEvent.ShowReportedToast)
                         }
 
                         is ReportCommentResult.AlreadyReported -> {
-                            sendEvent(CommentUiEvent.ShowToast(R.string.comment_report_duplicate))
+                            sendEvent(CommentUiEvent.ShowAlreadyReportedToast)
                         }
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 
@@ -220,6 +222,7 @@ class CommentViewModel @Inject constructor(
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
+                    sendEvent(CommentUiEvent.ShowLoadFailedToast)
                 }
         }
     }
@@ -234,6 +237,7 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowLoadFailedToast) }
         }
     }
 
@@ -246,6 +250,7 @@ class CommentViewModel @Inject constructor(
                     onSuccess()
                     fetchMainPerspective()
                 }
+                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
     }
 }

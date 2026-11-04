@@ -36,9 +36,12 @@ internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): C
         ClassDebateMutation.RequestFailed -> state
 
         is ClassDebateMutation.DebateLoaded -> state.copy(
+            isLoading = false,
             battleTitle = mutation.battleTitle,
             debate = mutation.debate
         )
+
+        ClassDebateMutation.DebateLoadFailed -> state.copy(isLoading = false)
 
         is ClassDebateMutation.DebateRetried -> state.copy(debate = mutation.debate)
 

@@ -54,6 +54,8 @@ import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
 import com.picke.presentation.ui.my.user.model.MyUiEvent
 import com.picke.presentation.ui.my.user.model.MyUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
@@ -193,27 +195,26 @@ fun MyScreen(
                     .fillMaxSize()
             ) {
                 Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
-                    Spacer(modifier = Modifier.height(24.dp))
                     ProfileSection(
                         nickname = uiState.profile?.nickname ?: "사용자",
                         userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
                         profileImage = uiState.profile?.characterImageUrl
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(SpacingTokens.s16))
                     CreditCard(
                         credit = uiState.tier?.currentPoint ?: 0,
                         onClick = onNavigateToPoint
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(SpacingTokens.s16))
                     PhilosopherTypeSection(
                         philosopher = uiState.philosopher,
                         onClick = { onNavigateToPhilosopher() }
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
                 MyPageMenuItem(
                     title = stringResource(R.string.my_menu_discussion),
                     onClick = { onNavigateToDiscussion() }
@@ -256,20 +257,27 @@ fun ProfileSection(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // TODO: 토큰 동기화 - color/surface/beige-darker
         ProfileImage(
             model = profileImage,
-            size = 52.dp
+            size = 52.dp,
+            backgroundColor = PickeTheme.colors.avatarBackround
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s12))
         Column {
-            Text(text = nickname, style = PickeTheme.typography.headingSm)
+            // TODO: 토큰 동기화 - color/text/basic
+            Text(
+                text = nickname,
+                color = PickeTheme.colors.textDefault,
+                style = PickeTheme.typography.headingSm
+            )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s2))
             Text(
                 text = userHandle,
-                style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.textSubtler
+                color = PickeTheme.colors.textMuted,
+                style = PickeTheme.typography.bodyXsRegular
             )
         }
     }
@@ -283,15 +291,21 @@ fun PhilosopherTypeSection(
     val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
     val displayImage = if (isLocked) R.drawable.img_lock else philosopher?.imageUrl
     val displayName = if (isLocked) "??형" else philosopher?.philosopherLabel ?: ""
+    val shape = RoundedCornerShape(RadiusTokens.default)
 
+    // TODO: 토큰 동기화 - color/surface/beige-dark
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
+            .clip(shape)
             .background(PickeTheme.colors.surfaceBeigeStrong)
-            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
+            .border(
+                width = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.borderBeigeDefault,
+                shape = shape
+            )
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(SpacingTokens.s16),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
@@ -299,26 +313,27 @@ fun PhilosopherTypeSection(
             size = 40.dp
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s12))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.my_menu_philosopher),
-                style = PickeTheme.typography.captionMdMedium,
-                color = PickeTheme.colors.textSubtler
+                color = PickeTheme.colors.textMuted,
+                style = PickeTheme.typography.captionMdMedium
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s4))
+            // TODO: 토큰 동기화 - color/text/basic
             Text(
                 text = if (isLocked) displayName else "$displayName ",
-                style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textSubtle
+                color = PickeTheme.colors.textDefault,
+                style = PickeTheme.typography.bodySmSemiBold
             )
         }
 
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_right_a),
             contentDescription = null,
-            modifier = Modifier.size(12.dp),
+            modifier = Modifier.size(ComponentNumberTokens.iconSm),
             tint = PickeTheme.colors.textDefault
         )
     }

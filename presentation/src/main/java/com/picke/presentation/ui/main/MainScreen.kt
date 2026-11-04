@@ -25,7 +25,7 @@ import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.TrackScreenViews
 import com.picke.presentation.analytics.rememberAnalyticsTracker
-import com.picke.presentation.ui.component.CustomBottomNavigationBar
+import com.picke.presentation.ui.component.PickeBottomNavigationBar
 import com.picke.presentation.ui.explore.ExploreScreen
 import com.picke.presentation.ui.home.HomeScreen
 import com.picke.presentation.ui.my.content.ContentActivityScreen
@@ -80,7 +80,7 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            CustomBottomNavigationBar(
+            PickeBottomNavigationBar(
                 mainNavController = mainNavController,
                 onRootTabClick = onRootTabClick,
                 onTabClick = { item -> analyticsTracker.trackUiAction(item.toTabAction()) },

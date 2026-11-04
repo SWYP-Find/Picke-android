@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.picke.presentation.ui.component.CustomBottomNavigationBar
+import com.picke.presentation.ui.component.PickeBottomNavigationBar
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -22,7 +22,7 @@ fun ClassTabScaffold(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            CustomBottomNavigationBar(
+            PickeBottomNavigationBar(
                 selectedRoute = BottomNavItem.Class.route,
                 onItemClick = onTabClick
             )

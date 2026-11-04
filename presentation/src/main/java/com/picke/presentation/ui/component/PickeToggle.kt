@@ -22,7 +22,7 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
-fun CustomToggle(
+fun PickeToggle(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -48,14 +48,14 @@ fun CustomToggle(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomTogglePreview() {
+private fun PickeTogglePreview() {
     PickeTheme {
         Row(
             modifier = Modifier.padding(SpacingTokens.s16),
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s16)
         ) {
-            CustomToggle(isChecked = true, onCheckedChange = {})
-            CustomToggle(isChecked = false, onCheckedChange = {})
+            PickeToggle(isChecked = true, onCheckedChange = {})
+            PickeToggle(isChecked = false, onCheckedChange = {})
         }
     }
 }

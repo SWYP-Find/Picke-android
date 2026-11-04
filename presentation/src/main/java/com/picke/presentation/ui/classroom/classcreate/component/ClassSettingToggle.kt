@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import com.picke.presentation.ui.component.CustomToggle
+import com.picke.presentation.ui.component.PickeToggle
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -46,7 +46,7 @@ fun ClassSettingToggle(
             )
         }
 
-        CustomToggle(
+        PickeToggle(
             isChecked = isChecked,
             onCheckedChange = onCheckedChange,
             width = toggleWidth,

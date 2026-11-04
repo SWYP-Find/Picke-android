@@ -48,9 +48,9 @@ import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.shimmer
-import com.picke.presentation.ui.my.user.componenet.CreditCard
-import com.picke.presentation.ui.my.user.componenet.MyPageMenuItem
-import com.picke.presentation.ui.my.user.componenet.MySkeleton
+import com.picke.presentation.ui.my.user.component.CreditCard
+import com.picke.presentation.ui.my.user.component.MyPageMenuItem
+import com.picke.presentation.ui.my.user.component.MySkeleton
 import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
 import com.picke.presentation.ui.my.user.model.MyUiEvent
 import com.picke.presentation.ui.my.user.model.MyUiState

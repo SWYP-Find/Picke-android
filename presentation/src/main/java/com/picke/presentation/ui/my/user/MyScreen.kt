@@ -251,7 +251,7 @@ fun MyScreen(
 fun ProfileSection(
     nickname: String,
     userHandle: String,
-    profileImage: Any?
+    profileImage: String?
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -260,7 +260,7 @@ fun ProfileSection(
     ) {
         // TODO: 토큰 동기화 - color/surface/beige-darker
         ProfileImage(
-            model = profileImage,
+            imageUrl = profileImage,
             size = 52.dp,
             backgroundColor = PickeTheme.colors.avatarBackround
         )
@@ -292,7 +292,6 @@ fun PhilosopherTypeSection(
     val lockedName = stringResource(R.string.my_philosopher_locked)
 
     val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
-    val displayImage = if (isLocked) R.drawable.img_lock else philosopher?.imageUrl
     val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
     val shape = RoundedCornerShape(RadiusTokens.default)
 
@@ -312,9 +311,10 @@ fun PhilosopherTypeSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = displayImage,
+            imageUrl = if (isLocked) null else philosopher?.imageUrl,
             size = ComponentNumberTokens.avatarMd,
-            kind = if (isLocked) ProfileImageKind.LOCKED else ProfileImageKind.PHILOSOPHER
+            kind = if (isLocked) ProfileImageKind.LOCKED else ProfileImageKind.PHILOSOPHER,
+            defaultImageRes = if (isLocked) R.drawable.img_lock else null
         )
 
         Spacer(modifier = Modifier.width(SpacingTokens.s12))

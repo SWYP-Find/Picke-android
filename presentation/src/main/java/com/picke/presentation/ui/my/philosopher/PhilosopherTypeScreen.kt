@@ -459,8 +459,9 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
 
             // 프로필 이미지
             ProfileImage(
-                model = philosopher.imageUrl ?: R.drawable.illust_mengzi, // profile.profileImg,
-                size = 68.dp
+                imageUrl = philosopher.imageUrl,
+                size = 68.dp,
+                defaultImageRes = R.drawable.illust_mengzi
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -741,7 +742,7 @@ fun ChemistryCard(
     isBest: Boolean,
     name: String,
     desc: String,
-    imageUrl: Any?
+    imageUrl: String?
 ) {
     val titleColor = if (isBest) Color(0xFFCBA572) else PickeTheme.colors.gray600
     val titleText =
@@ -776,8 +777,9 @@ fun ChemistryCard(
         Spacer(modifier = Modifier.height(16.dp))
 
         ProfileImage(
-            model = imageUrl ?: R.drawable.illust_mengzi,
-            size = 56.dp
+            imageUrl = imageUrl,
+            size = 56.dp,
+            defaultImageRes = R.drawable.illust_mengzi
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(

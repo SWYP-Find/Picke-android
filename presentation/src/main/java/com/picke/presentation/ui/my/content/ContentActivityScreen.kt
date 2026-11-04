@@ -201,7 +201,7 @@ fun ContentActivityCard(
         ) {
             // 프로필 이미지
             ProfileImage(
-                model = item.author.characterImageUrl,
+                imageUrl = item.author.characterImageUrl,
                 size = 36.dp
             )
 

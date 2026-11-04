@@ -40,7 +40,7 @@ fun PerspectiveStatsOption(
     ) {
         if (isImageVisible) {
             ProfileImage(
-                model = imageUrl,
+                imageUrl = imageUrl,
                 size = ComponentNumberTokens.avatarMd,
                 kind = ProfileImageKind.PHILOSOPHER
             )

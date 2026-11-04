@@ -55,7 +55,7 @@ fun ClassMemberItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = member.imageUrl,
+            imageUrl = member.imageUrl,
             size = ClassMemberItemDimens.profileImageSize
         )
 

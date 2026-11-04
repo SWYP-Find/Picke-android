@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,10 +30,11 @@ enum class ProfileImageKind(val imageRatio: Float) {
 
 @Composable
 fun ProfileImage(
-    model: Any?,
+    imageUrl: String?,
     size: Dp,
     modifier: Modifier = Modifier,
     kind: ProfileImageKind = ProfileImageKind.CHARACTER,
+    @DrawableRes defaultImageRes: Int? = null,
     backgroundColor: Color = PickeTheme.colors.borderBeigeDefault
 ) {
     Box(
@@ -43,7 +45,7 @@ fun ProfileImage(
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = model,
+            model = imageUrl ?: defaultImageRes,
             contentDescription = null,
             modifier = Modifier.size(size * kind.imageRatio),
             contentScale = ContentScale.Fit
@@ -60,17 +62,20 @@ private fun ProfileImagePreview() {
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
             ProfileImage(
-                model = R.drawable.illust_owl,
-                size = ComponentNumberTokens.avatarSm
+                imageUrl = null,
+                size = ComponentNumberTokens.avatarSm,
+                defaultImageRes = R.drawable.illust_owl
             )
             ProfileImage(
-                model = R.drawable.illust_owl,
-                size = ComponentNumberTokens.avatarLg
+                imageUrl = null,
+                size = ComponentNumberTokens.avatarLg,
+                defaultImageRes = R.drawable.illust_owl
             )
             ProfileImage(
-                model = R.drawable.illust_mengzi,
+                imageUrl = null,
                 size = ComponentNumberTokens.avatarMd,
-                kind = ProfileImageKind.PHILOSOPHER
+                kind = ProfileImageKind.PHILOSOPHER,
+                defaultImageRes = R.drawable.illust_mengzi
             )
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.SkeletonBlock
 import com.picke.presentation.ui.component.SkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 private object ClassDetailSkeletonDimens {
@@ -19,7 +20,6 @@ private object ClassDetailSkeletonDimens {
     val titleHeight = 24.dp
     val infoHeight = 88.dp
     val battleHeight = 220.dp
-    val buttonHeight = 52.dp
 }
 
 @Composable
@@ -35,8 +35,8 @@ fun ClassDetailSkeleton(modifier: Modifier = Modifier) {
         SkeletonBlock(height = ClassDetailSkeletonDimens.infoHeight)
         SkeletonBlock(height = ClassDetailSkeletonDimens.battleHeight)
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
-            SkeletonBlock(height = ClassDetailSkeletonDimens.buttonHeight)
-            SkeletonBlock(height = ClassDetailSkeletonDimens.buttonHeight)
+            SkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
+            SkeletonBlock(height = ComponentNumberTokens.buttonPrimaryLargeHeight)
         }
     }
 }

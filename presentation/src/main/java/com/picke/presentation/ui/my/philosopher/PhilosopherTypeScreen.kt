@@ -76,9 +76,9 @@ import com.picke.presentation.util.captureBitmap
 import com.picke.presentation.util.launchBitmapShare
 import com.picke.presentation.util.shareCapturedImageToKakao
 import com.picke.presentation.util.shareToInstagramStory
+import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlinx.coroutines.launch
 
 private const val CLIP_LABEL = "recap_link"
 
@@ -103,6 +103,8 @@ fun PhilosopherTypeScreen(
     val clipboard = LocalClipboard.current
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val captureFailedMessage = stringResource(R.string.share_capture_failed)
+    val linkCopiedMessage = stringResource(R.string.share_link_copied)
 
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
@@ -146,7 +148,7 @@ fun PhilosopherTypeScreen(
                     }
                 )
             },
-            onError = { Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show() }
+            onError = { Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show() }
         )
     }
     val onInstaShareClick = {
@@ -159,7 +161,7 @@ fun PhilosopherTypeScreen(
                     onSuccess = { viewModel.trackRecapShare(ShareChannel.INSTAGRAM) }
                 )
             },
-            onError = { Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show() }
+            onError = { Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show() }
         )
     }
 
@@ -278,8 +280,11 @@ fun PhilosopherTypeScreen(
                             val shareUrl = "${BuildConfig.BASE_URL}recap/$shareKey"
 
                             coroutineScope.launch {
-                                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, shareUrl)))
-                                Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                                clipboard.setClipEntry(
+                                    ClipEntry(ClipData.newPlainText(CLIP_LABEL, shareUrl))
+                                )
+                                Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT)
+                                    .show()
                                 viewModel.trackRecapShare(ShareChannel.LINK)
                             }
                         },
@@ -306,10 +311,12 @@ fun LockedPhilosopherHeaderSection() {
             .background(Color.White, cardShape)
             .border(1.dp, PickeTheme.colors.surfaceBeigeStrong, cardShape)
     ) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(4.dp)
-            .background(PickeTheme.colors.primary500))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(PickeTheme.colors.primary500)
+        )
 
         Column(
             modifier = Modifier
@@ -477,7 +484,11 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
                     philosopher.keywordTags.forEach { tag ->
                         Box(
                             modifier = Modifier
-                                .border(1.dp, PickeTheme.colors.primary100, RoundedCornerShape(2.dp))
+                                .border(
+                                    1.dp,
+                                    PickeTheme.colors.primary100,
+                                    RoundedCornerShape(2.dp)
+                                )
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
@@ -568,7 +579,11 @@ fun ScoreBar(modifier: Modifier = Modifier, label: String, score: Int) {
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = label, style = PickeTheme.typography.captionLgMedium, color = PickeTheme.colors.gray600)
+        Text(
+            text = label,
+            style = PickeTheme.typography.captionLgMedium,
+            color = PickeTheme.colors.gray600
+        )
         Spacer(modifier = Modifier.width(8.dp))
 
         // 막대 바

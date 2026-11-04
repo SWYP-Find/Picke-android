@@ -101,6 +101,8 @@ fun TodayBattleScreen(
     val context = LocalContext.current
     val clipboard = LocalClipboard.current
 
+    val linkCopiedMessage = stringResource(R.string.share_link_copied)
+
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.errorMessage) {
@@ -127,7 +129,7 @@ fun TodayBattleScreen(
                 onSuccess = { url ->
                     coroutineScope.launch {
                         clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
-                        Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT).show()
                         viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
                     }
                 },
@@ -150,6 +152,10 @@ fun TodayBattleScreen(
     onTrackShareAction: (String, String) -> Unit
 ) {
     val context = LocalContext.current
+
+    val imageLoadFailedMessage = stringResource(R.string.share_image_load_failed)
+    val shareFailedMessage = stringResource(R.string.share_failed)
+    val captureFailedMessage = stringResource(R.string.share_capture_failed)
 
     val battleList = uiState.battleList
 
@@ -182,11 +188,11 @@ fun TodayBattleScreen(
                 },
                 onBitmapMissing = {
                     isSharing = false
-                    Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, imageLoadFailedMessage, Toast.LENGTH_SHORT).show()
                 },
                 onError = {
                     isSharing = false
-                    Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, shareFailedMessage, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -206,7 +212,7 @@ fun TodayBattleScreen(
             },
             onError = {
                 isSharing = false
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show()
             }
         )
     }

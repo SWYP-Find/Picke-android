@@ -36,6 +36,17 @@
     <string name="share_failed">공유 실패</string>
     <string name="share_capture_failed">캡처 실패</string>
     <string name="share_link_copied">링크가 클립보드에 복사되었습니다.</string>
+    <string name="share_image_save_failed">이미지 저장에 실패했습니다.</string>
+    <string name="share_image_upload_failed">이미지 업로드에 실패했습니다.</string>
+    <string name="share_image_process_failed">이미지 처리 중 에러가 발생했습니다.</string>
+    <string name="share_kakao_not_installed">카카오톡이 설치되어 있지 않습니다.</string>
+    <string name="share_instagram_not_installed">인스타그램이 설치되어 있지 않습니다.</string>
+
+    <!-- 카카오톡 공유 메시지 -->
+    <string name="share_kakao_recap_title">나의 철학자 유형은 [%1$s형]!</string>
+    <string name="share_kakao_recap_button">내 철학 유형 알아보러 가기</string>
+    <string name="share_kakao_battle_title">💥 배틀 주제: %1$s</string>
+    <string name="share_kakao_battle_button">배틀 참여하러 가기🙆‍♂️</string>
     <string name="alarm_read_all_failed">알림 읽음 처리에 실패했습니다. 다시 시도해주세요.</string>
 
     <!-- 마이   -->

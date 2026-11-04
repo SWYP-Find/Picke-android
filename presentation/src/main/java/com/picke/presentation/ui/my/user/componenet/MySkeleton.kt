@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -63,9 +63,9 @@ private fun ProfileSectionSkeleton() {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            SkeletonLine(width = 100.dp, height = 20.dp)
+            PickeSkeletonLine(width = 100.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(SpacingTokens.s2))
-            SkeletonLine(width = 60.dp, height = 14.dp)
+            PickeSkeletonLine(width = 60.dp, height = 14.dp)
         }
     }
 }
@@ -100,9 +100,9 @@ private fun PhilosopherTypeCardSkeleton() {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            SkeletonLine(width = 60.dp, height = 14.dp)
+            PickeSkeletonLine(width = 60.dp, height = 14.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 100.dp, height = 18.dp)
+            PickeSkeletonLine(width = 100.dp, height = 18.dp)
         }
     }
 }
@@ -117,7 +117,7 @@ private fun MyPageMenuItemSkeleton() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SkeletonLine(width = 120.dp, height = 18.dp)
+            PickeSkeletonLine(width = 120.dp, height = 18.dp)
         }
         // TODO: 토큰 동기화 - color/border/beige-dark
         HorizontalDivider(

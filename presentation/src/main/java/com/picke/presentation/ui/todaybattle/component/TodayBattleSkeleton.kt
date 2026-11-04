@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -105,7 +105,7 @@ private fun OpinionCardSkeleton(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SkeletonLine(
+        PickeSkeletonLine(
             width = 40.dp,
             height = 12.dp,
             baseColor = darkShimmerBase,
@@ -113,7 +113,7 @@ private fun OpinionCardSkeleton(
         )
 
         Spacer(modifier = Modifier.height(SpacingTokens.s8))
-        SkeletonLine(
+        PickeSkeletonLine(
             width = 120.dp,
             height = 22.dp,
             baseColor = darkShimmerBase,
@@ -121,7 +121,7 @@ private fun OpinionCardSkeleton(
         )
 
         Spacer(modifier = Modifier.height(TodayBattleSkeletonDimens.quoteTopSpacing))
-        SkeletonLine(
+        PickeSkeletonLine(
             width = 160.dp,
             height = 12.dp,
             baseColor = darkShimmerBase,

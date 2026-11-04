@@ -27,16 +27,16 @@ fun PickeChatSkeleton(modifier: Modifier = Modifier) {
             .padding(SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16)
     ) {
-        SkeletonLine(
+        PickeSkeletonLine(
             width = PickeChatSkeletonDimens.opponentBubbleWidth,
             height = PickeChatSkeletonDimens.opponentBubbleHeight
         )
-        SkeletonLine(
+        PickeSkeletonLine(
             width = PickeChatSkeletonDimens.myBubbleWidth,
             height = PickeChatSkeletonDimens.myBubbleHeight,
             modifier = Modifier.align(Alignment.End)
         )
-        SkeletonLine(
+        PickeSkeletonLine(
             width = PickeChatSkeletonDimens.opponentBubbleWidth,
             height = PickeChatSkeletonDimens.opponentBubbleHeight
         )

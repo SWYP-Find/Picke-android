@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -46,11 +46,11 @@ fun MyClassSkeleton(modifier: Modifier = Modifier) {
             .padding(SpacingTokens.s12),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
     ) {
-        SkeletonLine(width = MyClassSkeletonDimens.badgeWidth, height = MyClassSkeletonDimens.headerHeight)
+        PickeSkeletonLine(width = MyClassSkeletonDimens.badgeWidth, height = MyClassSkeletonDimens.headerHeight)
 
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
-            SkeletonLine(width = MyClassSkeletonDimens.titleWidth, height = MyClassSkeletonDimens.titleHeight)
-            SkeletonLine(width = MyClassSkeletonDimens.topicWidth, height = MyClassSkeletonDimens.lineHeight)
+            PickeSkeletonLine(width = MyClassSkeletonDimens.titleWidth, height = MyClassSkeletonDimens.titleHeight)
+            PickeSkeletonLine(width = MyClassSkeletonDimens.topicWidth, height = MyClassSkeletonDimens.lineHeight)
         }
 
         HorizontalDivider(
@@ -58,7 +58,7 @@ fun MyClassSkeleton(modifier: Modifier = Modifier) {
             color = PickeTheme.colors.cardBaseBorderDefault
         )
 
-        SkeletonLine(width = MyClassSkeletonDimens.metaWidth, height = MyClassSkeletonDimens.lineHeight)
+        PickeSkeletonLine(width = MyClassSkeletonDimens.metaWidth, height = MyClassSkeletonDimens.lineHeight)
     }
 }
 

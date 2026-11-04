@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -43,7 +43,7 @@ fun ClassMemberSkeleton(modifier: Modifier = Modifier) {
                     .clip(CircleShape)
                     .shimmer()
             )
-            SkeletonLine(width = ClassMemberSkeletonDimens.nameWidth, height = ClassMemberSkeletonDimens.nameHeight)
+            PickeSkeletonLine(width = ClassMemberSkeletonDimens.nameWidth, height = ClassMemberSkeletonDimens.nameHeight)
         }
 
         HorizontalDivider(

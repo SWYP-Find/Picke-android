@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -42,7 +42,7 @@ fun PerspectiveHeaderSkeleton(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f)
         ) {
-            SkeletonLine(width = 96.dp, height = 20.dp)
+            PickeSkeletonLine(width = 96.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(24.dp))
             Spacer(
                 modifier = Modifier
@@ -70,8 +70,8 @@ private fun PerspectiveHeaderSideSkeleton() {
                 .shimmer()
         )
         Spacer(modifier = Modifier.height(2.dp))
-        SkeletonLine(width = 40.dp, height = 14.dp)
-        SkeletonLine(width = 28.dp, height = 16.dp)
+        PickeSkeletonLine(width = 40.dp, height = 14.dp)
+        PickeSkeletonLine(width = 28.dp, height = 16.dp)
     }
 }
 
@@ -84,7 +84,7 @@ fun PerspectiveTabBarSkeleton(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            SkeletonLine(width = 64.dp, height = 20.dp)
+            PickeSkeletonLine(width = 64.dp, height = 20.dp)
         }
         HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 2.dp)
     }
@@ -122,29 +122,29 @@ private fun PerspectiveItemCardSkeleton() {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    SkeletonLine(width = 40.dp, height = 16.dp)
+                    PickeSkeletonLine(width = 40.dp, height = 16.dp)
                     Spacer(modifier = Modifier.height(4.dp))
-                    SkeletonLine(width = 50.dp, height = 12.dp)
+                    PickeSkeletonLine(width = 50.dp, height = 12.dp)
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            SkeletonLine(width = 70.dp, height = 20.dp)
+            PickeSkeletonLine(width = 70.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(12.dp))
-            SkeletonLine(width = 260.dp, height = 16.dp)
+            PickeSkeletonLine(width = 260.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 200.dp, height = 16.dp)
+            PickeSkeletonLine(width = 200.dp, height = 16.dp)
 
             Spacer(modifier = Modifier.height(12.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                SkeletonLine(width = 40.dp, height = 14.dp)
+                PickeSkeletonLine(width = 40.dp, height = 14.dp)
                 Spacer(modifier = Modifier.weight(1f))
-                SkeletonLine(width = 24.dp, height = 14.dp)
+                PickeSkeletonLine(width = 24.dp, height = 14.dp)
                 Spacer(modifier = Modifier.width(12.dp))
-                SkeletonLine(width = 24.dp, height = 14.dp)
+                PickeSkeletonLine(width = 24.dp, height = 14.dp)
             }
         }
     }

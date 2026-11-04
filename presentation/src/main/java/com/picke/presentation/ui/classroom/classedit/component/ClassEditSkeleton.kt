@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.PickeSkeletonBlock
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
@@ -28,7 +28,7 @@ fun ClassEditSkeleton(modifier: Modifier = Modifier) {
     ) {
         repeat(CLASS_EDIT_FIELD_COUNT) {
             Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
-                SkeletonLine(width = ClassEditSkeletonDimens.labelWidth, height = ClassEditSkeletonDimens.labelHeight)
+                PickeSkeletonLine(width = ClassEditSkeletonDimens.labelWidth, height = ClassEditSkeletonDimens.labelHeight)
                 PickeSkeletonBlock(height = ClassEditSkeletonDimens.fieldHeight)
             }
         }

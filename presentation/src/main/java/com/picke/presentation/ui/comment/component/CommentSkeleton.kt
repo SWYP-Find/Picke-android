@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -37,7 +37,7 @@ fun CommentSkeleton(modifier: Modifier = Modifier) {
                 .background(Color(0xFFF9F8F6))
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            SkeletonLine(width = 70.dp, height = 16.dp)
+            PickeSkeletonLine(width = 70.dp, height = 16.dp)
         }
 
         repeat(4) {
@@ -65,28 +65,28 @@ private fun CommentItemCardSkeleton(showContentTwoLines: Boolean = false) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                SkeletonLine(width = 48.dp, height = 16.dp)
+                PickeSkeletonLine(width = 48.dp, height = 16.dp)
                 Spacer(modifier = Modifier.height(4.dp))
-                SkeletonLine(width = 40.dp, height = 12.dp)
+                PickeSkeletonLine(width = 40.dp, height = 12.dp)
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        SkeletonLine(width = 70.dp, height = 20.dp)
+        PickeSkeletonLine(width = 70.dp, height = 20.dp)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        SkeletonLine(width = 260.dp, height = 16.dp)
+        PickeSkeletonLine(width = 260.dp, height = 16.dp)
         if (showContentTwoLines) {
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 180.dp, height = 16.dp)
+            PickeSkeletonLine(width = 180.dp, height = 16.dp)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            SkeletonLine(width = 36.dp, height = 16.dp)
+            PickeSkeletonLine(width = 36.dp, height = 16.dp)
         }
     }
 }

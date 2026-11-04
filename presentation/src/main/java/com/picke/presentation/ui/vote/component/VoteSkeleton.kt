@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.vote.model.VoteType
@@ -67,13 +67,13 @@ fun VoteSkeleton(
                 horizontalAlignment = Alignment.Start
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    SkeletonLine(
+                    PickeSkeletonLine(
                         width = 48.dp,
                         height = 20.dp,
                         baseColor = shimmerBase,
                         highlightColor = shimmerHighlight
                     )
-                    SkeletonLine(
+                    PickeSkeletonLine(
                         width = 48.dp,
                         height = 20.dp,
                         baseColor = shimmerBase,
@@ -82,7 +82,7 @@ fun VoteSkeleton(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                SkeletonLine(
+                PickeSkeletonLine(
                     width = 220.dp,
                     height = 28.dp,
                     baseColor = shimmerBase,
@@ -90,7 +90,7 @@ fun VoteSkeleton(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                SkeletonLine(
+                PickeSkeletonLine(
                     width = 160.dp,
                     height = 28.dp,
                     baseColor = shimmerBase,
@@ -98,7 +98,7 @@ fun VoteSkeleton(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SkeletonLine(
+                PickeSkeletonLine(
                     width = 240.dp,
                     height = 16.dp,
                     baseColor = shimmerBase,
@@ -171,9 +171,9 @@ private fun VoteOptionCardSkeleton(modifier: Modifier = Modifier) {
                 .shimmer()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        SkeletonLine(width = 60.dp, height = 20.dp)
+        PickeSkeletonLine(width = 60.dp, height = 20.dp)
         Spacer(modifier = Modifier.height(4.dp))
-        SkeletonLine(width = 40.dp, height = 14.dp)
+        PickeSkeletonLine(width = 40.dp, height = 14.dp)
     }
 }
 

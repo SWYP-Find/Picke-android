@@ -1,4 +1,4 @@
-package com.picke.presentation.util
+package com.picke.presentation.share
 
 import android.app.Activity
 import android.content.Context

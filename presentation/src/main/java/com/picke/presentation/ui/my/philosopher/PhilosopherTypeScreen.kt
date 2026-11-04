@@ -65,6 +65,10 @@ import com.picke.domain.feature.mypage.model.RecapScores
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
+import com.picke.presentation.share.captureBitmap
+import com.picke.presentation.share.launchBitmapShare
+import com.picke.presentation.share.shareCapturedImageToKakao
+import com.picke.presentation.share.shareToInstagramStory
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
@@ -72,10 +76,6 @@ import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.util.captureBitmap
-import com.picke.presentation.util.launchBitmapShare
-import com.picke.presentation.util.shareCapturedImageToKakao
-import com.picke.presentation.util.shareToInstagramStory
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin

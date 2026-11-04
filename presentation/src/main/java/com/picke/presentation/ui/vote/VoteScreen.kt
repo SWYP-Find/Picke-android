@@ -54,6 +54,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
+import com.picke.presentation.share.captureBitmap
+import com.picke.presentation.share.launchBitmapShare
+import com.picke.presentation.share.loadBitmapFromUrl
+import com.picke.presentation.share.shareBattleToInstagramStoryBrightMode
+import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
+import com.picke.presentation.share.shareBattleToKakao
 import com.picke.presentation.ui.component.CustomButton
 import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.CustomTopAppBarAction
@@ -73,12 +79,6 @@ import com.picke.presentation.ui.vote.model.voteScreenStyle
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiState
 import com.picke.presentation.util.DummyData
-import com.picke.presentation.util.captureBitmap
-import com.picke.presentation.util.launchBitmapShare
-import com.picke.presentation.util.loadBitmapFromUrl
-import com.picke.presentation.util.shareBattleToInstagramStoryBrightMode
-import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
-import com.picke.presentation.util.shareBattleToKakao
 import kotlinx.coroutines.launch
 
 private const val CLIP_LABEL = "battle_link"

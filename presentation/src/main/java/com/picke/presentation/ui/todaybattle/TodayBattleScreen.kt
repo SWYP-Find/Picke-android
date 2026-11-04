@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.todaybattle
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -42,11 +43,11 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,6 +77,9 @@ import com.picke.presentation.util.launchBitmapShare
 import com.picke.presentation.util.loadBitmapFromUrl
 import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.util.shareBattleToKakao
+import kotlinx.coroutines.launch
+
+private const val CLIP_LABEL = "battle_link"
 
 private object TodayBattleScreenDimens {
     val tagMinHeight = 20.dp
@@ -92,9 +96,12 @@ fun TodayBattleScreen(
     onNavigateToScenario: (String) -> Unit,
     onNavigateToPerspective: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val clipboard = LocalClipboard.current
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -118,9 +125,11 @@ fun TodayBattleScreen(
             viewModel.getShareLink(
                 battleId = currentBattleId,
                 onSuccess = { url ->
-                    clipboardManager.setText(AnnotatedString(url))
-                    Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
-                    viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
+                        Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
+                        viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    }
                 },
                 onError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()

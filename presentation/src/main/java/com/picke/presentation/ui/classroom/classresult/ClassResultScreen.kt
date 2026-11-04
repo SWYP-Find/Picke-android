@@ -39,8 +39,8 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiState
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -105,7 +105,7 @@ private fun ClassResultContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = uiState.className,
             onBackClick = { onAction(ClassResultUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,

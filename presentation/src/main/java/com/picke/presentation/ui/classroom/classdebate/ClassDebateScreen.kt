@@ -54,9 +54,9 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.component.ChatBubble
 import com.picke.presentation.ui.component.CustomTextField
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeChatSkeleton
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -130,7 +130,7 @@ private fun ClassDebateContent(
                 modifier = Modifier.statusBarsPadding(),
                 verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
             ) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.battleTitle,
                     centerTitle = false,
                     onBackClick = { onAction(ClassDebateUiAction.BackClick) },

@@ -60,9 +60,9 @@ import com.picke.presentation.share.loadBitmapFromUrl
 import com.picke.presentation.share.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.share.shareBattleToKakao
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
@@ -245,7 +245,7 @@ fun VoteScreen(
             contentWindowInsets = WindowInsets(0.dp),
             topBar = {
                 Box(modifier = Modifier.statusBarsPadding()) {
-                    CustomTopAppBar(
+                    PickeTopAppBar(
                         title = style.topBarTitle,
                         centerTitle = style.topBarTitle != null,
                         onBackClick = onBackClick,
@@ -254,7 +254,7 @@ fun VoteScreen(
                         titleColor = PickeTheme.colors.textInverse,
                         actions = {
                             if (style.isShareVisible) {
-                                CustomTopAppBarAction(
+                                PickeTopAppBarAction(
                                     iconRes = R.drawable.ic_share,
                                     contentDescription = stringResource(R.string.top_app_bar_share),
                                     onClick = { showShareDialog = true },
@@ -539,7 +539,7 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     onBackClick = onBackClick,
                     backgroundColor = PickeTheme.colors.backgroundBeige
                 )

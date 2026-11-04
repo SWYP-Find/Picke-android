@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.my.point.model.PointUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
@@ -87,14 +87,14 @@ fun PointScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = "포인트 내역",
                 centerTitle = true,
                 showLogo = false,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
-                    CustomTopAppBarAction(
+                    PickeTopAppBarAction(
                         iconRes = R.drawable.ic_point,
                         contentDescription = stringResource(R.string.setting),
                         onClick = { showChargeDialog = true },

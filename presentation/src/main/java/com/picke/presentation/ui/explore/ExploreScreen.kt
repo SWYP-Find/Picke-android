@@ -47,8 +47,8 @@ import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
 import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.explore.component.ExploreCard
 import com.picke.presentation.ui.explore.component.ExploreSkeleton
@@ -134,7 +134,7 @@ fun ExploreScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 showLogo = true,
                 centerTitle = false,
                 backgroundColor = PickeTheme.colors.backgroundBeige,

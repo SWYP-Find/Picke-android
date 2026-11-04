@@ -45,11 +45,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
-import com.picke.presentation.ui.component.CustomTopAppBarTextAction
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeTopAppBarTextAction
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
@@ -226,20 +226,20 @@ fun PerspectiveContent(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.battleTitle.ifBlank { stringResource(R.string.comment_perspective_title) },
                     centerTitle = true,
                     showLogo = false,
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
                         if (uiState.isClassBattle) {
-                            CustomTopAppBarTextAction(
+                            PickeTopAppBarTextAction(
                                 iconRes = R.drawable.ic_report,
                                 text = stringResource(R.string.top_app_bar_report),
                                 onClick = onNextClick
                             )
                         } else {
-                            CustomTopAppBarAction(
+                            PickeTopAppBarAction(
                                 iconRes = R.drawable.ic_arrow_right,
                                 contentDescription = stringResource(R.string.top_app_bar_next),
                                 onClick = onNextClick,

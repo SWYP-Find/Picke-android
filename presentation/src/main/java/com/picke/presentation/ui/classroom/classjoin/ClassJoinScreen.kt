@@ -32,7 +32,7 @@ import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
 import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinCodeStep
 import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinNameStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -85,7 +85,7 @@ private fun ClassJoinContent(
             .systemBarsPadding()
             .imePadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_join_title),
                 onBackClick = { onAction(ClassJoinUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.surfaceBeigeDefault,

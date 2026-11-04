@@ -27,8 +27,8 @@ import com.picke.presentation.ui.classroom.myclass.model.MyClassFilter
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -93,7 +93,7 @@ private fun MyClassContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.my_class_title),
             onBackClick = { onAction(MyClassUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,

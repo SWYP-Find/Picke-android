@@ -51,7 +51,7 @@ import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -116,7 +116,7 @@ private fun ClassShareContent(
             .background(PickeTheme.colors.backgroundBeige)
             .systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_share_title),
                 onBackClick = { onAction(ClassShareUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.backgroundBeige

@@ -46,8 +46,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.picke.domain.feature.mypage.model.NotificationSettingsBoard
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.NotificationPermissionBottomSheet
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.my.setting.alarm.model.SettingAlarmUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -119,7 +119,7 @@ private fun SettingAlarmContent(
         containerColor = PickeTheme.colors.backgroundBeige,
         modifier = Modifier.systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_setting_alarm),
                 centerTitle = true,
                 showLogo = false,

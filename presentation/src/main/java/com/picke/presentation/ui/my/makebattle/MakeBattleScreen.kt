@@ -33,8 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -79,7 +79,7 @@ fun MakeBattleScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar={
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = "배틀 만들기",
                 centerTitle = true,
                 showLogo = false,

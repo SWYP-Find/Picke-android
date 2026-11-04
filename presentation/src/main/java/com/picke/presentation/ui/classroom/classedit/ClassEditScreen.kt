@@ -37,7 +37,7 @@ import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
 import com.picke.presentation.ui.component.CustomTextField
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -95,7 +95,7 @@ private fun ClassEditContent(
             .background(PickeTheme.colors.backgroundBeige)
             .systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_edit_title),
                 onBackClick = { onAction(ClassEditUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.backgroundBeige,

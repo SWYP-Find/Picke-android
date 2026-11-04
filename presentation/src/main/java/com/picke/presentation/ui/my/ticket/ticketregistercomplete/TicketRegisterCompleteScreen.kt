@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.my.ticket.component.TicketBottomAction
 import com.picke.presentation.ui.my.ticket.component.TicketCard
 import com.picke.presentation.ui.my.ticket.component.TicketCardSkeleton
@@ -74,7 +74,7 @@ private fun TicketRegisterCompleteContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.ticket_register_title),
             onBackClick = { onAction(TicketRegisterCompleteUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,

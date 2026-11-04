@@ -35,7 +35,7 @@ import com.picke.presentation.ui.alarm.component.AlarmCard
 import com.picke.presentation.ui.alarm.component.AlarmListSkeleton
 import com.picke.presentation.ui.alarm.model.AlarmUiEvent
 import com.picke.presentation.ui.alarm.model.AlarmUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -123,7 +123,7 @@ fun AlarmScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         modifier = Modifier.systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.alarm),
                 centerTitle = true,
                 showLogo = false,

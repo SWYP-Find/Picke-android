@@ -38,8 +38,8 @@ import com.picke.presentation.ui.classroom.model.ClassTicketStatus
 import com.picke.presentation.ui.classroom.model.ClassUiAction
 import com.picke.presentation.ui.classroom.model.ClassUiEvent
 import com.picke.presentation.ui.classroom.model.ClassUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
 import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -128,7 +128,7 @@ private fun ClassContent(
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_title),
                 onBackClick = { onAction(ClassUiAction.BackClick) },
                 backgroundColor = Color.Transparent,

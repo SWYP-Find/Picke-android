@@ -62,9 +62,9 @@ import com.picke.presentation.share.launchBitmapShare
 import com.picke.presentation.share.loadBitmapFromUrl
 import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.share.shareBattleToKakao
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
@@ -233,7 +233,7 @@ fun TodayBattleScreen(
             TodayBattleSkeleton(modifier = Modifier.fillMaxSize())
 
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     onBackClick = onBackClick,
                     backgroundColor = Color.Transparent,
                     backIconColor = PickeTheme.colors.textInverse
@@ -251,7 +251,7 @@ fun TodayBattleScreen(
                 .background(Color.Black)
         ) {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     onBackClick = onBackClick,
                     backgroundColor = Color.Transparent,
                     backIconColor = PickeTheme.colors.textInverse
@@ -350,12 +350,12 @@ fun TodayBattleScreen(
                         }
                     }
 
-                    CustomTopAppBar(
+                    PickeTopAppBar(
                         onBackClick = onBackClick,
                         backgroundColor = Color.Transparent,
                         backIconColor = PickeTheme.colors.textInverse,
                         actions = {
-                            CustomTopAppBarAction(
+                            PickeTopAppBarAction(
                                 iconRes = R.drawable.ic_share,
                                 contentDescription = stringResource(R.string.top_app_bar_share),
                                 onClick = { showShareDialog = true },

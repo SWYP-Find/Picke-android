@@ -73,7 +73,7 @@ import com.picke.presentation.ads.showAdFitTransitionPopupAd
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.ContentSection
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
 import com.picke.presentation.ui.home.component.HomeBestCommentItem
@@ -170,7 +170,7 @@ fun HomeScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 showLogo = true,
                 centerTitle = false,
                 backgroundColor = PickeTheme.colors.backgroundBeige,

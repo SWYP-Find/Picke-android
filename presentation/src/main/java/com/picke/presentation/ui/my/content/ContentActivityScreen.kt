@@ -41,8 +41,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeIconCount
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.my.content.model.ContentActivityUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
@@ -77,7 +77,7 @@ fun ContentActivityScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_menu_content),
                 centerTitle = true,
                 showLogo = false,

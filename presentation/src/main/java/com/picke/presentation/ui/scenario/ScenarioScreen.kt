@@ -28,9 +28,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.AudioPlayerBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.PickeErrorBanner
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
@@ -152,7 +152,7 @@ fun ScenarioScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.title,
                     centerTitle = true,
                     backgroundColor = PickeTheme.colors.backgroundBeige

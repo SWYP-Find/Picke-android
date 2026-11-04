@@ -34,8 +34,8 @@ import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattleP
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiEvent
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiState
 import com.picke.presentation.ui.component.AudioPlayerBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeChatSkeleton
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
 import com.picke.presentation.ui.scenario.model.ScenarioScriptUiModel
 import com.picke.presentation.ui.theme.PickeTheme
@@ -88,7 +88,7 @@ private fun ClassBattlePreviewContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.title,
                     onBackClick = { onAction(ClassBattlePreviewUiAction.BackClick) },
                     backgroundColor = PickeTheme.colors.backgroundBeige

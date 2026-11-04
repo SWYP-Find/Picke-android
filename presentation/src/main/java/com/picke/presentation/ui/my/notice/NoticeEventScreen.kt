@@ -44,10 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.my.notice.model.NoticeEventItem
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.my.notice.model.NoticeEventUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import kotlinx.coroutines.launch
@@ -94,7 +94,7 @@ fun NoticeEventScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = tabs[pagerState.currentPage],
                 centerTitle = true,
                 showLogo = false,

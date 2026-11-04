@@ -69,9 +69,9 @@ import com.picke.presentation.share.captureBitmap
 import com.picke.presentation.share.launchBitmapShare
 import com.picke.presentation.share.shareCapturedImageToKakao
 import com.picke.presentation.share.shareToInstagramStory
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
@@ -169,7 +169,7 @@ fun PhilosopherTypeScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             if (isMyReport) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = "나의 철학자 유형",
                     centerTitle = true,
                     showLogo = false,
@@ -177,7 +177,7 @@ fun PhilosopherTypeScreen(
                     backgroundColor = PickeTheme.colors.backgroundBeige,
                     actions = {
                         if (recapBoard != null) {
-                            CustomTopAppBarAction(
+                            PickeTopAppBarAction(
                                 iconRes = R.drawable.ic_share,
                                 contentDescription = stringResource(R.string.top_app_bar_share),
                                 onClick = { showShareDialog = true },
@@ -188,7 +188,7 @@ fun PhilosopherTypeScreen(
                 )
             } else {
                 Box(modifier = Modifier.statusBarsPadding()) {
-                    CustomTopAppBar(
+                    PickeTopAppBar(
                         title = "상대방의 철학자 유형",
                         centerTitle = true,
                         showLogo = false,

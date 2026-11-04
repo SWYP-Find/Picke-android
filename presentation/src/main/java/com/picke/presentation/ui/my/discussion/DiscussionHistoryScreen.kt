@@ -36,7 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyBattleRecordItem
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.my.discussion.model.DiscussionHistoryUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -65,7 +65,7 @@ fun DiscussionHistoryScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_menu_discussion),
                 centerTitle = true,
                 showLogo = false,

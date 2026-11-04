@@ -44,7 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.shimmer
@@ -131,7 +131,7 @@ fun MyScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 centerTitle = false,
                 actions = {

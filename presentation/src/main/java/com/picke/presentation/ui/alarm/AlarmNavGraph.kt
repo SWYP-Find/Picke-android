@@ -17,7 +17,7 @@ fun NavGraphBuilder.alarmGraph(navController: NavController) {
                 navController.navigate(AppRoute.Comment.createRoute(perspectiveId, commentId))
             },
             onNavigateToPoint = {
-                navController.navigate(AppRoute.Point.route)
+                navController.navigate(AppRoute.Point.createRoute(showsBottomBar = false))
             },
             onNavigateToNotice = { noticeId ->
                 navController.navigate(AppRoute.NoticeEvent.createRoute(noticeId))

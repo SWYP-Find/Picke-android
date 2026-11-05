@@ -17,7 +17,6 @@ fun NavGraphBuilder.exploreGraph(
     composable(BottomNavItem.Explore.route) { backStackEntry ->
         val analyticsTracker = rememberAnalyticsTracker()
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->

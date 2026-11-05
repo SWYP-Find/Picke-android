@@ -21,8 +21,11 @@ sealed class AppRoute(val route: String) {
     }
 
     object ContentActivity : AppRoute("content_activity_screen")
-    object NoticeEvent : AppRoute("notice_event_screen?noticeId={noticeId}") {
-        fun createRoute() = "notice_event_screen"
+    object NoticeEvent :
+        AppRoute("notice_event_screen?noticeId={noticeId}&$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "notice_event_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+
         fun createRoute(noticeId: Long) = "notice_event_screen?noticeId=$noticeId"
     }
 
@@ -65,14 +68,22 @@ sealed class AppRoute(val route: String) {
     object PrivacyPolicy : AppRoute("privacy_policy_screen")
     object TermsOfService : AppRoute("terms_of_service_screen")
     object Withdraw : AppRoute("withdraw_screen")
-    object Point : AppRoute("point_screen")
+    object Point : AppRoute("point_screen?$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "point_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+    }
+
     object Ticket : AppRoute("ticket_screen")
     object TicketRegister : AppRoute("ticket_register_screen")
     object TicketRegisterComplete : AppRoute("ticket_register_complete_screen/{$ARG_TICKET_ID}") {
         fun createRoute(ticketId: Long) = "ticket_register_complete_screen/$ticketId"
     }
 
-    object MakeBattle : AppRoute("makebattle_screen")
+    object MakeBattle :
+        AppRoute("makebattle_screen?$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "makebattle_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+    }
 
     object ClassCreate : AppRoute("class_create_screen")
     object ClassBattlePreview : AppRoute("class_battle_preview_screen/{$ARG_BATTLE_ID}") {
@@ -136,6 +147,7 @@ sealed class AppRoute(val route: String) {
         const val ARG_PERSPECTIVE_ID = "perspectiveId"
         const val ARG_FIRST_OPTION_ID = "firstOptionId"
         const val ARG_COMMENT_ID = "commentId"
+        const val ARG_SHOWS_BOTTOM_BAR = "showsBottomBar"
         const val RESULT_CLASS_CHANGED = "classChanged"
     }
 }

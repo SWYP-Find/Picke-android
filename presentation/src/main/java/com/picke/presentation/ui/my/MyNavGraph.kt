@@ -32,9 +32,13 @@ fun NavGraphBuilder.myGraph(
     onTabClick: (BottomNavItem) -> Unit,
     onNavigateToExplore: () -> Unit
 ) {
+    val showsBottomBarArgument = navArgument(AppRoute.ARG_SHOWS_BOTTOM_BAR) {
+        type = NavType.BoolType
+        defaultValue = false
+    }
+
     composable(BottomNavItem.My.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -55,10 +59,10 @@ fun NavGraphBuilder.myGraph(
                     navController.navigate(AppRoute.ContentActivity.route)
                 },
                 onNavigateToNotice = {
-                    navController.navigate(AppRoute.NoticeEvent.createRoute())
+                    navController.navigate(AppRoute.NoticeEvent.createRoute(showsBottomBar = true))
                 },
                 onNavigateToPoint = {
-                    navController.navigate(AppRoute.Point.route)
+                    navController.navigate(AppRoute.Point.createRoute(showsBottomBar = true))
                 },
                 onNavigateToTicket = {
                     navController.navigate(AppRoute.Ticket.route)
@@ -70,7 +74,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.Ticket.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -92,7 +95,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.TicketRegister.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -118,7 +120,6 @@ fun NavGraphBuilder.myGraph(
         arguments = listOf(navArgument(AppRoute.ARG_TICKET_ID) { type = NavType.LongType })
     ) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -134,23 +135,31 @@ fun NavGraphBuilder.myGraph(
         }
     }
 
-    composable(AppRoute.Point.route) { backStackEntry ->
+    composable(
+        route = AppRoute.Point.route,
+        arguments = listOf(showsBottomBarArgument)
+    ) { backStackEntry ->
+        val showsBottomBar =
+            backStackEntry.arguments?.getBoolean(AppRoute.ARG_SHOWS_BOTTOM_BAR) ?: false
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
             PointScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
-                onNavigateToMakeBattle = { navController.navigate(AppRoute.MakeBattle.route) },
+                onNavigateToMakeBattle = {
+                    navController.navigate(AppRoute.MakeBattle.createRoute(showsBottomBar))
+                },
                 modifier = contentModifier
             )
         }
     }
 
-    composable(AppRoute.MakeBattle.route) { backStackEntry ->
+    composable(
+        route = AppRoute.MakeBattle.route,
+        arguments = listOf(showsBottomBarArgument)
+    ) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -164,7 +173,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.DiscussionHistory.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -180,7 +188,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.ContentActivity.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -196,7 +203,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.PhilosopherType.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -209,13 +215,13 @@ fun NavGraphBuilder.myGraph(
 
     composable(
         route = AppRoute.NoticeEvent.route,
-        arguments = listOf(navArgument("noticeId") {
-            type = NavType.LongType; defaultValue = -1L
-        })
+        arguments = listOf(
+            navArgument("noticeId") { type = NavType.LongType; defaultValue = -1L },
+            showsBottomBarArgument
+        )
     ) { backStackEntry ->
         val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -229,7 +235,6 @@ fun NavGraphBuilder.myGraph(
 
     composable(AppRoute.Setting.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->

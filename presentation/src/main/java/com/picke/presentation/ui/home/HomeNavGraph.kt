@@ -15,7 +15,6 @@ fun NavGraphBuilder.homeGraph(
 ) {
     composable(BottomNavItem.Home.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->

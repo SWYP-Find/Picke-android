@@ -168,7 +168,6 @@ fun NavGraphBuilder.classGraph(
 
     composable(AppRoute.MyClass.route) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -190,7 +189,6 @@ fun NavGraphBuilder.classGraph(
 
     composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -254,7 +252,6 @@ fun NavGraphBuilder.classGraph(
 
     composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -273,7 +270,6 @@ fun NavGraphBuilder.classGraph(
 
     composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
@@ -292,7 +288,6 @@ fun NavGraphBuilder.classGraph(
         arguments = classIdArguments
     ) { backStackEntry ->
         TabScreen(
-            navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->

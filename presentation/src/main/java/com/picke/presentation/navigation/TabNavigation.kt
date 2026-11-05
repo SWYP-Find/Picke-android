@@ -1,6 +1,5 @@
 package com.picke.presentation.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -8,22 +7,25 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.picke.presentation.ui.component.PickeTabScaffold
 
-private val alwaysBottomBarRoutes = setOf(
-    BottomNavItem.Home.route,
-    BottomNavItem.Explore.route,
-    BottomNavItem.My.route,
-    AppRoute.Ticket.route,
-    AppRoute.TicketRegister.route,
-    AppRoute.TicketRegisterComplete.route,
-    AppRoute.DiscussionHistory.route,
-    AppRoute.ContentActivity.route,
-    AppRoute.PhilosopherType.route,
-    AppRoute.Setting.route,
-    AppRoute.MyClass.route,
-    AppRoute.ClassDetail.route,
-    AppRoute.ClassMember.route,
-    AppRoute.ClassResult.route,
-    AppRoute.ClassMyOpinion.route
+private val bottomBarTabByRoute = mapOf(
+    BottomNavItem.Home.route to BottomNavItem.Home,
+    BottomNavItem.Explore.route to BottomNavItem.Explore,
+    BottomNavItem.My.route to BottomNavItem.My,
+    AppRoute.Ticket.route to BottomNavItem.My,
+    AppRoute.TicketRegister.route to BottomNavItem.My,
+    AppRoute.TicketRegisterComplete.route to BottomNavItem.My,
+    AppRoute.Point.route to BottomNavItem.My,
+    AppRoute.MakeBattle.route to BottomNavItem.My,
+    AppRoute.DiscussionHistory.route to BottomNavItem.My,
+    AppRoute.ContentActivity.route to BottomNavItem.My,
+    AppRoute.PhilosopherType.route to BottomNavItem.My,
+    AppRoute.NoticeEvent.route to BottomNavItem.My,
+    AppRoute.Setting.route to BottomNavItem.My,
+    AppRoute.MyClass.route to BottomNavItem.Class,
+    AppRoute.ClassDetail.route to BottomNavItem.Class,
+    AppRoute.ClassMember.route to BottomNavItem.Class,
+    AppRoute.ClassResult.route to BottomNavItem.Class,
+    AppRoute.ClassMyOpinion.route to BottomNavItem.Class
 )
 
 private val entryPathBottomBarRoutes = setOf(
@@ -36,9 +38,8 @@ fun NavController.navigateToTab(item: BottomNavItem) {
     if (!popUpToTabScreen()) {
         navigate(BottomNavItem.Home.route) { popUpTo(0) }
     }
-    val currentTabEntry = currentTabEntry() ?: return
-    if (BottomNavItem.fromRoute(currentTabEntry.destination.route) == item) {
-        popUpToEntry(currentTabEntry)
+    if (currentBackStackEntry?.tab() == item) {
+        popBackStack(item.destinationRoute, inclusive = false)
     } else {
         navigate(item.route) {
             popUpTo(BottomNavItem.Home.route) { saveState = true }
@@ -48,23 +49,21 @@ fun NavController.navigateToTab(item: BottomNavItem) {
     }
 }
 
-@SuppressLint("RestrictedApi")
 fun NavController.popUpToTabScreen(): Boolean {
-    val backStack = currentBackStack.value
-    val targetIndex = backStack.indices.lastOrNull { index ->
-        showsBottomBarAt(backStack, index) || BottomNavItem.fromRoute(backStack[index].destination.route) != null
-    } ?: return false
-    return popUpToEntry(backStack[targetIndex])
+    if (runCatching { getBackStackEntry(BottomNavItem.Home.route) }.isFailure) return false
+    while (currentBackStackEntry?.tab() == null) {
+        if (!popBackStack()) return false
+    }
+    return true
 }
 
 @Composable
 fun TabScreen(
-    navController: NavController,
     backStackEntry: NavBackStackEntry,
     onTabClick: (BottomNavItem) -> Unit,
     content: @Composable (Modifier) -> Unit
 ) {
-    val selectedTab = remember(backStackEntry.id) { navController.bottomBarTab(backStackEntry) }
+    val selectedTab = remember(backStackEntry.id) { backStackEntry.bottomBarTab() }
 
     if (selectedTab != null) {
         PickeTabScaffold(
@@ -78,29 +77,15 @@ fun TabScreen(
     }
 }
 
-@SuppressLint("RestrictedApi")
-private fun NavController.currentTabEntry(): NavBackStackEntry? =
-    currentBackStack.value.lastOrNull { BottomNavItem.fromRoute(it.destination.route) != null }
+private val BottomNavItem.destinationRoute: String
+    get() = if (this == BottomNavItem.TodayBattle) AppRoute.TodayBattle.route else route
 
-@SuppressLint("RestrictedApi")
-private fun NavController.bottomBarTab(entry: NavBackStackEntry): BottomNavItem? {
-    val backStack = currentBackStack.value
-    val index = backStack.indexOfFirst { it.id == entry.id }
-    if (index < 0 || !showsBottomBarAt(backStack, index)) return null
-    return backStack.subList(0, index + 1).asReversed()
-        .firstNotNullOfOrNull { BottomNavItem.fromRoute(it.destination.route) }
+private fun NavBackStackEntry.tab(): BottomNavItem? =
+    bottomBarTab() ?: BottomNavItem.fromRoute(destination.route)
+
+private fun NavBackStackEntry.bottomBarTab(): BottomNavItem? {
+    val route = destination.route
+    val showsBottomBar = route !in entryPathBottomBarRoutes ||
+        arguments?.getBoolean(AppRoute.ARG_SHOWS_BOTTOM_BAR) == true
+    return bottomBarTabByRoute[route]?.takeIf { showsBottomBar }
 }
-
-private fun NavController.popUpToEntry(entry: NavBackStackEntry): Boolean {
-    while (currentBackStackEntry?.id != entry.id) {
-        if (!popBackStack()) return false
-    }
-    return true
-}
-
-private fun showsBottomBarAt(backStack: List<NavBackStackEntry>, index: Int): Boolean =
-    when (backStack[index].destination.route) {
-        in alwaysBottomBarRoutes -> true
-        in entryPathBottomBarRoutes -> index > 0 && showsBottomBarAt(backStack, index - 1)
-        else -> false
-    }

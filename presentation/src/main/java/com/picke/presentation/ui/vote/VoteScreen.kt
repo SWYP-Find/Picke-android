@@ -17,14 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +40,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,24 +54,30 @@ import com.picke.presentation.share.loadBitmapFromUrl
 import com.picke.presentation.share.shareBattleToInstagramStoryBrightMode
 import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
 import com.picke.presentation.share.shareBattleToKakao
-import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
+import com.picke.presentation.ui.vote.component.VoteBattleNotFound
 import com.picke.presentation.ui.vote.component.VoteCommentCountBadge
+import com.picke.presentation.ui.vote.component.VoteDeadlineRow
 import com.picke.presentation.ui.vote.component.VoteOptionCard
 import com.picke.presentation.ui.vote.component.VoteSkeleton
+import com.picke.presentation.ui.vote.component.VoteTagChip
+import com.picke.presentation.ui.vote.component.VoteVersusBadge
 import com.picke.presentation.ui.vote.model.BattleDetailUiModel
+import com.picke.presentation.ui.vote.model.BattleInfoUiModel
+import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.ui.vote.model.VoteClassInfoUiModel
-import com.picke.presentation.ui.vote.model.VoteUiEvent
-import com.picke.presentation.ui.vote.model.voteScreenStyle
+import com.picke.presentation.ui.vote.model.VoteScreenStyle
 import com.picke.presentation.ui.vote.model.VoteType
+import com.picke.presentation.ui.vote.model.VoteUiEvent
 import com.picke.presentation.ui.vote.model.VoteUiState
+import com.picke.presentation.ui.vote.model.voteScreenStyle
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.launch
 
@@ -145,7 +145,7 @@ fun VoteScreen(
                 }
             )
         } else {
-            BattleNotFoundScreen(onBackClick = onBackClick)
+            VoteBattleNotFound(onBackClick = onBackClick)
         }
     }
 }
@@ -267,30 +267,18 @@ fun VoteContent(
                 }
             },
             bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    PickeButton(
-                        text = stringResource(style.submitTextRes),
-                        onClick = {
-                            selectedOptionId?.let { optionId ->
-                                onSubmitVote(optionId) {
-                                    onVoteSubmit(battleInfo.battleId)
-                                }
+                VoteBottomSection(
+                    submitText = stringResource(style.submitTextRes),
+                    isSubmitEnabled = selectedOptionId != null && !isRequesting,
+                    deadlineText = style.deadlineText,
+                    onSubmitClick = {
+                        selectedOptionId?.let { optionId ->
+                            onSubmitVote(optionId) {
+                                onVoteSubmit(battleInfo.battleId)
                             }
-                        },
-                        enabled = selectedOptionId != null && !isRequesting,
-                        disabledBackgroundColor = PickeTheme.colors.primary300,
-                        textColor = PickeTheme.colors.surfaceBeigeDefault
-                    )
-                    if (style.deadlineText != null) {
-                        VoteDeadlineRow(deadlineText = style.deadlineText)
+                        }
                     }
-                }
+                )
             }
         ) { innerPadding ->
             Column(
@@ -307,146 +295,23 @@ fun VoteContent(
                         }
                     }
             ) {
-                Box(
+                VoteBattleInfoSection(
+                    battleInfo = battleInfo,
+                    description = battleDetail.description,
+                    style = style,
+                    isPreVote = isPreVote,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                ) {
-                    SubcomposeAsyncImage(
-                        model = battleInfo.thumbnailUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Black.copy(alpha = 0.3f),
-                                                Color.Transparent,
-                                                style.containerColor
-                                            ),
-                                            startY = 0f,
-                                            endY = size.height
-                                        )
-                                    )
-                                }
-                            },
-                        contentScale = ContentScale.Crop,
-                        loading = {
-                            Spacer(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .shimmer(
-                                        baseColor = if (isPreVote) null else PickeTheme.colors.gray600,
-                                        highlightColor = if (isPreVote) null else PickeTheme.colors.gray400
-                                    )
-                            )
-                        }
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomStart)
-                            .padding(horizontal = 20.dp)
-                            .padding(bottom = 16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                battleInfo.tags.forEach { tag ->
-                                    Surface(
-                                        color = Color.White.copy(alpha = 0.8f),
-                                        shape = RoundedCornerShape(2.dp)
-                                    ) {
-                                        Text(
-                                            text = "#${tag.name}",
-                                            modifier = Modifier.padding(
-                                                horizontal = 8.dp,
-                                                vertical = 2.dp
-                                            ),
-                                            style = PickeTheme.typography.captionLgMedium,
-                                            color = PickeTheme.colors.primary500
-                                        )
-                                    }
-                                }
-                            }
-                            if (style.commentCount != null) {
-                                VoteCommentCountBadge(count = style.commentCount)
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = battleInfo.title.replace(", ", ",\n"),
-                            style = PickeTheme.typography.displayMd,
-                            color = style.titleColor
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = battleDetail.description,
-                            style = PickeTheme.typography.bodySmRegular,
-                            color = style.descriptionColor
-                        )
-                    }
-                }
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Max),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        if (battleInfo.options.size >= 2) {
-                            VoteOptionCard(
-                                modifier = Modifier
-                                    .weight(0.5f)
-                                    .fillMaxHeight(),
-                                option = battleInfo.options[0],
-                                isSelected = selectedOptionId == battleInfo.options[0].optionId,
-                                onClick = { selectedOptionId = battleInfo.options[0].optionId },
-                                isImageVisible = style.isOptionImageVisible
-                            )
-                            VoteOptionCard(
-                                modifier = Modifier
-                                    .weight(0.5f)
-                                    .fillMaxHeight(),
-                                option = battleInfo.options[1],
-                                isSelected = selectedOptionId == battleInfo.options[1].optionId,
-                                onClick = { selectedOptionId = battleInfo.options[1].optionId },
-                                isImageVisible = style.isOptionImageVisible
-                            )
-                        }
-                    }
-
-                    Surface(
-                        modifier = Modifier.size(36.dp),
-                        shape = CircleShape,
-                        color = Color(0xFFF2E3C6)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = "VS",
-                                style = PickeTheme.typography.bodySmMedium,
-                                color = PickeTheme.colors.textDefault
-                            )
-                        }
-                    }
-                }
+                VoteOptionSection(
+                    options = battleInfo.options,
+                    selectedOptionId = selectedOptionId,
+                    isOptionImageVisible = style.isOptionImageVisible,
+                    onOptionSelect = { optionId -> selectedOptionId = optionId }
+                )
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
@@ -467,8 +332,11 @@ fun VoteContent(
                         battleInfo.battleId.toInt(),
                         { url ->
                             coroutineScope.launch {
-                                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
-                                Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT).show()
+                                clipboard.setClipEntry(
+                                    ClipEntry(ClipData.newPlainText(CLIP_LABEL, url))
+                                )
+                                Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT)
+                                    .show()
                                 onTrackShare(ShareChannel.LINK)
                             }
                         },
@@ -509,62 +377,159 @@ fun VoteContent(
 }
 
 @Composable
-private fun VoteDeadlineRow(
-    deadlineText: String,
+private fun VoteBottomSection(
+    submitText: String,
+    isSubmitEnabled: Boolean,
+    deadlineText: String?,
+    onSubmitClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = modifier
+            .navigationBarsPadding()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_clock),
-            contentDescription = null,
-            modifier = Modifier.size(ComponentNumberTokens.iconSm),
-            tint = PickeTheme.colors.cardBaseTextDecription
+        PickeButton(
+            text = submitText,
+            onClick = onSubmitClick,
+            enabled = isSubmitEnabled,
+            disabledBackgroundColor = PickeTheme.colors.primary300,
+            textColor = PickeTheme.colors.surfaceBeigeDefault
         )
-        Text(
-            text = deadlineText,
-            color = PickeTheme.colors.cardBaseTextDecription,
-            style = PickeTheme.typography.bodyXsRegular
-        )
+        if (deadlineText != null) {
+            VoteDeadlineRow(deadlineText = deadlineText)
+        }
     }
 }
 
 @Composable
-private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
-    Scaffold(
-        containerColor = PickeTheme.colors.backgroundBeige,
-        contentWindowInsets = WindowInsets(0.dp),
-        topBar = {
-            Box(modifier = Modifier.statusBarsPadding()) {
-                PickeTopAppBar(
-                    onBackClick = onBackClick,
-                    backgroundColor = PickeTheme.colors.backgroundBeige
+private fun VoteBattleInfoSection(
+    battleInfo: BattleInfoUiModel,
+    description: String,
+    style: VoteScreenStyle,
+    isPreVote: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        SubcomposeAsyncImage(
+            model = battleInfo.thumbnailUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Black.copy(alpha = 0.3f),
+                                    Color.Transparent,
+                                    style.containerColor
+                                ),
+                                startY = 0f,
+                                endY = size.height
+                            )
+                        )
+                    }
+                },
+            contentScale = ContentScale.Crop,
+            loading = {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .shimmer(
+                            baseColor = if (isPreVote) null else PickeTheme.colors.gray600,
+                            highlightColor = if (isPreVote) null else PickeTheme.colors.gray400
+                        )
+                )
+            }
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomStart)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 16.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    battleInfo.tags.forEach { tag ->
+                        VoteTagChip(name = tag.name)
+                    }
+                }
+                if (style.commentCount != null) {
+                    VoteCommentCountBadge(count = style.commentCount)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = battleInfo.title.replace(", ", ",\n"),
+                color = style.titleColor,
+                style = PickeTheme.typography.displayMd
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = description,
+                color = style.descriptionColor,
+                style = PickeTheme.typography.bodySmRegular
+            )
+        }
+    }
+}
+
+@Composable
+private fun VoteOptionSection(
+    options: List<BattleOptionUiModel>,
+    selectedOptionId: String?,
+    isOptionImageVisible: Boolean,
+    onOptionSelect: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Max),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (options.size >= 2) {
+                VoteOptionCard(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .fillMaxHeight(),
+                    option = options[0],
+                    isSelected = selectedOptionId == options[0].optionId,
+                    onClick = { onOptionSelect(options[0].optionId) },
+                    isImageVisible = isOptionImageVisible
+                )
+                VoteOptionCard(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .fillMaxHeight(),
+                    option = options[1],
+                    isSelected = selectedOptionId == options[1].optionId,
+                    onClick = { onOptionSelect(options[1].optionId) },
+                    isImageVisible = isOptionImageVisible
                 )
             }
         }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.logo_picke),
-                contentDescription = "빈 화면 로고",
-                modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                tint = PickeTheme.colors.borderBeigeDefault
-            )
-            Text(
-                text = "해당 배틀은 존재하지 않습니다",
-                style = PickeTheme.typography.bodySmRegular,
-                color = PickeTheme.colors.beige800
-            )
-        }
+
+        VoteVersusBadge()
     }
 }
 

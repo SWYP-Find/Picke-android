@@ -510,21 +510,21 @@ private fun VoteOptionSection(
         ) {
             if (options.size >= 2) {
                 VoteOptionCard(
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .fillMaxHeight(),
                     option = options[0],
                     isSelected = selectedOptionId == options[0].optionId,
                     onClick = { onOptionSelect(options[0].optionId) },
-                    isImageVisible = isOptionImageVisible
-                )
-                VoteOptionCard(
                     modifier = Modifier
                         .weight(0.5f)
                         .fillMaxHeight(),
+                    isImageVisible = isOptionImageVisible
+                )
+                VoteOptionCard(
                     option = options[1],
                     isSelected = selectedOptionId == options[1].optionId,
                     onClick = { onOptionSelect(options[1].optionId) },
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .fillMaxHeight(),
                     isImageVisible = isOptionImageVisible
                 )
             }

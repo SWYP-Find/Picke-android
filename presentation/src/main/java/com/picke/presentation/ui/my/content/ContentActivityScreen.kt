@@ -40,9 +40,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeIconCount
+import com.picke.presentation.ui.component.PickeTabBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.my.content.model.ContentActivityUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
@@ -77,7 +77,7 @@ fun ContentActivityScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_menu_content),
                 centerTitle = true,
                 showLogo = false,
@@ -92,7 +92,7 @@ fun ContentActivityScreen(
                 .fillMaxSize()
         ) {
             // 탭바
-            CustomTabBar(
+            PickeTabBar(
                 tabs = tabs,
                 selectedTab = tabs[pagerState.currentPage],
                 onTabSelected = { selectedTab ->
@@ -201,7 +201,7 @@ fun ContentActivityCard(
         ) {
             // 프로필 이미지
             ProfileImage(
-                model = item.author.characterImageUrl,
+                imageUrl = item.author.characterImageUrl,
                 size = 36.dp
             )
 

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.my.ticket.component.TicketHeadline
 import com.picke.presentation.ui.my.ticket.ticketregister.component.TicketCodeField
 import com.picke.presentation.ui.my.ticket.ticketregister.component.TicketCodeGuideItem
@@ -26,13 +26,6 @@ internal fun TicketRegisterCodeStep(
     modifier: Modifier = Modifier,
     initiallyExpandedGuides: Boolean = false
 ) {
-    // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
-    val buttonBackgroundColor = if (isCodeCheckEnabled) {
-        PickeTheme.colors.buttonPrimaryBackgroundDefault
-    } else {
-        PickeTheme.colors.buttonPrimaryBackgroundDisabled
-    }
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s40)
@@ -58,11 +51,10 @@ internal fun TicketRegisterCodeStep(
             }
         }
 
-        CustomButton(
+        // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
+        PickeButton(
             text = stringResource(R.string.ticket_register_code_check),
             onClick = onCodeCheckClick,
-            backgroundColor = buttonBackgroundColor,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = isCodeCheckEnabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.onboarding.component.FirstOnboardingCard
 import com.picke.presentation.ui.onboarding.component.FourthOnboardingCard
 import com.picke.presentation.ui.onboarding.component.SecondOnboardingCard
@@ -85,11 +85,9 @@ fun OnboardingScreen(onNavigateToLogin: () -> Unit) {
                 }
             }
 
-            CustomButton(
+            PickeButton(
                 text = stringResource(R.string.onboarding_start),
-                onClick = onNavigateToLogin,
-                backgroundColor = PickeTheme.colors.primary500,
-                textColor = Color.White
+                onClick = onNavigateToLogin
             )
         }
     }

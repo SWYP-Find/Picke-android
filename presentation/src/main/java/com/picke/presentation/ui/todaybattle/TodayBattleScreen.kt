@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.todaybattle
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -28,7 +29,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,22 +43,28 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
-import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.share.captureBitmap
+import com.picke.presentation.share.launchBitmapShare
+import com.picke.presentation.share.loadBitmapFromUrl
+import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
+import com.picke.presentation.share.shareBattleToKakao
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
@@ -71,11 +77,9 @@ import com.picke.presentation.ui.todaybattle.component.TopIndicatorBar
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiModel
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.util.DummyData
-import com.picke.presentation.util.captureBitmap
-import com.picke.presentation.util.launchBitmapShare
-import com.picke.presentation.util.loadBitmapFromUrl
-import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
-import com.picke.presentation.util.shareBattleToKakao
+import kotlinx.coroutines.launch
+
+private const val CLIP_LABEL = "battle_link"
 
 private object TodayBattleScreenDimens {
     val tagMinHeight = 20.dp
@@ -92,9 +96,14 @@ fun TodayBattleScreen(
     onNavigateToScenario: (String) -> Unit,
     onNavigateToPerspective: (String) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
-    val uiState by viewModel.uiState.collectAsState()
+    val clipboard = LocalClipboard.current
+
+    val linkCopiedMessage = stringResource(R.string.share_link_copied)
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -118,9 +127,11 @@ fun TodayBattleScreen(
             viewModel.getShareLink(
                 battleId = currentBattleId,
                 onSuccess = { url ->
-                    clipboardManager.setText(AnnotatedString(url))
-                    Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
-                    viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
+                        Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT).show()
+                        viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    }
                 },
                 onError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
@@ -141,6 +152,10 @@ fun TodayBattleScreen(
     onTrackShareAction: (String, String) -> Unit
 ) {
     val context = LocalContext.current
+
+    val imageLoadFailedMessage = stringResource(R.string.share_image_load_failed)
+    val shareFailedMessage = stringResource(R.string.share_failed)
+    val captureFailedMessage = stringResource(R.string.share_capture_failed)
 
     val battleList = uiState.battleList
 
@@ -173,11 +188,11 @@ fun TodayBattleScreen(
                 },
                 onBitmapMissing = {
                     isSharing = false
-                    Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, imageLoadFailedMessage, Toast.LENGTH_SHORT).show()
                 },
                 onError = {
                     isSharing = false
-                    Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, shareFailedMessage, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -197,7 +212,7 @@ fun TodayBattleScreen(
             },
             onError = {
                 isSharing = false
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -218,7 +233,7 @@ fun TodayBattleScreen(
             TodayBattleSkeleton(modifier = Modifier.fillMaxSize())
 
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     onBackClick = onBackClick,
                     backgroundColor = Color.Transparent,
                     backIconColor = PickeTheme.colors.textInverse
@@ -236,7 +251,7 @@ fun TodayBattleScreen(
                 .background(Color.Black)
         ) {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     onBackClick = onBackClick,
                     backgroundColor = Color.Transparent,
                     backIconColor = PickeTheme.colors.textInverse
@@ -271,13 +286,11 @@ fun TodayBattleScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Black,
             bottomBar = {
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.battle_start),
                     onClick = {
-                        if (isButtonEnabled) {
-                            val currentBattleId = battleList[pagerState.currentPage].battleId
-                            onEnterBattle(currentBattleId, selectedOptionId)
-                        }
+                        val currentBattleId = battleList[pagerState.currentPage].battleId
+                        onEnterBattle(currentBattleId, selectedOptionId)
                     },
                     modifier = Modifier
                         .navigationBarsPadding()
@@ -287,8 +300,8 @@ fun TodayBattleScreen(
                             end = SpacingTokens.s16,
                             bottom = SpacingTokens.s20
                         ),
-                    backgroundColor = if (isButtonEnabled) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = PickeTheme.colors.textInverse
+                    enabled = isButtonEnabled,
+                    disabledBackgroundColor = PickeTheme.colors.primary300
                 )
             }
         ) { innerPadding ->
@@ -337,12 +350,12 @@ fun TodayBattleScreen(
                         }
                     }
 
-                    CustomTopAppBar(
+                    PickeTopAppBar(
                         onBackClick = onBackClick,
                         backgroundColor = Color.Transparent,
                         backIconColor = PickeTheme.colors.textInverse,
                         actions = {
-                            CustomTopAppBarAction(
+                            PickeTopAppBarAction(
                                 iconRes = R.drawable.ic_share,
                                 contentDescription = stringResource(R.string.top_app_bar_share),
                                 onClick = { showShareDialog = true },

@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 
 // AlarmCategoryHeader/AlarmSettingItem과 동일한 padding 값을 그대로 써서
@@ -35,7 +35,7 @@ fun SettingAlarmSkeleton(modifier: Modifier = Modifier) {
 
 @Composable
 private fun CategoryHeaderSkeleton() {
-    SkeletonLine(
+    PickeSkeletonLine(
         width = 90.dp,
         height = 14.dp,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
@@ -52,9 +52,9 @@ private fun AlarmSettingItemSkeleton() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            SkeletonLine(width = 140.dp, height = 16.dp)
+            PickeSkeletonLine(width = 140.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 200.dp, height = 12.dp)
+            PickeSkeletonLine(width = 200.dp, height = 12.dp)
         }
         Spacer(modifier = Modifier.width(16.dp))
         Spacer(

@@ -53,7 +53,7 @@ fun VoteOptionCard(
     ) {
         if (isImageVisible) {
             ProfileImage(
-                model = option.imageUrl,
+                imageUrl = option.imageUrl,
                 size = 40.dp
             )
             Spacer(modifier = Modifier.height(16.dp))

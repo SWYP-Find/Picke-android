@@ -28,11 +28,11 @@ data class AttendanceCheckResponseDto(
 
 fun AttendanceCheckResponseDto.toDomain(): AttendanceBoard {
     return AttendanceBoard(
-        pointsEarned = this.pointsEarned,
-        streakBonusEarned = this.streakBonusEarned,
-        streakBonusPoints = this.streakBonusPoints,
-        consecutiveDays = this.consecutiveDays,
-        totalPoints = this.totalPoints
+        pointsEarned = pointsEarned,
+        streakBonusEarned = streakBonusEarned,
+        streakBonusPoints = streakBonusPoints,
+        consecutiveDays = consecutiveDays,
+        totalPoints = totalPoints
     )
 }
 
@@ -67,24 +67,24 @@ data class WeeklyAttendanceDayDto(
 
 fun WeeklyAttendanceResponseDto.toDomain(): WeeklyAttendance {
     return WeeklyAttendance(
-        userTag = this.userTag,
-        weekStartDate = this.weekStartDate,
-        consecutiveDays = this.consecutiveDays,
-        isStreakAchieved = this.isStreakAchieved,
-        days = this.weeklyAttendance.map { it.toDomain() },
-        streakRewardPoints = this.streakRewardPoints
+        userTag = userTag,
+        weekStartDate = weekStartDate,
+        consecutiveDays = consecutiveDays,
+        isStreakAchieved = isStreakAchieved,
+        days = weeklyAttendance.map { it.toDomain() },
+        streakRewardPoints = streakRewardPoints
     )
 }
 
 fun WeeklyAttendanceDayDto.toDomain(): WeeklyAttendanceDay {
     return WeeklyAttendanceDay(
-        day = this.day,
-        date = this.date,
-        status = when (this.status) {
+        day = day,
+        date = date,
+        status = when (status) {
             "ATTENDED" -> WeeklyAttendanceDayStatus.ATTENDED
             "MISSED" -> WeeklyAttendanceDayStatus.MISSED
             else -> WeeklyAttendanceDayStatus.UPCOMING
         },
-        points = this.points
+        points = points
     )
 }

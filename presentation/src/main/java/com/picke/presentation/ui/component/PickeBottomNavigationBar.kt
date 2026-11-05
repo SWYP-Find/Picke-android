@@ -31,7 +31,7 @@ private val bottomNavItems = listOf(
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun CustomBottomNavigationBar(
+fun PickeBottomNavigationBar(
     mainNavController: NavController,
     onRootTabClick: (BottomNavItem) -> Unit,
     onTabClick: (BottomNavItem) -> Unit = {},
@@ -47,7 +47,7 @@ fun CustomBottomNavigationBar(
         }?.destination?.route
     }
 
-    CustomBottomNavigationBar(
+    PickeBottomNavigationBar(
         selectedRoute = activeTabRoute,
         onItemClick = { item ->
             onTabClick(item)
@@ -80,7 +80,7 @@ fun CustomBottomNavigationBar(
 }
 
 @Composable
-fun CustomBottomNavigationBar(
+fun PickeBottomNavigationBar(
     selectedRoute: String?,
     onItemClick: (BottomNavItem) -> Unit,
     modifier: Modifier = Modifier
@@ -120,9 +120,9 @@ fun CustomBottomNavigationBar(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomBottomNavigationBarPreview() {
+fun PickeBottomNavigationBarPreview() {
     PickeTheme {
-        CustomBottomNavigationBar(
+        PickeBottomNavigationBar(
             selectedRoute = BottomNavItem.Home.route,
             onItemClick = {}
         )

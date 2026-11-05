@@ -67,49 +67,49 @@ data class CommentLikeToggleResponseDto(
 
 // 좋아요 Mapper
 fun CommentLikeToggleResponseDto.toDomainModel() = CommentLikeToggleBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false
+    perspectiveId = perspectiveId ?: 0L,
+    likeCount = likeCount ?: 0,
+    isLiked = isLiked ?: false
 )
 
 // DTO -> Domain
 fun CommentUserDto.toDomainModel() = CommentUserBoard(
-    userTag = this.userTag ?: "",
-    nickname = this.nickname ?: "알 수 없음",
-    characterType = this.characterType ?: "UNKNOWN",
-    characterImageUrl = this.characterImageUrl ?: ""
+    userTag = userTag ?: "",
+    nickname = nickname ?: "알 수 없음",
+    characterType = characterType ?: "UNKNOWN",
+    characterImageUrl = characterImageUrl ?: ""
 )
 
 fun CommentDto.toDomainModel() = CommentBoard(
-    commentId = this.commentId ?: 0L,
-    user = this.user?.toDomainModel() ?: CommentUserBoard("", "알 수 없음", "UNKNOWN", ""),
-    stance = this.stance ?: "",
-    content = this.content ?: "",
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false,
-    isMine = this.isMine ?: false,
-    createdAt = this.createdAt ?: ""
+    commentId = commentId ?: 0L,
+    user = user?.toDomainModel() ?: CommentUserBoard("", "알 수 없음", "UNKNOWN", ""),
+    stance = stance ?: "",
+    content = content ?: "",
+    likeCount = likeCount ?: 0,
+    isLiked = isLiked ?: false,
+    isMine = isMine ?: false,
+    createdAt = createdAt ?: ""
 )
 
 fun CommentListResponseDto.toDomainModel() = CommentPageBoard(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextCursor = this.nextCursor,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextCursor = nextCursor,
+    hasNext = hasNext ?: false
 )
 
 fun CommentCreateResponseDto.toDomainModel() = CommentCreateBoard(
-    commentId = this.commentId ?: 0L,
-    user = this.user?.toDomainModel() ?: CommentUserBoard("", "알 수 없음", "UNKNOWN", ""),
-    stance = this.stance ?: "",
-    content = this.content ?: "",
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false,
-    isMine = this.isMine ?: false,
-    createdAt = this.createdAt ?: ""
+    commentId = commentId ?: 0L,
+    user = user?.toDomainModel() ?: CommentUserBoard("", "알 수 없음", "UNKNOWN", ""),
+    stance = stance ?: "",
+    content = content ?: "",
+    likeCount = likeCount ?: 0,
+    isLiked = isLiked ?: false,
+    isMine = isMine ?: false,
+    createdAt = createdAt ?: ""
 )
 
 fun CommentUpdateResponseDto.toDomainModel() = CommentUpdateBoard(
-    commentId = this.commentId ?: 0L,
-    content = this.content ?: "",
-    updatedAt = this.updatedAt ?: ""
+    commentId = commentId ?: 0L,
+    content = content ?: "",
+    updatedAt = updatedAt ?: ""
 )

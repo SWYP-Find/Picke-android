@@ -27,7 +27,7 @@ import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPersp
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -75,7 +75,7 @@ private fun ClassMyOpinionContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.class_my_opinion_title),
             onBackClick = { onAction(ClassMyOpinionUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,

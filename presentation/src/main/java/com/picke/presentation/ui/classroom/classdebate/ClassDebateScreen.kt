@@ -53,11 +53,11 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.component.ChatBubble
-import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomTextField
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeChatSkeleton
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.PickeTextField
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -130,7 +130,7 @@ private fun ClassDebateContent(
                 modifier = Modifier.statusBarsPadding(),
                 verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
             ) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.battleTitle,
                     centerTitle = false,
                     onBackClick = { onAction(ClassDebateUiAction.BackClick) },
@@ -179,7 +179,7 @@ private fun ClassDebateContent(
     }
 
     if (uiState.isFinalVoteDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_debate_final_vote_dialog_message),
             onConfirm = { onAction(ClassDebateUiAction.FinalVoteDialogReplayClick) },
             onDismiss = { onAction(ClassDebateUiAction.FinalVoteDialogVoteClick) },
@@ -373,7 +373,7 @@ private fun ClassDebateComposerSection(
             horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomTextField(
+            PickeTextField(
                 value = input,
                 onValueChange = onInputChange,
                 minHeight = ComponentNumberTokens.inputTextfieldHeight,
@@ -411,11 +411,9 @@ private fun ClassDebateFinalVoteSection(
             .navigationBarsPadding()
             .padding(SpacingTokens.s16)
     ) {
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_debate_final_vote),
             onClick = onFinalVoteClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

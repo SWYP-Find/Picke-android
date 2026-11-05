@@ -27,9 +27,9 @@ import com.picke.presentation.ui.classroom.classmember.component.ClassNameSheet
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiAction
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiEvent
 import com.picke.presentation.ui.classroom.classmember.model.ClassMemberUiState
-import com.picke.presentation.ui.component.CustomTextField
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.PickeTextField
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -91,7 +91,7 @@ private fun ClassMemberContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.class_detail_member),
             onBackClick = { onAction(ClassMemberUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -160,7 +160,7 @@ private fun ClassMemberContent(
     }
 
     uiState.removingMember?.let { member ->
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_member_remove_confirm, member.name),
             onConfirm = { onAction(ClassMemberUiAction.RemoveConfirm) },
             onDismiss = { onAction(ClassMemberUiAction.RemoveDialogDismiss) },
@@ -175,7 +175,7 @@ private fun ClassMemberSearchSection(
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CustomTextField(
+    PickeTextField(
         value = query,
         onValueChange = onQueryChange,
         minHeight = ComponentNumberTokens.inputTextfieldHeight,

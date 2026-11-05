@@ -253,7 +253,7 @@ private fun ClassBattleOptionBox(
     ) {
         if (showsAvatar) {
             ProfileImage(
-                model = option.imageUrl,
+                imageUrl = option.imageUrl,
                 size = ComponentNumberTokens.avatarMd
             )
         }

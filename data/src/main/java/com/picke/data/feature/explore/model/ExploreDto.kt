@@ -31,24 +31,24 @@ data class ExplorePageResponseDto(
 
 // DTO -> Domain
 fun ExploreTagDto.toDomainModel() = ExploreTagBoard(
-    tagId = this.tagId ?: 0L,
-    name = this.name ?: "",
-    type = this.type ?: ""
+    tagId = tagId ?: 0L,
+    name = name ?: "",
+    type = type ?: ""
 )
 
 fun ExploreItemDto.toDomainModel() = ExploreItemBoard(
-    battleId = this.battleId ?: 0L,
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    type = this.type ?: "BATTLE",
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    tags = this.tags?.map { it.toDomainModel() } ?: emptyList(),
-    audioDuration = this.audioDuration ?: 0,
-    viewCount = this.viewCount ?: 0
+    battleId = battleId ?: 0L,
+    thumbnailUrl = thumbnailUrl ?: "",
+    type = type ?: "BATTLE",
+    title = title ?: "",
+    summary = summary ?: "",
+    tags = tags?.map { it.toDomainModel() } ?: emptyList(),
+    audioDuration = audioDuration ?: 0,
+    viewCount = viewCount ?: 0
 )
 
 fun ExplorePageResponseDto.toDomainModel() = ExplorePageBoard(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextOffset = this.nextOffset,
-    hasNext = this.hasNext ?: false
+    items = items?.map { it.toDomainModel() } ?: emptyList(),
+    nextOffset = nextOffset,
+    hasNext = hasNext ?: false
 )

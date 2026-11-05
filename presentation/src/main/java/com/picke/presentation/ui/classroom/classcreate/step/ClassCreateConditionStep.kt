@@ -17,7 +17,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
-import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -41,7 +41,7 @@ internal fun ClassCreateConditionStep(
             isRequired = uiState.isTopicRequired
         ) {
             Column {
-                CustomTextField(
+                PickeTextField(
                     value = uiState.topic,
                     onValueChange = onTopicChange,
                     minHeight = ComponentNumberTokens.inputTextfieldHeight,

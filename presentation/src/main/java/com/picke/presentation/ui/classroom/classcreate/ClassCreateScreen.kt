@@ -44,8 +44,8 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelection
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
@@ -105,7 +105,7 @@ private fun ClassCreateContent(
             .background(PickeTheme.colors.backgroundBeige)
             .systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(uiState.step.titleRes()),
                 onBackClick = { onAction(ClassCreateUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -238,7 +238,7 @@ private fun ClassCreateContent(
     val errorDialog = uiState.errorDialog
     if (errorDialog != null) {
         val message = uiState.clarificationMessage ?: stringResource(errorDialog.messageRes())
-        CustomSingleActionDialog(
+        PickeSingleActionDialog(
             message = message,
             buttonText = stringResource(R.string.dialog_ok),
             onConfirm = { onAction(ClassCreateUiAction.ErrorDialogDismiss) },

@@ -43,9 +43,9 @@ import com.picke.presentation.ui.comment.component.CommentSkeleton
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
 import com.picke.presentation.ui.component.PickeCommentInput
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
 import com.picke.presentation.ui.component.dialog.ReportReason
 import com.picke.presentation.ui.theme.PickeTheme
@@ -249,7 +249,7 @@ private fun CommentContent(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = stringResource(R.string.comment_reply_title),
                     centerTitle = true,
                     showLogo = false,
@@ -340,7 +340,7 @@ private fun CommentContent(
         }
 
         if (commentToDelete != null) {
-            CustomConfirmDialog(
+            PickeConfirmDialog(
                 message = stringResource(R.string.comment_reply_delete_message),
                 onConfirm = onConfirmDelete,
                 onDismiss = onDismissDelete,
@@ -349,7 +349,7 @@ private fun CommentContent(
         }
 
         if (isMainDeleteDialogVisible) {
-            CustomConfirmDialog(
+            PickeConfirmDialog(
                 message = stringResource(R.string.comment_perspective_delete_message),
                 onConfirm = onConfirmDeleteMainPerspective,
                 onDismiss = onDismissDeleteMainPerspective,

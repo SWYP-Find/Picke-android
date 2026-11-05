@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,20 +23,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
 
-private object CustomButtonDimens {
+private object PickeButtonDimens {
     val minHeight = 48.dp
 }
 
 @Composable
-fun CustomButton(
+fun PickeButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color,
-    textColor: Color,
-    iconResId: Int? = null,
     enabled: Boolean = true,
-    minHeight: Dp = CustomButtonDimens.minHeight
+    backgroundColor: Color = PickeTheme.colors.buttonPrimaryBackgroundDefault,
+    disabledBackgroundColor: Color = PickeTheme.colors.buttonPrimaryBackgroundDisabled,
+    textColor: Color = PickeTheme.colors.buttonPrimaryTextDefault,
+    @DrawableRes iconResId: Int? = null,
+    minHeight: Dp = PickeButtonDimens.minHeight
 ) {
     Button(
         onClick = onClick,
@@ -46,7 +48,7 @@ fun CustomButton(
         shape = RoundedCornerShape(2.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
-            disabledContainerColor = backgroundColor
+            disabledContainerColor = disabledBackgroundColor
         )
     ) {
         Row(
@@ -73,13 +75,11 @@ fun CustomButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomButtonPreview() {
+private fun PickeButtonPreview() {
     PickeTheme {
-        CustomButton(
+        PickeButton(
             text = "새 클래스 만들기",
-            onClick = {},
-            backgroundColor = PickeTheme.colors.textInverse,
-            textColor = PickeTheme.colors.textDefault
+            onClick = {}
         )
     }
 }

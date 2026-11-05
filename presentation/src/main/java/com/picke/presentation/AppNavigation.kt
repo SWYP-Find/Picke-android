@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -60,7 +60,7 @@ import com.picke.presentation.ui.splash.SplashViewModel
 import com.picke.presentation.ui.splash.model.SplashUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.todaybattle.TodayBattleScreen
-import com.picke.presentation.ui.vote.VoteRoute
+import com.picke.presentation.ui.vote.VoteScreen
 import com.picke.presentation.ui.vote.model.VoteType
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -72,7 +72,7 @@ fun AppNavigation(
     deepLinkHandler: DeepLinkHandler
 ) {
     val rootNavController = rememberNavController()
-    val uiState by splashViewModel.uiState.collectAsState()
+    val uiState by splashViewModel.uiState.collectAsStateWithLifecycle()
     val analyticsTracker = rememberAnalyticsTracker()
 
     // §2 화면 enum에 등재된 화면의 screen_view 자동 전송
@@ -360,7 +360,7 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteRoute(
+                VoteScreen(
                     voteType = VoteType.PRE,
                     onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
@@ -402,7 +402,7 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteRoute(
+                VoteScreen(
                     voteType = VoteType.POST,
                     onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onVoteSubmit = { submittedBattleId ->

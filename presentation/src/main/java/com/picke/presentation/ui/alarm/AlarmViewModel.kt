@@ -8,12 +8,12 @@ import com.picke.presentation.analytics.NotificationActionType
 import com.picke.presentation.ui.alarm.model.AlarmUiEvent
 import com.picke.presentation.ui.alarm.model.AlarmUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,8 +27,8 @@ class AlarmViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AlarmUiState())
     val uiState: StateFlow<AlarmUiState> = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<AlarmUiEvent>()
-    val uiEvent: SharedFlow<AlarmUiEvent> = _uiEvent.asSharedFlow()
+    private val _uiEvent = Channel<AlarmUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<AlarmUiEvent> = _uiEvent.receiveAsFlow()
 
     /** notification_action(view_list)은 화면 진입 시 1회만 전송 */
     private var isViewListTracked = false
@@ -83,7 +83,7 @@ class AlarmViewModel @Inject constructor(
                 }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false, isPagingLoading = false) }
-                _uiEvent.emit(AlarmUiEvent.ShowLoadFailedToast)
+                _uiEvent.send(AlarmUiEvent.ShowLoadFailedToast)
             }
         }
     }
@@ -116,7 +116,7 @@ class AlarmViewModel @Inject constructor(
                         )
                     }
                 }.onFailure {
-                    _uiEvent.emit(AlarmUiEvent.ShowActionFailedToast)
+                    _uiEvent.send(AlarmUiEvent.ShowActionFailedToast)
                 }
         }
     }
@@ -138,7 +138,7 @@ class AlarmViewModel @Inject constructor(
                     )
                 }.onFailure {
                     _uiState.update { state -> state.copy(alarmList = previousAlarmList) }
-                    _uiEvent.emit(AlarmUiEvent.ShowReadAllFailedToast)
+                    _uiEvent.send(AlarmUiEvent.ShowReadAllFailedToast)
                 }
         }
     }

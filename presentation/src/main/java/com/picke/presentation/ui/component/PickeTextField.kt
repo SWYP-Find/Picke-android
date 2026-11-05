@@ -29,12 +29,12 @@ import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomTextFieldDimens {
+private object PickeTextFieldDimens {
     val errorBorderWidth = 2.dp
 }
 
 @Composable
-fun CustomTextField(
+fun PickeTextField(
     value: String,
     onValueChange: (String) -> Unit,
     minHeight: Dp,
@@ -49,7 +49,7 @@ fun CustomTextField(
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
     val width =
-        if (isError) CustomTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
+        if (isError) PickeTextFieldDimens.errorBorderWidth else ComponentNumberTokens.borderWidthRegular
     val color =
         if (isError) PickeTheme.colors.borderErrorDefault else PickeTheme.colors.inputTextfieldBorderDefault
     val backgroundColor = if (enabled) {
@@ -104,9 +104,9 @@ fun CustomTextField(
 
 @Preview(name = "기본", showBackground = true)
 @Composable
-private fun CustomTextFieldPreview() {
+private fun PickeTextFieldPreview() {
     PickeTheme {
-        CustomTextField(
+        PickeTextField(
             value = "",
             onValueChange = {},
             minHeight = ComponentNumberTokens.inputTextfieldHeight,
@@ -118,9 +118,9 @@ private fun CustomTextFieldPreview() {
 
 @Preview(name = "오류", showBackground = true)
 @Composable
-private fun CustomTextFieldErrorPreview() {
+private fun PickeTextFieldErrorPreview() {
     PickeTheme {
-        CustomTextField(
+        PickeTextField(
             value = "권동현",
             onValueChange = {},
             minHeight = ComponentNumberTokens.inputTextfieldHeight,
@@ -132,9 +132,9 @@ private fun CustomTextFieldErrorPreview() {
 
 @Preview(name = "비활성", showBackground = true)
 @Composable
-private fun CustomTextFieldDisabledPreview() {
+private fun PickeTextFieldDisabledPreview() {
     PickeTheme {
-        CustomTextField(
+        PickeTextField(
             value = "",
             onValueChange = {},
             minHeight = ComponentNumberTokens.inputTextfieldHeight,

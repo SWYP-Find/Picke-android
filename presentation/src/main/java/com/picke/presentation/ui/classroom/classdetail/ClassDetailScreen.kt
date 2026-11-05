@@ -33,11 +33,11 @@ import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeBadge
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -139,12 +139,12 @@ private fun ClassDetailContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.class_detail_title),
             onBackClick = { onAction(ClassDetailUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,
             actions = {
-                CustomTopAppBarAction(
+                PickeTopAppBarAction(
                     iconRes = R.drawable.ic_more,
                     contentDescription = stringResource(R.string.more),
                     onClick = { onAction(ClassDetailUiAction.MoreClick) }
@@ -202,7 +202,7 @@ private fun ClassDetailContent(
     }
 
     if (uiState.isDeleteDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_delete_confirm),
             onConfirm = { onAction(ClassDetailUiAction.DeleteConfirm) },
             onDismiss = { onAction(ClassDetailUiAction.DeleteDialogDismiss) },
@@ -211,7 +211,7 @@ private fun ClassDetailContent(
     }
 
     if (uiState.isLeaveDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_leave_confirm),
             onConfirm = { onAction(ClassDetailUiAction.LeaveConfirm) },
             onDismiss = { onAction(ClassDetailUiAction.LeaveDialogDismiss) },
@@ -319,18 +319,16 @@ private fun ClassDetailActionSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
     ) {
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_detail_join_battle),
             onClick = onBattleClick,
             backgroundColor = PickeTheme.colors.buttonSecondaryBackgroundDefault,
             textColor = PickeTheme.colors.buttonSecondaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_detail_view_result),
             onClick = onResultClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

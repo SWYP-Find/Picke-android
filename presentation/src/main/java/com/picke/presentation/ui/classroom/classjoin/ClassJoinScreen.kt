@@ -32,8 +32,8 @@ import com.picke.presentation.ui.classroom.classjoin.model.ClassJoinUiState
 import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinCodeStep
 import com.picke.presentation.ui.classroom.classjoin.step.ClassJoinNameStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
@@ -85,7 +85,7 @@ private fun ClassJoinContent(
             .systemBarsPadding()
             .imePadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_join_title),
                 onBackClick = { onAction(ClassJoinUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.surfaceBeigeDefault,
@@ -130,7 +130,7 @@ private fun ClassJoinContent(
 
     val dialog = uiState.dialog
     if (dialog != null) {
-        CustomSingleActionDialog(
+        PickeSingleActionDialog(
             message = stringResource(dialog.messageRes()),
             buttonText = stringResource(R.string.dialog_ok),
             onConfirm = { onAction(ClassJoinUiAction.DialogDismiss) },

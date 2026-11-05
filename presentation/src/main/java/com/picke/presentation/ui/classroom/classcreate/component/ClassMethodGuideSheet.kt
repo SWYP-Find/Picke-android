@@ -31,7 +31,7 @@ import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassMethodGuideUiModel
 import com.picke.presentation.ui.classroom.classcreate.model.toGuideUiModel
 import com.picke.presentation.ui.classroom.component.ClassBottomSheet
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -104,12 +104,10 @@ private fun ClassMethodGuideSheetContent(
             }
         }
 
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_guide_confirm),
             onClick = onConfirmClick,
             modifier = Modifier.padding(top = ClassMethodGuideSheetDimens.contentBottomSpacing),
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

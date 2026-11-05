@@ -70,7 +70,7 @@ fun Modifier.shimmer(
 
 // 스켈레톤에서 텍스트 한 줄 자리를 표시할 때 쓰는 공용 조각.
 @Composable
-fun SkeletonLine(
+fun PickeSkeletonLine(
     width: Dp,
     height: Dp,
     modifier: Modifier = Modifier,
@@ -108,7 +108,7 @@ private fun SkeletonPreview() {
             modifier = Modifier.padding(SpacingTokens.s16),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
-            SkeletonLine(width = 120.dp, height = 16.dp)
+            PickeSkeletonLine(width = 120.dp, height = 16.dp)
             PickeSkeletonBlock(height = 80.dp)
         }
     }

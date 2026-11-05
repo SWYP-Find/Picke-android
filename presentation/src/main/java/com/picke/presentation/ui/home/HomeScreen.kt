@@ -42,7 +42,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +64,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
@@ -73,7 +73,7 @@ import com.picke.presentation.ads.showAdFitTransitionPopupAd
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.ContentSection
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
 import com.picke.presentation.ui.home.component.HomeBestCommentItem
@@ -101,7 +101,7 @@ fun HomeScreen(
     isNotificationSheetPending: Boolean = false
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
@@ -170,7 +170,7 @@ fun HomeScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 showLogo = true,
                 centerTitle = false,
                 backgroundColor = PickeTheme.colors.backgroundBeige,

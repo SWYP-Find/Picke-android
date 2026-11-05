@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -30,11 +30,9 @@ fun TicketBottomAction(
             color = PickeTheme.colors.textMuted,
             style = PickeTheme.typography.bodyXxsRegular
         )
-        CustomButton(
+        PickeButton(
             text = buttonText,
             onClick = onClick,
-            backgroundColor = PickeTheme.colors.buttonPrimaryBackgroundDefault,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

@@ -67,7 +67,7 @@ fun PickeCommentCard(
             ) {
                 // TODO: 토큰 동기화 - color/surface/beige-darker
                 ProfileImage(
-                    model = profileImageUrl,
+                    imageUrl = profileImageUrl,
                     size = ComponentNumberTokens.avatarSm,
                     backgroundColor = PickeTheme.colors.avatarBackround
                 )

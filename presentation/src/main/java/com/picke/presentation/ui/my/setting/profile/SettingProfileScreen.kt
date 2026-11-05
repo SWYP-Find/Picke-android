@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -20,7 +20,7 @@ fun SettingProfileScreen(
         containerColor = PickeTheme.colors.surfaceBeigeDefault,
         modifier = Modifier.systemBarsPadding(),
         topBar={
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_setting_profile),
                 centerTitle = true,
                 showLogo = false,

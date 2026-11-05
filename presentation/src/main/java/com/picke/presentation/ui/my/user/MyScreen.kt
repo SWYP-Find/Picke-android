@@ -44,13 +44,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
-import com.picke.presentation.ui.component.ProfileImageDefaults
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.shimmer
-import com.picke.presentation.ui.my.user.componenet.CreditCard
-import com.picke.presentation.ui.my.user.componenet.MyPageMenuItem
-import com.picke.presentation.ui.my.user.componenet.MySkeleton
+import com.picke.presentation.ui.my.user.component.CreditCard
+import com.picke.presentation.ui.my.user.component.MyPageMenuItem
+import com.picke.presentation.ui.my.user.component.MySkeleton
 import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
 import com.picke.presentation.ui.my.user.model.MyUiEvent
 import com.picke.presentation.ui.my.user.model.MyUiState
@@ -58,10 +58,6 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-
-private object MyScreenDimens {
-    val lockImageSize = 30.dp
-}
 
 @Composable
 fun MyScreen(
@@ -135,7 +131,7 @@ fun MyScreen(
     Scaffold(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 centerTitle = false,
                 actions = {
@@ -255,7 +251,7 @@ fun MyScreen(
 fun ProfileSection(
     nickname: String,
     userHandle: String,
-    profileImage: Any?
+    profileImage: String?
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -264,7 +260,7 @@ fun ProfileSection(
     ) {
         // TODO: 토큰 동기화 - color/surface/beige-darker
         ProfileImage(
-            model = profileImage,
+            imageUrl = profileImage,
             size = 52.dp,
             backgroundColor = PickeTheme.colors.avatarBackround
         )
@@ -296,7 +292,6 @@ fun PhilosopherTypeSection(
     val lockedName = stringResource(R.string.my_philosopher_locked)
 
     val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
-    val displayImage = if (isLocked) R.drawable.img_lock else philosopher?.imageUrl
     val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
     val shape = RoundedCornerShape(RadiusTokens.default)
 
@@ -316,9 +311,10 @@ fun PhilosopherTypeSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = displayImage,
+            imageUrl = if (isLocked) null else philosopher?.imageUrl,
             size = ComponentNumberTokens.avatarMd,
-            imageSize = if (isLocked) MyScreenDimens.lockImageSize else ProfileImageDefaults.philosopherImageSize
+            kind = if (isLocked) ProfileImageKind.LOCKED else ProfileImageKind.PHILOSOPHER,
+            defaultImageRes = if (isLocked) R.drawable.img_lock else null
         )
 
         Spacer(modifier = Modifier.width(SpacingTokens.s12))

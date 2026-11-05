@@ -54,7 +54,6 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 foundation = "1.10.6"
 mockk = "1.13.13"
-kotlinxCoroutinesTest = "1.9.0"
 
 # [MixPanel]
 mixpanel = "7.5.0"
@@ -145,7 +144,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 
 # [MixPanel]
 mixpanel-android = { group = "com.mixpanel.android", name = "mixpanel-android", version.ref = "mixpanel" }

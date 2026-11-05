@@ -27,14 +27,14 @@ data class ProposalResponseDto(
 
 // DTO -> Domain 매퍼
 fun ProposalResponseDto.toDomainModel() = ProposalBoard(
-    id = this.id ?: 0L,
-    userId = this.userId ?: 0L,
-    nickname = this.nickname ?: "알 수 없음",
-    category = this.category ?: "",
-    topic = this.topic ?: "",
-    positionA = this.positionA ?: "",
-    positionB = this.positionB ?: "",
-    description = this.description ?: "",
-    status = this.status ?: "PENDING",
-    createdAt = this.createdAt?.take(10) ?: ""
+    id = id ?: 0L,
+    userId = userId ?: 0L,
+    nickname = nickname ?: "알 수 없음",
+    category = category ?: "",
+    topic = topic ?: "",
+    positionA = positionA ?: "",
+    positionB = positionB ?: "",
+    description = description ?: "",
+    status = status ?: "PENDING",
+    createdAt = createdAt?.take(10) ?: ""
 )

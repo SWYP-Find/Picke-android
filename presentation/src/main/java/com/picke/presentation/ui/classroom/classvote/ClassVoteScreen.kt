@@ -18,7 +18,7 @@ import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiEvent
 import com.picke.presentation.ui.classroom.classvote.model.ClassVoteUiState
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.vote.VoteScreen
+import com.picke.presentation.ui.vote.VoteContent
 import com.picke.presentation.ui.vote.component.VoteSkeleton
 import com.picke.presentation.ui.vote.model.VoteClassInfoUiModel
 import com.picke.presentation.ui.vote.model.VoteType
@@ -106,7 +106,7 @@ private fun ClassVoteContent(
     )
 
     Box(modifier = modifier) {
-        VoteScreen(
+        VoteContent(
             voteType = uiState.voteType,
             battleDetail = battle,
             uiState = VoteUiState(),

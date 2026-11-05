@@ -18,7 +18,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,9 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.model.LoginUiState
 import com.picke.presentation.ui.login.model.Provider
@@ -46,7 +46,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showTermsSheet by rememberSaveable { mutableStateOf(false) }
     var pendingIsNewUser by rememberSaveable { mutableStateOf(false) }
 
@@ -167,7 +167,7 @@ private fun LoginScreenContent(
                 CircularProgressIndicator(color = PickeTheme.colors.primary900)
                 Spacer(modifier = Modifier.height(16.dp))
             } else {
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.login_with_kakao),
                     onClick = onKakaoClick,
                     backgroundColor = Color(0xFFFEE500),
@@ -175,7 +175,7 @@ private fun LoginScreenContent(
                     iconResId = R.drawable.logo_login_kakao
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.login_with_google),
                     onClick = onGoogleClick,
                     backgroundColor = Color.White,

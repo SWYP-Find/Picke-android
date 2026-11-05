@@ -5,8 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,33 +14,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.picke.presentation.R
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomConfirmDialogDimens {
+private object PickeSingleActionDialogDimens {
     val messageLineHeight = 24.sp
 }
 
 @Composable
-fun CustomConfirmDialog(
+fun PickeSingleActionDialog(
     message: String,
+    buttonText: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    confirmText: String = stringResource(R.string.dialog_confirm),
-    dismissText: String = stringResource(R.string.dialog_dismiss)
+    subMessage: String? = null
 ) {
     val pointColor = PickeTheme.colors.primary500
 
@@ -55,19 +51,29 @@ fun CustomConfirmDialog(
             border = BorderStroke(ComponentNumberTokens.borderWidthRegular, pointColor)
         ) {
             Column {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(SpacingTokens.s24),
-                    contentAlignment = Alignment.Center
+                        .padding(horizontal = SpacingTokens.s24, vertical = SpacingTokens.s32),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = message,
                         color = pointColor,
                         textAlign = TextAlign.Center,
-                        lineHeight = CustomConfirmDialogDimens.messageLineHeight,
-                        style = PickeTheme.typography.bodySmSemiBold
+                        lineHeight = PickeSingleActionDialogDimens.messageLineHeight,
+                        style = PickeTheme.typography.headingSm
                     )
+
+                    if (subMessage != null) {
+                        Spacer(modifier = Modifier.height(SpacingTokens.s8))
+                        Text(
+                            text = subMessage,
+                            color = pointColor,
+                            textAlign = TextAlign.Center,
+                            style = PickeTheme.typography.bodyXsRegular
+                        )
+                    }
                 }
 
                 HorizontalDivider(
@@ -75,44 +81,19 @@ fun CustomConfirmDialog(
                     color = pointColor
                 )
 
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
+                        .background(pointColor)
+                        .clickable(onClick = onConfirm)
+                        .padding(vertical = SpacingTokens.s16),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable(onClick = onConfirm)
-                            .padding(vertical = SpacingTokens.s16),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = confirmText,
-                            color = pointColor,
-                            style = PickeTheme.typography.bodySmSemiBold
-                        )
-                    }
-
-                    VerticalDivider(
-                        thickness = ComponentNumberTokens.borderWidthRegular,
-                        color = pointColor
+                    Text(
+                        text = buttonText,
+                        color = PickeTheme.colors.textInverse,
+                        style = PickeTheme.typography.bodySmSemiBold
                     )
-
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(pointColor)
-                            .clickable(onClick = onDismiss)
-                            .padding(vertical = SpacingTokens.s16),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = dismissText,
-                            color = PickeTheme.colors.textInverse,
-                            style = PickeTheme.typography.bodySmSemiBold
-                        )
-                    }
                 }
             }
         }
@@ -121,13 +102,14 @@ fun CustomConfirmDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomConfirmDialogPreview() {
+private fun PickeSingleActionDialogPreview() {
     PickeTheme {
-        CustomConfirmDialog(
-            message = "삭제 후에는 복구할 수 없어요.\n그럼에도 삭제하시겠습니까?",
+        PickeSingleActionDialog(
+            message = "컨텐츠를 시청하기 위한\n포인트가 부족해요!",
+            buttonText = "배틀 주제 구경하러 가기",
             onConfirm = {},
             onDismiss = {},
-            confirmText = "삭제하기"
+            subMessage = "매일 출석체크만 해도 5P를 받을 수 있어요!"
         )
     }
 }

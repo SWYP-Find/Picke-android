@@ -84,51 +84,51 @@ fun HomeResponseDto.toDomainModel() = HomeBoard(
 )
 
 fun EditorPickDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
+    contentId = battleId?.toString() ?: "",
     type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
+    title = title ?: "",
+    summary = summary ?: "",
+    thumbnailUrl = thumbnailUrl ?: "",
+    viewCount = viewCount ?: 0,
     audioDuration = 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
+    tags = tags?.mapNotNull { it.name } ?: emptyList(),
     options = listOf(
-        ContentOption(text = this.optionATitle ?: "", philosopherName = null, imageUrl = null),
-        ContentOption(text = this.optionBTitle ?: "", philosopherName = null, imageUrl = null)
+        ContentOption(text = optionATitle ?: "", philosopherName = null, imageUrl = null),
+        ContentOption(text = optionBTitle ?: "", philosopherName = null, imageUrl = null)
     )
 )
 
 fun TrendingBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
+    contentId = battleId?.toString() ?: "",
     type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
+    title = title ?: "",
     summary = "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
+    thumbnailUrl = thumbnailUrl ?: "",
+    viewCount = viewCount ?: 0,
+    audioDuration = audioDuration ?: 0,
+    tags = tags?.mapNotNull { it.name } ?: emptyList(),
     options = emptyList()
 )
 
 fun NewBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
+    contentId = battleId?.toString() ?: "",
     type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
+    title = title ?: "",
+    summary = summary ?: "",
+    thumbnailUrl = thumbnailUrl ?: "",
+    viewCount = viewCount ?: 0,
+    audioDuration = audioDuration ?: 0,
+    tags = tags?.mapNotNull { it.name } ?: emptyList(),
     options = listOf(
         ContentOption(
-            text = this.optionATitle ?: "",
-            philosopherName = this.philosopherA ?: "",
-            imageUrl = this.philosopherAImageUrl
+            text = optionATitle ?: "",
+            philosopherName = philosopherA ?: "",
+            imageUrl = philosopherAImageUrl
         ),
         ContentOption(
-            text = this.optionBTitle ?: "",
-            philosopherName = this.philosopherB ?: "",
-            imageUrl = this.philosopherBImageUrl
+            text = optionBTitle ?: "",
+            philosopherName = philosopherB ?: "",
+            imageUrl = philosopherBImageUrl
         )
     )
 )
@@ -144,16 +144,16 @@ fun BestCommentDto.toDomainModel(): HomeBestCommentBoard? {
 }
 
 fun BestBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
+    contentId = battleId?.toString() ?: "",
     type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
+    title = title ?: "",
     summary = "",
     thumbnailUrl = "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
+    viewCount = viewCount ?: 0,
+    audioDuration = audioDuration ?: 0,
+    tags = tags?.mapNotNull { it.name } ?: emptyList(),
     options = listOf(
-        ContentOption(text = "", philosopherName = this.philosopherA ?: "", imageUrl = null),
-        ContentOption(text = "", philosopherName = this.philosopherB ?: "", imageUrl = null)
+        ContentOption(text = "", philosopherName = philosopherA ?: "", imageUrl = null),
+        ContentOption(text = "", philosopherName = philosopherB ?: "", imageUrl = null)
     )
 )

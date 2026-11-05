@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -58,13 +58,13 @@ private fun AlarmCardSkeleton(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                SkeletonLine(width = 70.dp, height = 14.dp)
-                SkeletonLine(width = 40.dp, height = 14.dp)
+                PickeSkeletonLine(width = 70.dp, height = 14.dp)
+                PickeSkeletonLine(width = 40.dp, height = 14.dp)
             }
             Spacer(modifier = Modifier.height(6.dp))
-            SkeletonLine(width = 220.dp, height = 16.dp)
+            PickeSkeletonLine(width = 220.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 160.dp, height = 16.dp)
+            PickeSkeletonLine(width = 160.dp, height = 16.dp)
         }
     }
 }

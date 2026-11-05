@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -60,18 +60,18 @@ private fun HeaderCardSkeleton() {
             modifier = Modifier.fillMaxWidth().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SkeletonLine(width = 100.dp, height = 14.dp)
+            PickeSkeletonLine(width = 100.dp, height = 14.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 120.dp, height = 28.dp)
+            PickeSkeletonLine(width = 120.dp, height = 28.dp)
             Spacer(modifier = Modifier.height(24.dp))
             Spacer(modifier = Modifier.size(68.dp).clip(CircleShape).shimmer())
             Spacer(modifier = Modifier.height(24.dp))
-            SkeletonLine(width = 260.dp, height = 16.dp)
+            PickeSkeletonLine(width = 260.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 200.dp, height = 16.dp)
+            PickeSkeletonLine(width = 200.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(24.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(3) { SkeletonLine(width = 50.dp, height = 20.dp) }
+                repeat(3) { PickeSkeletonLine(width = 50.dp, height = 20.dp) }
             }
         }
     }
@@ -80,7 +80,7 @@ private fun HeaderCardSkeleton() {
 @Composable
 private fun TraitAnalysisCardSkeleton() {
     Column {
-        SkeletonLine(width = 80.dp, height = 20.dp)
+        PickeSkeletonLine(width = 80.dp, height = 20.dp)
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(
@@ -113,7 +113,7 @@ private fun ScoreBarSkeleton(modifier: Modifier = Modifier) {
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SkeletonLine(width = 20.dp, height = 12.dp)
+        PickeSkeletonLine(width = 20.dp, height = 12.dp)
         Spacer(modifier = Modifier.width(8.dp))
         Spacer(
             modifier = Modifier
@@ -123,14 +123,14 @@ private fun ScoreBarSkeleton(modifier: Modifier = Modifier) {
                 .shimmer()
         )
         Spacer(modifier = Modifier.width(8.dp))
-        SkeletonLine(width = 20.dp, height = 12.dp)
+        PickeSkeletonLine(width = 20.dp, height = 12.dp)
     }
 }
 
 @Composable
 private fun TasteReportCardSkeleton() {
     Column {
-        SkeletonLine(width = 100.dp, height = 20.dp)
+        PickeSkeletonLine(width = 100.dp, height = 20.dp)
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(
@@ -157,8 +157,8 @@ private fun TasteReportCardSkeleton() {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    SkeletonLine(width = 80.dp, height = 16.dp)
-                    SkeletonLine(width = 40.dp, height = 14.dp)
+                    PickeSkeletonLine(width = 80.dp, height = 16.dp)
+                    PickeSkeletonLine(width = 40.dp, height = 14.dp)
                 }
                 if (index < 2) HorizontalDivider(color = PickeTheme.colors.beige100)
             }
@@ -169,16 +169,16 @@ private fun TasteReportCardSkeleton() {
 @Composable
 private fun ReportStatItemSkeleton() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        SkeletonLine(width = 30.dp, height = 28.dp)
+        PickeSkeletonLine(width = 30.dp, height = 28.dp)
         Spacer(modifier = Modifier.height(4.dp))
-        SkeletonLine(width = 40.dp, height = 12.dp)
+        PickeSkeletonLine(width = 40.dp, height = 12.dp)
     }
 }
 
 @Composable
 private fun ChemistrySectionSkeleton() {
     Column {
-        SkeletonLine(width = 80.dp, height = 20.dp)
+        PickeSkeletonLine(width = 80.dp, height = 20.dp)
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(
@@ -211,12 +211,12 @@ private fun ChemistryCardSkeleton(modifier: Modifier = Modifier) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SkeletonLine(width = 40.dp, height = 16.dp)
+        PickeSkeletonLine(width = 40.dp, height = 16.dp)
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.size(56.dp).clip(CircleShape).shimmer())
         Spacer(modifier = Modifier.height(12.dp))
-        SkeletonLine(width = 60.dp, height = 18.dp)
+        PickeSkeletonLine(width = 60.dp, height = 18.dp)
         Spacer(modifier = Modifier.height(8.dp))
-        SkeletonLine(width = 80.dp, height = 12.dp)
+        PickeSkeletonLine(width = 80.dp, height = 12.dp)
     }
 }

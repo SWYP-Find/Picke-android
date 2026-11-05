@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassBottomSheet
-import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomTextField
+import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -51,9 +51,6 @@ private fun ClassNameSheetContent(
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor =
-        if (isConfirmEnabled) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled
-
     Column(
         modifier = modifier.padding(top = SpacingTokens.s20, bottom = SpacingTokens.s16),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
@@ -71,7 +68,7 @@ private fun ClassNameSheetContent(
             )
         }
 
-        CustomTextField(
+        PickeTextField(
             value = name,
             onValueChange = onNameChange,
             minHeight = ClassNameSheetDimens.textFieldMinHeight,
@@ -80,11 +77,9 @@ private fun ClassNameSheetContent(
             horizontalPadding = SpacingTokens.s12
         )
 
-        CustomButton(
+        PickeButton(
             text = stringResource(R.string.class_name_sheet_edit),
             onClick = onConfirm,
-            backgroundColor = backgroundColor,
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = isConfirmEnabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

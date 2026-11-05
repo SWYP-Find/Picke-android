@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,9 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.picke.presentation.ui.component.CustomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomSingleActionDialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -48,7 +48,7 @@ fun MakeBattleScreen(
     val categories = listOf("철학", "문학", "예술", "과학", "사회", "역사")
     var selectedCategory by remember { mutableStateOf(categories[0]) }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var topic by remember { mutableStateOf("") }
     var stanceA by remember { mutableStateOf("") }
@@ -59,7 +59,7 @@ fun MakeBattleScreen(
     val isFormValid = topic.isNotBlank() && stanceA.isNotBlank() && stanceB.isNotBlank()
 
     LaunchedEffect(Unit) {
-        viewModel.eventFlow.collect { event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
                 is MakeBattleEvent.Success -> {
                     Toast.makeText(context, "배틀 제안이 완료되었습니다!", Toast.LENGTH_SHORT).show()
@@ -79,7 +79,7 @@ fun MakeBattleScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar={
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = "배틀 만들기",
                 centerTitle = true,
                 showLogo = false,
@@ -94,10 +94,10 @@ fun MakeBattleScreen(
                     //.navigationBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                CustomButton(
+                PickeButton(
                     text = "제안하기 (-30P)",
                     onClick = {
-                        if (isFormValid && !uiState.isLoading) {
+                        if (!uiState.isLoading) {
                             viewModel.submitProposal(
                                 category = selectedCategory,
                                 topic = topic,
@@ -108,8 +108,8 @@ fun MakeBattleScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
-                    backgroundColor = if (isFormValid) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = Color.White
+                    enabled = isFormValid,
+                    disabledBackgroundColor = PickeTheme.colors.primary300
                 )
             }
         }
@@ -203,7 +203,7 @@ fun MakeBattleScreen(
         }
 
         if (showPointDialog) {
-            CustomSingleActionDialog(
+            PickeSingleActionDialog(
                 message = "배틀 주제를 제안하기 위한\n포인트가 부족해요!",
                 subMessage = "매일 출석체크만 해도 5P를 받을 수 있어요!",
                 buttonText = "배틀 주제 구경하러 가기",

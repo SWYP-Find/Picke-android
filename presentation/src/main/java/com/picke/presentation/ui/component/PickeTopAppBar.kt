@@ -31,13 +31,13 @@ import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
-private object CustomTopAppBarDimens {
+private object PickeTopAppBarDimens {
     val height = 48.dp
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar(
+fun PickeTopAppBar(
     title: String? = null,
     centerTitle: Boolean = true,
     onBackClick: (() -> Unit)? = null,
@@ -58,16 +58,16 @@ fun CustomTopAppBar(
         CenterAlignedTopAppBar(
             title = {
                 if (title != null) {
-                    CustomTopAppBarTitle(title = title, color = titleColor)
+                    PickeTopAppBarTitle(title = title, color = titleColor)
                 }
             },
             navigationIcon = {
                 if (onBackClick != null) {
-                    CustomTopAppBarBackButton(onClick = onBackClick, tint = backIconColor)
+                    PickeTopAppBarBackButton(onClick = onBackClick, tint = backIconColor)
                 }
             },
             actions = actions,
-            expandedHeight = CustomTopAppBarDimens.height,
+            expandedHeight = PickeTopAppBarDimens.height,
             windowInsets = WindowInsets(0.dp),
             colors = colors
         )
@@ -82,16 +82,16 @@ fun CustomTopAppBar(
                     )
                 }
                 if (title != null) {
-                    CustomTopAppBarTitle(title = title, color = titleColor)
+                    PickeTopAppBarTitle(title = title, color = titleColor)
                 }
             },
             navigationIcon = {
                 if (onBackClick != null) {
-                    CustomTopAppBarBackButton(onClick = onBackClick, tint = backIconColor)
+                    PickeTopAppBarBackButton(onClick = onBackClick, tint = backIconColor)
                 }
             },
             actions = actions,
-            expandedHeight = CustomTopAppBarDimens.height,
+            expandedHeight = PickeTopAppBarDimens.height,
             windowInsets = WindowInsets(0.dp),
             colors = colors
         )
@@ -99,7 +99,7 @@ fun CustomTopAppBar(
 }
 
 @Composable
-fun CustomTopAppBarAction(
+fun PickeTopAppBarAction(
     @DrawableRes iconRes: Int,
     contentDescription: String?,
     onClick: () -> Unit,
@@ -118,7 +118,7 @@ fun CustomTopAppBarAction(
 }
 
 @Composable
-fun CustomTopAppBarTextAction(
+fun PickeTopAppBarTextAction(
     @DrawableRes iconRes: Int,
     text: String,
     onClick: () -> Unit,
@@ -146,7 +146,7 @@ fun CustomTopAppBarTextAction(
 }
 
 @Composable
-private fun CustomTopAppBarTitle(
+private fun PickeTopAppBarTitle(
     title: String,
     color: Color,
     modifier: Modifier = Modifier
@@ -162,7 +162,7 @@ private fun CustomTopAppBarTitle(
 }
 
 @Composable
-private fun CustomTopAppBarBackButton(
+private fun PickeTopAppBarBackButton(
     onClick: () -> Unit,
     tint: Color,
     modifier: Modifier = Modifier
@@ -179,14 +179,14 @@ private fun CustomTopAppBarBackButton(
 
 @Preview(name = "가운데 제목", showBackground = true)
 @Composable
-private fun CustomTopAppBarPreview() {
+private fun PickeTopAppBarPreview() {
     PickeTheme {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = "클래스",
             onBackClick = {},
             backgroundColor = PickeTheme.colors.backgroundBeige,
             actions = {
-                CustomTopAppBarAction(
+                PickeTopAppBarAction(
                     iconRes = R.drawable.ic_more,
                     contentDescription = null,
                     onClick = {}
@@ -198,14 +198,14 @@ private fun CustomTopAppBarPreview() {
 
 @Preview(name = "글자 버튼", showBackground = true)
 @Composable
-private fun CustomTopAppBarTextActionPreview() {
+private fun PickeTopAppBarTextActionPreview() {
     PickeTheme {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = "클래스",
             onBackClick = {},
             backgroundColor = PickeTheme.colors.backgroundBeige,
             actions = {
-                CustomTopAppBarTextAction(
+                PickeTopAppBarTextAction(
                     iconRes = R.drawable.ic_report,
                     text = "리포트",
                     onClick = {}
@@ -217,9 +217,9 @@ private fun CustomTopAppBarTextActionPreview() {
 
 @Preview(name = "로고", showBackground = true)
 @Composable
-private fun CustomTopAppBarLogoPreview() {
+private fun PickeTopAppBarLogoPreview() {
     PickeTheme {
-        CustomTopAppBar(
+        PickeTopAppBar(
             centerTitle = false,
             showLogo = true,
             backgroundColor = PickeTheme.colors.backgroundBeige

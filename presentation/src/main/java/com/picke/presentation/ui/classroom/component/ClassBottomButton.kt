@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -39,15 +39,9 @@ fun ClassBottomButton(
                 bottom = SpacingTokens.s16
             )
     ) {
-        CustomButton(
+        PickeButton(
             text = text,
             onClick = onClick,
-            backgroundColor = if (enabled) {
-                PickeTheme.colors.buttonPrimaryBackgroundDefault
-            } else {
-                PickeTheme.colors.buttonPrimaryBackgroundDisabled
-            },
-            textColor = PickeTheme.colors.buttonPrimaryTextDefault,
             enabled = enabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

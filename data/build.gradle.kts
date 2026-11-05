@@ -67,4 +67,9 @@ dependencies {
 
     // [Paging3]
     implementation(libs.androidx.paging.runtime)
+
+    // [Test]
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

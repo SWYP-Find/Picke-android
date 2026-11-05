@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.main
 
+import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.UiActionName
 
@@ -9,6 +10,13 @@ sealed class BottomNavItem(val route: String, val title: String, val icon: Int) 
     object TodayBattle : BottomNavItem("tab_battle", "빠른배틀", R.drawable.ic_nav_battle)
     object Class : BottomNavItem("tab_class", "클래스", R.drawable.ic_nav_classroom)
     object My : BottomNavItem("tab_my", "마이", R.drawable.ic_nav_my)
+
+    companion object {
+        val entries: List<BottomNavItem> by lazy { listOf(Home, Explore, TodayBattle, Class, My) }
+
+        fun fromRoute(route: String?): BottomNavItem? =
+            if (route == AppRoute.TodayBattle.route) TodayBattle else entries.find { it.route == route }
+    }
 }
 
 fun BottomNavItem.toTabAction(): String = when (this) {

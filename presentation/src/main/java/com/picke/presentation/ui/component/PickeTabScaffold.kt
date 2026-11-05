@@ -14,7 +14,7 @@ import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
 fun PickeTabScaffold(
-    selectedTab: BottomNavItem?,
+    selectedTab: BottomNavItem,
     onTabClick: (BottomNavItem) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit
@@ -23,7 +23,7 @@ fun PickeTabScaffold(
         modifier = modifier,
         bottomBar = {
             PickeBottomNavigationBar(
-                selectedRoute = selectedTab?.route,
+                selectedRoute = selectedTab.route,
                 onItemClick = onTabClick
             )
         },

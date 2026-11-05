@@ -15,14 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
 
-private val bottomNavItems = listOf(
-    BottomNavItem.Home,
-    BottomNavItem.Explore,
-    BottomNavItem.TodayBattle,
-    BottomNavItem.Class,
-    BottomNavItem.My
-)
-
 @Composable
 fun PickeBottomNavigationBar(
     selectedRoute: String?,
@@ -33,7 +25,7 @@ fun PickeBottomNavigationBar(
         modifier = modifier,
         containerColor = PickeTheme.colors.surfaceBeigeDefault
     ) {
-        bottomNavItems.forEach { item ->
+        BottomNavItem.entries.forEach { item ->
             NavigationBarItem(
                 selected = selectedRoute == item.route,
                 onClick = { onItemClick(item) },

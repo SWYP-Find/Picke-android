@@ -41,9 +41,9 @@ fun NavController.navigateToTab(item: BottomNavItem) {
     if (!popUpToTabScreen()) {
         navigate(BottomNavItem.Home.route) { popUpTo(0) }
     }
-    val currentEntry = currentBackStackEntry ?: return
-    if (selectedTab(currentEntry) == item) {
-        popUpToLast { backStack, index -> backStack[index].destination.route.toBottomNavItem() == item }
+    val currentTabEntry = currentTabEntry() ?: return
+    if (BottomNavItem.fromRoute(currentTabEntry.destination.route) == item) {
+        popUpToEntry(currentTabEntry)
     } else {
         navigate(item.route) {
             popUpTo(BottomNavItem.Home.route) { saveState = true }
@@ -53,8 +53,13 @@ fun NavController.navigateToTab(item: BottomNavItem) {
     }
 }
 
-fun NavController.popUpToTabScreen(): Boolean = popUpToLast { backStack, index ->
-    showsBottomBarAt(backStack, index) || backStack[index].destination.route.toBottomNavItem() != null
+@SuppressLint("RestrictedApi")
+fun NavController.popUpToTabScreen(): Boolean {
+    val backStack = currentBackStack.value
+    val targetIndex = backStack.indices.lastOrNull { index ->
+        showsBottomBarAt(backStack, index) || BottomNavItem.fromRoute(backStack[index].destination.route) != null
+    } ?: return false
+    return popUpToEntry(backStack[targetIndex])
 }
 
 @Composable
@@ -64,11 +69,9 @@ fun TabScreen(
     onTabClick: (BottomNavItem) -> Unit,
     content: @Composable (Modifier) -> Unit
 ) {
-    val showsBottomBar =
-        remember(backStackEntry.id) { navController.showsBottomBar(backStackEntry) }
-    val selectedTab = remember(backStackEntry.id) { navController.selectedTab(backStackEntry) }
+    val selectedTab = remember(backStackEntry.id) { navController.bottomBarTab(backStackEntry) }
 
-    if (showsBottomBar) {
+    if (selectedTab != null) {
         PickeTabScaffold(
             selectedTab = selectedTab,
             onTabClick = onTabClick
@@ -103,28 +106,23 @@ fun MainTabScreen(
 }
 
 @SuppressLint("RestrictedApi")
-private fun NavController.popUpToLast(isTarget: (List<NavBackStackEntry>, Int) -> Boolean): Boolean {
+private fun NavController.currentTabEntry(): NavBackStackEntry? =
+    currentBackStack.value.lastOrNull { BottomNavItem.fromRoute(it.destination.route) != null }
+
+@SuppressLint("RestrictedApi")
+private fun NavController.bottomBarTab(entry: NavBackStackEntry): BottomNavItem? {
     val backStack = currentBackStack.value
-    val targetIndex = backStack.indices.lastOrNull { index -> isTarget(backStack, index) } ?: return false
-    val targetId = backStack[targetIndex].id
-    while (currentBackStackEntry?.id != targetId) {
+    val index = backStack.indexOfFirst { it.id == entry.id }
+    if (index < 0 || !showsBottomBarAt(backStack, index)) return null
+    return backStack.subList(0, index + 1).asReversed()
+        .firstNotNullOfOrNull { BottomNavItem.fromRoute(it.destination.route) }
+}
+
+private fun NavController.popUpToEntry(entry: NavBackStackEntry): Boolean {
+    while (currentBackStackEntry?.id != entry.id) {
         if (!popBackStack()) return false
     }
     return true
-}
-
-@SuppressLint("RestrictedApi")
-private fun NavController.showsBottomBar(entry: NavBackStackEntry): Boolean {
-    val backStack = currentBackStack.value
-    val index = backStack.indexOfFirst { it.id == entry.id }
-    return index >= 0 && showsBottomBarAt(backStack, index)
-}
-
-@SuppressLint("RestrictedApi")
-private fun NavController.selectedTab(entry: NavBackStackEntry): BottomNavItem? {
-    val backStack = currentBackStack.value
-    val index = backStack.indexOfFirst { it.id == entry.id }
-    return if (index >= 0) selectedTabAt(backStack, index) else null
 }
 
 private fun showsBottomBarAt(backStack: List<NavBackStackEntry>, index: Int): Boolean =
@@ -133,15 +131,3 @@ private fun showsBottomBarAt(backStack: List<NavBackStackEntry>, index: Int): Bo
         in entryPathBottomBarRoutes -> index > 0 && showsBottomBarAt(backStack, index - 1)
         else -> false
     }
-
-private fun selectedTabAt(backStack: List<NavBackStackEntry>, index: Int): BottomNavItem? =
-    (index downTo 0).firstNotNullOfOrNull { backStack[it].destination.route.toBottomNavItem() }
-
-private fun String?.toBottomNavItem(): BottomNavItem? = when (this) {
-    BottomNavItem.Home.route -> BottomNavItem.Home
-    BottomNavItem.Explore.route -> BottomNavItem.Explore
-    BottomNavItem.TodayBattle.route, AppRoute.TodayBattle.route -> BottomNavItem.TodayBattle
-    BottomNavItem.Class.route -> BottomNavItem.Class
-    BottomNavItem.My.route -> BottomNavItem.My
-    else -> null
-}

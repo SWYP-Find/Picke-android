@@ -6,12 +6,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.rememberAnalyticsTracker
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
+import com.picke.presentation.navigation.popUpToTabScreen
 import com.picke.presentation.ui.comment.CommentScreen
-import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.popUpToTabScreen
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.recommend.RecommendScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen

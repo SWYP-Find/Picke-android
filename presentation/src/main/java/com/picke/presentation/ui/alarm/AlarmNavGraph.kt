@@ -4,7 +4,7 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 
 fun NavGraphBuilder.alarmGraph(navController: NavController) {
     composable(AppRoute.Alarm.route) {

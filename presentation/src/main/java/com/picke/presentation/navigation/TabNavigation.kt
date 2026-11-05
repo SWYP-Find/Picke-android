@@ -1,4 +1,4 @@
-package com.picke.presentation.ui.main
+package com.picke.presentation.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
@@ -6,7 +6,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.component.PickeTabScaffold
 
 private val alwaysBottomBarRoutes = setOf(

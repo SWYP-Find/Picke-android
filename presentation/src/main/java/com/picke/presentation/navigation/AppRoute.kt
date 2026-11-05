@@ -1,4 +1,4 @@
-package com.picke.presentation
+package com.picke.presentation.navigation
 
 import com.picke.presentation.ui.vote.model.VoteType
 

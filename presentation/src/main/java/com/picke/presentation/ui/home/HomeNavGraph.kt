@@ -3,9 +3,9 @@ package com.picke.presentation.ui.home
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.picke.presentation.AppRoute
-import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.TabScreen
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
+import com.picke.presentation.navigation.TabScreen
 
 fun NavGraphBuilder.homeGraph(
     navController: NavController,

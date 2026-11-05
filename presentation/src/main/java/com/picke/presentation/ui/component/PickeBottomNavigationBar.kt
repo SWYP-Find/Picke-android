@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.navigation.BottomNavItem
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable

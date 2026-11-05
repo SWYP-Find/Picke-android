@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditMutation
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditUiAction
 import com.picke.presentation.ui.classroom.classedit.model.ClassEditUiEvent

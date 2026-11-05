@@ -6,11 +6,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.picke.presentation.AppRoute
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.TabScreen
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
+import com.picke.presentation.navigation.TabScreen
 import com.picke.presentation.ui.my.content.ContentActivityScreen
 import com.picke.presentation.ui.my.discussion.DiscussionHistoryScreen
 import com.picke.presentation.ui.my.makebattle.MakeBattleScreen

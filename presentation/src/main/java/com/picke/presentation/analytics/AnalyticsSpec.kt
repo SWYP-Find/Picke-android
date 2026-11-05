@@ -1,7 +1,7 @@
 package com.picke.presentation.analytics
 
-import com.picke.presentation.AppRoute
-import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
 
 /**
  * Pické Mixpanel 이벤트 명세 (크로스플랫폼 계약서) 상수 정의

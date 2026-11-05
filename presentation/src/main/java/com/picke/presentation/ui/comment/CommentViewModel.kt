@@ -7,8 +7,8 @@ import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
-import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.comment.model.toUiModel

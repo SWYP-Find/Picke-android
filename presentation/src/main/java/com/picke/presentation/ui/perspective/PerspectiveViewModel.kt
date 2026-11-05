@@ -8,8 +8,8 @@ import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
-import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.AnalyticsTracker
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState

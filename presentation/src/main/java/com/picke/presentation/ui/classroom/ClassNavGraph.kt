@@ -6,7 +6,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
+import com.picke.presentation.navigation.TabScreen
 import com.picke.presentation.ui.classroom.classbattlepreview.ClassBattlePreviewScreen
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
@@ -19,8 +21,6 @@ import com.picke.presentation.ui.classroom.classresult.ClassResultScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.classvote.ClassVoteScreen
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
-import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.TabScreen
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen
 import com.picke.presentation.ui.vote.model.VoteType

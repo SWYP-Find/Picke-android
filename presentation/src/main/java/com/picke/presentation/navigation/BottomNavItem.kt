@@ -1,6 +1,5 @@
-package com.picke.presentation.ui.main
+package com.picke.presentation.navigation
 
-import com.picke.presentation.AppRoute
 import com.picke.presentation.R
 import com.picke.presentation.analytics.UiActionName
 

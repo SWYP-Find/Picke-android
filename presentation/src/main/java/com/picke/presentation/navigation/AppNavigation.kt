@@ -1,4 +1,4 @@
-package com.picke.presentation
+package com.picke.presentation.navigation
 
 import android.Manifest
 import android.os.Build
@@ -38,10 +38,6 @@ import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.explore.exploreGraph
 import com.picke.presentation.ui.home.homeGraph
 import com.picke.presentation.ui.login.LoginScreen
-import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.navigateToTab
-import com.picke.presentation.ui.main.popUpToTabScreen
-import com.picke.presentation.ui.main.toTabAction
 import com.picke.presentation.ui.my.myGraph
 import com.picke.presentation.ui.onboarding.OnboardingScreen
 import com.picke.presentation.ui.splash.SplashViewModel

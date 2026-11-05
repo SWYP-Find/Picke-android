@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 
 fun NavGraphBuilder.todayBattleGraph(navController: NavController) {
     composable(

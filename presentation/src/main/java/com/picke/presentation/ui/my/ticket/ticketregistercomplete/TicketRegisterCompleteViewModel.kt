@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.my.ticket.model.toUiModel
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteMutation
 import com.picke.presentation.ui.my.ticket.ticketregistercomplete.model.TicketRegisterCompleteUiAction

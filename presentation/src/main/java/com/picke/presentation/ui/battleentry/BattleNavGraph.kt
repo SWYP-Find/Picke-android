@@ -101,7 +101,9 @@ fun NavGraphBuilder.battleGraph(
         arguments = listOf(
             navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType },
             navArgument(AppRoute.ARG_PERSPECTIVE_ID) {
-                type = NavType.StringType; nullable = true; defaultValue = null
+                type = NavType.StringType
+                nullable = true
+                defaultValue = null
             }
         )
     ) { backStackEntry ->
@@ -136,10 +138,13 @@ fun NavGraphBuilder.battleGraph(
                 type = NavType.StringType
             },
             navArgument(AppRoute.ARG_FIRST_OPTION_ID) {
-                type = NavType.LongType; defaultValue = 0L
+                type = NavType.LongType
+                defaultValue = 0L
             },
             navArgument(AppRoute.ARG_COMMENT_ID) {
-                type = NavType.StringType; nullable = true; defaultValue = null
+                type = NavType.StringType
+                nullable = true
+                defaultValue = null
             }
         )
     ) { backStackEntry ->

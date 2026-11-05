@@ -13,7 +13,9 @@ fun NavGraphBuilder.todayBattleGraph(navController: NavController) {
         route = AppRoute.TodayBattle.route,
         arguments = listOf(
             navArgument(AppRoute.ARG_BATTLE_ID) {
-                type = NavType.StringType; nullable = true; defaultValue = null
+                type = NavType.StringType
+                nullable = true
+                defaultValue = null
             }
         )
     ) { backStackEntry ->

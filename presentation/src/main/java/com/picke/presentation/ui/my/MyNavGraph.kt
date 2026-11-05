@@ -216,7 +216,10 @@ fun NavGraphBuilder.myGraph(
     composable(
         route = AppRoute.NoticeEvent.route,
         arguments = listOf(
-            navArgument(AppRoute.ARG_NOTICE_ID) { type = NavType.LongType; defaultValue = -1L },
+            navArgument(AppRoute.ARG_NOTICE_ID) {
+                type = NavType.LongType
+                defaultValue = -1L
+            },
             showsBottomBarArgument
         )
     ) { backStackEntry ->

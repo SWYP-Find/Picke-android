@@ -11,7 +11,7 @@ import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.comment.CommentScreen
 import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.popUpToMainTabScreen
+import com.picke.presentation.ui.main.popUpToTabScreen
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.recommend.RecommendScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen
@@ -92,7 +92,7 @@ fun NavGraphBuilder.battleGraph(
             voteType = VoteType.POST,
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onVoteSubmit = { submittedBattleId ->
-                navController.popUpToMainTabScreen()
+                navController.popUpToTabScreen()
                 navController.navigate(AppRoute.Perspective.createRoute(submittedBattleId))
             },
             onNavigateToExplore = onNavigateToExplore
@@ -162,7 +162,7 @@ fun NavGraphBuilder.battleGraph(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onCloseClick = {
                 analyticsTracker.trackContentAction(ContentActionType.BATTLE_RECOMMEND_CLOSE)
-                navController.popUpToMainTabScreen()
+                navController.popUpToTabScreen()
             },
             onItemClick = { clickedBattleId ->
                 analyticsTracker.trackContentAction(

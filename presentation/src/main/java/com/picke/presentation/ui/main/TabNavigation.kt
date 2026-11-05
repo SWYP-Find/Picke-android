@@ -37,39 +37,24 @@ private val entryPathBottomBarRoutes = setOf(
     AppRoute.NoticeEvent.route
 )
 
-private val mainTabs = setOf(BottomNavItem.Home, BottomNavItem.Explore, BottomNavItem.My)
-
 fun NavController.navigateToTab(item: BottomNavItem) {
-    when (item) {
-        BottomNavItem.Home, BottomNavItem.Explore, BottomNavItem.My -> {
-            if (!popUpToMainTabScreen()) {
-                navigate(BottomNavItem.Home.route) { popUpTo(0) }
-            }
-            val currentEntry = currentBackStackEntry ?: return
-            if (selectedTab(currentEntry) != item) navigateToMainTab(item)
-        }
-
-        BottomNavItem.TodayBattle -> navigate(item.route) { launchSingleTop = true }
-
-        BottomNavItem.Class -> {
-            if (!popBackStack(item.route, inclusive = false)) {
-                navigate(item.route) { launchSingleTop = true }
-            }
+    if (!popUpToTabScreen()) {
+        navigate(BottomNavItem.Home.route) { popUpTo(0) }
+    }
+    val currentEntry = currentBackStackEntry ?: return
+    if (selectedTab(currentEntry) == item) {
+        popUpToLast { backStack, index -> backStack[index].destination.route.toBottomNavItem() == item }
+    } else {
+        navigate(item.route) {
+            popUpTo(BottomNavItem.Home.route) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
         }
     }
 }
 
-@SuppressLint("RestrictedApi")
-fun NavController.popUpToMainTabScreen(): Boolean {
-    val backStack = currentBackStack.value
-    val targetIndex = backStack.indices.lastOrNull { index ->
-        showsBottomBarAt(backStack, index) && selectedTabAt(backStack, index) in mainTabs
-    } ?: return false
-    val targetId = backStack[targetIndex].id
-    while (currentBackStackEntry?.id != targetId) {
-        if (!popBackStack()) return false
-    }
-    return true
+fun NavController.popUpToTabScreen(): Boolean = popUpToLast { backStack, index ->
+    showsBottomBarAt(backStack, index) || backStack[index].destination.route.toBottomNavItem() != null
 }
 
 @Composable
@@ -117,12 +102,15 @@ fun MainTabScreen(
     }
 }
 
-private fun NavController.navigateToMainTab(item: BottomNavItem) {
-    navigate(item.route) {
-        popUpTo(BottomNavItem.Home.route) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
+@SuppressLint("RestrictedApi")
+private fun NavController.popUpToLast(isTarget: (List<NavBackStackEntry>, Int) -> Boolean): Boolean {
+    val backStack = currentBackStack.value
+    val targetIndex = backStack.indices.lastOrNull { index -> isTarget(backStack, index) } ?: return false
+    val targetId = backStack[targetIndex].id
+    while (currentBackStackEntry?.id != targetId) {
+        if (!popBackStack()) return false
     }
+    return true
 }
 
 @SuppressLint("RestrictedApi")

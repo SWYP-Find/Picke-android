@@ -40,7 +40,7 @@ import com.picke.presentation.ui.home.homeGraph
 import com.picke.presentation.ui.login.LoginScreen
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.main.navigateToTab
-import com.picke.presentation.ui.main.popUpToMainTabScreen
+import com.picke.presentation.ui.main.popUpToTabScreen
 import com.picke.presentation.ui.main.toTabAction
 import com.picke.presentation.ui.my.myGraph
 import com.picke.presentation.ui.onboarding.OnboardingScreen
@@ -134,7 +134,7 @@ fun AppNavigation(
                 event.takeIf { isHomeReady }
             }.filterNotNull().collect { event ->
                 deepLinkHandler.consume()
-                rootNavController.popUpToMainTabScreen()
+                rootNavController.popUpToTabScreen()
                 when (event) {
                     is DeepLinkEvent.GoToBattle -> {
                         rootNavController.navigate(AppRoute.BattleRouting.createRoute(event.battleId))

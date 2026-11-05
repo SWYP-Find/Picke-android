@@ -10,6 +10,8 @@ import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.comment.CommentScreen
+import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.ui.main.popUpToMainTabScreen
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.recommend.RecommendScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen
@@ -49,7 +51,7 @@ fun NavGraphBuilder.battleGraph(
             onBackClick = dropUnlessResumed {
                 val prevRoute = navController.previousBackStackEntry?.destination?.route
                 if (prevRoute == null || prevRoute == AppRoute.Splash.route) {
-                    navController.navigate(AppRoute.Main.createRoute()) {
+                    navController.navigate(BottomNavItem.Home.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 } else {
@@ -90,9 +92,8 @@ fun NavGraphBuilder.battleGraph(
             voteType = VoteType.POST,
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onVoteSubmit = { submittedBattleId ->
-                navController.navigate(AppRoute.Perspective.createRoute(submittedBattleId)) {
-                    popUpTo(AppRoute.Main.route) { inclusive = false }
-                }
+                navController.popUpToMainTabScreen()
+                navController.navigate(AppRoute.Perspective.createRoute(submittedBattleId))
             },
             onNavigateToExplore = onNavigateToExplore
         )
@@ -112,7 +113,7 @@ fun NavGraphBuilder.battleGraph(
             onBackClick = dropUnlessResumed {
                 val prevRoute = navController.previousBackStackEntry?.destination?.route
                 if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
-                    navController.navigate(AppRoute.Main.createRoute()) {
+                    navController.navigate(BottomNavItem.Home.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 } else {
@@ -161,7 +162,7 @@ fun NavGraphBuilder.battleGraph(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onCloseClick = {
                 analyticsTracker.trackContentAction(ContentActionType.BATTLE_RECOMMEND_CLOSE)
-                navController.popBackStack(AppRoute.Main.route, inclusive = false)
+                navController.popUpToMainTabScreen()
             },
             onItemClick = { clickedBattleId ->
                 analyticsTracker.trackContentAction(

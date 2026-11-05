@@ -15,13 +15,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -35,9 +35,12 @@ import com.picke.presentation.ui.battleentry.battleGraph
 import com.picke.presentation.ui.classroom.classGraph
 import com.picke.presentation.ui.component.NotificationPermissionBottomSheet
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
+import com.picke.presentation.ui.explore.exploreGraph
+import com.picke.presentation.ui.home.homeGraph
 import com.picke.presentation.ui.login.LoginScreen
 import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.MainScreen
+import com.picke.presentation.ui.main.navigateToTab
+import com.picke.presentation.ui.main.popUpToMainTabScreen
 import com.picke.presentation.ui.main.toTabAction
 import com.picke.presentation.ui.my.myGraph
 import com.picke.presentation.ui.onboarding.OnboardingScreen
@@ -63,11 +66,16 @@ fun AppNavigation(
 
     var showNotificationSheet by remember { mutableStateOf(false) }
     var showTermsSheet by remember { mutableStateOf(false) }
-    var requestedMainTab by remember { mutableStateOf<BottomNavItem?>(null) }
-    var requestedMainRoute by remember { mutableStateOf<String?>(null) }
+    var homeScrollTrigger by remember { mutableIntStateOf(0) }
+    var exploreScrollTrigger by remember { mutableIntStateOf(0) }
 
-    val navigateToTab: (BottomNavItem) -> Unit = { item ->
-        rootNavController.navigateToTab(item = item, onMainTabRequest = { requestedMainTab = it })
+    val onTabClick: (BottomNavItem) -> Unit = { item ->
+        analyticsTracker.trackUiAction(item.toTabAction())
+        when {
+            rootNavController.currentDestination?.route != item.route -> rootNavController.navigateToTab(item)
+            item == BottomNavItem.Home -> homeScrollTrigger++
+            item == BottomNavItem.Explore -> exploreScrollTrigger++
+        }
     }
 
     LaunchedEffect(showTermsSheet) {
@@ -102,7 +110,7 @@ fun AppNavigation(
             }
 
             is SplashUiState.NavigateToMain -> {
-                rootNavController.navigate(AppRoute.Main.createRoute()) { popUpTo(0) }
+                rootNavController.navigate(BottomNavItem.Home.route) { popUpTo(0) }
                 if (state.needsTermsAgreement) showTermsSheet = true
             }
 
@@ -119,17 +127,14 @@ fun AppNavigation(
         color = PickeTheme.colors.backgroundBeige
     ) {
         LaunchedEffect(Unit) {
-            val isMainInBackStack = rootNavController.currentBackStackEntryFlow.map {
-                runCatching { rootNavController.getBackStackEntry(AppRoute.Main.route) }.isSuccess
+            val isHomeInBackStack = rootNavController.currentBackStackEntryFlow.map {
+                runCatching { rootNavController.getBackStackEntry(BottomNavItem.Home.route) }.isSuccess
             }
-            combine(deepLinkHandler.pendingEvent, isMainInBackStack) { event, isMainReady ->
-                event.takeIf { isMainReady }
+            combine(deepLinkHandler.pendingEvent, isHomeInBackStack) { event, isHomeReady ->
+                event.takeIf { isHomeReady }
             }.filterNotNull().collect { event ->
                 deepLinkHandler.consume()
-                rootNavController.navigate(AppRoute.Main.createRoute()) {
-                    popUpTo(AppRoute.Main.route) { inclusive = false }
-                    launchSingleTop = true
-                }
+                rootNavController.popUpToMainTabScreen()
                 when (event) {
                     is DeepLinkEvent.GoToBattle -> {
                         rootNavController.navigate(AppRoute.BattleRouting.createRoute(event.battleId))
@@ -195,7 +200,7 @@ fun AppNavigation(
                 LoginScreen(
                     onNavigateToMain = { isNewUser ->
                         analyticsTracker.trackOnboardingStep(OnboardingStep.HOME_ENTERED)
-                        rootNavController.navigate(AppRoute.Main.createRoute()) {
+                        rootNavController.navigate(BottomNavItem.Home.route) {
                             popUpTo(AppRoute.Login.route) { inclusive = true }
                         }
                         checkAndShowNotificationSheet(isNewUser)
@@ -203,31 +208,29 @@ fun AppNavigation(
                 )
             }
 
-            composable(AppRoute.Main.route) {
-                MainScreen(
-                    rootNavController = rootNavController,
-                    requestedTab = requestedMainTab,
-                    requestedRoute = requestedMainRoute,
-                    onRootTabClick = navigateToTab,
-                    onRequestedTabOpened = { requestedMainTab = null },
-                    onRequestedRouteOpened = { requestedMainRoute = null },
-                    isNotificationSheetPending = showNotificationSheet
-                )
-            }
+            homeGraph(
+                navController = rootNavController,
+                onTabClick = onTabClick,
+                scrollToTopTrigger = { homeScrollTrigger },
+                isNotificationSheetPending = { showNotificationSheet }
+            )
+
+            exploreGraph(
+                navController = rootNavController,
+                onTabClick = onTabClick,
+                scrollToTopTrigger = { exploreScrollTrigger }
+            )
 
             classGraph(
                 navController = rootNavController,
-                onTabClick = { item ->
-                    analyticsTracker.trackUiAction(item.toTabAction())
-                    navigateToTab(item)
-                },
+                onTabClick = onTabClick,
                 onNavigateToTicket = {
-                    requestedMainRoute = AppRoute.Ticket.route
-                    navigateToTab(BottomNavItem.My)
+                    rootNavController.navigateToTab(BottomNavItem.My)
+                    rootNavController.navigate(AppRoute.Ticket.route) { launchSingleTop = true }
                 },
                 onNavigateToTicketRegister = {
-                    requestedMainRoute = AppRoute.TicketRegister.route
-                    navigateToTab(BottomNavItem.My)
+                    rootNavController.navigateToTab(BottomNavItem.My)
+                    rootNavController.navigate(AppRoute.TicketRegister.route) { launchSingleTop = true }
                 }
             )
 
@@ -235,14 +238,15 @@ fun AppNavigation(
 
             battleGraph(
                 navController = rootNavController,
-                onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
+                onNavigateToExplore = { rootNavController.navigateToTab(BottomNavItem.Explore) }
             )
 
             alarmGraph(navController = rootNavController)
 
             myGraph(
                 navController = rootNavController,
-                onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
+                onTabClick = onTabClick,
+                onNavigateToExplore = { rootNavController.navigateToTab(BottomNavItem.Explore) }
             )
         }
     }
@@ -276,31 +280,5 @@ fun AppNavigation(
                 markNotificationPermissionAsked()
             }
         )
-    }
-}
-
-private fun NavController.navigateToTab(
-    item: BottomNavItem,
-    onMainTabRequest: (BottomNavItem) -> Unit
-) {
-    when (item) {
-        BottomNavItem.Home, BottomNavItem.Explore, BottomNavItem.My -> {
-            onMainTabRequest(item)
-            if (currentDestination?.route != AppRoute.Main.route && !popBackStack(
-                    AppRoute.Main.route,
-                    inclusive = false
-                )
-            ) {
-                navigate(AppRoute.Main.route) { popUpTo(0) }
-            }
-        }
-
-        BottomNavItem.TodayBattle -> navigate(item.route) { launchSingleTop = true }
-
-        BottomNavItem.Class -> {
-            if (!popBackStack(item.route, inclusive = false)) {
-                navigate(item.route) { launchSingleTop = true }
-            }
-        }
     }
 }

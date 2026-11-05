@@ -19,8 +19,8 @@ import com.picke.presentation.ui.classroom.classresult.ClassResultScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.classvote.ClassVoteScreen
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
-import com.picke.presentation.ui.component.PickeTabScaffold
 import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.ui.main.TabScreen
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen
 import com.picke.presentation.ui.vote.model.VoteType
@@ -166,8 +166,12 @@ fun NavGraphBuilder.classGraph(
         )
     }
 
-    composable(AppRoute.MyClass.route) {
-        PickeTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(AppRoute.MyClass.route) { backStackEntry ->
+        TabScreen(
+            navController = navController,
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             MyClassScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassClick = { classId ->
@@ -184,8 +188,12 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) {
-        PickeTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            navController = navController,
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassDetailScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassChanged = dropUnlessResumed {
@@ -244,8 +252,12 @@ fun NavGraphBuilder.classGraph(
         )
     }
 
-    composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {
-        PickeTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            navController = navController,
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassMemberScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onMembersChanged = dropUnlessResumed {
@@ -259,8 +271,12 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) {
-        PickeTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            navController = navController,
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassResultScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToMyOpinion = { classId ->
@@ -271,8 +287,15 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassMyOpinion.route, arguments = classIdArguments) {
-        PickeTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(
+        route = AppRoute.ClassMyOpinion.route,
+        arguments = classIdArguments
+    ) { backStackEntry ->
+        TabScreen(
+            navController = navController,
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassMyOpinionScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 modifier = contentModifier

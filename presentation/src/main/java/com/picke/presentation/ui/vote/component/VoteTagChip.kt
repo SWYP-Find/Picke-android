@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun VoteTagChip(
@@ -18,14 +19,14 @@ fun VoteTagChip(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(2.dp),
+        shape = RoundedCornerShape(RadiusTokens.default),
         color = Color.White.copy(alpha = 0.8f)
     ) {
         Text(
             text = "#$name",
             modifier = Modifier.padding(
-                horizontal = 8.dp,
-                vertical = 2.dp
+                horizontal = SpacingTokens.s8,
+                vertical = SpacingTokens.s2
             ),
             color = PickeTheme.colors.primary500,
             style = PickeTheme.typography.captionLgMedium

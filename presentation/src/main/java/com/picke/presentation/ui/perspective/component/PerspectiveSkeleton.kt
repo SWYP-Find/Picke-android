@@ -27,6 +27,13 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object PerspectiveSkeletonDimens {
+    val cardPadding = 14.dp
+}
 
 @Composable
 fun PerspectiveHeaderSkeleton(modifier: Modifier = Modifier) {
@@ -34,16 +41,16 @@ fun PerspectiveHeaderSkeleton(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s4)
     ) {
         PerspectiveHeaderSideSkeleton()
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s8))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f)
         ) {
             PickeSkeletonLine(width = 96.dp, height = 20.dp)
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s24))
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -52,7 +59,7 @@ fun PerspectiveHeaderSkeleton(modifier: Modifier = Modifier) {
                     .shimmer()
             )
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s8))
         PerspectiveHeaderSideSkeleton()
     }
 }
@@ -69,7 +76,7 @@ private fun PerspectiveHeaderSideSkeleton() {
                 .clip(CircleShape)
                 .shimmer()
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s2))
         PickeSkeletonLine(width = 40.dp, height = 14.dp)
         PickeSkeletonLine(width = 28.dp, height = 16.dp)
     }
@@ -81,7 +88,7 @@ fun PerspectiveTabBarSkeleton(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s16),
             horizontalArrangement = Arrangement.Center
         ) {
             PickeSkeletonLine(width = 64.dp, height = 20.dp)
@@ -94,8 +101,8 @@ fun PerspectiveTabBarSkeleton(modifier: Modifier = Modifier) {
 fun PerspectiveListSkeleton(modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        contentPadding = PaddingValues(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
     ) {
         items(4) {
             PerspectiveItemCardSkeleton()
@@ -108,11 +115,11 @@ private fun PerspectiveItemCardSkeleton() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = PickeTheme.colors.surfaceBeigeDefault),
-        shape = RoundedCornerShape(2.dp),
+        shape = RoundedCornerShape(RadiusTokens.default),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(width = 1.dp, color = PickeTheme.colors.borderBeigeDefault)
+        border = BorderStroke(width = ComponentNumberTokens.borderWidthRegular, color = PickeTheme.colors.borderBeigeDefault)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(PerspectiveSkeletonDimens.cardPadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Spacer(
                     modifier = Modifier
@@ -120,22 +127,22 @@ private fun PerspectiveItemCardSkeleton() {
                         .clip(CircleShape)
                         .shimmer()
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(SpacingTokens.s8))
                 Column(modifier = Modifier.weight(1f)) {
                     PickeSkeletonLine(width = 40.dp, height = 16.dp)
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(SpacingTokens.s4))
                     PickeSkeletonLine(width = 50.dp, height = 12.dp)
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s8))
             PickeSkeletonLine(width = 70.dp, height = 20.dp)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s12))
             PickeSkeletonLine(width = 260.dp, height = 16.dp)
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s4))
             PickeSkeletonLine(width = 200.dp, height = 16.dp)
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s12))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -143,7 +150,7 @@ private fun PerspectiveItemCardSkeleton() {
                 PickeSkeletonLine(width = 40.dp, height = 14.dp)
                 Spacer(modifier = Modifier.weight(1f))
                 PickeSkeletonLine(width = 24.dp, height = 14.dp)
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(SpacingTokens.s12))
                 PickeSkeletonLine(width = 24.dp, height = 14.dp)
             }
         }

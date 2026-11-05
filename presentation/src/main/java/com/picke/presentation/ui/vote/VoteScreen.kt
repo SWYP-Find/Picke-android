@@ -61,6 +61,7 @@ import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.vote.component.VoteBattleNotFound
 import com.picke.presentation.ui.vote.component.VoteCommentCountBadge
@@ -258,7 +259,7 @@ fun VoteContent(
                                     iconRes = R.drawable.ic_share,
                                     contentDescription = stringResource(R.string.top_app_bar_share),
                                     onClick = { showShareDialog = true },
-                                    iconSize = 20.dp,
+                                    iconSize = ComponentNumberTokens.iconMd,
                                     tint = PickeTheme.colors.textInverse
                                 )
                             }
@@ -305,14 +306,14 @@ fun VoteContent(
                         .weight(1f)
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s24))
                 VoteOptionSection(
                     options = battleInfo.options,
                     selectedOptionId = selectedOptionId,
                     isOptionImageVisible = style.isOptionImageVisible,
                     onOptionSelect = { optionId -> selectedOptionId = optionId }
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s32))
             }
         }
 
@@ -387,7 +388,7 @@ private fun VoteBottomSection(
     Column(
         modifier = modifier
             .navigationBarsPadding()
-            .padding(20.dp),
+            .padding(SpacingTokens.s20),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -451,8 +452,8 @@ private fun VoteBattleInfoSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomStart)
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 16.dp),
+                .padding(horizontal = SpacingTokens.s20)
+                .padding(bottom = SpacingTokens.s16),
             horizontalAlignment = Alignment.Start
         ) {
             Row(
@@ -460,7 +461,7 @@ private fun VoteBattleInfoSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
                     battleInfo.tags.forEach { tag ->
                         VoteTagChip(name = tag.name)
                     }
@@ -470,14 +471,14 @@ private fun VoteBattleInfoSection(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s16))
             Text(
                 text = battleInfo.title.replace(", ", ",\n"),
                 color = style.titleColor,
                 style = PickeTheme.typography.displayMd
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s12))
             Text(
                 text = description,
                 color = style.descriptionColor,
@@ -498,14 +499,14 @@ private fun VoteOptionSection(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = SpacingTokens.s20),
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
         ) {
             if (options.size >= 2) {
                 VoteOptionCard(

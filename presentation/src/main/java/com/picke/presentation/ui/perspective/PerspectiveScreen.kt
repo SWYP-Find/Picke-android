@@ -573,7 +573,7 @@ private fun PerspectiveListSection(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(SpacingTokens.s16),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = PickeTheme.colors.primary900)

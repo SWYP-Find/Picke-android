@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.vote.model.VoteType
 
 @Composable
@@ -62,11 +65,11 @@ fun VoteSkeleton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart)
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(horizontal = SpacingTokens.s20)
+                    .padding(bottom = SpacingTokens.s16),
                 horizontalAlignment = Alignment.Start
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
                     PickeSkeletonLine(
                         width = 48.dp,
                         height = 20.dp,
@@ -81,7 +84,7 @@ fun VoteSkeleton(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
                 PickeSkeletonLine(
                     width = 220.dp,
                     height = 28.dp,
@@ -89,7 +92,7 @@ fun VoteSkeleton(
                     highlightColor = shimmerHighlight
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s8))
                 PickeSkeletonLine(
                     width = 160.dp,
                     height = 28.dp,
@@ -97,7 +100,7 @@ fun VoteSkeleton(
                     highlightColor = shimmerHighlight
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s12))
                 PickeSkeletonLine(
                     width = 240.dp,
                     height = 16.dp,
@@ -107,18 +110,18 @@ fun VoteSkeleton(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s24))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = SpacingTokens.s20),
             contentAlignment = Alignment.Center
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Max),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
             ) {
                 VoteOptionCardSkeleton(
                     modifier = Modifier
@@ -140,14 +143,14 @@ fun VoteSkeleton(
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s32))
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(20.dp)
+                .padding(SpacingTokens.s20)
                 .height(48.dp)
-                .clip(RoundedCornerShape(2.dp))
+                .clip(RoundedCornerShape(RadiusTokens.default))
                 .shimmer(shimmerBase, shimmerHighlight)
         )
     }
@@ -157,10 +160,10 @@ fun VoteSkeleton(
 private fun VoteOptionCardSkeleton(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, PickeTheme.colors.borderBeigeDisabled, RoundedCornerShape(2.dp))
+            .clip(RoundedCornerShape(RadiusTokens.default))
+            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.borderBeigeDisabled, RoundedCornerShape(RadiusTokens.default))
             .background(PickeTheme.colors.surfaceBeigeSubtle)
-            .padding(vertical = 24.dp, horizontal = 16.dp),
+            .padding(vertical = SpacingTokens.s24, horizontal = SpacingTokens.s16),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -170,9 +173,9 @@ private fun VoteOptionCardSkeleton(modifier: Modifier = Modifier) {
                 .clip(CircleShape)
                 .shimmer()
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         PickeSkeletonLine(width = 60.dp, height = 20.dp)
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(SpacingTokens.s4))
         PickeSkeletonLine(width = 40.dp, height = 14.dp)
     }
 }

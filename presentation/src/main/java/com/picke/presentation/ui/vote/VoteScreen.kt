@@ -84,7 +84,7 @@ import kotlinx.coroutines.launch
 private const val CLIP_LABEL = "battle_link"
 
 @Composable
-fun VoteRoute(
+fun VoteScreen(
     voteType: VoteType,
     onBackClick: () -> Unit,
     onVoteSubmit: (String) -> Unit,
@@ -116,7 +116,7 @@ fun VoteRoute(
     } else {
         val detail = uiState.battleDetail
         if (detail != null) {
-            VoteScreen(
+            VoteContent(
                 voteType = voteType,
                 battleDetail = detail,
                 uiState = uiState,
@@ -151,7 +151,7 @@ fun VoteRoute(
 }
 
 @Composable
-fun VoteScreen(
+fun VoteContent(
     voteType: VoteType,
     battleDetail: BattleDetailUiModel,
     uiState: VoteUiState,
@@ -570,9 +570,9 @@ private fun BattleNotFoundScreen(onBackClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun VoteScreenPreview() {
+private fun VoteContentPreview() {
     PickeTheme {
-        VoteScreen(
+        VoteContent(
             voteType = VoteType.PRE,
             battleDetail = DummyData.dummyBattleDetailList.first(),
             uiState = VoteUiState(),
@@ -589,12 +589,12 @@ fun VoteScreenPreview() {
 
 @Preview(name = "AI 배틀 사전 투표", showBackground = true)
 @Composable
-private fun VoteScreenClassPreview() {
+private fun VoteContentClassPreview() {
     val classItem = DummyData.dummyMyClasses[1]
     val battle = DummyData.dummyClassAiQuestions.first()
 
     PickeTheme {
-        VoteScreen(
+        VoteContent(
             voteType = VoteType.PRE,
             battleDetail = DummyData.dummyClassAiBattleDetail,
             uiState = VoteUiState(),

@@ -60,7 +60,7 @@ import com.picke.presentation.ui.splash.SplashViewModel
 import com.picke.presentation.ui.splash.model.SplashUiState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.todaybattle.TodayBattleScreen
-import com.picke.presentation.ui.vote.VoteRoute
+import com.picke.presentation.ui.vote.VoteScreen
 import com.picke.presentation.ui.vote.model.VoteType
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -360,7 +360,7 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteRoute(
+                VoteScreen(
                     voteType = VoteType.PRE,
                     onBackClick = dropUnlessResumed {
                         val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
@@ -402,7 +402,7 @@ fun AppNavigation(
                 arguments = listOf(navArgument("battleId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteRoute(
+                VoteScreen(
                     voteType = VoteType.POST,
                     onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
                     onVoteSubmit = { submittedBattleId ->

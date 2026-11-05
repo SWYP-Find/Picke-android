@@ -21,47 +21,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.OnboardingStep
 import com.picke.presentation.analytics.TrackScreenViews
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.deeplink.DeepLinkEvent
 import com.picke.presentation.deeplink.DeepLinkHandler
-import com.picke.presentation.ui.alarm.AlarmScreen
-import com.picke.presentation.ui.battleentry.BattleRoutingScreen
+import com.picke.presentation.ui.alarm.alarmGraph
+import com.picke.presentation.ui.battleentry.battleGraph
 import com.picke.presentation.ui.classroom.classGraph
-import com.picke.presentation.ui.comment.CommentScreen
 import com.picke.presentation.ui.component.NotificationPermissionBottomSheet
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.LoginScreen
 import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.main.MainScreen
 import com.picke.presentation.ui.main.toTabAction
-import com.picke.presentation.ui.my.makebattle.MakeBattleScreen
-import com.picke.presentation.ui.my.notice.NoticeEventScreen
-import com.picke.presentation.ui.my.philosopher.PhilosopherTypeScreen
-import com.picke.presentation.ui.my.point.PointScreen
-import com.picke.presentation.ui.my.setting.alarm.SettingAlarmScreen
-import com.picke.presentation.ui.my.setting.policy.PolicyWebViewScreen
-import com.picke.presentation.ui.my.setting.profile.SettingProfileScreen
-import com.picke.presentation.ui.my.setting.withdraw.WithdrawScreen
+import com.picke.presentation.ui.my.myGraph
 import com.picke.presentation.ui.onboarding.OnboardingScreen
-import com.picke.presentation.ui.perspective.PerspectiveScreen
-import com.picke.presentation.ui.recommend.RecommendScreen
-import com.picke.presentation.ui.scenario.ScenarioScreen
 import com.picke.presentation.ui.splash.SplashViewModel
 import com.picke.presentation.ui.splash.model.SplashUiState
 import com.picke.presentation.ui.theme.PickeTheme
-import com.picke.presentation.ui.todaybattle.TodayBattleScreen
-import com.picke.presentation.ui.vote.VoteScreen
-import com.picke.presentation.ui.vote.model.VoteType
+import com.picke.presentation.ui.todaybattle.todayBattleGraph
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -248,307 +231,19 @@ fun AppNavigation(
                 }
             )
 
-            composable(
-                route = AppRoute.BattleRouting.route,
-                arguments = listOf(navArgument("battleId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                BattleRoutingScreen(
-                    onNavigateToPreVote = { id ->
-                        rootNavController.navigate(AppRoute.PreVote.createRoute(id)) {
-                            popUpTo(AppRoute.BattleRouting.route) { inclusive = true }
-                        }
-                    },
-                    onNavigateToPerspective = { id ->
-                        rootNavController.navigate(AppRoute.Perspective.createRoute(id)) {
-                            popUpTo(AppRoute.BattleRouting.route) { inclusive = true }
-                        }
-                    }
-                )
-            }
+            todayBattleGraph(navController = rootNavController)
 
-            composable(
-                route = AppRoute.TodayBattle.route,
-                arguments = listOf(
-                    navArgument("battleId") {
-                        type = NavType.StringType; nullable = true; defaultValue = null
-                    }
-                )
-            ) { backStackEntry ->
-                val battleId = backStackEntry.arguments?.getString("battleId")
-                TodayBattleScreen(
-                    initialBattleId = battleId,
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNavigateToScenario = { id ->
-                        rootNavController.navigate(AppRoute.Scenario.createRoute(id)) {
-                            popUpTo(AppRoute.TodayBattle.route) { inclusive = true }
-                        }
-                    },
-                    onNavigateToPerspective = { id ->
-                        rootNavController.navigate(AppRoute.Perspective.createRoute(id)) {
-                            popUpTo(AppRoute.TodayBattle.route) { inclusive = true }
-                        }
-                    }
-                )
-            }
+            battleGraph(
+                navController = rootNavController,
+                onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
+            )
 
-            composable(AppRoute.Alarm.route) {
-                AlarmScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNavigateToPreVote = { battleId ->
-                        rootNavController.navigate(AppRoute.PreVote.createRoute(battleId))
-                    },
-                    onNavigateToComment = { perspectiveId, commentId ->
-                        rootNavController.navigate(
-                            AppRoute.Comment.createRoute(
-                                perspectiveId,
-                                commentId
-                            )
-                        )
-                    },
-                    onNavigateToPoint = {
-                        rootNavController.navigate(AppRoute.Point.route)
-                    },
-                    onNavigateToNotice = { noticeId ->
-                        rootNavController.navigate(AppRoute.NoticeEvent.createRoute(noticeId))
-                    },
-                    onNavigateToTodayBattle = {
-                        rootNavController.navigate(AppRoute.TodayBattle.createRoute(""))
-                    }
-                )
-            }
+            alarmGraph(navController = rootNavController)
 
-            composable(
-                route = AppRoute.NoticeEvent.route,
-                arguments = listOf(navArgument("noticeId") {
-                    type = NavType.LongType; defaultValue = -1L
-                })
-            ) { backStackEntry ->
-                val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
-                NoticeEventScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    initialNoticeId = noticeId
-                )
-            }
-
-            composable(AppRoute.Point.route) {
-                PointScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNavigateToMakeBattle = {
-                        rootNavController.navigate(AppRoute.MakeBattle.route)
-                    }
-                )
-            }
-
-            composable(AppRoute.MakeBattle.route) {
-                MakeBattleScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
-                )
-            }
-
-            composable(AppRoute.SettingAlarm.route) {
-                SettingAlarmScreen(onBackClick = dropUnlessResumed { rootNavController.popBackStack() })
-            }
-
-            composable(AppRoute.SettingProfile.route) {
-                SettingProfileScreen(onBackClick = dropUnlessResumed { rootNavController.popBackStack() })
-            }
-
-            composable(
-                route = AppRoute.PreVote.route,
-                arguments = listOf(navArgument("battleId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteScreen(
-                    voteType = VoteType.PRE,
-                    onBackClick = dropUnlessResumed {
-                        val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
-                        if (prevRoute == null || prevRoute == AppRoute.Splash.route) {
-                            rootNavController.navigate(AppRoute.Main.createRoute()) {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        } else {
-                            rootNavController.popBackStack()
-                        }
-                    },
-                    onVoteSubmit = { submittedBattleId ->
-                        rootNavController.navigate(AppRoute.Scenario.createRoute(submittedBattleId)) {
-                            popUpTo(AppRoute.PreVote.route) { inclusive = true }
-                        }
-                    },
-                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
-                )
-            }
-
-            composable(
-                route = AppRoute.Scenario.route,
-                arguments = listOf(navArgument("battleId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val contentId = backStackEntry.arguments?.getString("battleId") ?: ""
-                ScenarioScreen(
-                    battleId = contentId,
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNextClick = {
-                        rootNavController.navigate(AppRoute.PostVote.createRoute(contentId)) {
-                            popUpTo(AppRoute.Scenario.route) { inclusive = true }
-                        }
-                    }
-                )
-            }
-
-            composable(
-                route = AppRoute.PostVote.route,
-                arguments = listOf(navArgument("battleId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val battleId = backStackEntry.arguments?.getString("battleId") ?: ""
-                VoteScreen(
-                    voteType = VoteType.POST,
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onVoteSubmit = { submittedBattleId ->
-                        rootNavController.navigate(
-                            AppRoute.Perspective.createRoute(
-                                submittedBattleId
-                            )
-                        ) {
-                            popUpTo(AppRoute.Main.route) { inclusive = false }
-                        }
-                    },
-                    onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
-                )
-            }
-
-            composable(
-                route = AppRoute.Perspective.route,
-                arguments = listOf(
-                    navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType },
-                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) {
-                        type = NavType.StringType; nullable = true; defaultValue = null
-                    }
-                )
-            ) { backStackEntry ->
-                val perspectiveId = backStackEntry.arguments?.getString(AppRoute.ARG_PERSPECTIVE_ID)
-                PerspectiveScreen(
-                    onBackClick = dropUnlessResumed {
-                        val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
-                        if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
-                            rootNavController.navigate(AppRoute.Main.createRoute()) {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        } else {
-                            rootNavController.popBackStack()
-                        }
-                    },
-                    onNextClick = { itemId ->
-                        rootNavController.navigate(
-                            AppRoute.Recommend.createRoute(itemId.toString())
-                        )
-                    },
-                    onMoreClick = { itemId, firstOptionId ->
-                        rootNavController.navigate(
-                            AppRoute.Comment.createRoute(itemId.toString(), firstOptionId)
-                        )
-                    },
-                    scrollToPerspectiveId = perspectiveId?.toLongOrNull()
-                )
-            }
-
-            composable(
-                route = AppRoute.Comment.route,
-                arguments = listOf(
-                    navArgument(AppRoute.ARG_PERSPECTIVE_ID) {
-                        type = NavType.StringType
-                    },
-                    navArgument(AppRoute.ARG_FIRST_OPTION_ID) {
-                        type = NavType.LongType; defaultValue = 0L
-                    },
-                    navArgument(AppRoute.ARG_COMMENT_ID) {
-                        type = NavType.StringType; nullable = true; defaultValue = null
-                    }
-                )
-            ) { backStackEntry ->
-                val commentId = backStackEntry.arguments?.getString(AppRoute.ARG_COMMENT_ID)
-                CommentScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    scrollToCommentId = commentId?.toLongOrNull()
-                )
-            }
-
-            composable(
-                route = AppRoute.Recommend.route,
-                arguments = listOf(navArgument("battleId") { type = NavType.StringType })
-            ) {
-                RecommendScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onCloseClick = {
-                        analyticsTracker.trackContentAction(ContentActionType.BATTLE_RECOMMEND_CLOSE)
-                        rootNavController.popBackStack(AppRoute.Main.route, inclusive = false)
-                    },
-                    onItemClick = { clickedBattleId ->
-                        analyticsTracker.trackContentAction(
-                            ContentActionType.BATTLE_CARD_TAP,
-                            clickedBattleId
-                        )
-                        rootNavController.navigate(
-                            AppRoute.BattleRouting.createRoute(
-                                clickedBattleId
-                            )
-                        )
-                    }
-                )
-            }
-
-            composable(AppRoute.PrivacyPolicy.route) {
-                PolicyWebViewScreen(
-                    titleRes = R.string.policy_title_privacy,
-                    url = BuildConfig.PRIVACY_POLICY_URL,
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() }
-                )
-            }
-
-            composable(AppRoute.TermsOfService.route) {
-                PolicyWebViewScreen(
-                    titleRes = R.string.policy_title_terms,
-                    url = BuildConfig.TERMS_OF_SERVICE_URL,
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() }
-                )
-            }
-
-            composable(
-                route = AppRoute.OtherPhilosopher.route,
-                arguments = listOf(navArgument("reportId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val reportId = backStackEntry.arguments?.getString("reportId") ?: ""
-                PhilosopherTypeScreen(
-                    reportId = reportId,
-                    onBackClick = dropUnlessResumed {
-                        val prevRoute = rootNavController.previousBackStackEntry?.destination?.route
-                        if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
-                            rootNavController.navigate(AppRoute.Main.createRoute()) {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        } else {
-                            rootNavController.popBackStack()
-                        }
-                    },
-                    onGoToSplashClick = {
-                        rootNavController.navigate(AppRoute.Main.createRoute()) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    }
-                )
-            }
-
-            composable(AppRoute.Withdraw.route) {
-                WithdrawScreen(
-                    onBackClick = dropUnlessResumed { rootNavController.popBackStack() },
-                    onNavigateToLogin = {
-                        rootNavController.navigate(AppRoute.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    }
-                )
-            }
+            myGraph(
+                navController = rootNavController,
+                onNavigateToExplore = { navigateToTab(BottomNavItem.Explore) }
+            )
         }
     }
 

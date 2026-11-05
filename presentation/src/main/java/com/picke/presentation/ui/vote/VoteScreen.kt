@@ -163,6 +163,7 @@ fun VoteContent(
     onTrackShare: (String) -> Unit,
     onGetShareLink: (Int, (String) -> Unit, (String) -> Unit) -> Unit,
     onDismissPointDialog: () -> Unit,
+    modifier: Modifier = Modifier,
     classInfo: VoteClassInfoUiModel? = null,
     isRequesting: Boolean = false
 ) {
@@ -239,7 +240,7 @@ fun VoteContent(
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = style.containerColor,

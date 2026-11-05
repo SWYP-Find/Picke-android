@@ -3,7 +3,6 @@ package com.picke.presentation.navigation
 import com.picke.presentation.ui.vote.model.VoteType
 
 sealed class AppRoute(val route: String) {
-    object Splash : AppRoute("splash_screen")
     object Login : AppRoute("login_screen")
     object Onboarding : AppRoute("onboarding_screen")
 

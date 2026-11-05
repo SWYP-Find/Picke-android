@@ -288,7 +288,7 @@ fun NavGraphBuilder.myGraph(
             reportId = reportId,
             onBackClick = dropUnlessResumed {
                 val prevRoute = navController.previousBackStackEntry?.destination?.route
-                if (prevRoute == null || prevRoute == AppRoute.Splash.route || prevRoute == AppRoute.Login.route) {
+                if (prevRoute == null || prevRoute == AppRoute.Login.route) {
                     navController.navigate(BottomNavItem.Home.route) {
                         popUpTo(0) { inclusive = true }
                     }

@@ -12,12 +12,12 @@ fun NavGraphBuilder.todayBattleGraph(navController: NavController) {
     composable(
         route = AppRoute.TodayBattle.route,
         arguments = listOf(
-            navArgument("battleId") {
+            navArgument(AppRoute.ARG_BATTLE_ID) {
                 type = NavType.StringType; nullable = true; defaultValue = null
             }
         )
     ) { backStackEntry ->
-        val battleId = backStackEntry.arguments?.getString("battleId")
+        val battleId = backStackEntry.arguments?.getString(AppRoute.ARG_BATTLE_ID)
         TodayBattleScreen(
             initialBattleId = battleId,
             onBackClick = dropUnlessResumed { navController.popBackStack() },

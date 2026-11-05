@@ -24,7 +24,7 @@ fun NavGraphBuilder.battleGraph(
 ) {
     composable(
         route = AppRoute.BattleRouting.route,
-        arguments = listOf(navArgument("battleId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType })
     ) {
         BattleRoutingScreen(
             onNavigateToPreVote = { id ->
@@ -42,7 +42,7 @@ fun NavGraphBuilder.battleGraph(
 
     composable(
         route = AppRoute.PreVote.route,
-        arguments = listOf(navArgument("battleId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType })
     ) {
         VoteScreen(
             voteType = VoteType.PRE,
@@ -67,9 +67,9 @@ fun NavGraphBuilder.battleGraph(
 
     composable(
         route = AppRoute.Scenario.route,
-        arguments = listOf(navArgument("battleId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType })
     ) { backStackEntry ->
-        val contentId = backStackEntry.arguments?.getString("battleId") ?: ""
+        val contentId = backStackEntry.arguments?.getString(AppRoute.ARG_BATTLE_ID) ?: ""
         ScenarioScreen(
             battleId = contentId,
             onBackClick = dropUnlessResumed { navController.popBackStack() },
@@ -83,7 +83,7 @@ fun NavGraphBuilder.battleGraph(
 
     composable(
         route = AppRoute.PostVote.route,
-        arguments = listOf(navArgument("battleId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType })
     ) {
         VoteScreen(
             voteType = VoteType.POST,
@@ -152,7 +152,7 @@ fun NavGraphBuilder.battleGraph(
 
     composable(
         route = AppRoute.Recommend.route,
-        arguments = listOf(navArgument("battleId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_BATTLE_ID) { type = NavType.StringType })
     ) {
         val analyticsTracker = rememberAnalyticsTracker()
         RecommendScreen(

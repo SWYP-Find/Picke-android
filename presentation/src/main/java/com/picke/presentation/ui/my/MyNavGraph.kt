@@ -216,11 +216,11 @@ fun NavGraphBuilder.myGraph(
     composable(
         route = AppRoute.NoticeEvent.route,
         arguments = listOf(
-            navArgument("noticeId") { type = NavType.LongType; defaultValue = -1L },
+            navArgument(AppRoute.ARG_NOTICE_ID) { type = NavType.LongType; defaultValue = -1L },
             showsBottomBarArgument
         )
     ) { backStackEntry ->
-        val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
+        val noticeId = backStackEntry.arguments?.getLong(AppRoute.ARG_NOTICE_ID)?.takeIf { it != -1L }
         TabScreen(
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
@@ -281,9 +281,9 @@ fun NavGraphBuilder.myGraph(
 
     composable(
         route = AppRoute.OtherPhilosopher.route,
-        arguments = listOf(navArgument("reportId") { type = NavType.StringType })
+        arguments = listOf(navArgument(AppRoute.ARG_REPORT_ID) { type = NavType.StringType })
     ) { backStackEntry ->
-        val reportId = backStackEntry.arguments?.getString("reportId") ?: ""
+        val reportId = backStackEntry.arguments?.getString(AppRoute.ARG_REPORT_ID) ?: ""
         PhilosopherTypeScreen(
             reportId = reportId,
             onBackClick = dropUnlessResumed {

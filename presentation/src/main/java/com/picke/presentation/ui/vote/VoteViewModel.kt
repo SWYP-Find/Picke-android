@@ -11,6 +11,7 @@ import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
 import com.picke.presentation.analytics.ShareTarget
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.vote.model.VoteType
 import com.picke.presentation.ui.vote.model.VoteUiEvent
 import com.picke.presentation.ui.vote.model.VoteUiState
@@ -35,7 +36,7 @@ class VoteViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    val battleId: String = checkNotNull(savedStateHandle["battleId"])
+    val battleId: String = checkNotNull(savedStateHandle[AppRoute.ARG_BATTLE_ID])
 
     private val _uiState = MutableStateFlow(VoteUiState(isLoading = true))
     val uiState: StateFlow<VoteUiState> = _uiState.asStateFlow()

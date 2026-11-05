@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.recommend.usecase.RecommendUseCases
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.recommend.model.RecommendUiEvent
 import com.picke.presentation.ui.recommend.model.RecommendUiState
 import com.picke.presentation.ui.recommend.model.toUiModel
@@ -24,7 +25,7 @@ class RecommendViewModel @Inject constructor(
     private val recommendUseCases: RecommendUseCases
 ) : ViewModel() {
 
-    private val receivedBattleId: String = checkNotNull(savedStateHandle["battleId"])
+    private val receivedBattleId: String = checkNotNull(savedStateHandle[AppRoute.ARG_BATTLE_ID])
 
     private val _uiState = MutableStateFlow(RecommendUiState(battleId = receivedBattleId))
     val uiState: StateFlow<RecommendUiState> = _uiState.asStateFlow()

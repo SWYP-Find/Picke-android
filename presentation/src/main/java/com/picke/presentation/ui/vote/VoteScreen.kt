@@ -277,8 +277,8 @@ fun VoteScreen(
                     PickeButton(
                         text = stringResource(style.submitTextRes),
                         onClick = {
-                            if (selectedOptionId != null) {
-                                onSubmitVote(selectedOptionId!!) {
+                            selectedOptionId?.let { optionId ->
+                                onSubmitVote(optionId) {
                                     onVoteSubmit(battleInfo.battleId)
                                 }
                             }

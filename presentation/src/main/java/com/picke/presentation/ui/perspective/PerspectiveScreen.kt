@@ -495,11 +495,11 @@ fun PerspectiveContent(
             }
         }
 
-        if (perspectiveToDelete != null) {
+        perspectiveToDelete?.let { perspectiveId ->
             PickeConfirmDialog(
                 message = stringResource(R.string.comment_perspective_delete_message),
                 onConfirm = {
-                    onDeletePerspective(perspectiveToDelete!!)
+                    onDeletePerspective(perspectiveId)
                     perspectiveToDelete = null
                 },
                 onDismiss = {
@@ -509,11 +509,11 @@ fun PerspectiveContent(
             )
         }
 
-        if (perspectiveToReport != null) {
+        perspectiveToReport?.let { perspectiveId ->
             PickeReportDialog(
                 onConfirm = { _ ->
                     // TODO: API 연동 - 신고 사유 전송 (신고 API에 사유 필드 없음)
-                    onReportPerspective(perspectiveToReport!!)
+                    onReportPerspective(perspectiveId)
                     perspectiveToReport = null
                 },
                 onDismiss = {

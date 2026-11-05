@@ -1,11 +1,7 @@
 package com.picke.presentation.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.picke.presentation.ui.component.PickeTabScaffold
 
 private val bottomBarTabByRoute = mapOf(
     BottomNavItem.Home.route to BottomNavItem.Home,
@@ -57,33 +53,13 @@ fun NavController.popUpToTabScreen(): Boolean {
     return true
 }
 
-@Composable
-fun TabScreen(
-    backStackEntry: NavBackStackEntry,
-    onTabClick: (BottomNavItem) -> Unit,
-    content: @Composable (Modifier) -> Unit
-) {
-    val selectedTab = remember(backStackEntry.id) { backStackEntry.bottomBarTab() }
-
-    if (selectedTab != null) {
-        PickeTabScaffold(
-            selectedTab = selectedTab,
-            onTabClick = onTabClick
-        ) { contentModifier ->
-            content(contentModifier)
-        }
-    } else {
-        content(Modifier)
-    }
-}
-
 private val BottomNavItem.destinationRoute: String
     get() = if (this == BottomNavItem.TodayBattle) AppRoute.TodayBattle.route else route
 
 private fun NavBackStackEntry.tab(): BottomNavItem? =
     bottomBarTab() ?: BottomNavItem.fromRoute(destination.route)
 
-private fun NavBackStackEntry.bottomBarTab(): BottomNavItem? {
+internal fun NavBackStackEntry.bottomBarTab(): BottomNavItem? {
     val route = destination.route
     val showsBottomBar = route !in entryPathBottomBarRoutes ||
         arguments?.getBoolean(AppRoute.ARG_SHOWS_BOTTOM_BAR) == true

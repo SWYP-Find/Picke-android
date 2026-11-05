@@ -60,10 +60,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ExploreScreen(
-    viewModel: ExploreViewModel = hiltViewModel(),
-    scrollToTopTrigger: Int = 0,
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: ExploreViewModel = hiltViewModel(),
+    scrollToTopTrigger: Int = 0
 ) {
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
     val selectedSort by viewModel.selectedSort.collectAsStateWithLifecycle()
@@ -100,7 +101,8 @@ fun ExploreScreen(
             pagingItems.refresh()
         },
         onNavigateToAlarm = onNavigateToAlarm,
-        onNavigateToVote = onNavigateToVote
+        onNavigateToVote = onNavigateToVote,
+        modifier = modifier
     )
 }
 
@@ -115,7 +117,8 @@ fun ExploreScreen(
     onSortChange: (String) -> Unit,
     onRefresh: () -> Unit,
     onNavigateToAlarm: () -> Unit,
-    onNavigateToVote: (String) -> Unit
+    onNavigateToVote: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val exploreCategories = listOf("전체", "철학", "문학", "예술", "과학", "사회", "역사")
     val pagerState = rememberPagerState(pageCount = { exploreCategories.size })
@@ -132,6 +135,7 @@ fun ExploreScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

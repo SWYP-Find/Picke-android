@@ -40,9 +40,9 @@ import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
 fun MakeBattleScreen(
-    modifier: Modifier = Modifier,
     onBackClick : ()->Unit,
     onNavigateToExplore: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: MakeBattleViewModel = hiltViewModel()
 ) {
     val categories = listOf("철학", "문학", "예술", "과학", "사회", "역사")
@@ -76,6 +76,7 @@ fun MakeBattleScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar={

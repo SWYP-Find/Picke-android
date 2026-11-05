@@ -75,6 +75,7 @@ fun ContentActivityScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

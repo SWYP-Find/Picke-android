@@ -94,9 +94,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
     scrollToTopTrigger: Int = 0,
     isNotificationSheetPending: Boolean = false
 ) {
@@ -137,7 +138,8 @@ fun HomeScreen(
         onTrackBattleTap = viewModel::trackBattleTap,
         onRefresh = { viewModel.fetchHomeData(isRefresh = true) },
         onDismissAttendanceCheckSheet = { viewModel.dismissAttendanceCheckSheet() },
-        scrollToTopTrigger = scrollToTopTrigger
+        scrollToTopTrigger = scrollToTopTrigger,
+        modifier = modifier
     )
 }
 
@@ -150,7 +152,8 @@ fun HomeScreen(
     onTrackBattleTap: (action: String, contentId: String, section: String?) -> Unit,
     onRefresh: () -> Unit,
     onDismissAttendanceCheckSheet: () -> Unit,
-    scrollToTopTrigger: Int
+    scrollToTopTrigger: Int,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     val pullToRefreshState = rememberPullToRefreshState()
@@ -168,6 +171,7 @@ fun HomeScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

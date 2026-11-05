@@ -7,7 +7,7 @@ import com.picke.presentation.AppRoute
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.rememberAnalyticsTracker
 import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.MainTabScreen
+import com.picke.presentation.ui.main.TabScreen
 
 fun NavGraphBuilder.exploreGraph(
     navController: NavController,
@@ -16,20 +16,21 @@ fun NavGraphBuilder.exploreGraph(
 ) {
     composable(BottomNavItem.Explore.route) { backStackEntry ->
         val analyticsTracker = rememberAnalyticsTracker()
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             ExploreScreen(
-                scrollToTopTrigger = scrollToTopTrigger(),
                 onNavigateToAlarm = {
                     navController.navigate(AppRoute.Alarm.route)
                 },
                 onNavigateToVote = { battleId ->
                     analyticsTracker.trackContentAction(ContentActionType.BATTLE_CARD_TAP, battleId)
                     navController.navigate(AppRoute.BattleRouting.createRoute(battleId))
-                }
+                },
+                modifier = contentModifier,
+                scrollToTopTrigger = scrollToTopTrigger()
             )
         }
     }

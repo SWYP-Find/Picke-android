@@ -166,6 +166,7 @@ fun PhilosopherTypeScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             if (isMyReport) {

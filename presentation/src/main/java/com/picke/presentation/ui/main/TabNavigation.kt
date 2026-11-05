@@ -1,9 +1,6 @@
 package com.picke.presentation.ui.main
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -11,7 +8,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.component.PickeTabScaffold
-import com.picke.presentation.ui.theme.PickeTheme
 
 private val alwaysBottomBarRoutes = setOf(
     BottomNavItem.Home.route,
@@ -80,28 +76,6 @@ fun TabScreen(
         }
     } else {
         content(Modifier)
-    }
-}
-
-@Composable
-fun MainTabScreen(
-    navController: NavController,
-    backStackEntry: NavBackStackEntry,
-    onTabClick: (BottomNavItem) -> Unit,
-    content: @Composable () -> Unit
-) {
-    TabScreen(
-        navController = navController,
-        backStackEntry = backStackEntry,
-        onTabClick = onTabClick
-    ) { contentModifier ->
-        Box(
-            modifier = contentModifier
-                .fillMaxSize()
-                .background(PickeTheme.colors.surfaceBeigeDefault)
-        ) {
-            content()
-        }
     }
 }
 

@@ -61,9 +61,9 @@ data class PointHistoryUiModel(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PointScreen(
-    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onNavigateToMakeBattle: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: PointViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -84,6 +84,7 @@ fun PointScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {

@@ -46,6 +46,7 @@ fun SettingScreen(
     onNavigateToTermsOfService: () -> Unit,
     onNavigateToWithdraw: () -> Unit,
     onNavigateToLogin: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -70,7 +71,7 @@ fun SettingScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 PickeTopAppBar(

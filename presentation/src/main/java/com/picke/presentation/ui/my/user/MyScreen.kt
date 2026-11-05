@@ -69,6 +69,7 @@ fun MyScreen(
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
     onNavigateToTicket: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: MyViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -111,7 +112,8 @@ fun MyScreen(
         onNavigateToContent = onNavigateToContent,
         onNavigateToNotice = onNavigateToNotice,
         onNavigateToPoint = onNavigateToPoint,
-        onNavigateToTicket = onNavigateToTicket
+        onNavigateToTicket = onNavigateToTicket,
+        modifier = modifier
     )
 }
 
@@ -125,10 +127,12 @@ fun MyScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
-    onNavigateToTicket: () -> Unit
+    onNavigateToTicket: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.picke.presentation.AppRoute
 import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.MainTabScreen
+import com.picke.presentation.ui.main.TabScreen
 
 fun NavGraphBuilder.homeGraph(
     navController: NavController,
@@ -14,11 +14,11 @@ fun NavGraphBuilder.homeGraph(
     isNotificationSheetPending: () -> Boolean
 ) {
     composable(BottomNavItem.Home.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             HomeScreen(
                 onNavigateToAlarm = {
                     navController.navigate(AppRoute.Alarm.route)
@@ -26,6 +26,7 @@ fun NavGraphBuilder.homeGraph(
                 onNavigateToVote = { contentId ->
                     navController.navigate(AppRoute.BattleRouting.createRoute(contentId))
                 },
+                modifier = contentModifier,
                 scrollToTopTrigger = scrollToTopTrigger(),
                 isNotificationSheetPending = isNotificationSheetPending()
             )

@@ -10,7 +10,7 @@ import com.picke.presentation.AppRoute
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ui.main.BottomNavItem
-import com.picke.presentation.ui.main.MainTabScreen
+import com.picke.presentation.ui.main.TabScreen
 import com.picke.presentation.ui.my.content.ContentActivityScreen
 import com.picke.presentation.ui.my.discussion.DiscussionHistoryScreen
 import com.picke.presentation.ui.my.makebattle.MakeBattleScreen
@@ -33,11 +33,11 @@ fun NavGraphBuilder.myGraph(
     onNavigateToExplore: () -> Unit
 ) {
     composable(BottomNavItem.My.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             MyScreen(
                 onNavigateToAlarm = {
                     navController.navigate(AppRoute.Alarm.route)
@@ -62,17 +62,18 @@ fun NavGraphBuilder.myGraph(
                 },
                 onNavigateToTicket = {
                     navController.navigate(AppRoute.Ticket.route)
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.Ticket.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             TicketScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToRegister = { navController.navigate(AppRoute.TicketRegister.route) },
@@ -83,17 +84,18 @@ fun NavGraphBuilder.myGraph(
                 },
                 onNavigateBackAfterLoadFailed = {
                     navController.popBackStack(AppRoute.Ticket.route, inclusive = true)
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.TicketRegister.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             TicketRegisterScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToRegisterComplete = { ticketId ->
@@ -105,7 +107,8 @@ fun NavGraphBuilder.myGraph(
                     navController.navigate(AppRoute.Ticket.route) {
                         popUpTo(BottomNavItem.My.route)
                     }
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
@@ -114,85 +117,93 @@ fun NavGraphBuilder.myGraph(
         route = AppRoute.TicketRegisterComplete.route,
         arguments = listOf(navArgument(AppRoute.ARG_TICKET_ID) { type = NavType.LongType })
     ) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             TicketRegisterCompleteScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToTicket = dropUnlessResumed {
                     navController.navigate(AppRoute.Ticket.route) {
                         popUpTo(BottomNavItem.My.route)
                     }
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.Point.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             PointScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
-                onNavigateToMakeBattle = { navController.navigate(AppRoute.MakeBattle.route) }
+                onNavigateToMakeBattle = { navController.navigate(AppRoute.MakeBattle.route) },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.MakeBattle.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             MakeBattleScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
-                onNavigateToExplore = onNavigateToExplore
+                onNavigateToExplore = onNavigateToExplore,
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.DiscussionHistory.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             DiscussionHistoryScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToDetail = { battleId ->
                     navController.navigate(AppRoute.Perspective.createRoute(battleId))
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.ContentActivity.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             ContentActivityScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToComment = { itemId ->
                     navController.navigate(AppRoute.Comment.createRoute(itemId))
-                }
+                },
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.PhilosopherType.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
-            PhilosopherTypeScreen(onBackClick = dropUnlessResumed { navController.popBackStack() })
+        ) { contentModifier ->
+            PhilosopherTypeScreen(
+                onBackClick = dropUnlessResumed { navController.popBackStack() },
+                modifier = contentModifier
+            )
         }
     }
 
@@ -203,24 +214,25 @@ fun NavGraphBuilder.myGraph(
         })
     ) { backStackEntry ->
         val noticeId = backStackEntry.arguments?.getLong("noticeId")?.takeIf { it != -1L }
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             NoticeEventScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
-                initialNoticeId = noticeId
+                initialNoticeId = noticeId,
+                modifier = contentModifier
             )
         }
     }
 
     composable(AppRoute.Setting.route) { backStackEntry ->
-        MainTabScreen(
+        TabScreen(
             navController = navController,
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
-        ) {
+        ) { contentModifier ->
             SettingScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToSettingProfile = { navController.navigate(AppRoute.SettingProfile.route) },
@@ -232,7 +244,8 @@ fun NavGraphBuilder.myGraph(
                     navController.navigate(AppRoute.Login.route) {
                         popUpTo(0) { inclusive = true }
                     }
-                }
+                },
+                modifier = contentModifier
             )
         }
     }

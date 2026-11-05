@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.scenario.usecase.ScenarioUseCases
-import com.picke.presentation.AppRoute
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.audio.AudioPlayerManager
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewMutation
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiAction
 import com.picke.presentation.ui.classroom.classbattlepreview.model.ClassBattlePreviewUiEvent

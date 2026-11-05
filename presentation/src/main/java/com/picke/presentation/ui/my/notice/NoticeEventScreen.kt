@@ -92,6 +92,7 @@ fun NoticeEventScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

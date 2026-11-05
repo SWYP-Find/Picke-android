@@ -43,7 +43,6 @@ import com.picke.presentation.ui.theme.PickeTheme
 @Composable
 fun DiscussionHistoryScreen(
     onBackClick: () -> Unit,
-    // onNavigateToComment: (Long) -> Unit,
     onNavigateToDetail: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: DiscussionHistoryViewModel = hiltViewModel()
@@ -63,6 +62,7 @@ fun DiscussionHistoryScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             PickeTopAppBar(

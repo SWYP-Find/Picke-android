@@ -1,46 +1,45 @@
-package com.picke.presentation
+package com.picke.presentation.navigation
 
 import com.picke.presentation.ui.vote.model.VoteType
 
 sealed class AppRoute(val route: String) {
-    object Splash : AppRoute("splash_screen")
     object Login : AppRoute("login_screen")
     object Onboarding : AppRoute("onboarding_screen")
-    object Main : AppRoute("main_screen") {
-        fun createRoute() = route
-    }
 
     object Alarm : AppRoute("alarm_screen")
     object Setting : AppRoute("setting_screen")
 
-    object BattleRouting : AppRoute("battle_routing_screen/{battleId}") {
+    object BattleRouting : AppRoute("battle_routing_screen/{$ARG_BATTLE_ID}") {
         fun createRoute(battleId: String) = "battle_routing_screen/$battleId"
     }
 
     object DiscussionHistory : AppRoute("discussion_history_screen")
     object PhilosopherType : AppRoute("philosopher_type_screen")
-    object OtherPhilosopher : AppRoute("other_philosopher_screen/{reportId}") {
+    object OtherPhilosopher : AppRoute("other_philosopher_screen/{$ARG_REPORT_ID}") {
         fun createRoute(reportId: String) = "other_philosopher_screen/$reportId"
     }
 
     object ContentActivity : AppRoute("content_activity_screen")
-    object NoticeEvent : AppRoute("notice_event_screen?noticeId={noticeId}") {
-        fun createRoute() = "notice_event_screen"
-        fun createRoute(noticeId: Long) = "notice_event_screen?noticeId=$noticeId"
+    object NoticeEvent :
+        AppRoute("notice_event_screen?$ARG_NOTICE_ID={$ARG_NOTICE_ID}&$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "notice_event_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+
+        fun createRoute(noticeId: Long) = "notice_event_screen?$ARG_NOTICE_ID=$noticeId"
     }
 
     object SettingProfile : AppRoute("setting_profile_screen")
     object SettingAlarm : AppRoute("setting_alarm_screen")
 
-    object PreVote : AppRoute("pre_vote_screen/{battleId}") {
+    object PreVote : AppRoute("pre_vote_screen/{$ARG_BATTLE_ID}") {
         fun createRoute(battleId: String) = "pre_vote_screen/$battleId"
     }
 
-    object Scenario : AppRoute("scenario_screen/{battleId}") {
+    object Scenario : AppRoute("scenario_screen/{$ARG_BATTLE_ID}") {
         fun createRoute(battleId: String) = "scenario_screen/$battleId"
     }
 
-    object PostVote : AppRoute("post_vote_screen/{battleId}") {
+    object PostVote : AppRoute("post_vote_screen/{$ARG_BATTLE_ID}") {
         fun createRoute(battleId: String) = "post_vote_screen/$battleId"
     }
 
@@ -61,21 +60,29 @@ sealed class AppRoute(val route: String) {
             "comment_screen/$perspectiveId?$ARG_COMMENT_ID=$commentId"
     }
 
-    object Recommend : AppRoute("recommend_screen/{battleId}") {
+    object Recommend : AppRoute("recommend_screen/{$ARG_BATTLE_ID}") {
         fun createRoute(battleId: String) = "recommend_screen/$battleId"
     }
 
     object PrivacyPolicy : AppRoute("privacy_policy_screen")
     object TermsOfService : AppRoute("terms_of_service_screen")
     object Withdraw : AppRoute("withdraw_screen")
-    object Point : AppRoute("point_screen")
+    object Point : AppRoute("point_screen?$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "point_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+    }
+
     object Ticket : AppRoute("ticket_screen")
     object TicketRegister : AppRoute("ticket_register_screen")
     object TicketRegisterComplete : AppRoute("ticket_register_complete_screen/{$ARG_TICKET_ID}") {
         fun createRoute(ticketId: Long) = "ticket_register_complete_screen/$ticketId"
     }
 
-    object MakeBattle : AppRoute("makebattle_screen")
+    object MakeBattle :
+        AppRoute("makebattle_screen?$ARG_SHOWS_BOTTOM_BAR={$ARG_SHOWS_BOTTOM_BAR}") {
+        fun createRoute(showsBottomBar: Boolean) =
+            "makebattle_screen?$ARG_SHOWS_BOTTOM_BAR=$showsBottomBar"
+    }
 
     object ClassCreate : AppRoute("class_create_screen")
     object ClassBattlePreview : AppRoute("class_battle_preview_screen/{$ARG_BATTLE_ID}") {
@@ -127,18 +134,21 @@ sealed class AppRoute(val route: String) {
         fun createRoute(classId: Long) = "class_my_opinion_screen/$classId"
     }
 
-    object TodayBattle : AppRoute("tab_battle?battleId={battleId}") {
-        fun createRoute(battleId: String) = "tab_battle?battleId=$battleId"
+    object TodayBattle : AppRoute("tab_battle?$ARG_BATTLE_ID={$ARG_BATTLE_ID}") {
+        fun createRoute(battleId: String) = "tab_battle?$ARG_BATTLE_ID=$battleId"
     }
 
     companion object {
         const val ARG_CLASS_ID = "classId"
         const val ARG_VOTE_TYPE = "voteType"
         const val ARG_BATTLE_ID = "battleId"
+        const val ARG_REPORT_ID = "reportId"
+        const val ARG_NOTICE_ID = "noticeId"
         const val ARG_TICKET_ID = "ticketId"
         const val ARG_PERSPECTIVE_ID = "perspectiveId"
         const val ARG_FIRST_OPTION_ID = "firstOptionId"
         const val ARG_COMMENT_ID = "commentId"
+        const val ARG_SHOWS_BOTTOM_BAR = "showsBottomBar"
         const val RESULT_CLASS_CHANGED = "classChanged"
     }
 }

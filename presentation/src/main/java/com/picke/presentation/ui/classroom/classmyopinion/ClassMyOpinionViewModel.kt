@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionMutation
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent

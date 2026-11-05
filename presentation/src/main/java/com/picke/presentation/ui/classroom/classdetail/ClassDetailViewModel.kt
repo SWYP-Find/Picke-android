@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailMutation
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent

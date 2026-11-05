@@ -6,7 +6,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.picke.presentation.AppRoute
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
+import com.picke.presentation.navigation.TabScreen
 import com.picke.presentation.ui.classroom.classbattlepreview.ClassBattlePreviewScreen
 import com.picke.presentation.ui.classroom.classcreate.ClassCreateScreen
 import com.picke.presentation.ui.classroom.classdebate.ClassDebateScreen
@@ -18,9 +20,7 @@ import com.picke.presentation.ui.classroom.classmyopinion.ClassMyOpinionScreen
 import com.picke.presentation.ui.classroom.classresult.ClassResultScreen
 import com.picke.presentation.ui.classroom.classshare.ClassShareScreen
 import com.picke.presentation.ui.classroom.classvote.ClassVoteScreen
-import com.picke.presentation.ui.classroom.component.ClassTabScaffold
 import com.picke.presentation.ui.classroom.myclass.MyClassScreen
-import com.picke.presentation.ui.main.BottomNavItem
 import com.picke.presentation.ui.perspective.PerspectiveScreen
 import com.picke.presentation.ui.scenario.ScenarioScreen
 import com.picke.presentation.ui.vote.model.VoteType
@@ -166,8 +166,11 @@ fun NavGraphBuilder.classGraph(
         )
     }
 
-    composable(AppRoute.MyClass.route) {
-        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(AppRoute.MyClass.route) { backStackEntry ->
+        TabScreen(
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             MyClassScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassClick = { classId ->
@@ -184,8 +187,11 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) {
-        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassDetailScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassChanged = dropUnlessResumed {
@@ -244,8 +250,11 @@ fun NavGraphBuilder.classGraph(
         )
     }
 
-    composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) {
-        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassMember.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassMemberScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onMembersChanged = dropUnlessResumed {
@@ -259,8 +268,11 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) {
-        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(route = AppRoute.ClassResult.route, arguments = classIdArguments) { backStackEntry ->
+        TabScreen(
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassResultScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onNavigateToMyOpinion = { classId ->
@@ -271,8 +283,14 @@ fun NavGraphBuilder.classGraph(
         }
     }
 
-    composable(route = AppRoute.ClassMyOpinion.route, arguments = classIdArguments) {
-        ClassTabScaffold(onTabClick = onTabClick) { contentModifier ->
+    composable(
+        route = AppRoute.ClassMyOpinion.route,
+        arguments = classIdArguments
+    ) { backStackEntry ->
+        TabScreen(
+            backStackEntry = backStackEntry,
+            onTabClick = onTabClick
+        ) { contentModifier ->
             ClassMyOpinionScreen(
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 modifier = contentModifier

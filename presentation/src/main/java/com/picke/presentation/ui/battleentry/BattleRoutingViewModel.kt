@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.feature.battle.usecase.BattleUseCases
+import com.picke.presentation.navigation.AppRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,7 @@ class BattleRoutingViewModel @Inject constructor(
     private val battleUseCases: BattleUseCases
 ) : ViewModel() {
 
-    val battleId: String = checkNotNull(savedStateHandle["battleId"])
+    val battleId: String = checkNotNull(savedStateHandle[AppRoute.ARG_BATTLE_ID])
 
     private val _routeEvent = MutableStateFlow<String?>(null)
     val routeEvent: StateFlow<String?> = _routeEvent.asStateFlow()

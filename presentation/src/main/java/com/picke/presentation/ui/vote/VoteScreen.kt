@@ -164,8 +164,7 @@ fun VoteContent(
     onGetShareLink: (Int, (String) -> Unit, (String) -> Unit) -> Unit,
     onDismissPointDialog: () -> Unit,
     modifier: Modifier = Modifier,
-    classInfo: VoteClassInfoUiModel? = null,
-    isRequesting: Boolean = false
+    classInfo: VoteClassInfoUiModel? = null
 ) {
     val context = LocalContext.current
     val clipboard = LocalClipboard.current
@@ -271,7 +270,7 @@ fun VoteContent(
             bottomBar = {
                 VoteBottomSection(
                     submitText = stringResource(style.submitTextRes),
-                    isSubmitEnabled = selectedOptionId != null && !isRequesting,
+                    isSubmitEnabled = selectedOptionId != null && !uiState.isRequesting,
                     deadlineText = style.deadlineText,
                     onSubmitClick = {
                         selectedOptionId?.let { optionId ->

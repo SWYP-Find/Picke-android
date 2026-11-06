@@ -117,8 +117,7 @@ private fun ClassVoteContent(
             onTrackShare = {},
             onGetShareLink = { _, _, _ -> },
             onDismissPointDialog = {},
-            classInfo = classInfo,
-            isRequesting = uiState.isRequesting
+            classInfo = classInfo
         )
     }
 }

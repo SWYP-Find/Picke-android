@@ -4,13 +4,16 @@ import com.picke.domain.feature.classroom.model.ClassTopicCandidateBoard
 import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
 import com.picke.domain.feature.classroom.model.ClassTopicOptionBoard
 import com.picke.domain.feature.classroom.model.ClassTopicVersionBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassTopicDraftRequestDto(
     val topicSeed: String,
     val difficulty: String,
     val categories: List<String>
 )
 
+@Serializable
 data class ClassTopicDraftResponseDto(
     val draftId: Long?,
     val suggestStatus: String?,
@@ -20,6 +23,7 @@ data class ClassTopicDraftResponseDto(
     val candidates: List<ClassTopicCandidateDto>?
 )
 
+@Serializable
 data class ClassTopicCandidateDto(
     val candidateId: Long?,
     val question: String?,
@@ -29,11 +33,13 @@ data class ClassTopicCandidateDto(
     val options: List<ClassTopicOptionDto>?
 )
 
+@Serializable
 data class ClassTopicSelectionRequestDto(
     val batchNo: Int,
     val candidateId: Long
 )
 
+@Serializable
 data class ClassTopicVersionResponseDto(
     val topicVersionId: Long?,
     val draftId: Long?,
@@ -46,6 +52,7 @@ data class ClassTopicVersionResponseDto(
     val options: List<ClassTopicOptionDto>?
 )
 
+@Serializable
 data class ClassTopicOptionDto(
     val position: String?,
     val label: String?,

@@ -5,8 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.picke.data.BuildConfig
 import com.picke.data.common.local.PreferencesManager
 import com.picke.data.common.model.BaseResponse
@@ -23,7 +21,6 @@ import javax.inject.Singleton
 class TokenRefresher @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val preferencesManager: PreferencesManager,
-    private val gson: Gson,
     private val loggingInterceptor: HttpLoggingInterceptor
 ) {
 
@@ -66,8 +63,7 @@ class TokenRefresher @Inject constructor(
             val body = refreshResponse.body?.string()
 
             if (refreshResponse.isSuccessful && body != null) {
-                val type = object : TypeToken<BaseResponse<AuthResponseDto>>() {}.type
-                val parsed: BaseResponse<AuthResponseDto> = gson.fromJson(body, type)
+                val parsed = PickeJson.decodeFromString<BaseResponse<AuthResponseDto>>(body)
                 val newAccessToken = parsed.data?.accessToken
                 val newRefreshToken = parsed.data?.refreshToken
 

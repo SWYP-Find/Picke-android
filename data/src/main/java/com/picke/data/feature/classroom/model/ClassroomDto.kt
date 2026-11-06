@@ -2,7 +2,9 @@ package com.picke.data.feature.classroom.model
 
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class MyClassResponseDto(
     val classId: Long?,
     val name: String?,
@@ -18,6 +20,7 @@ data class MyClassResponseDto(
     val createdAt: String?
 )
 
+@Serializable
 data class ClassCreateRequestDto(
     val name: String,
     val battleId: Long?,
@@ -27,11 +30,13 @@ data class ClassCreateRequestDto(
     val ownerParticipates: Boolean
 )
 
+@Serializable
 data class ClassUpdateRequestDto(
     val name: String?,
     val deadline: String?
 )
 
+@Serializable
 data class ClassDetailResponseDto(
     val classId: Long?,
     val name: String?,
@@ -49,6 +54,7 @@ data class ClassDetailResponseDto(
     val ownerParticipates: Boolean?
 )
 
+@Serializable
 data class ClassBattleInfoDto(
     val battleId: Long?
 )

@@ -4,13 +4,16 @@ import com.picke.domain.feature.classroom.model.ClassDebateBoard
 import com.picke.domain.feature.classroom.model.ClassDebateMessageBoard
 import com.picke.domain.feature.classroom.model.ClassDebatePhilosopherBoard
 import com.picke.domain.feature.classroom.model.ClassDebateSideBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassDebateReplyRequestDto(
     val roundIndex: Int,
     val content: String,
     val requestKey: String
 )
 
+@Serializable
 data class ClassDebateResponseDto(
     val sessionId: Long?,
     val status: String?,
@@ -26,6 +29,7 @@ data class ClassDebateResponseDto(
     val replyMaxLength: Int?
 )
 
+@Serializable
 data class ClassDebatePhilosopherDto(
     val code: String?,
     val name: String?,
@@ -33,6 +37,7 @@ data class ClassDebatePhilosopherDto(
     val imageKey: String?
 )
 
+@Serializable
 data class ClassDebateSideDto(
     val optionId: Long?,
     val position: String?,
@@ -40,6 +45,7 @@ data class ClassDebateSideDto(
     val stance: String?
 )
 
+@Serializable
 data class ClassDebateMessageDto(
     val messageId: Long?,
     val round: Int?,

@@ -3,7 +3,9 @@ package com.picke.data.feature.alarm.model
 import com.picke.domain.feature.alarm.model.AlarmDetailBoard
 import com.picke.domain.feature.alarm.model.AlarmItemBoard
 import com.picke.domain.feature.alarm.model.AlarmPageBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AlarmItemDto(
     val notificationId: Long?,
     val category: String?,
@@ -16,15 +18,18 @@ data class AlarmItemDto(
     val createdAt: String?
 )
 
+@Serializable
 data class AlarmPageDto(
     val items: List<AlarmItemDto>?,
     val hasNext: Boolean?
 )
 
+@Serializable
 data class AlarmUnreadDto(
     val hasUnread: Boolean?
 )
 
+@Serializable
 data class AlarmDetailDto(
     val notificationId: Long?,
     val perspectiveId: Long?,

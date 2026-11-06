@@ -12,7 +12,9 @@ import com.picke.domain.feature.classroom.model.ClassResultMyReportBoard
 import com.picke.domain.feature.classroom.model.ClassResultOptionBoard
 import com.picke.domain.feature.classroom.model.ClassResultReportOptionBoard
 import com.picke.domain.feature.classroom.model.ClassResultStatsBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassResultResponseDto(
     val classId: Long?,
     val myRole: String?,
@@ -26,6 +28,7 @@ data class ClassResultResponseDto(
     val insightState: String?
 )
 
+@Serializable
 data class ClassResultStatsDto(
     val activeMemberCount: Int?,
     val completedCount: Int?,
@@ -36,6 +39,7 @@ data class ClassResultStatsDto(
     val options: List<ClassResultOptionDto>?
 )
 
+@Serializable
 data class ClassResultOptionDto(
     val optionId: Long?,
     val title: String?,
@@ -45,6 +49,7 @@ data class ClassResultOptionDto(
     val postVoteRatio: Double?
 )
 
+@Serializable
 data class ClassResultMyReportResponseDto(
     val classId: Long?,
     val state: String?,
@@ -57,12 +62,14 @@ data class ClassResultMyReportResponseDto(
     val generatedAt: String?
 )
 
+@Serializable
 data class ClassResultReportOptionDto(
     val optionId: Long?,
     val title: String?,
     val stance: String?
 )
 
+@Serializable
 data class ClassResultFeedbackDto(
     val headline: String?,
     val judgmentBasis: String?,
@@ -75,11 +82,13 @@ data class ClassResultFeedbackDto(
     val excludedCount: Int?
 )
 
+@Serializable
 data class ClassResultFeedbackPointDto(
     val title: String?,
     val body: String?
 )
 
+@Serializable
 data class ClassResultFeedbackEvidenceDto(
     val field: String?,
     val sourceType: String?,
@@ -89,6 +98,7 @@ data class ClassResultFeedbackEvidenceDto(
     val createdAt: String?
 )
 
+@Serializable
 data class ClassResultInsightResponseDto(
     val classId: Long?,
     val state: String?,
@@ -101,6 +111,7 @@ data class ClassResultInsightResponseDto(
     val evidence: List<ClassResultInsightEvidenceDto>?
 )
 
+@Serializable
 data class ClassResultInsightEvidenceDto(
     val sourceType: String?,
     val id: Long?,
@@ -110,6 +121,7 @@ data class ClassResultInsightEvidenceDto(
     val createdAt: String?
 )
 
+@Serializable
 data class ClassResultMyActivityResponseDto(
     val classId: Long?,
     val receivedLikeCount: Int?,
@@ -119,6 +131,7 @@ data class ClassResultMyActivityResponseDto(
     val hasNext: Boolean?
 )
 
+@Serializable
 data class ClassResultMyActivityCommentDto(
     val commentId: Long?,
     val perspectiveId: Long?,

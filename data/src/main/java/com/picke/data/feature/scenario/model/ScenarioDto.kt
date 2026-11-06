@@ -6,7 +6,9 @@ import com.picke.domain.feature.scenario.model.ScenarioOption
 import com.picke.domain.feature.scenario.model.ScenarioPhilosopher
 import com.picke.domain.feature.scenario.model.ScenarioScript
 import com.picke.domain.feature.scenario.model.SpeakerType
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ScenarioPhilosopherDto(
     val name: String?,
     val stance: String?,
@@ -14,6 +16,7 @@ data class ScenarioPhilosopherDto(
     val imageUrl: String?
 )
 
+@Serializable
 data class ScenarioResponseDto(
     val battleId: Long,
     val title: String?,
@@ -25,6 +28,7 @@ data class ScenarioResponseDto(
     val nodes: List<ScenarioNodeDto>
 )
 
+@Serializable
 data class ScenarioNodeDto(
     val nodeId: Long,
     val nodeName: String,
@@ -34,6 +38,7 @@ data class ScenarioNodeDto(
     val interactiveOptions: List<ScenarioOptionDto>
 )
 
+@Serializable
 data class ScenarioScriptDto(
     val scriptId: Long,
     val startTimeMs: Long,
@@ -42,6 +47,7 @@ data class ScenarioScriptDto(
     val text: String
 )
 
+@Serializable
 data class ScenarioOptionDto(
     val optionId: Long?,
     val label: String,

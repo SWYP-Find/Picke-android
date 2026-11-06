@@ -44,9 +44,6 @@
 -keep class com.google.firebase.** { *; }
 # AndroidX Splash Screen
 -keep class androidx.core.splashscreen.** { *; }
-# 3. Gson 관련 난독화 방어
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.** { *; }
 # Kakao SDK
 -keep class com.kakao.sdk.** { *; }
 

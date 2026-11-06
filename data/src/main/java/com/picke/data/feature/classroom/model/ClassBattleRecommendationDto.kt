@@ -2,11 +2,14 @@ package com.picke.data.feature.classroom.model
 
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
 import com.picke.domain.feature.classroom.model.ClassBattleRecommendationOptionBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassBattleRecommendationResponseDto(
     val items: List<ClassBattleRecommendationItemDto>?
 )
 
+@Serializable
 data class ClassBattleRecommendationItemDto(
     val battleId: Long?,
     val title: String?,
@@ -18,6 +21,7 @@ data class ClassBattleRecommendationItemDto(
     val options: List<ClassBattleRecommendationOptionDto>?
 )
 
+@Serializable
 data class ClassBattleRecommendationOptionDto(
     val position: String?,
     val label: String?,

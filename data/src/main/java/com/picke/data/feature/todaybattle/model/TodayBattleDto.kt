@@ -3,12 +3,15 @@ package com.picke.data.feature.todaybattle.model
 import com.picke.domain.feature.todaybattle.model.TodayBattleBoard
 import com.picke.domain.feature.todaybattle.model.TodayBattleItem
 import com.picke.domain.feature.todaybattle.model.TodayBattleOption
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TodayBattleResponseDto(
     val items: List<TodayBattleItemDto>,
     val totalCount: Int
 )
 
+@Serializable
 data class TodayBattleItemDto(
     val battleId: Long,
     val title: String,
@@ -21,12 +24,14 @@ data class TodayBattleItemDto(
     val options: List<TodayBattleOptionDto>
 )
 
+@Serializable
 data class TodayBattleTagDto(
     val tagId: Long,
     val name: String,
     val type: String
 )
 
+@Serializable
 data class TodayBattleOptionDto(
     val optionId: Long,
     val title: String,

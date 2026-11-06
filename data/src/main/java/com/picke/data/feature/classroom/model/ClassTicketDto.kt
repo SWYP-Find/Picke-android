@@ -2,11 +2,14 @@ package com.picke.data.feature.classroom.model
 
 import com.picke.domain.feature.classroom.model.ClassTicketBoard
 import com.picke.domain.feature.classroom.model.ClassTicketPreviewBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassTicketRegisterRequestDto(
     val code: String
 )
 
+@Serializable
 data class ClassTicketResponseDto(
     val ticketId: Long?,
     val capacity: Int?,
@@ -17,6 +20,7 @@ data class ClassTicketResponseDto(
     val readGraceEndsAt: String?
 )
 
+@Serializable
 data class ClassTicketPreviewResponseDto(
     val capacity: Int?,
     val registerBy: String?,

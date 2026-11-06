@@ -5,7 +5,9 @@ import com.picke.data.feature.battle.model.toDomainModel
 import com.picke.domain.feature.battle.model.BattleDetailBoard
 import com.picke.domain.feature.battle.model.BattleInfoBoard
 import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClassBattleDetailResponseDto(
     val classId: Long?,
     val myRole: String?,
@@ -18,6 +20,7 @@ data class ClassBattleDetailResponseDto(
     val battle: BattleDetailDto?
 )
 
+@Serializable
 data class ClassMidVoteRequestDto(
     val checkpointId: Long,
     val optionId: Long

@@ -4,7 +4,9 @@ import com.picke.domain.feature.battle.model.BattleDetailBoard
 import com.picke.domain.feature.battle.model.BattleInfoBoard
 import com.picke.domain.feature.battle.model.BattleOptionBoard
 import com.picke.domain.feature.battle.model.BattleTagBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BattleDetailDto(
     val battleInfo: BattleInfoDto?,
     val description: String?,
@@ -16,6 +18,7 @@ data class BattleDetailDto(
     val valueTags: List<BattleTagDto>?
 )
 
+@Serializable
 data class BattleInfoDto(
     val battleId: Long?,
     val title: String?,
@@ -28,6 +31,7 @@ data class BattleInfoDto(
     val options: List<BattleOptionDto>?
 )
 
+@Serializable
 data class BattleOptionDto(
     val optionId: Long?,
     val title: String?,
@@ -37,6 +41,7 @@ data class BattleOptionDto(
     val tags: List<BattleTagDto>?
 )
 
+@Serializable
 data class BattleTagDto(
     val tagId: Long?,
     val name: String?,

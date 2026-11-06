@@ -5,7 +5,9 @@ import com.picke.domain.feature.home.model.ContentOption
 import com.picke.domain.feature.home.model.HomeBestCommentBoard
 import com.picke.domain.feature.home.model.HomeBoard
 import com.picke.domain.feature.home.model.HomeContent
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HomeResponseDto(
     val newNotice: Boolean?,
     val editorPicks: List<EditorPickDto>?,
@@ -15,12 +17,14 @@ data class HomeResponseDto(
     val newBattles: List<NewBattleDto>?
 )
 
+@Serializable
 data class TagDto(
     val tagId: Long?,
     val name: String?,
     val type: String?
 )
 
+@Serializable
 data class EditorPickDto(
     val battleId: Long?,
     val thumbnailUrl: String?,
@@ -32,6 +36,7 @@ data class EditorPickDto(
     val viewCount: Int?
 )
 
+@Serializable
 data class TrendingBattleDto(
     val battleId: Long?,
     val thumbnailUrl: String?,
@@ -41,6 +46,7 @@ data class TrendingBattleDto(
     val viewCount: Int?
 )
 
+@Serializable
 data class BestBattleDto(
     val battleId: Long?,
     val philosopherA: String?,
@@ -52,6 +58,7 @@ data class BestBattleDto(
 )
 
 // TODO: API 연동 - 홈 API에 bestComments가 추가되면 필드 이름 확인
+@Serializable
 data class BestCommentDto(
     val battleId: Long?,
     val battleTitle: String?,
@@ -59,6 +66,7 @@ data class BestCommentDto(
     val content: String?
 )
 
+@Serializable
 data class NewBattleDto(
     val battleId: Long?,
     val thumbnailUrl: String?,

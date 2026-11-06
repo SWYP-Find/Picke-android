@@ -57,7 +57,6 @@ dependencies {
 
     // [Network - Retrofit]
     implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp.logging)

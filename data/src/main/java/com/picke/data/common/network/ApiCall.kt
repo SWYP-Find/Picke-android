@@ -1,10 +1,10 @@
 package com.picke.data.common.network
 
-import com.google.gson.Gson
-import com.google.gson.JsonParseException
 import com.picke.data.common.error.toReportedFailure
 import com.picke.data.common.model.BaseResponse
 import com.picke.domain.common.exception.ApiErrorException
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.JsonElement
 import retrofit2.HttpException
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
@@ -21,9 +21,9 @@ internal inline fun <T> apiCall(block: () -> Result<T>): Result<T> = try {
 
 internal fun HttpException.toApiErrorException(): Exception {
     val error = try {
-        val errorBody = response()?.errorBody()?.string()
-        Gson().fromJson(errorBody, BaseResponse::class.java)?.error
-    } catch (e: JsonParseException) {
+        val errorBody = response()?.errorBody()?.string() ?: return this
+        PickeJson.decodeFromString<BaseResponse<JsonElement>>(errorBody).error
+    } catch (e: SerializationException) {
         null
     } catch (e: IOException) {
         null

@@ -1,13 +1,16 @@
 package com.picke.data.common.model
 
 import com.picke.domain.common.exception.ApiErrorException
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BaseResponse<T>(
     val statusCode: Int,
     val data: T?,
     val error: ErrorResponse?
 )
 
+@Serializable
 data class ErrorResponse(
     val code: String?,
     val message: String?

@@ -7,12 +7,15 @@ import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import kotlinx.serialization.Serializable
 
 // [공통 DTO]
+@Serializable
 data class PerspectiveRequestDto(
     val content: String
 )
 
+@Serializable
 data class PerspectiveUserDto(
     val userTag: String?,
     val nickname: String?,
@@ -20,6 +23,7 @@ data class PerspectiveUserDto(
     val characterImageUrl: String?
 )
 
+@Serializable
 data class PerspectiveOptionDto(
     val optionId: Long?,
     val title: String?,
@@ -27,12 +31,14 @@ data class PerspectiveOptionDto(
 )
 
 // [API 1: 관점 리스트 조회]
+@Serializable
 data class PerspectivePageDto(
     val items: List<PerspectiveDto>?,
     val nextCursor: String?,
     val hasNext: Boolean?
 )
 
+@Serializable
 data class PerspectiveDto(
     val perspectiveId: Long?,
     val user: PerspectiveUserDto?,
@@ -46,6 +52,7 @@ data class PerspectiveDto(
 )
 
 // [API 2 & 4 & 5 & 6 & 7 유지보수용 DTO]
+@Serializable
 data class PerspectiveCreateResponseDto(
     val perspectiveId: Long?,
     val status: String?,
@@ -53,6 +60,7 @@ data class PerspectiveCreateResponseDto(
 )
 
 // [API 3: 내 관점 조회 & API 4: 관점 단건 조회 공통 DTO]
+@Serializable
 data class PerspectiveDetailResponseDto(
     val perspectiveId: Long?,
     val user: PerspectiveUserDto?,
@@ -67,18 +75,21 @@ data class PerspectiveDetailResponseDto(
 )
 
 // [API 8: 관점 좋아요 수 조회 응답 DTO]
+@Serializable
 data class PerspectiveLikeCountResponseDto(
     val perspectiveId: Long?,
     val likeCount: Int?
 )
 
 // [API 9 & 10: 관점 좋아요 등록 및 취소 응답 DTO]
+@Serializable
 data class PerspectiveLikeToggleResponseDto(
     val perspectiveId: Long?,
     val likeCount: Int?,
     val isLiked: Boolean?
 )
 
+@Serializable
 data class PerspectiveUpdateResponseDto(
     val perspectiveId: Long?,
     val content: String?,

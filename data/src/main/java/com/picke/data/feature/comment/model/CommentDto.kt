@@ -6,13 +6,16 @@ import com.picke.domain.feature.comment.model.CommentLikeToggleBoard
 import com.picke.domain.feature.comment.model.CommentPageBoard
 import com.picke.domain.feature.comment.model.CommentUpdateBoard
 import com.picke.domain.feature.comment.model.CommentUserBoard
+import kotlinx.serialization.Serializable
 
 // [요청 DTO] 댓글 생성 및 수정 공통
+@Serializable
 data class CommentRequestDto(
     val content: String?
 )
 
 // [응답 DTO] 댓글 유저 정보 공통
+@Serializable
 data class CommentUserDto(
     val userTag: String?,
     val nickname: String?,
@@ -21,6 +24,7 @@ data class CommentUserDto(
 )
 
 // [응답 DTO] 단일 댓글 정보
+@Serializable
 data class CommentDto(
     val commentId: Long?,
     val user: CommentUserDto?,
@@ -33,6 +37,7 @@ data class CommentDto(
 )
 
 // [응답 DTO] 댓글 목록 (페이지네이션)
+@Serializable
 data class CommentListResponseDto(
     val items: List<CommentDto>?,
     val nextCursor: String?,
@@ -40,6 +45,7 @@ data class CommentListResponseDto(
 )
 
 // [응답 DTO] 댓글 생성 응답
+@Serializable
 data class CommentCreateResponseDto(
     val commentId: Long?,
     val user: CommentUserDto?,
@@ -52,6 +58,7 @@ data class CommentCreateResponseDto(
 )
 
 // [응답 DTO] 댓글 수정 응답
+@Serializable
 data class CommentUpdateResponseDto(
     val commentId: Long?,
     val content: String?,
@@ -59,6 +66,7 @@ data class CommentUpdateResponseDto(
 )
 
 // [응답 DTO] 댓글 좋아요 등록 및 취소 응답
+@Serializable
 data class CommentLikeToggleResponseDto(
     val perspectiveId: Long?, // 명세서상 응답에 perspectiveId로 내려오고 있습니다.
     val likeCount: Int?,

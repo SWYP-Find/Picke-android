@@ -4,12 +4,15 @@ import com.picke.domain.feature.recommend.model.RecommendBoard
 import com.picke.domain.feature.recommend.model.RecommendOptionBoard
 import com.picke.domain.feature.recommend.model.RecommendPageBoard
 import com.picke.domain.feature.recommend.model.RecommendTagBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class RecommendTagDto(
     val tagId: Long?,
     val name: String?
 )
 
+@Serializable
 data class RecommendOptionDto(
     val optionId: Long?,
     val title: String?,
@@ -18,6 +21,7 @@ data class RecommendOptionDto(
     val imageUrl: String?
 )
 
+@Serializable
 data class RecommendationItemDto(
     val battleId: Long?,
     val title: String?,
@@ -29,6 +33,7 @@ data class RecommendationItemDto(
     val options: List<RecommendOptionDto>?
 )
 
+@Serializable
 data class RecommendationPageResponseDto(
     val items: List<RecommendationItemDto>?,
     val nextCursor: String?,

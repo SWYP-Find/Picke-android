@@ -1,19 +1,20 @@
 package com.picke.data.di
 
 import android.util.Log
-import com.google.gson.Gson
 import com.picke.data.BuildConfig
 import com.picke.data.common.network.AuthHeader
 import com.picke.data.common.network.AuthInterceptor
+import com.picke.data.common.network.PickeJson
 import com.picke.data.common.network.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -58,13 +59,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(PickeJson.asConverterFactory("application/json".toMediaType()))
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideGson(): Gson {
-        return Gson()
     }
 }

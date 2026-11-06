@@ -1,8 +1,8 @@
 package com.picke.data.common.error
 
-import com.google.gson.stream.MalformedJsonException
 import com.picke.domain.common.exception.ApiErrorException
 import io.sentry.Sentry
+import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -16,7 +16,7 @@ internal fun <T> Exception.toReportedFailure(): Result<T> {
 }
 
 private fun Throwable.isUnexpected(): Boolean = when (this) {
-    is MalformedJsonException -> true
+    is SerializationException -> true
     is IOException -> false
     is HttpException -> false
     is ApiErrorException -> false

@@ -17,8 +17,10 @@ import com.picke.domain.feature.mypage.model.NotificationSettingsBoard
 import com.picke.domain.feature.mypage.model.PreferenceReport
 import com.picke.domain.feature.mypage.model.ProfileUpdateBoard
 import com.picke.domain.feature.mypage.model.RecapScores
+import kotlinx.serialization.Serializable
 
 // --- [Request DTOs] ---
+@Serializable
 data class NotificationSettingsDto(
     val newBattleEnabled: Boolean?,
     val battleResultEnabled: Boolean?,
@@ -28,12 +30,14 @@ data class NotificationSettingsDto(
     val marketingEventEnabled: Boolean?
 )
 
+@Serializable
 data class ProfileUpdateRequestDto(
     val nickname: String,
     val characterType: String
 )
 
 // --- [Response DTOs] ---
+@Serializable
 data class MyBattleRecordItemDto(
     val battleId: String?,
     val recordId: String?,
@@ -44,12 +48,14 @@ data class MyBattleRecordItemDto(
     val createdAt: String?
 )
 
+@Serializable
 data class MyBattleRecordPageDto(
     val items: List<MyBattleRecordItemDto>?,
     val nextOffset: Int?,
     val hasNext: Boolean?
 )
 
+@Serializable
 data class MyContentActivityAuthorDto(
     val userTag: String?,
     val nickname: String?,
@@ -57,6 +63,7 @@ data class MyContentActivityAuthorDto(
     val characterImageUrl: String?
 )
 
+@Serializable
 data class MyContentActivityItemDto(
     val activityId: String?,
     val activityType: String?,
@@ -71,12 +78,14 @@ data class MyContentActivityItemDto(
     val createdAt: String?
 )
 
+@Serializable
 data class MyContentActivityPageDto(
     val items: List<MyContentActivityItemDto>?,
     val nextOffset: Int?,
     val hasNext: Boolean?
 )
 
+@Serializable
 data class MyProfileDto(
     val userTag: String?,
     val nickname: String?,
@@ -86,6 +95,7 @@ data class MyProfileDto(
     val mannerTemperature: Double?
 )
 
+@Serializable
 data class MyPhilosopherDto(
     val philosopherType: String?,
     val philosopherLabel: String?,
@@ -95,18 +105,21 @@ data class MyPhilosopherDto(
     val imageUrl: String?
 )
 
+@Serializable
 data class MyTierDto(
     val tierCode: String?,
     val tierLabel: String?,
     val currentPoint: Int?
 )
 
+@Serializable
 data class MyPageInfoDto(
     val profile: MyProfileDto?,
     val philosopher: MyPhilosopherDto?,
     val tier: MyTierDto?
 )
 
+@Serializable
 data class ProfileUpdateResponseDto(
     val userTag: String?,
     val nickname: String?,
@@ -114,12 +127,14 @@ data class ProfileUpdateResponseDto(
     val updatedAt: String?
 )
 
+@Serializable
 data class FavoriteTopicDto(
     val rank: Int?,
     val tagName: String?,
     val participationCount: Int?
 )
 
+@Serializable
 data class RecapScoresDto(
     val principle: Int?,
     val reason: Int?,
@@ -129,6 +144,7 @@ data class RecapScoresDto(
     val ideal: Int?
 )
 
+@Serializable
 data class PreferenceReportDto(
     val totalParticipation: Int?,
     val opinionChanges: Int?,
@@ -136,6 +152,7 @@ data class PreferenceReportDto(
     val favoriteTopics: List<FavoriteTopicDto>?
 )
 
+@Serializable
 data class MyRecapDto(
     val myCard: MyPhilosopherDto?,
     val bestMatchCard: MyPhilosopherDto?,
@@ -144,6 +161,7 @@ data class MyRecapDto(
     val preferenceReport: PreferenceReportDto?
 )
 
+@Serializable
 data class CreditHistoryItemDto(
     val id: Long?,
     val creditType: String?,
@@ -152,6 +170,7 @@ data class CreditHistoryItemDto(
     val createdAt: String?
 )
 
+@Serializable
 data class CreditHistoryPageDto(
     val items: List<CreditHistoryItemDto>?,
     val nextOffset: Int?,

@@ -38,7 +38,7 @@ data class SocialLoginRequest(
 @Serializable
 data class LogoutResponseDto(
     @SerialName("logged_out")
-    val loggedOut: Boolean,
+    val loggedOut: Boolean
 )
 
 /**
@@ -56,7 +56,7 @@ data class WithdrawalRequest(
  */
 @Serializable
 data class WithdrawnResponseDto(
-    val withdrawn: Boolean,
+    val withdrawn: Boolean
 )
 
 /**

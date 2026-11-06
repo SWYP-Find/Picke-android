@@ -324,6 +324,8 @@
     <string name="class_share_go_to_class">클래스로 이동하기</string>
     <string name="class_share_copy_code">참여 코드 복사</string>
     <string name="class_share_code_copied">참여 코드를 복사했어요</string>
+    <string name="class_share_code_message">[픽케] \'%1$s\' 클래스에 초대합니다.\n참여 코드: %2$s\n픽케 앱 클래스 탭에서 참여 코드를 입력해 주세요.</string>
+    <string name="class_share_sheet_title">[픽케] \'%1$s\' 클래스 초대</string>
 
     <!-- 클래스 - 참여 -->
     <string name="class_join_title">클래스 참여</string>

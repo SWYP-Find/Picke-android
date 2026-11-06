@@ -1,14 +1,20 @@
 package com.picke.presentation.share
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kakao.sdk.share.ShareClient
@@ -20,8 +26,10 @@ import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.coroutines.cancellation.CancellationException
@@ -52,6 +60,43 @@ suspend fun loadBitmapFromUrl(context: Context, url: String): Bitmap? {
         .build()
     val result = context.imageLoader.execute(request)
     return (result.drawable as? BitmapDrawable)?.bitmap
+}
+
+suspend fun launchTextShare(
+    context: Context,
+    text: String,
+    previewTitle: String,
+    @DrawableRes previewImageRes: Int,
+    previewImageFileName: String
+) {
+    val previewImageUri = withContext(Dispatchers.IO) {
+        saveDrawableToCacheUri(context, previewImageRes, previewImageFileName)
+    }
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+        putExtra(Intent.EXTRA_TITLE, previewTitle)
+        if (previewImageUri != null) {
+            clipData = ClipData.newUri(context.contentResolver, null, previewImageUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    }
+
+    try {
+        context.startActivity(Intent.createChooser(sendIntent, null))
+    } catch (e: ActivityNotFoundException) {
+        Sentry.captureException(e)
+    }
+}
+
+private fun saveDrawableToCacheUri(
+    context: Context,
+    @DrawableRes drawableRes: Int,
+    fileName: String
+): Uri? {
+    val drawable = ContextCompat.getDrawable(context, drawableRes) ?: return null
+    val file = saveBitmapToCache(context, drawable.toBitmap(), fileName) ?: return null
+    return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
 }
 
 /**

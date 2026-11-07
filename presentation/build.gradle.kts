@@ -132,6 +132,9 @@ dependencies {
     // [Splash]
     implementation(libs.androidx.core.splashscreen)
 
+    // [In-App Update]
+    implementation(libs.play.app.update)
+
     // [Exoplayer]
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)

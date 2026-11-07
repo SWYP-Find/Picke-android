@@ -14,6 +14,7 @@ import com.picke.presentation.notification.FCMService
 import com.picke.presentation.ui.splash.SplashViewModel
 import com.picke.presentation.ui.splash.model.SplashUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.update.InAppUpdateManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -24,6 +25,8 @@ import javax.inject.Inject
 class MainActivity : FragmentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
+
+    private val inAppUpdateManager = InAppUpdateManager(this)
 
     @Inject
     lateinit var deepLinkHandler: DeepLinkHandler
@@ -38,6 +41,7 @@ class MainActivity : FragmentActivity() {
 
         handleFcmIntent(intent)
         handleDeepLink(intent)
+        inAppUpdateManager.checkForUpdate()
 
         enableEdgeToEdge()
 
@@ -46,6 +50,11 @@ class MainActivity : FragmentActivity() {
                 AppNavigation(splashViewModel, deepLinkHandler)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        inAppUpdateManager.resumeUpdate()
     }
 
     override fun onNewIntent(intent: Intent) {

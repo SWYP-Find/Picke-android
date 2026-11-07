@@ -36,6 +36,7 @@ googleServices = "4.4.2"
 playServicesAds = "23.6.0"
 playServicesAdsIdentifier = "18.0.1"
 playServicesAuth = "21.0.0"
+playAppUpdate = "2.1.0"
 
 # [Social & Security]
 kakao = "2.20.1"
@@ -117,6 +118,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 play-services-ads-identifier = { group = "com.google.android.gms", name = "play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 
 # [Social & Security]
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }

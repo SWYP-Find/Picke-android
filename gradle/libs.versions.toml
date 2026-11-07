@@ -39,6 +39,7 @@ playServicesAdsIdentifier = "18.0.1"
 playServicesAuth = "21.1.1"
 credentials = "1.5.0"
 googleId = "1.1.1"
+playAppUpdate = "2.1.0"
 
 # [Social & Security]
 kakao = "2.20.1"
@@ -123,6 +124,7 @@ androidx-credentials-play-services-auth = { group = "androidx.credentials", name
 google-googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 play-services-ads-identifier = { group = "com.google.android.gms", name = "play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 
 # [Social & Security]
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }

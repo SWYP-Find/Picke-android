@@ -11,6 +11,7 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiEvent
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiState
 import com.picke.presentation.ui.classroom.classresult.model.toUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.ClassRole
 import com.picke.presentation.ui.classroom.model.toUiModel
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -85,7 +86,8 @@ class ClassResultViewModel @Inject constructor(
                 return@launch
             }
             val battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
-            val hasSummaryTab = classResult.insightState != null
+            val isOperator = ClassRole.from(classResult.myRole).isOwner
+            val hasSummaryTab = isOperator && classResult.insightState != null
             val hasReportTab = classResult.myReportState != null
             val mutation = ClassResultMutation.ClassResultLoaded(
                 className = classDetail.name,

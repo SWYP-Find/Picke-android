@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.share.launchTextShare
 import com.picke.presentation.ui.classroom.classshare.component.ClassShareSkeleton
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
@@ -59,11 +60,11 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
 private const val CLIP_LABEL = "class_code"
+private const val SHARE_PREVIEW_IMAGE_FILE_NAME = "class_share_preview.png"
 
 @Composable
 fun ClassShareScreen(
     onBackClick: () -> Unit,
-    onShareCodeClick: (code: String) -> Unit,
     onGoToClassClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassShareViewModel = hiltViewModel()
@@ -83,7 +84,20 @@ fun ClassShareScreen(
 
                 ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
 
-                is ClassShareUiEvent.ShareCode -> onShareCodeClick(event.code)
+                is ClassShareUiEvent.ShareCode -> launchTextShare(
+                    context = context,
+                    text = context.getString(
+                        R.string.class_share_code_message,
+                        event.className,
+                        event.code
+                    ),
+                    previewTitle = context.getString(
+                        R.string.class_share_sheet_title,
+                        event.className
+                    ),
+                    previewImageRes = R.drawable.logo_picke_appicon,
+                    previewImageFileName = SHARE_PREVIEW_IMAGE_FILE_NAME
+                )
 
                 is ClassShareUiEvent.CopyCode -> {
                     clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, event.code)))

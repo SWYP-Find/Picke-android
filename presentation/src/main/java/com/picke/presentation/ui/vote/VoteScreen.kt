@@ -143,7 +143,8 @@ fun VoteScreen(
                 },
                 onDismissPointDialog = {
                     viewModel.dismissPointDialog()
-                }
+                },
+                isRequesting = uiState.isRequesting
             )
         } else {
             VoteBattleNotFound(onBackClick = onBackClick)

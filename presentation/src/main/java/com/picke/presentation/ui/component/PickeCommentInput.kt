@@ -71,12 +71,11 @@ fun PickeCommentInput(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
             .imePadding(),
         color = PickeTheme.colors.beige600,
         shadowElevation = PickeCommentInputDimens.shadowElevation
     ) {
-        Column {
+        Column(modifier = Modifier.navigationBarsPadding()) {
             // TODO: 토큰 동기화 - color/border/beige-dark
             HorizontalDivider(
                 thickness = ComponentNumberTokens.borderWidthRegular,

@@ -79,7 +79,6 @@ fun NavGraphBuilder.classGraph(
     composable(route = AppRoute.ClassShare.route, arguments = classIdArguments) {
         ClassShareScreen(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
-            onShareCodeClick = { },
             onGoToClassClick = {
                 navController.navigate(AppRoute.MyClass.route) {
                     popUpTo(AppRoute.ClassShare.route) { inclusive = true }

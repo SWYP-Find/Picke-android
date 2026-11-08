@@ -75,8 +75,10 @@ class VoteViewModel @Inject constructor(
         selectedOptionId: String,
         onSuccess: () -> Unit
     ) {
+        if (_uiState.value.isRequesting) return
+
+        _uiState.update { it.copy(isRequesting = true) }
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
             val optionIdLong = selectedOptionId.toLongOrNull() ?: 0L
             val battleIdLong = battleId.toLongOrNull() ?: 0L
 
@@ -95,8 +97,9 @@ class VoteViewModel @Inject constructor(
                                     choice = selectedOptionId
                                 )
                             } else {
-                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(BattleTarget.General(battleIdLong))
-                                    .getOrNull()?.opinionChanged
+                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(
+                                    BattleTarget.General(battleIdLong)
+                                ).getOrNull()?.opinionChanged
                                 analyticsTracker.trackBattleStep(
                                     stepName = BattleStepName.POST_VOTE,
                                     contentId = battleId,
@@ -105,19 +108,19 @@ class VoteViewModel @Inject constructor(
                                 )
                             }
 
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update { it.copy(isRequesting = false) }
                             onSuccess()
                         }
 
                         is SubmitVoteResult.InsufficientPoints -> {
                             _uiState.update {
-                                it.copy(isInsufficientPoints = true, isLoading = false)
+                                it.copy(isInsufficientPoints = true, isRequesting = false)
                             }
                         }
                     }
                 }
                 .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isRequesting = false) }
                     _uiEvent.send(VoteUiEvent.ShowActionFailedToast)
                 }
         }

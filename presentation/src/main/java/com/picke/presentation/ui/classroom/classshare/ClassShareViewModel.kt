@@ -45,7 +45,7 @@ class ClassShareViewModel @Inject constructor(
         val state = _uiState.value
         when (action) {
             ClassShareUiAction.BackClick -> sendEvent(ClassShareUiEvent.NavigateBack)
-            ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(state.code))
+            ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(state.className, state.code))
             ClassShareUiAction.CopyCodeClick -> sendEvent(ClassShareUiEvent.CopyCode(state.code))
             ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToMyClass)
         }

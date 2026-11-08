@@ -13,12 +13,11 @@ internal sealed interface ClassEditMutation {
     data class ClassLoaded(
         val className: String,
         val deadline: LocalDateTime?,
-        val ticketEndDate: LocalDate?
+        val ticketEndDate: LocalDate?,
+        val battle: ClassBattleUiModel
     ) : ClassEditMutation
 
     data object ClassLoadFailed : ClassEditMutation
-
-    data class BattleLoaded(val battle: ClassBattleUiModel) : ClassEditMutation
 
     data class SettingInvalid(
         val isClassNameInvalid: Boolean,

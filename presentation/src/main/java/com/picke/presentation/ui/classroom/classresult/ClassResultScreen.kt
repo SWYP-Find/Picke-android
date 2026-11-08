@@ -39,6 +39,7 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassResultUiState
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
@@ -117,57 +118,64 @@ private fun ClassResultContent(
             return@Column
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            state = listState
-        ) {
-            item {
-                ClassResultHeaderSection(
-                    isInProgress = uiState.isInProgress,
-                    tag = uiState.tag,
-                    battleTitle = uiState.battleTitle,
-                    deadline = uiState.deadline
-                )
-            }
-
-            if (uiState.isTabVisible) {
-                stickyHeader {
-                    PickeTabBar(
-                        tabs = tabLabels,
-                        selectedTab = tabLabels[uiState.visibleTab.ordinal],
-                        onTabSelected = { label ->
-                            val tab = ClassResultTab.entries[tabLabels.indexOf(label)]
-                            onAction(ClassResultUiAction.TabSelect(tab))
-                        },
-                        modifier = Modifier.background(PickeTheme.colors.backgroundBeige)
+        val summary = uiState.summary
+        if (summary != null) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                state = listState
+            ) {
+                item {
+                    ClassResultHeaderSection(
+                        isInProgress = uiState.isInProgress,
+                        tag = uiState.tag,
+                        battleTitle = uiState.battleTitle,
+                        deadline = uiState.deadline
                     )
                 }
-            }
 
-            item {
-                when (uiState.visibleTab) {
-                    ClassResultTab.SUMMARY -> uiState.summary?.let { summary ->
-                        ClassResultSummarySection(
+                if (uiState.isTabVisible) {
+                    stickyHeader {
+                        PickeTabBar(
+                            tabs = tabLabels,
+                            selectedTab = tabLabels[uiState.visibleTab.ordinal],
+                            onTabSelected = { label ->
+                                val tab = ClassResultTab.entries[tabLabels.indexOf(label)]
+                                onAction(ClassResultUiAction.TabSelect(tab))
+                            },
+                            modifier = Modifier.background(PickeTheme.colors.backgroundBeige)
+                        )
+                    }
+                }
+
+                item {
+                    when (uiState.visibleTab) {
+                        ClassResultTab.SUMMARY -> ClassResultSummarySection(
                             summary = summary,
                             insight = uiState.insight,
                             deadline = uiState.deadline,
                             isInsightRetryVisible = uiState.isInsightRetryEnabled,
                             onInsightRetryClick = { onAction(ClassResultUiAction.InsightRetryClick) }
                         )
-                    }
 
-                    ClassResultTab.REPORT -> uiState.report?.let { report ->
-                        ClassResultReportSection(
-                            report = report,
-                            receivedLikeCount = uiState.receivedLikeCount,
-                            deadline = uiState.deadline,
-                            onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
-                        )
+                        ClassResultTab.REPORT -> uiState.report?.let { report ->
+                            ClassResultReportSection(
+                                report = report,
+                                receivedLikeCount = uiState.receivedLikeCount,
+                                deadline = uiState.deadline,
+                                onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
+                            )
+                        }
                     }
                 }
             }
+        } else {
+            PickeLoadFailedSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(SpacingTokens.s16)
+            )
         }
     }
 }
@@ -320,13 +328,14 @@ private fun ClassResultReportSection(
             )
         }
     }
+
 }
 
 @Preview(name = "운영자 참여 - 클래스 요약", showBackground = true)
 @Composable
 private fun ClassResultOperatorParticipatedPreview() {
     ClassResultContentPreview(
-        summary = DummyData.dummyClassResultSummary,
+        hasSummaryTab = true,
         insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport
     )
@@ -336,7 +345,7 @@ private fun ClassResultOperatorParticipatedPreview() {
 @Composable
 private fun ClassResultOperatorReportPreview() {
     ClassResultContentPreview(
-        summary = DummyData.dummyClassResultSummary,
+        hasSummaryTab = true,
         insight = DummyData.dummyClassResultInsight,
         report = DummyData.dummyClassResultReport,
         selectedTab = ClassResultTab.REPORT
@@ -347,7 +356,7 @@ private fun ClassResultOperatorReportPreview() {
 @Composable
 private fun ClassResultOperatorNotParticipatedPreview() {
     ClassResultContentPreview(
-        summary = DummyData.dummyClassResultSummary,
+        hasSummaryTab = true,
         insight = DummyData.dummyClassResultInsight,
         report = null
     )
@@ -357,7 +366,7 @@ private fun ClassResultOperatorNotParticipatedPreview() {
 @Composable
 private fun ClassResultMemberPreview() {
     ClassResultContentPreview(
-        summary = null,
+        hasSummaryTab = false,
         insight = null,
         report = DummyData.dummyClassResultReport
     )
@@ -365,7 +374,7 @@ private fun ClassResultMemberPreview() {
 
 @Composable
 private fun ClassResultContentPreview(
-    summary: ClassResultSummaryUiModel?,
+    hasSummaryTab: Boolean,
     insight: ClassResultInsightUiModel?,
     report: ClassResultReportUiModel?,
     selectedTab: ClassResultTab = ClassResultTab.SUMMARY
@@ -383,9 +392,9 @@ private fun ClassResultContentPreview(
                 tag = battle.tag,
                 battleTitle = battle.title,
                 deadline = classItem.deadline,
-                hasSummaryTab = summary != null,
+                hasSummaryTab = hasSummaryTab,
                 hasReportTab = report != null,
-                summary = summary,
+                summary = DummyData.dummyClassResultSummary,
                 insight = insight,
                 report = report,
                 receivedLikeCount = 12,

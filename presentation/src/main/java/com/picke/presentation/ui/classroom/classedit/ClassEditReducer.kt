@@ -36,12 +36,11 @@ internal fun reduce(state: ClassEditUiState, mutation: ClassEditMutation): Class
             className = mutation.className,
             originalDeadline = mutation.deadline,
             deadline = mutation.deadline,
-            ticketEndDate = mutation.ticketEndDate
+            ticketEndDate = mutation.ticketEndDate,
+            battle = mutation.battle
         )
 
         ClassEditMutation.ClassLoadFailed -> state.copy(isLoading = false)
-
-        is ClassEditMutation.BattleLoaded -> state.copy(battle = mutation.battle)
 
         is ClassEditMutation.SettingInvalid -> state.copy(
             isClassNameInvalid = mutation.isClassNameInvalid,

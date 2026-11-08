@@ -30,16 +30,13 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
             deadline = mutation.deadline,
             hasSummaryTab = mutation.hasSummaryTab,
             hasReportTab = mutation.hasReportTab,
-            summary = mutation.summary
+            summary = mutation.summary,
+            insight = mutation.insight,
+            report = mutation.report,
+            receivedLikeCount = mutation.receivedLikeCount
         )
 
         ClassResultMutation.ClassResultLoadFailed -> state.copy(isLoading = false)
-
-        is ClassResultMutation.InsightLoaded -> state.copy(insight = mutation.insight)
-
-        is ClassResultMutation.MyReportLoaded -> state.copy(report = mutation.report)
-
-        is ClassResultMutation.MyActivityLoaded -> state.copy(receivedLikeCount = mutation.receivedLikeCount)
 
         is ClassResultMutation.InsightRetried -> state.copy(insight = mutation.insight)
     }

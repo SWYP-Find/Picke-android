@@ -14,6 +14,7 @@ import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUi
 import com.picke.presentation.ui.classroom.classmyopinion.model.toUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,8 +40,7 @@ class ClassMyOpinionViewModel @Inject constructor(
     val uiEvent: Flow<ClassMyOpinionUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
-        fetchMyPerspectives()
-        fetchMyComments()
+        fetchMyOpinions()
     }
 
     fun onAction(action: ClassMyOpinionUiAction) {
@@ -63,37 +63,30 @@ class ClassMyOpinionViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun fetchMyPerspectives() {
-        val target = BattleTarget.Class(_uiState.value.classId)
-        viewModelScope.launch {
-            perspectiveUseCases.getMyPerspectivesUseCase(target)
-                .onSuccess { boards ->
-                    val perspectives = boards
-                        .filter { PerspectiveStatus.from(it.status) == PerspectiveStatus.PUBLISHED }
-                        .map { it.toUiModel() }
-                    _uiState.update {
-                        reduce(it, ClassMyOpinionMutation.MyPerspectivesLoaded(perspectives))
-                    }
-                }
-                .onFailure { sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast) }
-        }
-    }
-
-    private fun fetchMyComments() {
+    private fun fetchMyOpinions() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            val members = classroomUseCases.getClassMembersUseCase(classId).getOrElse {
-                _uiState.update { reduce(it, ClassMyOpinionMutation.MyCommentsLoadFailed) }
+            val perspectivesDeferred = async {
+                perspectiveUseCases.getMyPerspectivesUseCase(BattleTarget.Class(classId))
+            }
+            val membersDeferred = async { classroomUseCases.getClassMembersUseCase(classId) }
+            val activityDeferred =
+                async { classroomUseCases.getClassResultMyActivityUseCase(classId) }
+            val perspectiveBoards = perspectivesDeferred.await().getOrNull()
+            val members = membersDeferred.await().getOrNull()
+            val activity = activityDeferred.await().getOrNull()
+
+            if (perspectiveBoards == null || members == null || activity == null) {
+                _uiState.update { reduce(it, ClassMyOpinionMutation.MyOpinionsLoadFailed) }
                 sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
                 return@launch
             }
-            val activity = classroomUseCases.getClassResultMyActivityUseCase(classId).getOrElse {
-                _uiState.update { reduce(it, ClassMyOpinionMutation.MyCommentsLoadFailed) }
-                sendEvent(ClassMyOpinionUiEvent.ShowLoadFailedToast)
-                return@launch
-            }
+
             val myDisplayName = members.firstOrNull { it.me }?.displayName ?: ""
-            val mutation = ClassMyOpinionMutation.MyCommentsLoaded(
+            val mutation = ClassMyOpinionMutation.MyOpinionsLoaded(
+                perspectives = perspectiveBoards
+                    .filter { PerspectiveStatus.from(it.status) == PerspectiveStatus.PUBLISHED }
+                    .map { it.toUiModel() },
                 myDisplayName = myDisplayName,
                 comments = activity.comments.map { it.toUiModel(myDisplayName) },
                 nextCursor = activity.nextCursor,

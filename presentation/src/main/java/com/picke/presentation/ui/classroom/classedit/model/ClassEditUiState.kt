@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class ClassEditUiState(
     val classId: Long = 0L,
     val isLoading: Boolean = true,
-    val originalClassName: String = "",
+    val originalClassName: String? = null,
     val className: String = "",
     val isClassNameInvalid: Boolean = false,
     val originalDeadline: LocalDateTime? = null,

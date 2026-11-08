@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -36,6 +37,7 @@ import com.picke.presentation.ui.classroom.component.ClassDeadlineField
 import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
@@ -128,14 +130,16 @@ private fun ClassEditContent(
 
             Spacer(modifier = Modifier.height(SpacingTokens.s32))
 
-            if (uiState.isLoading) {
-                ClassEditSkeleton()
-            } else {
-                ClassEditFormSection(
+            when {
+                uiState.isLoading -> ClassEditSkeleton()
+
+                uiState.originalClassName != null -> ClassEditFormSection(
                     uiState = uiState,
                     onClassNameChange = { name -> onAction(ClassEditUiAction.ClassNameChange(name)) },
                     onDeadlineClick = { onAction(ClassEditUiAction.DeadlineFieldClick) }
                 )
+
+                else -> PickeLoadFailedSection(modifier = Modifier.fillMaxWidth())
             }
         }
     }

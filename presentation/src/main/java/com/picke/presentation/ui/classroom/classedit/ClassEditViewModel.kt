@@ -16,6 +16,7 @@ import com.picke.presentation.ui.classroom.model.toUiModel
 import com.picke.presentation.util.formatServerDateTime
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,26 +68,24 @@ class ClassEditViewModel @Inject constructor(
     private fun fetchClass() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
+            if (classDetail == null || classBattle == null) {
                 _uiState.update { reduce(it, ClassEditMutation.ClassLoadFailed) }
                 sendEvent(ClassEditUiEvent.ShowLoadFailedToast)
                 return@launch
             }
+
             val mutation = ClassEditMutation.ClassLoaded(
                 className = classDetail.name,
                 deadline = parseServerDateTime(classDetail.deadline)
                     ?: parseServerDateTime(classDetail.closeAt),
-                ticketEndDate = parseServerDateTime(classDetail.ticketExpiresAt)?.toLocalDate()
+                ticketEndDate = parseServerDateTime(classDetail.ticketExpiresAt)?.toLocalDate(),
+                battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
             )
             _uiState.update { reduce(it, mutation) }
-
-            val battleType = ClassBattleType.from(classDetail.battleType)
-            classroomUseCases.getClassBattleUseCase(classId)
-                .onSuccess { classBattle ->
-                    val battle = classBattle.toUiModel(battleType)
-                    _uiState.update { reduce(it, ClassEditMutation.BattleLoaded(battle)) }
-                }
-                .onFailure { sendEvent(ClassEditUiEvent.ShowLoadFailedToast) }
         }
     }
 

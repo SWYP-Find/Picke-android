@@ -7,7 +7,8 @@ data class CommentUiState(
     val comments: List<CommentUiModel> = emptyList(),
     val nextCursor: String? = null,
     val hasNext: Boolean = true,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
+    val isListLoading: Boolean = false,
     val editingCommentId: Long? = null,
     val isEditingMainPerspective: Boolean = false
 )

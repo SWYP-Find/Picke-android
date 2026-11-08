@@ -13,6 +13,7 @@ import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.comment.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +32,8 @@ class CommentViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    private val targetId: Long = savedStateHandle.get<String>(AppRoute.ARG_PERSPECTIVE_ID)?.toLongOrNull() ?: 0L
+    private val targetId: Long =
+        savedStateHandle.get<String>(AppRoute.ARG_PERSPECTIVE_ID)?.toLongOrNull() ?: 0L
     private val firstOptionId: Long = savedStateHandle[AppRoute.ARG_FIRST_OPTION_ID] ?: 0L
 
     private val _uiState = MutableStateFlow(
@@ -48,8 +50,7 @@ class CommentViewModel @Inject constructor(
     val uiEvent: Flow<CommentUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
-        fetchMainPerspective()
-        fetchComments()
+        fetchInitialData()
     }
 
     fun submitComment(content: String, onSuccess: () -> Unit) {
@@ -76,7 +77,7 @@ class CommentViewModel @Inject constructor(
                         analyticsTracker.trackCommunityAction(targetId.toString(), content.length)
                     }
                     onSuccess()
-                    fetchComments(isRefresh = true)
+                    fetchComments()
                 }
                 .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
@@ -192,38 +193,61 @@ class CommentViewModel @Inject constructor(
 
     fun refreshAllData() {
         fetchMainPerspective()
-        fetchComments(isRefresh = true)
+        fetchComments()
     }
 
     private fun sendEvent(event: CommentUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun fetchComments(isRefresh: Boolean = false) {
-        val state = _uiState.value
-        if (state.isLoading || (!isRefresh && !state.hasNext)) return
+    private fun fetchComments() {
+        if (_uiState.value.isListLoading) return
 
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update { it.copy(isListLoading = true) }
 
         viewModelScope.launch {
-            val cursor = if (isRefresh) null else state.nextCursor
-            commentUseCases.loadCommentsUseCase(targetId, cursor, size = 10)
+            commentUseCases.loadCommentsUseCase(targetId, null, size = 10)
                 .onSuccess { page ->
-                    val newItems = page.items.map { it.toUiModel() }
-
                     _uiState.update {
                         it.copy(
-                            comments = if (isRefresh) newItems else it.comments + newItems,
+                            comments = page.items.map { comment -> comment.toUiModel() },
                             nextCursor = page.nextCursor,
                             hasNext = page.hasNext,
-                            isLoading = false
+                            isListLoading = false
                         )
                     }
                 }
                 .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isListLoading = false) }
                     sendEvent(CommentUiEvent.ShowLoadFailedToast)
                 }
+        }
+    }
+
+    private fun fetchInitialData() {
+        viewModelScope.launch {
+            val mainPerspectiveDeferred =
+                async { perspectiveUseCases.loadMainPerspectiveUseCase(targetId) }
+            val commentsDeferred =
+                async { commentUseCases.loadCommentsUseCase(targetId, null, size = 10) }
+            val mainPerspective = mainPerspectiveDeferred.await().getOrNull()
+            val page = commentsDeferred.await().getOrNull()
+
+            if (mainPerspective == null || page == null) {
+                _uiState.update { it.copy(isLoading = false) }
+                sendEvent(CommentUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    mainPerspective = mainPerspective.toUiModel(),
+                    comments = page.items.map { comment -> comment.toUiModel() },
+                    nextCursor = page.nextCursor,
+                    hasNext = page.hasNext
+                )
+            }
         }
     }
 

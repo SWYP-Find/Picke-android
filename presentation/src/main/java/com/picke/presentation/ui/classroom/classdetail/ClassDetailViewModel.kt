@@ -9,13 +9,13 @@ import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailMutation
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
+import com.picke.presentation.ui.classroom.classdetail.model.toUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleStep
 import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.classroom.model.ClassRole
 import com.picke.presentation.ui.classroom.model.toUiModel
-import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,38 +104,34 @@ class ClassDetailViewModel @Inject constructor(
     private fun fetchClassDetail() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
+
+            if (classDetail == null || classBattle == null) {
                 _uiState.update { reduce(it, ClassDetailMutation.ClassDetailLoadFailed) }
                 sendEvent(ClassDetailUiEvent.ShowLoadFailedToast)
                 return@launch
             }
+
             val mutation = ClassDetailMutation.ClassDetailLoaded(
-                isOperator = ClassRole.from(classDetail.myRole).isOwner,
-                isInProgress = !classDetail.closed,
-                title = classDetail.name,
-                memberCount = classDetail.memberCount,
-                deadline = parseServerDateTime(classDetail.closeAt)
+                classInfo = classDetail.toUiModel(),
+                battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType)),
+                battleStep = ClassBattleStep.from(classBattle.battle.currentStep),
+                canParticipate = classBattle.canParticipate
             )
             _uiState.update { reduce(it, mutation) }
-
-            val battleType = ClassBattleType.from(classDetail.battleType)
-            classroomUseCases.getClassBattleUseCase(classId)
-                .onSuccess { classBattle ->
-                    val mutation = ClassDetailMutation.BattleLoaded(
-                        battle = classBattle.toUiModel(battleType),
-                        battleStep = ClassBattleStep.from(classBattle.battle.currentStep),
-                        canParticipate = classBattle.canParticipate
-                    )
-                    _uiState.update { reduce(it, mutation) }
-                }
-                .onFailure { sendEvent(ClassDetailUiEvent.ShowLoadFailedToast) }
         }
     }
 
     private fun startBattle(state: ClassDetailUiState) {
+        val classInfo = state.classInfo
         val battle = state.battle
         val event = when {
-            !state.isInProgress -> ClassDetailUiEvent.ShowDeadlinePassedToast
+            classInfo == null -> ClassDetailUiEvent.ShowLoadFailedToast
+
+            !classInfo.isInProgress -> ClassDetailUiEvent.ShowDeadlinePassedToast
 
             battle == null -> ClassDetailUiEvent.ShowLoadFailedToast
 

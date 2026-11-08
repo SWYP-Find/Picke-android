@@ -47,20 +47,13 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
 
         is ClassDetailMutation.ClassDetailLoaded -> state.copy(
             isLoading = false,
-            isOperator = mutation.isOperator,
-            isInProgress = mutation.isInProgress,
-            title = mutation.title,
-            memberCount = mutation.memberCount,
-            deadline = mutation.deadline
-        )
-
-        ClassDetailMutation.ClassDetailLoadFailed -> state.copy(isLoading = false)
-
-        is ClassDetailMutation.BattleLoaded -> state.copy(
+            classInfo = mutation.classInfo,
             battle = mutation.battle,
             battleStep = mutation.battleStep,
             canParticipate = mutation.canParticipate
         )
+
+        ClassDetailMutation.ClassDetailLoadFailed -> state.copy(isLoading = false)
 
         ClassDetailMutation.ClassChanged -> state.copy(isClassChanged = true)
     }

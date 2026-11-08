@@ -143,7 +143,8 @@ fun VoteScreen(
                 },
                 onDismissPointDialog = {
                     viewModel.dismissPointDialog()
-                }
+                },
+                isRequesting = uiState.isRequesting
             )
         } else {
             VoteBattleNotFound(onBackClick = onBackClick)
@@ -164,7 +165,8 @@ fun VoteContent(
     onGetShareLink: (Int, (String) -> Unit, (String) -> Unit) -> Unit,
     onDismissPointDialog: () -> Unit,
     modifier: Modifier = Modifier,
-    classInfo: VoteClassInfoUiModel? = null
+    classInfo: VoteClassInfoUiModel? = null,
+    isRequesting: Boolean = false
 ) {
     val context = LocalContext.current
     val clipboard = LocalClipboard.current
@@ -270,7 +272,7 @@ fun VoteContent(
             bottomBar = {
                 VoteBottomSection(
                     submitText = stringResource(style.submitTextRes),
-                    isSubmitEnabled = selectedOptionId != null && !uiState.isRequesting,
+                    isSubmitEnabled = selectedOptionId != null && !isRequesting,
                     deadlineText = style.deadlineText,
                     onSubmitClick = {
                         selectedOptionId?.let { optionId ->

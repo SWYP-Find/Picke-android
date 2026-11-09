@@ -9,10 +9,11 @@ import com.picke.presentation.ui.classroom.classshare.model.ClassShareMutation
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
+import com.picke.presentation.ui.classroom.classshare.model.toUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleType
 import com.picke.presentation.ui.classroom.model.toUiModel
-import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +46,15 @@ class ClassShareViewModel @Inject constructor(
         val state = _uiState.value
         when (action) {
             ClassShareUiAction.BackClick -> sendEvent(ClassShareUiEvent.NavigateBack)
-            ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(state.className, state.code))
-            ClassShareUiAction.CopyCodeClick -> sendEvent(ClassShareUiEvent.CopyCode(state.code))
+
+            ClassShareUiAction.ShareCodeClick -> state.classInfo?.let { classInfo ->
+                sendEvent(ClassShareUiEvent.ShareCode(classInfo.className, classInfo.code))
+            }
+
+            ClassShareUiAction.CopyCodeClick -> state.classInfo?.let { classInfo ->
+                sendEvent(ClassShareUiEvent.CopyCode(classInfo.code))
+            }
+
             ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToMyClass)
         }
     }
@@ -58,25 +66,22 @@ class ClassShareViewModel @Inject constructor(
     private fun fetchClassShare() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
+
+            if (classDetail == null || classBattle == null) {
                 _uiState.update { reduce(it, ClassShareMutation.ClassShareLoadFailed) }
                 sendEvent(ClassShareUiEvent.ShowLoadFailedToast)
                 return@launch
             }
+
             val mutation = ClassShareMutation.ClassShareLoaded(
-                className = classDetail.name,
-                deadline = parseServerDateTime(classDetail.closeAt),
-                code = classDetail.inviteCode
+                classInfo = classDetail.toUiModel(),
+                battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
             )
             _uiState.update { reduce(it, mutation) }
-
-            val battleType = ClassBattleType.from(classDetail.battleType)
-            classroomUseCases.getClassBattleUseCase(classId)
-                .onSuccess { classBattle ->
-                    val battle = classBattle.toUiModel(battleType)
-                    _uiState.update { reduce(it, ClassShareMutation.BattleLoaded(battle)) }
-                }
-                .onFailure { sendEvent(ClassShareUiEvent.ShowLoadFailedToast) }
         }
     }
 }

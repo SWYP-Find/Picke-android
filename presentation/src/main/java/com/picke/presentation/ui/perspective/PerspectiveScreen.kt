@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.PickeCommentInput
 import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTabBar
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeTopAppBarAction
@@ -187,7 +188,7 @@ fun PerspectiveContent(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    val voteOptions = uiState.voteOptions
+    val voteOptions = uiState.voteOptions.orEmpty()
     val allTabTitle = stringResource(R.string.comment_tab_all)
     val ownLikeMessage = stringResource(R.string.comment_like_own_perspective)
     val tabList = remember(voteOptions, allTabTitle) {
@@ -212,8 +213,8 @@ fun PerspectiveContent(
         onBackClick()
     }
 
-    LaunchedEffect(uiState.isLoading) {
-        if (!uiState.isLoading) {
+    LaunchedEffect(uiState.isListLoading) {
+        if (!uiState.isListLoading) {
             if (isRefreshing || isSorting) {
                 scrollToTopTrigger++
             }
@@ -276,121 +277,138 @@ fun PerspectiveContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            PerspectiveHeaderSection(
-                voteOptions = voteOptions,
-                opinionChanged = uiState.opinionChanged,
-                isOptionImageVisible = uiState.classSetting?.isAiBattle != true,
-                tabs = tabList,
-                selectedTabIndex = pagerState.currentPage,
-                onTabSelect = { targetIndex ->
-                    coroutineScope.launch { pagerState.animateScrollToPage(targetIndex) }
+            if (uiState.isLoading) {
+                PerspectiveHeaderSkeleton()
+                PerspectiveTabBarSkeleton()
+                PerspectiveListSkeleton(modifier = Modifier.weight(1f))
+            } else if (uiState.voteOptions != null) {
+                PerspectiveHeaderSection(
+                    voteOptions = voteOptions,
+                    opinionChanged = uiState.opinionChanged,
+                    isOptionImageVisible = uiState.classSetting?.isAiBattle != true,
+                    tabs = tabList,
+                    selectedTabIndex = pagerState.currentPage,
+                    onTabSelect = { targetIndex ->
+                        coroutineScope.launch { pagerState.animateScrollToPage(targetIndex) }
+                        val optionId =
+                            if (targetIndex == 0) null else voteOptions.getOrNull(targetIndex - 1)?.optionId
+                        onSelectOption(optionId)
+                    }
+                )
+
+                LaunchedEffect(pagerState.currentPage) {
                     val optionId =
-                        if (targetIndex == 0) null else voteOptions.getOrNull(targetIndex - 1)?.optionId
+                        if (pagerState.currentPage == 0) null else voteOptions.getOrNull(pagerState.currentPage - 1)?.optionId
                     onSelectOption(optionId)
                 }
-            )
 
-            LaunchedEffect(pagerState.currentPage) {
-                val optionId =
-                    if (pagerState.currentPage == 0) null else voteOptions.getOrNull(pagerState.currentPage - 1)?.optionId
-                onSelectOption(optionId)
-            }
-
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.Top
-            ) { pageIndex ->
-                val emptyMessage = if (pageIndex == 0) {
-                    stringResource(R.string.comment_empty_all)
-                } else {
-                    stringResource(
-                        R.string.comment_empty_option,
-                        tabList.getOrElse(pageIndex) { "" }
-                    )
-                }
-
-                val listState =
-                    remember(uiState.sort, uiState.selectedOptionId, pageIndex) { LazyListState() }
-
-                LaunchedEffect(scrollToTopTrigger) {
-                    if (scrollToTopTrigger > 0) {
-                        listState.scrollToItem(0)
-                    }
-                }
-
-                if (pageIndex == 0 && scrollToPerspectiveId != null) {
-                    LaunchedEffect(uiState.perspectives) {
-                        if (!hasScrolledToComment && uiState.perspectives.isNotEmpty() && !uiState.isLoading) {
-                            val targetIndex =
-                                uiState.perspectives.indexOfFirst { it.perspectiveId == scrollToPerspectiveId }
-                            if (targetIndex >= 0) {
-                                val offset = if (isShowingMyPendingOrRejected) 1 else 0
-                                listState.animateScrollToItem(targetIndex + offset)
-                                hasScrolledToComment = true
-                            }
-                        }
-                    }
-                }
-
-                Column(modifier = Modifier.fillMaxSize()) {
-                    PerspectiveSortSection(
-                        selectedSort = uiState.sort,
-                        onSortSelect = { sort ->
-                            if (uiState.sort != sort) {
-                                isSorting = true
-                                onUpdateSort(sort)
-                            }
-                        }
-                    )
-
-                    if (uiState.isLoading && uiState.perspectives.isEmpty()) {
-                        PerspectiveListSkeleton(modifier = Modifier.weight(1f))
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.Top
+                ) { pageIndex ->
+                    val emptyMessage = if (pageIndex == 0) {
+                        stringResource(R.string.comment_empty_all)
                     } else {
-                        PerspectiveListSection(
-                            perspectives = uiState.perspectives,
-                            myPendingPerspective = uiState.myPerspective?.takeIf { it.status != PerspectiveStatus.PUBLISHED },
-                            emptyMessage = emptyMessage,
-                            isLoading = uiState.isLoading,
-                            isRefreshing = isRefreshing,
-                            hasNext = uiState.hasNext,
-                            listState = listState,
-                            onRefresh = {
-                                isRefreshing = true
-                                onRefreshAllData()
-                            },
-                            onMoreClick = { perspectiveId ->
-                                onMoreClick(
-                                    perspectiveId,
-                                    uiState.voteOptions.firstOrNull()?.optionId ?: 0L
-                                )
-                            },
-                            onEditClick = { perspectiveId, content ->
-                                inputFieldState.setTextAndPlaceCursorAtEnd(content)
-                                onSetEditMode(perspectiveId)
-                            },
-                            onDeleteClick = { perspectiveId ->
-                                perspectiveToDelete = perspectiveId
-                            },
-                            onReportClick = { perspectiveId ->
-                                perspectiveToReport = perspectiveId
-                            },
-                            onMyPendingLikeClick = {
-                                Toast.makeText(context, ownLikeMessage, Toast.LENGTH_SHORT).show()
-                            },
-                            onLikeClick = { item ->
-                                if (item.isMine) {
-                                    Toast.makeText(context, ownLikeMessage, Toast.LENGTH_SHORT)
-                                        .show()
-                                } else {
-                                    onToggleLike(item.perspectiveId, item.isLiked)
-                                }
-                            },
-                            onLoadMore = onLoadPerspectives,
-                            modifier = Modifier.weight(1f)
+                        stringResource(
+                            R.string.comment_empty_option,
+                            tabList.getOrElse(pageIndex) { "" }
                         )
                     }
+
+                    val listState =
+                        remember(
+                            uiState.sort,
+                            uiState.selectedOptionId,
+                            pageIndex
+                        ) { LazyListState() }
+
+                    LaunchedEffect(scrollToTopTrigger) {
+                        if (scrollToTopTrigger > 0) {
+                            listState.scrollToItem(0)
+                        }
+                    }
+
+                    if (pageIndex == 0 && scrollToPerspectiveId != null) {
+                        LaunchedEffect(uiState.perspectives) {
+                            if (!hasScrolledToComment && uiState.perspectives.isNotEmpty() && !uiState.isListLoading) {
+                                val targetIndex =
+                                    uiState.perspectives.indexOfFirst { it.perspectiveId == scrollToPerspectiveId }
+                                if (targetIndex >= 0) {
+                                    val offset = if (isShowingMyPendingOrRejected) 1 else 0
+                                    listState.animateScrollToItem(targetIndex + offset)
+                                    hasScrolledToComment = true
+                                }
+                            }
+                        }
+                    }
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        PerspectiveSortSection(
+                            selectedSort = uiState.sort,
+                            onSortSelect = { sort ->
+                                if (uiState.sort != sort) {
+                                    isSorting = true
+                                    onUpdateSort(sort)
+                                }
+                            }
+                        )
+
+                        if (uiState.isListLoading && uiState.perspectives.isEmpty()) {
+                            PerspectiveListSkeleton(modifier = Modifier.weight(1f))
+                        } else {
+                            PerspectiveListSection(
+                                perspectives = uiState.perspectives,
+                                myPendingPerspective = uiState.myPerspective?.takeIf { it.status != PerspectiveStatus.PUBLISHED },
+                                emptyMessage = emptyMessage,
+                                isListLoading = uiState.isListLoading,
+                                isRefreshing = isRefreshing,
+                                hasNext = uiState.hasNext,
+                                listState = listState,
+                                onRefresh = {
+                                    isRefreshing = true
+                                    onRefreshAllData()
+                                },
+                                onMoreClick = { perspectiveId ->
+                                    onMoreClick(
+                                        perspectiveId,
+                                        voteOptions.firstOrNull()?.optionId ?: 0L
+                                    )
+                                },
+                                onEditClick = { perspectiveId, content ->
+                                    inputFieldState.setTextAndPlaceCursorAtEnd(content)
+                                    onSetEditMode(perspectiveId)
+                                },
+                                onDeleteClick = { perspectiveId ->
+                                    perspectiveToDelete = perspectiveId
+                                },
+                                onReportClick = { perspectiveId ->
+                                    perspectiveToReport = perspectiveId
+                                },
+                                onMyPendingLikeClick = {
+                                    Toast.makeText(context, ownLikeMessage, Toast.LENGTH_SHORT)
+                                        .show()
+                                },
+                                onLikeClick = { item ->
+                                    if (item.isMine) {
+                                        Toast.makeText(context, ownLikeMessage, Toast.LENGTH_SHORT)
+                                            .show()
+                                    } else {
+                                        onToggleLike(item.perspectiveId, item.isLiked)
+                                    }
+                                },
+                                onLoadMore = onLoadPerspectives,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
                 }
+            } else {
+                PickeLoadFailedSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(SpacingTokens.s16)
+                )
             }
         }
 
@@ -434,23 +452,18 @@ private fun PerspectiveHeaderSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        if (voteOptions.isEmpty()) {
-            PerspectiveHeaderSkeleton()
-            PerspectiveTabBarSkeleton()
-        } else {
-            PerspectiveStatsSection(
-                voteOptions = voteOptions,
-                opinionChanged = opinionChanged,
-                isOptionImageVisible = isOptionImageVisible
-            )
+        PerspectiveStatsSection(
+            voteOptions = voteOptions,
+            opinionChanged = opinionChanged,
+            isOptionImageVisible = isOptionImageVisible
+        )
 
-            PickeTabBar(
-                tabs = tabs,
-                selectedTab = tabs[selectedTabIndex],
-                onTabSelected = { selected -> onTabSelect(tabs.indexOf(selected)) },
-                isScrollable = tabs.size > 3
-            )
-        }
+        PickeTabBar(
+            tabs = tabs,
+            selectedTab = tabs[selectedTabIndex],
+            onTabSelected = { selected -> onTabSelect(tabs.indexOf(selected)) },
+            isScrollable = tabs.size > 3
+        )
     }
 }
 
@@ -487,7 +500,7 @@ private fun PerspectiveListSection(
     perspectives: List<PerspectiveUiModel>,
     myPendingPerspective: PerspectiveUiModel?,
     emptyMessage: String,
-    isLoading: Boolean,
+    isListLoading: Boolean,
     isRefreshing: Boolean,
     hasNext: Boolean,
     listState: LazyListState,
@@ -539,7 +552,7 @@ private fun PerspectiveListSection(
                 }
             }
 
-            if (perspectives.isEmpty() && !isLoading && myPendingPerspective == null) {
+            if (perspectives.isEmpty() && !isListLoading && myPendingPerspective == null) {
                 item {
                     PickeEmptyState(
                         message = emptyMessage,
@@ -560,7 +573,7 @@ private fun PerspectiveListSection(
                         onReportClick = { onReportClick(item.perspectiveId) }
                     )
 
-                    if (index == perspectives.lastIndex && !isLoading && hasNext) {
+                    if (index == perspectives.lastIndex && !isListLoading && hasNext) {
                         LaunchedEffect(item.perspectiveId) {
                             onLoadMore()
                         }
@@ -568,7 +581,7 @@ private fun PerspectiveListSection(
                 }
             }
 
-            if (isLoading && !isRefreshing) {
+            if (isListLoading && !isRefreshing) {
                 item {
                     Box(
                         modifier = Modifier
@@ -640,7 +653,8 @@ private fun PerspectiveContentPreview() {
         PerspectiveContent(
             uiState = PerspectiveUiState(
                 voteOptions = DummyData.dummyVoteOptions,
-                perspectives = DummyData.dummyPerspectives
+                perspectives = DummyData.dummyPerspectives,
+                isLoading = false
             ),
             onBackClick = {},
             onNextClick = {},

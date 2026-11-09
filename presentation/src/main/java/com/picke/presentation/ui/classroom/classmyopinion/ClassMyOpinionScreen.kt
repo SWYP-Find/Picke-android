@@ -27,6 +27,7 @@ import com.picke.presentation.ui.classroom.classmyopinion.component.ClassMyPersp
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiAction
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiEvent
 import com.picke.presentation.ui.classroom.classmyopinion.model.ClassMyOpinionUiState
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -94,46 +95,54 @@ private fun ClassMyOpinionContent(
             ),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
         ) {
-            if (uiState.isLoading && uiState.perspectives.isEmpty() && uiState.comments.isEmpty()) {
+            if (uiState.isLoading) {
                 items(count = CLASS_MY_OPINION_SKELETON_COUNT) {
                     ClassMyOpinionSkeleton()
                 }
+                return@LazyColumn
             }
 
-            if (uiState.perspectives.isNotEmpty()) {
-                item {
-                    ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
-                }
-
-                items(
-                    items = uiState.perspectives,
-                    key = { "perspective_${it.perspectiveId}" }
-                ) { perspective ->
-                    ClassMyPerspectiveCard(perspective = perspective)
-                }
-            }
-
-            if (uiState.comments.isNotEmpty()) {
-                item {
-                    ClassMyOpinionSectionTitle(
-                        text = stringResource(R.string.class_my_opinion_replies),
-                        modifier = if (uiState.perspectives.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
-                    )
-                }
-
-                items(
-                    items = uiState.comments,
-                    key = { "comment_${it.commentId}" }
-                ) { comment ->
-                    ClassMyCommentCard(comment = comment)
-                }
-
-                if (uiState.canLoadMoreComments) {
+            val perspectives = uiState.perspectives
+            if (perspectives != null) {
+                if (perspectives.isNotEmpty()) {
                     item {
-                        LaunchedEffect(Unit) {
-                            onAction(ClassMyOpinionUiAction.CommentsEndReach)
+                        ClassMyOpinionSectionTitle(text = stringResource(R.string.class_my_opinion_comments))
+                    }
+
+                    items(
+                        items = perspectives,
+                        key = { "perspective_${it.perspectiveId}" }
+                    ) { perspective ->
+                        ClassMyPerspectiveCard(perspective = perspective)
+                    }
+                }
+
+                if (uiState.comments.isNotEmpty()) {
+                    item {
+                        ClassMyOpinionSectionTitle(
+                            text = stringResource(R.string.class_my_opinion_replies),
+                            modifier = if (perspectives.isNotEmpty()) Modifier.padding(top = SpacingTokens.s8) else Modifier
+                        )
+                    }
+
+                    items(
+                        items = uiState.comments,
+                        key = { "comment_${it.commentId}" }
+                    ) { comment ->
+                        ClassMyCommentCard(comment = comment)
+                    }
+
+                    if (uiState.canLoadMoreComments) {
+                        item {
+                            LaunchedEffect(Unit) {
+                                onAction(ClassMyOpinionUiAction.CommentsEndReach)
+                            }
                         }
                     }
+                }
+            } else {
+                item {
+                    PickeLoadFailedSection(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -147,6 +156,7 @@ private fun ClassMyOpinionContentPreview() {
         ClassMyOpinionContent(
             uiState = ClassMyOpinionUiState(
                 classId = DummyData.dummyMyClasses.first().id,
+                isLoading = false,
                 perspectives = DummyData.dummyClassMyPerspectives,
                 comments = DummyData.dummyClassMyComments
             ),

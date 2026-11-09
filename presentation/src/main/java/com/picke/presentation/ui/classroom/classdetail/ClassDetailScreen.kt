@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfoRow
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailSkeleton
+import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailInfoUiModel
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
@@ -33,9 +34,10 @@ import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeBadge
 import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeLoadFailedSection
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
@@ -155,44 +157,54 @@ private fun ClassDetailContent(
         if (uiState.isLoading) {
             ClassDetailSkeleton(modifier = Modifier.weight(1f))
         } else {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(SpacingTokens.s16),
-                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
-            ) {
-                ClassDetailHeaderSection(
-                    isInProgress = uiState.isInProgress,
-                    title = uiState.title
-                )
+            val classInfo = uiState.classInfo
+            if (classInfo != null) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(SpacingTokens.s16),
+                    verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20)
+                ) {
+                    ClassDetailHeaderSection(
+                        isInProgress = classInfo.isInProgress,
+                        title = classInfo.title
+                    )
 
-                ClassDetailInfoSection(
-                    memberCount = uiState.memberCount,
-                    deadline = uiState.deadline,
-                    isOperator = uiState.isOperator,
-                    onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
-                    onDeadlineEditClick = { onAction(ClassDetailUiAction.DeadlineEditClick) }
-                )
+                    ClassDetailInfoSection(
+                        memberCount = classInfo.memberCount,
+                        deadline = classInfo.deadline,
+                        isOperator = classInfo.isOperator,
+                        onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
+                        onDeadlineEditClick = { onAction(ClassDetailUiAction.DeadlineEditClick) }
+                    )
 
-                uiState.battle?.let { battle ->
-                    ClassDetailBattleSection(
-                        battle = battle,
-                        onBattleClick = { onAction(ClassDetailUiAction.BattleClick) }
+                    uiState.battle?.let { battle ->
+                        ClassDetailBattleSection(
+                            battle = battle,
+                            onBattleClick = { onAction(ClassDetailUiAction.BattleClick) }
+                        )
+                    }
+
+                    ClassDetailActionSection(
+                        onBattleClick = { onAction(ClassDetailUiAction.BattleClick) },
+                        onResultClick = { onAction(ClassDetailUiAction.ResultClick) }
                     )
                 }
-
-                ClassDetailActionSection(
-                    onBattleClick = { onAction(ClassDetailUiAction.BattleClick) },
-                    onResultClick = { onAction(ClassDetailUiAction.ResultClick) }
+            } else {
+                PickeLoadFailedSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(SpacingTokens.s16)
                 )
             }
         }
     }
 
-    if (uiState.isManageSheetVisible) {
+    val manageClassInfo = uiState.classInfo
+    if (uiState.isManageSheetVisible && manageClassInfo != null) {
         ClassManageSheet(
-            isOperator = uiState.isOperator,
+            isOperator = manageClassInfo.isOperator,
             onEditClick = { onAction(ClassDetailUiAction.ManageEditClick) },
             onShareCodeClick = { onAction(ClassDetailUiAction.ManageShareCodeClick) },
             onDeleteClick = { onAction(ClassDetailUiAction.ManageDeleteClick) },
@@ -358,11 +370,13 @@ private fun ClassDetailContentPreview(isOperator: Boolean) {
         uiState = ClassDetailUiState(
             classId = classItem.id,
             isLoading = false,
-            isOperator = isOperator,
-            isInProgress = classItem.isInProgress,
-            title = classItem.title,
-            memberCount = classItem.memberCount,
-            deadline = classItem.deadline,
+            classInfo = ClassDetailInfoUiModel(
+                isOperator = isOperator,
+                isInProgress = classItem.isInProgress,
+                title = classItem.title,
+                memberCount = classItem.memberCount,
+                deadline = classItem.deadline
+            ),
             battle = DummyData.dummyClassBattles.first()
         ),
         onAction = {}

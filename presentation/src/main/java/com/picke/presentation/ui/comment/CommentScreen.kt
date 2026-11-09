@@ -44,6 +44,7 @@ import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.component.PickeCommentInput
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.component.dialog.PickeReportDialog
@@ -81,8 +82,8 @@ fun CommentScreen(
         lastToast = Toast.makeText(context, message, Toast.LENGTH_SHORT).apply { show() }
     }
 
-    LaunchedEffect(uiState.isLoading) {
-        if (!uiState.isLoading) {
+    LaunchedEffect(uiState.isListLoading) {
+        if (!uiState.isListLoading) {
             isRefreshing = false
         }
     }
@@ -278,19 +279,18 @@ private fun CommentContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (uiState.isLoading && uiState.comments.isEmpty() && uiState.mainPerspective == null) {
+            val mainPerspective = uiState.mainPerspective
+            if (uiState.isLoading) {
                 CommentSkeleton(modifier = Modifier.fillMaxSize())
-            } else {
-                uiState.mainPerspective?.let { mainContent ->
-                    CommentItemCard(
-                        item = mainContent,
-                        isMainContent = true,
-                        onEditClick = onEditMainPerspective,
-                        onDeleteClick = onRequestDeleteMainPerspective,
-                        onLikeClick = { onMainLikeClick(mainContent) },
-                        onReportClick = onRequestReportMainPerspective
-                    )
-                }
+            } else if (mainPerspective != null) {
+                CommentItemCard(
+                    item = mainPerspective,
+                    isMainContent = true,
+                    onEditClick = onEditMainPerspective,
+                    onDeleteClick = onRequestDeleteMainPerspective,
+                    onLikeClick = { onMainLikeClick(mainPerspective) },
+                    onReportClick = onRequestReportMainPerspective
+                )
 
                 CommentHeaderSection(count = uiState.comments.size)
 
@@ -336,6 +336,12 @@ private fun CommentContent(
                         }
                     }
                 }
+            } else {
+                PickeLoadFailedSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(SpacingTokens.s16)
+                )
             }
         }
 
@@ -400,7 +406,8 @@ private fun CommentContentPreview() {
         CommentContent(
             uiState = CommentUiState(
                 mainPerspective = DummyData.dummyMainPerspective,
-                comments = DummyData.dummyComments
+                comments = DummyData.dummyComments,
+                isLoading = false
             ),
             scrollToCommentId = null,
             inputFieldState = rememberTextFieldState(),

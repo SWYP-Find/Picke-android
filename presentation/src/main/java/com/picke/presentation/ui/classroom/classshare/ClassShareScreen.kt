@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.share.launchTextShare
 import com.picke.presentation.ui.classroom.classshare.component.ClassShareSkeleton
+import com.picke.presentation.ui.classroom.classshare.model.ClassShareInfoUiModel
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
@@ -52,6 +53,7 @@ import com.picke.presentation.ui.classroom.component.ClassBottomButton
 import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -158,14 +160,19 @@ private fun ClassShareContent(
             if (uiState.isLoading) {
                 ClassShareSkeleton()
             } else {
-                ClassShareCodeSection(
-                    uiState = uiState,
-                    onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
-                    onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
-                )
+                val classInfo = uiState.classInfo
+                if (classInfo != null) {
+                    ClassShareCodeSection(
+                        classInfo = classInfo,
+                        onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
+                        onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
+                    )
 
-                uiState.battle?.let { battle ->
-                    ClassShareBattleSection(battle = battle)
+                    uiState.battle?.let { battle ->
+                        ClassShareBattleSection(battle = battle)
+                    }
+                } else {
+                    PickeLoadFailedSection(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -194,13 +201,13 @@ private fun ClassShareHeaderSection(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ClassShareCodeSection(
-    uiState: ClassShareUiState,
+    classInfo: ClassShareInfoUiModel,
     onShareCodeClick: () -> Unit,
     onCopyCodeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
-    val deadlineText = rememberClassDeadlineText(uiState.deadline)
+    val deadlineText = rememberClassDeadlineText(classInfo.deadline)
 
     Column(
         modifier = modifier
@@ -221,13 +228,13 @@ private fun ClassShareCodeSection(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = uiState.className,
+                text = classInfo.className,
                 color = PickeTheme.colors.textDefault,
                 style = PickeTheme.typography.headingMd
             )
             Text(
                 text = stringResource(R.string.class_share_deadline, deadlineText),
-                modifier = Modifier.alpha(if (uiState.hasDeadline) 1f else 0f),
+                modifier = Modifier.alpha(if (classInfo.hasDeadline) 1f else 0f),
                 color = PickeTheme.colors.textMuted,
                 style = PickeTheme.typography.bodySmMedium
             )
@@ -248,7 +255,7 @@ private fun ClassShareCodeSection(
                 style = PickeTheme.typography.bodySmSemiBold
             )
             Text(
-                text = uiState.code,
+                text = classInfo.code,
                 color = PickeTheme.colors.textPrimary,
                 style = PickeTheme.typography.displayMd
             )
@@ -317,9 +324,11 @@ private fun ClassShareContentPreview() {
             uiState = ClassShareUiState(
                 isLoading = false,
                 classId = classItem.id,
-                className = classItem.title,
-                deadline = DummyData.dummyClassDeadline,
-                code = DummyData.dummyClassCode,
+                classInfo = ClassShareInfoUiModel(
+                    className = classItem.title,
+                    deadline = DummyData.dummyClassDeadline,
+                    code = DummyData.dummyClassCode
+                ),
                 battle = DummyData.dummyClassBattles.first()
             ),
             onAction = {}
@@ -337,8 +346,11 @@ private fun ClassShareContentNoDeadlinePreview() {
             uiState = ClassShareUiState(
                 isLoading = false,
                 classId = classItem.id,
-                className = classItem.title,
-                code = DummyData.dummyClassCode,
+                classInfo = ClassShareInfoUiModel(
+                    className = classItem.title,
+                    deadline = null,
+                    code = DummyData.dummyClassCode
+                ),
                 battle = DummyData.dummyClassBattles.first()
             ),
             onAction = {}

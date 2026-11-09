@@ -15,6 +15,7 @@ import com.picke.presentation.ui.classroom.model.ClassRole
 import com.picke.presentation.ui.classroom.model.toUiModel
 import com.picke.presentation.util.parseServerDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,25 +71,48 @@ class ClassResultViewModel @Inject constructor(
     private fun fetchClassResult() {
         val classId = _uiState.value.classId
         viewModelScope.launch {
-            val classResult = classroomUseCases.getClassResultUseCase(classId).getOrElse {
+            val classResultDeferred = async { classroomUseCases.getClassResultUseCase(classId) }
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classResult = classResultDeferred.await().getOrNull()
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
+
+            if (classResult == null || classDetail == null || classBattle == null) {
                 _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
                 sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
                 return@launch
             }
-            val classDetail = classroomUseCases.getClassDetailUseCase(classId).getOrElse {
-                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
-                sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
-                return@launch
-            }
-            val classBattle = classroomUseCases.getClassBattleUseCase(classId).getOrElse {
-                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
-                sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
-                return@launch
-            }
-            val battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
+
             val isOperator = ClassRole.from(classResult.myRole).isOwner
             val hasSummaryTab = isOperator && classResult.insightState != null
             val hasReportTab = classResult.myReportState != null
+            val insightDeferred = if (hasSummaryTab) {
+                async { classroomUseCases.getClassResultInsightUseCase(classId) }
+            } else {
+                null
+            }
+            val myReportDeferred = if (hasReportTab) {
+                async { classroomUseCases.getClassResultMyReportUseCase(classId) }
+            } else {
+                null
+            }
+            val myActivityDeferred = if (hasReportTab) {
+                async { classroomUseCases.getClassResultMyActivityUseCase(classId) }
+            } else {
+                null
+            }
+            val insightResult = insightDeferred?.await()
+            val myReportResult = myReportDeferred?.await()
+            val myActivityResult = myActivityDeferred?.await()
+
+            if (listOfNotNull(insightResult, myReportResult).any { it.isFailure }) {
+                _uiState.update { reduce(it, ClassResultMutation.ClassResultLoadFailed) }
+                sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            val battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
             val mutation = ClassResultMutation.ClassResultLoaded(
                 className = classDetail.name,
                 isInProgress = !classResult.closed,
@@ -97,54 +121,14 @@ class ClassResultViewModel @Inject constructor(
                 deadline = parseServerDateTime(classResult.closeAt),
                 hasSummaryTab = hasSummaryTab,
                 hasReportTab = hasReportTab,
-                summary = classResult.stats.toUiModel()
+                summary = classResult.stats.toUiModel(),
+                insight = insightResult?.getOrNull()?.toUiModel(),
+                report = myReportResult?.getOrNull()?.toUiModel(),
+                receivedLikeCount = myActivityResult?.getOrNull()?.receivedLikeCount
             )
             _uiState.update { reduce(it, mutation) }
 
-            if (hasSummaryTab) fetchInsight()
-            if (hasReportTab) {
-                fetchMyReport()
-                fetchMyActivity()
-            }
-        }
-    }
-
-    private fun fetchInsight() {
-        val classId = _uiState.value.classId
-        viewModelScope.launch {
-            classroomUseCases.getClassResultInsightUseCase(classId)
-                .onSuccess { insight ->
-                    _uiState.update {
-                        reduce(it, ClassResultMutation.InsightLoaded(insight.toUiModel()))
-                    }
-                }
-                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
-        }
-    }
-
-    private fun fetchMyReport() {
-        val classId = _uiState.value.classId
-        viewModelScope.launch {
-            classroomUseCases.getClassResultMyReportUseCase(classId)
-                .onSuccess { report ->
-                    _uiState.update {
-                        reduce(it, ClassResultMutation.MyReportLoaded(report.toUiModel()))
-                    }
-                }
-                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
-        }
-    }
-
-    private fun fetchMyActivity() {
-        val classId = _uiState.value.classId
-        viewModelScope.launch {
-            classroomUseCases.getClassResultMyActivityUseCase(classId)
-                .onSuccess { activity ->
-                    _uiState.update {
-                        reduce(it, ClassResultMutation.MyActivityLoaded(activity.receivedLikeCount))
-                    }
-                }
-                .onFailure { sendEvent(ClassResultUiEvent.ShowLoadFailedToast) }
+            if (myActivityResult?.isFailure == true) sendEvent(ClassResultUiEvent.ShowLoadFailedToast)
         }
     }
 

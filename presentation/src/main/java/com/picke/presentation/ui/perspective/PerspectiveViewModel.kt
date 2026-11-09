@@ -10,11 +10,13 @@ import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.ui.perspective.model.PerspectiveClassSettingUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
 import com.picke.presentation.ui.perspective.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +36,8 @@ class PerspectiveViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    private val battleId: Long = savedStateHandle.get<String>(AppRoute.ARG_BATTLE_ID)?.toLongOrNull() ?: 0L
+    private val battleId: Long =
+        savedStateHandle.get<String>(AppRoute.ARG_BATTLE_ID)?.toLongOrNull() ?: 0L
     private val target: BattleTarget = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID)
         ?.let { classId -> BattleTarget.Class(classId) }
         ?: BattleTarget.General(battleId)
@@ -53,22 +56,71 @@ class PerspectiveViewModel @Inject constructor(
     val uiEvent: Flow<PerspectiveUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
-        fetchPerspectives()
-        fetchVoteStats()
-        fetchMyPerspective()
-        fetchMyVoteHistory()
-        fetchClassDetail()
+        fetchInitialData()
     }
 
     private fun sendEvent(event: PerspectiveUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
+    private fun fetchInitialData() {
+        val state = _uiState.value
+        viewModelScope.launch {
+            val perspectivesDeferred = async {
+                perspectiveUseCases.loadPerspectivesUseCase(
+                    target = target,
+                    cursor = null,
+                    optionId = state.selectedOptionId,
+                    sort = state.sort.apiValue
+                )
+            }
+            val voteStatsDeferred = async { voteUseCases.getVoteStatsUseCase(target) }
+            val myPerspectivesDeferred =
+                async { perspectiveUseCases.getMyPerspectivesUseCase(target) }
+            val voteHistoryDeferred = async { voteUseCases.getMyVoteHistoryUseCase(target) }
+            val classSettingDeferred = async { loadClassSetting() }
+            val page = perspectivesDeferred.await().getOrNull()
+            val voteStats = voteStatsDeferred.await().getOrNull()
+            val myPerspectivesResult = myPerspectivesDeferred.await()
+            val voteHistoryResult = voteHistoryDeferred.await()
+            val classSettingResult = classSettingDeferred.await()
+
+            if (page == null || voteStats == null) {
+                _uiState.update { it.copy(isLoading = false) }
+                sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            val perspectives = page.items.map { it.toUiModel() }
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    voteOptions = voteStats.options.map { option -> option.toUiModel() },
+                    perspectives = perspectives,
+                    nextCursor = page.nextCursor,
+                    hasNext = page.hasNext && page.nextCursor != null && perspectives.isNotEmpty(),
+                    myPerspective = myPerspectivesResult.getOrNull()?.firstOrNull()?.toUiModel(),
+                    opinionChanged = voteHistoryResult.getOrNull()?.opinionChanged ?: false,
+                    battleTitle = voteHistoryResult.getOrNull()?.battleTitle ?: it.battleTitle,
+                    classSetting = classSettingResult.getOrNull()
+                )
+            }
+
+            if (
+                myPerspectivesResult.isFailure ||
+                voteHistoryResult.isFailure ||
+                classSettingResult.isFailure
+            ) {
+                sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
+            }
+        }
+    }
+
     fun fetchPerspectives(isRefresh: Boolean = false) {
         val state = _uiState.value
-        if (!isRefresh && (state.isLoading || !state.hasNext)) return
+        if (!isRefresh && (state.isListLoading || !state.hasNext)) return
 
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update { it.copy(isListLoading = true) }
 
         viewModelScope.launch {
             val cursor = if (isRefresh) null else state.nextCursor
@@ -88,11 +140,11 @@ class PerspectiveViewModel @Inject constructor(
                         perspectives = mergedList,
                         nextCursor = page.nextCursor,
                         hasNext = actualHasNext,
-                        isLoading = false
+                        isListLoading = false
                     )
                 }
             }.onFailure {
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isListLoading = false) }
                 sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
             }
         }
@@ -119,7 +171,11 @@ class PerspectiveViewModel @Inject constructor(
         viewModelScope.launch {
             perspectiveUseCases.getMyPerspectivesUseCase(target)
                 .onSuccess { perspectives ->
-                    _uiState.update { it.copy(myPerspective = perspectives.firstOrNull()?.toUiModel()) }
+                    _uiState.update {
+                        it.copy(
+                            myPerspective = perspectives.firstOrNull()?.toUiModel()
+                        )
+                    }
                 }
                 .onFailure {
                     _uiState.update { it.copy(myPerspective = null) }
@@ -133,17 +189,6 @@ class PerspectiveViewModel @Inject constructor(
             voteUseCases.getVoteStatsUseCase(target)
                 .onSuccess { statsBoard ->
                     _uiState.update { it.copy(voteOptions = statsBoard.options.map { it.toUiModel() }) }
-                }
-                .onFailure { sendEvent(PerspectiveUiEvent.ShowLoadFailedToast) }
-        }
-    }
-
-    private fun fetchClassDetail() {
-        val classTarget = target as? BattleTarget.Class ?: return
-        viewModelScope.launch {
-            classroomUseCases.getClassDetailUseCase(classTarget.classId)
-                .onSuccess { classDetail ->
-                    _uiState.update { it.copy(classSetting = classDetail.toUiModel()) }
                 }
                 .onFailure { sendEvent(PerspectiveUiEvent.ShowLoadFailedToast) }
         }
@@ -284,4 +329,12 @@ class PerspectiveViewModel @Inject constructor(
         fetchMyPerspective()
         fetchPerspectives(isRefresh = true)
     }
+
+    private suspend fun loadClassSetting(): Result<PerspectiveClassSettingUiModel?> =
+        when (target) {
+            is BattleTarget.Class ->
+                classroomUseCases.getClassDetailUseCase(target.classId).map { it.toUiModel() }
+
+            is BattleTarget.General -> Result.success(null)
+        }
 }

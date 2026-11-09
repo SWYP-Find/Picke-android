@@ -10,7 +10,6 @@ data class TodayBattleItem(
     val title: String,
     val summary: String,
     val thumbnailUrl: String,
-    val type: String,
     val viewCount: Int,
     val participantsCount: Long,
     val audioDuration: Int,

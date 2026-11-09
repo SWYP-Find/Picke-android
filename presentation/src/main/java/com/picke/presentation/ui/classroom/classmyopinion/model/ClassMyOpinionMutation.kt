@@ -6,16 +6,15 @@ internal sealed interface ClassMyOpinionMutation {
 
     data object RequestFailed : RequestFinished
 
-    data class MyPerspectivesLoaded(val perspectives: List<ClassMyPerspectiveUiModel>) : ClassMyOpinionMutation
-
-    data class MyCommentsLoaded(
+    data class MyOpinionsLoaded(
+        val perspectives: List<ClassMyPerspectiveUiModel>,
         val myDisplayName: String,
         val comments: List<ClassMyCommentUiModel>,
         val nextCursor: String?,
         val hasNext: Boolean
     ) : ClassMyOpinionMutation
 
-    data object MyCommentsLoadFailed : ClassMyOpinionMutation
+    data object MyOpinionsLoadFailed : ClassMyOpinionMutation
 
     data class MoreMyCommentsLoaded(
         val comments: List<ClassMyCommentUiModel>,

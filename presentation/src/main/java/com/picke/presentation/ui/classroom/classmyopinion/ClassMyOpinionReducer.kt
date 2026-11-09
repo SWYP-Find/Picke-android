@@ -25,17 +25,16 @@ internal fun reduce(
     val reduced = when (mutation) {
         ClassMyOpinionMutation.RequestFailed -> state.copy(hasNext = false)
 
-        is ClassMyOpinionMutation.MyPerspectivesLoaded -> state.copy(perspectives = mutation.perspectives)
-
-        is ClassMyOpinionMutation.MyCommentsLoaded -> state.copy(
+        is ClassMyOpinionMutation.MyOpinionsLoaded -> state.copy(
             isLoading = false,
+            perspectives = mutation.perspectives,
             comments = mutation.comments,
             myDisplayName = mutation.myDisplayName,
             nextCursor = mutation.nextCursor,
             hasNext = mutation.hasNext
         )
 
-        ClassMyOpinionMutation.MyCommentsLoadFailed -> state.copy(isLoading = false)
+        ClassMyOpinionMutation.MyOpinionsLoadFailed -> state.copy(isLoading = false)
 
         is ClassMyOpinionMutation.MoreMyCommentsLoaded -> state.copy(
             comments = state.comments + mutation.comments,

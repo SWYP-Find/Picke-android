@@ -7,12 +7,9 @@ internal fun reduce(state: ClassShareUiState, mutation: ClassShareMutation): Cla
     when (mutation) {
         is ClassShareMutation.ClassShareLoaded -> state.copy(
             isLoading = false,
-            className = mutation.className,
-            deadline = mutation.deadline,
-            code = mutation.code
+            classInfo = mutation.classInfo,
+            battle = mutation.battle
         )
 
         ClassShareMutation.ClassShareLoadFailed -> state.copy(isLoading = false)
-
-        is ClassShareMutation.BattleLoaded -> state.copy(battle = mutation.battle)
     }

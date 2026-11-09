@@ -16,16 +16,13 @@ internal sealed interface ClassResultMutation {
         val deadline: LocalDateTime?,
         val hasSummaryTab: Boolean,
         val hasReportTab: Boolean,
-        val summary: ClassResultSummaryUiModel
+        val summary: ClassResultSummaryUiModel,
+        val insight: ClassResultInsightUiModel?,
+        val report: ClassResultReportUiModel?,
+        val receivedLikeCount: Int?
     ) : ClassResultMutation
 
     data object ClassResultLoadFailed : ClassResultMutation
-
-    data class InsightLoaded(val insight: ClassResultInsightUiModel) : ClassResultMutation
-
-    data class MyReportLoaded(val report: ClassResultReportUiModel) : ClassResultMutation
-
-    data class MyActivityLoaded(val receivedLikeCount: Int) : ClassResultMutation
 
     data class InsightRetried(val insight: ClassResultInsightUiModel) : RequestFinished
 }

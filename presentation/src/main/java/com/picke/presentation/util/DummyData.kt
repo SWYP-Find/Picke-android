@@ -494,68 +494,68 @@ object DummyData {
 
     val dummyTodayBattles = listOf(
         TodayBattleUiModel(
-            battleId = "battle_001",
+            battleId = "1",
             imageUrl = "",
-            tags = listOf("음식", "취향", "국룰"),
-            title = "영원한 난제, 탕수육 먹을 때 당신의 선택은?",
-            description = "바삭함이 생명인 찍먹파 vs 소스가 촉촉하게 스며든 부먹파",
-            timeLeft = "02:15:30",
+            tags = listOf("과학"),
+            title = "안락사 도입, 당신의 생각은?",
+            description = "인간에게 품위 있는 죽음을 선택할 권리가 있을까요?",
+            timeLeft = "5분",
             options = listOf(
                 TodayBattleOptionUiModel(
-                    optionId = "opt_1",
-                    name = "찍먹",
-                    opinion = "마지막 한 조각까지 바삭함을 잃지 않아야 진짜 탕수육이죠. 눅눅한 고기는 용납할 수 없습니다.",
-                    quote = "바삭함은 생명이다!"
+                    optionId = "1",
+                    name = "피터 싱어",
+                    opinion = "찬성한다",
+                    quote = "고통을 끝낼 권리는 본인에게 있다"
                 ),
                 TodayBattleOptionUiModel(
-                    optionId = "opt_2",
-                    name = "부먹",
-                    opinion = "달콤한 소스가 고기 튀김옷에 촉촉하게 스며들었을 때의 그 부드러움이 진리입니다.",
-                    quote = "촉촉함이 근본이다!"
+                    optionId = "2",
+                    name = "임마누엘 칸트",
+                    opinion = "반대한다",
+                    quote = "생명은 스스로 처분할 수 없는 목적이다"
                 )
             )
         ),
         TodayBattleUiModel(
-            battleId = "battle_002",
+            battleId = "2",
             imageUrl = "",
-            tags = listOf("직장인", "워라밸", "라이프"),
-            title = "회사 복지, 하나만 선택할 수 있다면?",
-            description = "둘 다 포기할 수 없지만... 당신의 출근길을 더 행복하게 만들 복지는?",
-            timeLeft = "14:30:00",
+            tags = listOf("사회"),
+            title = "촉법소년 연령을 낮춰야 할까?",
+            description = "날로 잔혹해지는 청소년 범죄, 강력한 처벌과 교정 중 무엇이 필요할까요?",
+            timeLeft = "4분",
             options = listOf(
                 TodayBattleOptionUiModel(
-                    optionId = "opt_3",
-                    name = "주 4일제",
-                    opinion = "월급이 10% 줄어들더라도 나만의 휴식과 취미 생활을 즐길 수 있는 시간이 훨씬 소중합니다.",
-                    quote = "월급보단 내 시간!"
+                    optionId = "3",
+                    name = "토머스 홉스",
+                    opinion = "낮춰야 한다",
+                    quote = "처벌이 없으면 질서도 없다"
                 ),
                 TodayBattleOptionUiModel(
-                    optionId = "opt_4",
-                    name = "주 5일제",
-                    opinion = "어차피 일할 거 20% 더 벌어서 주말을 화려하고 윤택하게 보내는 것이 낫습니다.",
-                    quote = "결국 남는 건 돈이다!"
+                    optionId = "4",
+                    name = "장 자크 루소",
+                    opinion = "유지해야 한다",
+                    quote = "아이는 교육으로 바뀔 수 있다"
                 )
             )
         ),
         TodayBattleUiModel(
-            battleId = "battle_003",
+            battleId = "3",
             imageUrl = "",
-            tags = listOf("상상", "초능력", "밸런스게임"),
-            title = "당신에게 초능력이 생긴다면?",
-            description = "누구나 한 번쯤 상상해본 초능력! 실생활에 더 유용한 능력은?",
-            timeLeft = "D-2",
+            tags = listOf("철학"),
+            title = "행복은 쾌락에서 오는가?",
+            description = "즐거움을 쌓는 삶과 덕을 쌓는 삶, 어느 쪽이 더 행복할까요?",
+            timeLeft = "3분",
             options = listOf(
                 TodayBattleOptionUiModel(
-                    optionId = "opt_5",
-                    name = "순간이동",
-                    opinion = "지옥철 출퇴근 시간을 아끼고, 전 세계 어디든 1초 만에 여행 갈 수 있는 최고의 능력입니다.",
-                    quote = "지옥철, 이제 안녕!"
+                    optionId = "5",
+                    name = "에피쿠로스",
+                    opinion = "그렇다",
+                    quote = "고통 없는 즐거움이 행복이다"
                 ),
                 TodayBattleOptionUiModel(
-                    optionId = "opt_6",
-                    name = "독심술",
-                    opinion = "사람들의 진짜 속마음을 파악하면 직장 생활, 연애, 인간관계 모든 것에서 성공할 수 있습니다.",
-                    quote = "네 속마음 다 보여!"
+                    optionId = "6",
+                    name = "아리스토텔레스",
+                    opinion = "아니다",
+                    quote = "행복은 덕을 실천하는 활동이다"
                 )
             )
         )

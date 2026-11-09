@@ -31,6 +31,8 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 private object TodayBattleSkeletonDimens {
     val cardMinHeight = 140.dp
     val quoteTopSpacing = 10.dp
+    val imageHeight = 512.dp
+    val vsSize = 40.dp
 }
 
 @Composable
@@ -38,55 +40,56 @@ fun TodayBattleSkeleton(modifier: Modifier = Modifier) {
     val darkShimmerBase = PickeTheme.colors.gray600
     val darkShimmerHighlight = PickeTheme.colors.gray400
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .height(TodayBattleSkeletonDimens.imageHeight)
                 .shimmer(darkShimmerBase, darkShimmerHighlight)
         )
 
-        Spacer(modifier = Modifier.height(SpacingTokens.s32))
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = SpacingTokens.s16),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .padding(
+                    start = SpacingTokens.s16,
+                    end = SpacingTokens.s16,
+                    bottom = SpacingTokens.s40
+                ),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32, Alignment.Bottom)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OpinionCardSkeleton(
-                    darkShimmerBase = darkShimmerBase,
-                    darkShimmerHighlight = darkShimmerHighlight
-                )
-                OpinionCardSkeleton(
-                    darkShimmerBase = darkShimmerBase,
-                    darkShimmerHighlight = darkShimmerHighlight
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
+                    OpinionCardSkeleton(
+                        darkShimmerBase = darkShimmerBase,
+                        darkShimmerHighlight = darkShimmerHighlight
+                    )
+                    OpinionCardSkeleton(
+                        darkShimmerBase = darkShimmerBase,
+                        darkShimmerHighlight = darkShimmerHighlight
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .size(TodayBattleSkeletonDimens.vsSize)
+                        .clip(CircleShape)
+                        .shimmer(darkShimmerBase, darkShimmerHighlight)
                 )
             }
 
             Spacer(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
+                    .fillMaxWidth()
+                    .height(ComponentNumberTokens.buttonPrimaryLargeHeight)
+                    .clip(RoundedCornerShape(RadiusTokens.default))
                     .shimmer(darkShimmerBase, darkShimmerHighlight)
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(
-                    start = SpacingTokens.s16,
-                    top = SpacingTokens.s16,
-                    end = SpacingTokens.s16,
-                    bottom = SpacingTokens.s20
-                )
-                .height(ComponentNumberTokens.buttonPrimaryLargeHeight)
-                .clip(RoundedCornerShape(2.dp))
-                .shimmer(darkShimmerBase, darkShimmerHighlight)
-        )
     }
 }
 

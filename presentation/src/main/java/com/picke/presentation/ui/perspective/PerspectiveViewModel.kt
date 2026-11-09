@@ -10,6 +10,7 @@ import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.ui.perspective.model.PerspectiveClassSettingUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
 import com.picke.presentation.ui.perspective.model.PerspectiveUiState
@@ -64,7 +65,6 @@ class PerspectiveViewModel @Inject constructor(
 
     private fun fetchInitialData() {
         val state = _uiState.value
-        val classTarget = target as? BattleTarget.Class
         viewModelScope.launch {
             val perspectivesDeferred = async {
                 perspectiveUseCases.loadPerspectivesUseCase(
@@ -78,13 +78,12 @@ class PerspectiveViewModel @Inject constructor(
             val myPerspectivesDeferred =
                 async { perspectiveUseCases.getMyPerspectivesUseCase(target) }
             val voteHistoryDeferred = async { voteUseCases.getMyVoteHistoryUseCase(target) }
-            val classDetailDeferred =
-                classTarget?.let { async { classroomUseCases.getClassDetailUseCase(it.classId) } }
+            val classSettingDeferred = async { loadClassSetting() }
             val page = perspectivesDeferred.await().getOrNull()
             val voteStats = voteStatsDeferred.await().getOrNull()
             val myPerspectivesResult = myPerspectivesDeferred.await()
             val voteHistoryResult = voteHistoryDeferred.await()
-            val classDetailResult = classDetailDeferred?.await()
+            val classSettingResult = classSettingDeferred.await()
 
             if (page == null || voteStats == null) {
                 _uiState.update { it.copy(isLoading = false) }
@@ -103,14 +102,14 @@ class PerspectiveViewModel @Inject constructor(
                     myPerspective = myPerspectivesResult.getOrNull()?.firstOrNull()?.toUiModel(),
                     opinionChanged = voteHistoryResult.getOrNull()?.opinionChanged ?: false,
                     battleTitle = voteHistoryResult.getOrNull()?.battleTitle ?: it.battleTitle,
-                    classSetting = classDetailResult?.getOrNull()?.toUiModel()
+                    classSetting = classSettingResult.getOrNull()
                 )
             }
 
             if (
                 myPerspectivesResult.isFailure ||
                 voteHistoryResult.isFailure ||
-                classDetailResult?.isFailure == true
+                classSettingResult.isFailure
             ) {
                 sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
             }
@@ -330,4 +329,12 @@ class PerspectiveViewModel @Inject constructor(
         fetchMyPerspective()
         fetchPerspectives(isRefresh = true)
     }
+
+    private suspend fun loadClassSetting(): Result<PerspectiveClassSettingUiModel?> =
+        when (target) {
+            is BattleTarget.Class ->
+                classroomUseCases.getClassDetailUseCase(target.classId).map { it.toUiModel() }
+
+            is BattleTarget.General -> Result.success(null)
+        }
 }

@@ -24,7 +24,7 @@ data class ScenarioScriptUiModel(
     val scriptId: String,
     val startTimeMs: Long,
     val speakerType: SpeakerType,
-    val speakerName: String,
+    val speakerName: String?,
     val displayText: String,
     val profileImageUrl: String? = null
 )

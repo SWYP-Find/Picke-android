@@ -52,7 +52,7 @@ private val PLAYING_BAR_MAX_SCALES = listOf(1.1f, 1.3f, 1.6f, 1.3f, 1.1f)
 @Composable
 fun ChatBubble(
     text: String,
-    speakerName: String,
+    speakerName: String?,
     avatarUrl: String?,
     @DrawableRes defaultAvatarRes: Int,
     isLeft: Boolean,
@@ -101,11 +101,13 @@ fun ChatBubble(
                     horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = speakerName,
-                        color = PickeTheme.colors.textDefault,
-                        style = PickeTheme.typography.bodySmSemiBold
-                    )
+                    speakerName?.let {
+                        Text(
+                            text = it,
+                            color = PickeTheme.colors.textDefault,
+                            style = PickeTheme.typography.bodySmSemiBold
+                        )
+                    }
                     if (nameBadge != null) {
                         ChatBubbleNameBadge(text = nameBadge)
                     }
@@ -216,7 +218,10 @@ private fun ChatBubblePlayingIndicator(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .size(width = ChatBubbleDimens.playingBarWidth, height = barHeight)
                     .scale(scaleX = 1f, scaleY = barScales[index].value)
-                    .background(PickeTheme.colors.iconPrimaryDefault, RoundedCornerShape(RadiusTokens.max))
+                    .background(
+                        PickeTheme.colors.iconPrimaryDefault,
+                        RoundedCornerShape(RadiusTokens.max)
+                    )
             )
         }
     }

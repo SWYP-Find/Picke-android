@@ -113,7 +113,7 @@ class TodayBattleViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             isLoading = false,
-                            battleList = board.items.take(1).map { it.toUiModel() }
+                            battle = board.items.firstOrNull()?.toUiModel()
                         )
                     }
                 }

@@ -18,10 +18,8 @@ fun NavGraphBuilder.todayBattleGraph(navController: NavController) {
                 defaultValue = null
             }
         )
-    ) { backStackEntry ->
-        val battleId = backStackEntry.arguments?.getString(AppRoute.ARG_BATTLE_ID)
+    ) {
         TodayBattleScreen(
-            initialBattleId = battleId,
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToScenario = { id ->
                 navController.navigate(AppRoute.Scenario.createRoute(id)) {

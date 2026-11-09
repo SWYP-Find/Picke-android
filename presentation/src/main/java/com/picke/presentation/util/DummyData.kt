@@ -492,71 +492,25 @@ object DummyData {
         )
     )
 
-    val dummyTodayBattles = listOf(
-        TodayBattleUiModel(
-            battleId = "1",
-            imageUrl = "",
-            tags = listOf("과학"),
-            title = "안락사 도입, 당신의 생각은?",
-            description = "인간에게 품위 있는 죽음을 선택할 권리가 있을까요?",
-            timeLeft = "5분",
-            options = listOf(
-                TodayBattleOptionUiModel(
-                    optionId = "1",
-                    name = "피터 싱어",
-                    opinion = "찬성한다",
-                    quote = "고통을 끝낼 권리는 본인에게 있다"
-                ),
-                TodayBattleOptionUiModel(
-                    optionId = "2",
-                    name = "임마누엘 칸트",
-                    opinion = "반대한다",
-                    quote = "생명은 스스로 처분할 수 없는 목적이다"
-                )
-            )
-        ),
-        TodayBattleUiModel(
-            battleId = "2",
-            imageUrl = "",
-            tags = listOf("사회"),
-            title = "촉법소년 연령을 낮춰야 할까?",
-            description = "날로 잔혹해지는 청소년 범죄, 강력한 처벌과 교정 중 무엇이 필요할까요?",
-            timeLeft = "4분",
-            options = listOf(
-                TodayBattleOptionUiModel(
-                    optionId = "3",
-                    name = "토머스 홉스",
-                    opinion = "낮춰야 한다",
-                    quote = "처벌이 없으면 질서도 없다"
-                ),
-                TodayBattleOptionUiModel(
-                    optionId = "4",
-                    name = "장 자크 루소",
-                    opinion = "유지해야 한다",
-                    quote = "아이는 교육으로 바뀔 수 있다"
-                )
-            )
-        ),
-        TodayBattleUiModel(
-            battleId = "3",
-            imageUrl = "",
-            tags = listOf("철학"),
-            title = "행복은 쾌락에서 오는가?",
-            description = "즐거움을 쌓는 삶과 덕을 쌓는 삶, 어느 쪽이 더 행복할까요?",
-            timeLeft = "3분",
-            options = listOf(
-                TodayBattleOptionUiModel(
-                    optionId = "5",
-                    name = "에피쿠로스",
-                    opinion = "그렇다",
-                    quote = "고통 없는 즐거움이 행복이다"
-                ),
-                TodayBattleOptionUiModel(
-                    optionId = "6",
-                    name = "아리스토텔레스",
-                    opinion = "아니다",
-                    quote = "행복은 덕을 실천하는 활동이다"
-                )
+    val dummyTodayBattle = TodayBattleUiModel(
+        battleId = "1",
+        imageUrl = "",
+        tags = listOf("과학"),
+        title = "안락사 도입, 당신의 생각은?",
+        description = "인간에게 품위 있는 죽음을 선택할 권리가 있을까요?",
+        timeLeft = "5분",
+        options = listOf(
+            TodayBattleOptionUiModel(
+                optionId = "1",
+                name = "피터 싱어",
+                opinion = "찬성한다",
+                quote = "고통을 끝낼 권리는 본인에게 있다"
+            ),
+            TodayBattleOptionUiModel(
+                optionId = "2",
+                name = "임마누엘 칸트",
+                opinion = "반대한다",
+                quote = "생명은 스스로 처분할 수 없는 목적이다"
             )
         )
     )

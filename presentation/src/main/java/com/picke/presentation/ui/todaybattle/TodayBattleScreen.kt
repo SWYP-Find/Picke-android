@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -72,7 +70,6 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.todaybattle.component.OpinionCard
 import com.picke.presentation.ui.todaybattle.component.TodayBattleSkeleton
-import com.picke.presentation.ui.todaybattle.component.TopIndicatorBar
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiModel
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.util.DummyData
@@ -93,7 +90,6 @@ private object TodayBattleScreenDimens {
 @Composable
 fun TodayBattleScreen(
     viewModel: TodayBattleViewModel = hiltViewModel(),
-    initialBattleId: String? = null,
     onBackClick: () -> Unit,
     onNavigateToScenario: (String) -> Unit,
     onNavigateToPerspective: (String) -> Unit
@@ -115,7 +111,6 @@ fun TodayBattleScreen(
 
     TodayBattleScreen(
         uiState = uiState,
-        initialBattleId = initialBattleId,
         onBackClick = onBackClick,
         onEnterBattle = { currentBattleId, selectedOptionId ->
             viewModel.enterBattle(
@@ -147,7 +142,6 @@ fun TodayBattleScreen(
 @Composable
 fun TodayBattleScreen(
     uiState: TodayBattleUiState,
-    initialBattleId: String?,
     onBackClick: () -> Unit,
     onEnterBattle: (String, String?) -> Unit,
     onGetShareLink: (Int) -> Unit,
@@ -159,31 +153,28 @@ fun TodayBattleScreen(
     val shareFailedMessage = stringResource(R.string.share_failed)
     val captureFailedMessage = stringResource(R.string.share_capture_failed)
 
-    val battleList = uiState.battleList
-
-    val pagerState = rememberPagerState(pageCount = { battleList.size })
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
 
-    var selectedOptionId by remember(pagerState.currentPage) { mutableStateOf<String?>(null) }
+    var selectedOptionId by remember { mutableStateOf<String?>(null) }
     var showShareDialog by remember { mutableStateOf(false) }
     var isSharing by remember { mutableStateOf(false) }
 
+    val battle = uiState.battle
     val isButtonEnabled = selectedOptionId != null && !uiState.isEntering
-    val currentBattle = if (battleList.isNotEmpty()) battleList[pagerState.currentPage] else null
 
     val onKakaoShareClick = {
-        currentBattle?.let { battle ->
+        battle?.let { currentBattle ->
             isSharing = true
             coroutineScope.launchBitmapShare(
-                loadBitmap = { loadBitmapFromUrl(context, battle.imageUrl) },
+                loadBitmap = { loadBitmapFromUrl(context, currentBattle.imageUrl) },
                 onBitmapReady = { bitmap ->
                     shareBattleToKakao(
                         context = context,
                         bitmap = bitmap,
-                        battleId = battle.battleId,
-                        battleTitle = battle.title,
-                        battleDescription = battle.description,
+                        battleId = currentBattle.battleId,
+                        battleTitle = currentBattle.title,
+                        battleDescription = currentBattle.description,
                         onComplete = { isSharing = false },
                         onSuccess = { onTrackShareAction(ShareTarget.BATTLE, ShareChannel.KAKAO) }
                     )
@@ -219,13 +210,6 @@ fun TodayBattleScreen(
         )
     }
 
-    LaunchedEffect(battleList, initialBattleId) {
-        if (initialBattleId != null && battleList.isNotEmpty()) {
-            val targetPage = battleList.indexOfFirst { it.battleId == initialBattleId }
-            if (targetPage >= 0) pagerState.animateScrollToPage(targetPage)
-        }
-    }
-
     if (uiState.isLoading) {
         Box(
             modifier = Modifier
@@ -246,7 +230,7 @@ fun TodayBattleScreen(
         return
     }
 
-    if (battleList.isEmpty()) {
+    if (battle == null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -302,24 +286,16 @@ fun TodayBattleScreen(
                         }
                     }
             ) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
-                    BattleContent(
-                        item = battleList[page],
-                        selectedOptionId = selectedOptionId,
-                        onOptionSelect = { optionId -> selectedOptionId = optionId }
-                    )
-                }
+                BattleContent(
+                    item = battle,
+                    selectedOptionId = selectedOptionId,
+                    onOptionSelect = { optionId -> selectedOptionId = optionId }
+                )
             }
 
             PickeButton(
                 text = stringResource(R.string.battle_start),
-                onClick = {
-                    val currentBattleId = battleList[pagerState.currentPage].battleId
-                    onEnterBattle(currentBattleId, selectedOptionId)
-                },
+                onClick = { onEnterBattle(battle.battleId, selectedOptionId) },
                 modifier = Modifier
                     .navigationBarsPadding()
                     .padding(
@@ -332,26 +308,7 @@ fun TodayBattleScreen(
             )
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-        ) {
-            if (battleList.size > 1) {
-                Box(
-                    modifier = Modifier.padding(
-                        start = SpacingTokens.s16,
-                        top = SpacingTokens.s16,
-                        end = SpacingTokens.s16
-                    )
-                ) {
-                    TopIndicatorBar(
-                        currentPage = pagerState.currentPage,
-                        totalPages = battleList.size
-                    )
-                }
-            }
-
+        Box(modifier = Modifier.statusBarsPadding()) {
             PickeTopAppBar(
                 onBackClick = onBackClick,
                 backgroundColor = Color.Transparent,
@@ -379,8 +336,7 @@ fun TodayBattleScreen(
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
-                    val currentBattleId = battleList[pagerState.currentPage].battleId.toInt()
-                    onGetShareLink(currentBattleId)
+                    onGetShareLink(battle.battleId.toInt())
                 },
                 onDismiss = { showShareDialog = false }
             )
@@ -585,9 +541,8 @@ fun TodayBattleScreenPreview() {
         TodayBattleScreen(
             uiState = TodayBattleUiState(
                 isLoading = false,
-                battleList = DummyData.dummyTodayBattles
+                battle = DummyData.dummyTodayBattle
             ),
-            initialBattleId = "",
             onBackClick = { },
             onEnterBattle = { _, _ -> },
             onGetShareLink = { },

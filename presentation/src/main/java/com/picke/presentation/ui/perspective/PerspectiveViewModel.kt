@@ -83,7 +83,7 @@ class PerspectiveViewModel @Inject constructor(
             val page = perspectivesDeferred.await().getOrNull()
             val voteStats = voteStatsDeferred.await().getOrNull()
             val myPerspectivesResult = myPerspectivesDeferred.await()
-            val voteHistory = voteHistoryDeferred.await().getOrNull()
+            val voteHistoryResult = voteHistoryDeferred.await()
             val classDetailResult = classDetailDeferred?.await()
 
             if (page == null || voteStats == null) {
@@ -101,13 +101,17 @@ class PerspectiveViewModel @Inject constructor(
                     nextCursor = page.nextCursor,
                     hasNext = page.hasNext && page.nextCursor != null && perspectives.isNotEmpty(),
                     myPerspective = myPerspectivesResult.getOrNull()?.firstOrNull()?.toUiModel(),
-                    opinionChanged = voteHistory?.opinionChanged ?: false,
-                    battleTitle = voteHistory?.battleTitle ?: it.battleTitle,
+                    opinionChanged = voteHistoryResult.getOrNull()?.opinionChanged ?: false,
+                    battleTitle = voteHistoryResult.getOrNull()?.battleTitle ?: it.battleTitle,
                     classSetting = classDetailResult?.getOrNull()?.toUiModel()
                 )
             }
 
-            if (myPerspectivesResult.isFailure || classDetailResult?.isFailure == true) {
+            if (
+                myPerspectivesResult.isFailure ||
+                voteHistoryResult.isFailure ||
+                classDetailResult?.isFailure == true
+            ) {
                 sendEvent(PerspectiveUiEvent.ShowLoadFailedToast)
             }
         }

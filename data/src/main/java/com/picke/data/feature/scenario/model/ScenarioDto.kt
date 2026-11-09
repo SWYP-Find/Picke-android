@@ -23,7 +23,7 @@ data class ScenarioResponseDto(
     val title: String?,
     val philosophers: List<ScenarioPhilosopherDto>?,
     val isInteractive: Boolean,
-    val startNodeId: Long,
+    val startNodeId: Long?,
     val recommendedPathKey: String,
     val audios: Map<String, String>,
     val nodes: List<ScenarioNodeDto>
@@ -61,7 +61,7 @@ fun ScenarioResponseDto.toDomainModel(): ScenarioBoard =
         title = title.requireField("ScenarioResponseDto.title"),
         philosophers = philosophers?.map { it.toDomainModel() } ?: emptyList(),
         isInteractive = isInteractive,
-        startNodeId = startNodeId.toString(),
+        startNodeId = startNodeId.requireField("ScenarioResponseDto.startNodeId").toString(),
         recommendedPathKey = recommendedPathKey,
         audios = audios,
         nodes = nodes.map { it.toDomainModel() }

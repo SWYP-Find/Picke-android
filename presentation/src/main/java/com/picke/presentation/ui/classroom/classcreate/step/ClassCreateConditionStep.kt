@@ -38,16 +38,19 @@ internal fun ClassCreateConditionStep(
     ) {
         ClassTitledBlock(
             title = stringResource(R.string.class_create_topic_label),
-            isRequired = uiState.isTopicRequired
+            isRequired = uiState.isTopicRequired,
+            contentSpacing = SpacingTokens.s8,
+            titleStyle = PickeTheme.typography.bodySmSemiBold
         ) {
             Column {
                 PickeTextField(
                     value = uiState.topic,
                     onValueChange = onTopicChange,
                     minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                    textStyle = PickeTheme.typography.bodySmMedium,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
                     placeholder = stringResource(R.string.class_create_topic_placeholder),
-                    isError = uiState.isTopicInvalid
+                    isError = uiState.isTopicInvalid,
+                    horizontalPadding = SpacingTokens.s12
                 )
                 ClassSettingErrorText(
                     text = stringResource(R.string.class_create_topic_too_short_error),
@@ -58,7 +61,8 @@ internal fun ClassCreateConditionStep(
 
         ClassTitledBlock(
             title = stringResource(R.string.class_create_level_label),
-            isRequired = true
+            isRequired = true,
+            titleStyle = PickeTheme.typography.bodySmSemiBold
         ) {
             ClassLevelTab(
                 labels = ClassLevel.entries.map { stringResource(it.labelRes) },
@@ -69,7 +73,8 @@ internal fun ClassCreateConditionStep(
 
         ClassTitledBlock(
             title = stringResource(R.string.class_create_category_label),
-            isRequired = true
+            isRequired = true,
+            titleStyle = PickeTheme.typography.bodySmSemiBold
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
                 ClassCategory.entries.chunked(CATEGORY_COLUMNS).forEach { rowCategories ->

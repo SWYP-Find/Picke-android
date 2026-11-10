@@ -50,6 +50,9 @@ data class ClassCreateUiState(
     val isTopicRequired: Boolean
         get() = method == ClassCreateMethod.AI_TOPIC
 
+    val isTopicGenerating: Boolean
+        get() = step == ClassCreateStep.SELECTION && isTopicRequired && isRequesting
+
     internal val isMethodChanged: Boolean
         get() = step == ClassCreateStep.METHOD && conditionMethod != method
 

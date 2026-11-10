@@ -28,8 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classcreate.component.ClassTopicSkeleton
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
@@ -43,6 +45,7 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
 private const val CONDITION_FADE_SOLID_STOP = 0.5f
+private const val TOPIC_SKELETON_COUNT = 3
 
 private object ClassCreateSelectionStepDimens {
     val conditionFadeWidth = 60.dp
@@ -59,6 +62,11 @@ internal fun ClassCreateSelectionStep(
     modifier: Modifier = Modifier
 ) {
     val isAiQuestion = uiState.method == ClassCreateMethod.AI_TOPIC
+    val resultText = if (uiState.isTopicGenerating) {
+        stringResource(R.string.class_create_topic_generating)
+    } else {
+        stringResource(R.string.class_create_result_count, uiState.battles.size)
+    }
 
     Column(modifier = modifier) {
         ClassCreateSelectedConditionSection(
@@ -71,7 +79,7 @@ internal fun ClassCreateSelectionStep(
         Spacer(modifier = Modifier.height(SpacingTokens.s16))
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16)) {
             Text(
-                text = stringResource(R.string.class_create_result_count, uiState.battles.size),
+                text = resultText,
                 color = PickeTheme.colors.textDefault,
                 style = PickeTheme.typography.bodySmSemiBold
             )
@@ -83,6 +91,12 @@ internal fun ClassCreateSelectionStep(
                         .fillMaxWidth()
                         .padding(vertical = SpacingTokens.s80)
                 )
+            }
+
+            if (uiState.isTopicGenerating) {
+                repeat(TOPIC_SKELETON_COUNT) {
+                    ClassTopicSkeleton()
+                }
             }
 
             uiState.battles.forEach { battle ->
@@ -234,6 +248,25 @@ private fun ClassCreateAiSelectionStepPreview() {
                     question.copy(candidateId = index + 1L)
                 },
                 selectedCandidateId = 1L
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "AI 질문 생성 중", showBackground = true)
+@Composable
+private fun ClassCreateGeneratingSelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.AI_TOPIC,
+                topic = "범죄",
+                isRequesting = true
             ),
             onBattleSelect = {},
             onBattlePreviewClick = {},

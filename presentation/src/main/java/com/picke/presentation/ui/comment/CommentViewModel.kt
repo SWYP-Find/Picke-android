@@ -78,7 +78,7 @@ class CommentViewModel @Inject constructor(
                         fetchMainPerspective()
                     }
                     onSuccess()
-                    fetchComments()
+                    fetchComments(isRefresh = true)
                 }
                 .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
         }
@@ -194,50 +194,31 @@ class CommentViewModel @Inject constructor(
 
     fun refreshAllData() {
         fetchMainPerspective()
-        fetchComments()
+        fetchComments(isRefresh = true)
     }
 
     private fun sendEvent(event: CommentUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 
-    private fun fetchComments() {
-        if (_uiState.value.isListLoading) return
-
-        _uiState.update { it.copy(isListLoading = true) }
-
-        viewModelScope.launch {
-            commentUseCases.loadCommentsUseCase(targetId, null, size = 10)
-                .onSuccess { page ->
-                    _uiState.update {
-                        it.copy(
-                            comments = page.items.map { comment -> comment.toUiModel() },
-                            nextCursor = page.nextCursor,
-                            hasNext = page.hasNext,
-                            isListLoading = false
-                        )
-                    }
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isListLoading = false) }
-                    sendEvent(CommentUiEvent.ShowLoadFailedToast)
-                }
-        }
-    }
-
-    fun fetchNextComments() {
+    fun fetchComments(isRefresh: Boolean = false) {
         val state = _uiState.value
-        if (state.isListLoading || !state.hasNext) return
+        if (state.isListLoading || (!isRefresh && !state.hasNext)) return
 
         _uiState.update { it.copy(isListLoading = true) }
 
         viewModelScope.launch {
-            commentUseCases.loadCommentsUseCase(targetId, state.nextCursor, size = 10)
+            val cursor = if (isRefresh) null else state.nextCursor
+            commentUseCases.loadCommentsUseCase(targetId, cursor, size = 10)
                 .onSuccess { page ->
                     val newItems = page.items.map { comment -> comment.toUiModel() }
                     _uiState.update {
                         it.copy(
-                            comments = (it.comments + newItems).distinctBy { item -> item.commentId },
+                            comments = if (isRefresh) {
+                                newItems
+                            } else {
+                                (it.comments + newItems).distinctBy { item -> item.commentId }
+                            },
                             nextCursor = page.nextCursor,
                             hasNext = page.hasNext,
                             isListLoading = false

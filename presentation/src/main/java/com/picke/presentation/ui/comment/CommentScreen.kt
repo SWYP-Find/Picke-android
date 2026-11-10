@@ -123,7 +123,7 @@ fun CommentScreen(
             isRefreshing = true
             viewModel.refreshAllData()
         },
-        onLoadMore = viewModel::fetchNextComments,
+        onLoadMore = { viewModel.fetchComments() },
         onSubmit = {
             viewModel.submitComment(inputFieldState.text.toString()) {
                 inputFieldState.clearText()

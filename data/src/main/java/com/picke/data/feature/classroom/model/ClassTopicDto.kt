@@ -1,5 +1,6 @@
 package com.picke.data.feature.classroom.model
 
+import com.picke.data.common.error.requireField
 import com.picke.domain.feature.classroom.model.ClassTopicCandidateBoard
 import com.picke.domain.feature.classroom.model.ClassTopicDraftBoard
 import com.picke.domain.feature.classroom.model.ClassTopicOptionBoard
@@ -15,22 +16,22 @@ data class ClassTopicDraftRequestDto(
 
 @Serializable
 data class ClassTopicDraftResponseDto(
-    val draftId: Long?,
-    val suggestStatus: String?,
+    val draftId: Long,
+    val suggestStatus: String,
     val clarificationMessage: String?,
-    val batchNo: Int?,
-    val remainingSuggestions: Int?,
-    val candidates: List<ClassTopicCandidateDto>?
+    val batchNo: Int,
+    val remainingSuggestions: Int,
+    val candidates: List<ClassTopicCandidateDto>
 )
 
 @Serializable
 data class ClassTopicCandidateDto(
-    val candidateId: Long?,
+    val candidateId: Long,
     val question: String?,
     val description: String?,
-    val category: String?,
-    val difficulty: String?,
-    val options: List<ClassTopicOptionDto>?
+    val category: String,
+    val difficulty: String,
+    val options: List<ClassTopicOptionDto>
 )
 
 @Serializable
@@ -41,62 +42,62 @@ data class ClassTopicSelectionRequestDto(
 
 @Serializable
 data class ClassTopicVersionResponseDto(
-    val topicVersionId: Long?,
-    val draftId: Long?,
-    val versionNo: Int?,
-    val source: String?,
-    val question: String?,
-    val description: String?,
-    val category: String?,
-    val difficulty: String?,
-    val options: List<ClassTopicOptionDto>?
+    val topicVersionId: Long,
+    val draftId: Long,
+    val versionNo: Int,
+    val source: String,
+    val question: String,
+    val description: String,
+    val category: String,
+    val difficulty: String,
+    val options: List<ClassTopicOptionDto>
 )
 
 @Serializable
 data class ClassTopicOptionDto(
-    val position: String?,
+    val position: String,
     val label: String?,
     val rationale: String?,
-    val philosopher: String?,
-    val philosopherName: String?,
-    val philosopherImageKey: String?
+    val philosopher: String,
+    val philosopherName: String,
+    val philosopherImageKey: String
 )
 
 fun ClassTopicDraftResponseDto.toDomainModel() = ClassTopicDraftBoard(
-    draftId = draftId ?: 0L,
-    suggestStatus = suggestStatus ?: "",
+    draftId = draftId,
+    suggestStatus = suggestStatus,
     clarificationMessage = clarificationMessage,
-    batchNo = batchNo ?: 0,
-    remainingSuggestions = remainingSuggestions ?: 0,
-    candidates = candidates?.map { it.toDomainModel() } ?: emptyList()
+    batchNo = batchNo,
+    remainingSuggestions = remainingSuggestions,
+    candidates = candidates.map { it.toDomainModel() }
 )
 
 fun ClassTopicCandidateDto.toDomainModel() = ClassTopicCandidateBoard(
-    candidateId = candidateId ?: 0L,
-    question = question ?: "",
-    description = description ?: "",
-    category = category ?: "",
-    difficulty = difficulty ?: "",
-    options = options?.map { it.toDomainModel() } ?: emptyList()
+    candidateId = candidateId,
+    question = question.requireField("ClassTopicCandidateDto.question"),
+    description = description.requireField("ClassTopicCandidateDto.description"),
+    category = category,
+    difficulty = difficulty,
+    options = options.map { it.toDomainModel() }
 )
 
 fun ClassTopicVersionResponseDto.toDomainModel() = ClassTopicVersionBoard(
-    topicVersionId = topicVersionId ?: 0L,
-    draftId = draftId ?: 0L,
-    versionNo = versionNo ?: 0,
-    source = source ?: "",
-    question = question ?: "",
-    description = description ?: "",
-    category = category ?: "",
-    difficulty = difficulty ?: "",
-    options = options?.map { it.toDomainModel() } ?: emptyList()
+    topicVersionId = topicVersionId,
+    draftId = draftId,
+    versionNo = versionNo,
+    source = source,
+    question = question,
+    description = description,
+    category = category,
+    difficulty = difficulty,
+    options = options.map { it.toDomainModel() }
 )
 
 fun ClassTopicOptionDto.toDomainModel() = ClassTopicOptionBoard(
-    position = position ?: "",
-    label = label ?: "",
-    rationale = rationale ?: "",
-    philosopher = philosopher ?: "",
-    philosopherName = philosopherName ?: "",
-    philosopherImageKey = philosopherImageKey ?: ""
+    position = position,
+    label = label.requireField("ClassTopicOptionDto.label"),
+    rationale = rationale.requireField("ClassTopicOptionDto.rationale"),
+    philosopher = philosopher,
+    philosopherName = philosopherName,
+    philosopherImageKey = philosopherImageKey
 )

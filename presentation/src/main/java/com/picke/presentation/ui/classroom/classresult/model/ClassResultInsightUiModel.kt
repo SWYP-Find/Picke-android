@@ -4,7 +4,7 @@ import com.picke.domain.feature.classroom.model.ClassResultInsightBoard
 
 data class ClassResultInsightUiModel(
     val state: ClassReportState,
-    val insightText: String,
+    val insightText: String?,
     val isRetryable: Boolean,
     val bestComment: String,
     val mostDebatedComment: String

@@ -40,7 +40,7 @@ class MyViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             profile = infoBoard.profile.toUiModel(),
-                            philosopher = infoBoard.philosopher.toUiModel(),
+                            philosopher = infoBoard.philosopher?.toUiModel(),
                             tier = infoBoard.tier.toUiModel(),
                             isLoading = false
                         )

@@ -68,7 +68,7 @@ private fun ClassResultInsightUiModel.insightText(deadlineText: String): String 
 
     ClassReportState.PENDING, ClassReportState.GENERATING -> stringResource(R.string.class_debate_generating)
 
-    ClassReportState.SUCCEEDED -> insightText
+    ClassReportState.SUCCEEDED -> insightText.orEmpty()
 
     ClassReportState.LIMITED -> stringResource(R.string.class_result_insight_limited)
 

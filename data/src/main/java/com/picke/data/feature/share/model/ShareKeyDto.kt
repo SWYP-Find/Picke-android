@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ShareKeyDto(
-    val shareKey: String?
+    val shareKey: String
 )
 
 fun ShareKeyDto.toDomainModel() = ShareKey(
-    shareKey = shareKey ?: ""
+    shareKey = shareKey
 )

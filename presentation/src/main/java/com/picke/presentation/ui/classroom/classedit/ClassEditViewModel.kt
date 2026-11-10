@@ -80,7 +80,7 @@ class ClassEditViewModel @Inject constructor(
 
             val mutation = ClassEditMutation.ClassLoaded(
                 className = classDetail.name,
-                deadline = parseServerDateTime(classDetail.deadline)
+                deadline = classDetail.deadline?.let(::parseServerDateTime)
                     ?: parseServerDateTime(classDetail.closeAt),
                 ticketEndDate = parseServerDateTime(classDetail.ticketExpiresAt)?.toLocalDate(),
                 battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))

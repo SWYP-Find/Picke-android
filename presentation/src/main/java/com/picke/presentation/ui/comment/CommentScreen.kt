@@ -10,12 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -122,6 +123,7 @@ fun CommentScreen(
             isRefreshing = true
             viewModel.refreshAllData()
         },
+        onLoadMore = { viewModel.fetchComments() },
         onSubmit = {
             viewModel.submitComment(inputFieldState.text.toString()) {
                 inputFieldState.clearText()
@@ -216,6 +218,7 @@ private fun CommentContent(
     isMainReportDialogVisible: Boolean,
     onBackClick: () -> Unit,
     onRefresh: () -> Unit,
+    onLoadMore: () -> Unit,
     onSubmit: () -> Unit,
     onMainLikeClick: (CommentUiModel) -> Unit,
     onEditMainPerspective: (String) -> Unit,
@@ -292,7 +295,7 @@ private fun CommentContent(
                     onReportClick = onRequestReportMainPerspective
                 )
 
-                CommentHeaderSection(count = uiState.comments.size)
+                CommentHeaderSection(count = mainPerspective.replyCount)
 
                 PullToRefreshBox(
                     state = pullToRefreshState,
@@ -313,7 +316,7 @@ private fun CommentContent(
                         state = listState,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(uiState.comments) { comment ->
+                        itemsIndexed(uiState.comments) { index, comment ->
                             CommentItemCard(
                                 item = comment,
                                 onEditClick = { content ->
@@ -333,6 +336,25 @@ private fun CommentContent(
                                     )
                                 }
                             )
+
+                            if (index == uiState.comments.lastIndex && uiState.hasNext) {
+                                LaunchedEffect(comment.commentId) {
+                                    onLoadMore()
+                                }
+                            }
+                        }
+
+                        if (uiState.isListLoading && !isRefreshing) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(SpacingTokens.s16),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(color = PickeTheme.colors.primary900)
+                                }
+                            }
                         }
                     }
                 }
@@ -418,6 +440,7 @@ private fun CommentContentPreview() {
             isMainReportDialogVisible = false,
             onBackClick = {},
             onRefresh = {},
+            onLoadMore = {},
             onSubmit = {},
             onMainLikeClick = {},
             onEditMainPerspective = {},

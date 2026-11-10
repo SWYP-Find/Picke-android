@@ -190,7 +190,7 @@ fun VoteContent(
     val onKakaoShareClick = {
         isSharing = true
         coroutineScope.launchBitmapShare(
-            loadBitmap = { loadBitmapFromUrl(context, battleInfo.thumbnailUrl) },
+            loadBitmap = { battleInfo.thumbnailUrl?.let { url -> loadBitmapFromUrl(context, url) } },
             onBitmapReady = { bitmap ->
                 shareBattleToKakao(
                     context = context,

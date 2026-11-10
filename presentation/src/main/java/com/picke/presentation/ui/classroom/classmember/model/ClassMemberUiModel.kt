@@ -14,7 +14,7 @@ data class ClassMemberUiModel(
 fun ClassMemberBoard.toUiModel() = ClassMemberUiModel(
     memberId = memberId,
     name = displayName,
-    imageUrl = characterUrl.ifBlank { null },
+    imageUrl = characterUrl,
     isOperator = ClassRole.from(role).isOwner,
     isMe = me
 )

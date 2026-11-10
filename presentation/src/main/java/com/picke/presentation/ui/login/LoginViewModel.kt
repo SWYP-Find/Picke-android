@@ -76,7 +76,7 @@ class LoginViewModel @Inject constructor(
                     needsTermsAgreement = needsTermsAgreement
                 )
 
-                val userTag = authToken.userTag ?: "unknown_user"
+                val userTag = authToken.userTag
                 preferencesUseCases.saveUserTag(userTag)
                 preferencesUseCases.saveLoginProvider(provider.name)
                 analyticsTracker.onLogin(userTag, provider.name, authToken.isNewUser)

@@ -88,15 +88,16 @@ fun AlarmScreen(
         onFetchMore = { viewModel.fetchAlarms() },
         onAlarmClick = { item ->
             if (!item.isRead) viewModel.readAlarm(item.notificationId)
+            val referenceId = item.referenceId
+            val perspectiveId = item.perspectiveId
             when (item.detailCode) {
-                "NEW_BATTLE" -> onNavigateToPreVote(item.referenceId.toString())
-                "COMMENT_LIKE", "NEW_COMMENT" -> if (item.perspectiveId != 0L) onNavigateToComment(
-                    item.perspectiveId.toString(),
-                    item.referenceId.toString()
-                )
+                "NEW_BATTLE" -> if (referenceId != null) onNavigateToPreVote(referenceId.toString())
+                "COMMENT_LIKE", "NEW_COMMENT" -> if (perspectiveId != null && referenceId != null) {
+                    onNavigateToComment(perspectiveId.toString(), referenceId.toString())
+                }
 
                 "CREDIT_EARNED" -> onNavigateToPoint()
-                "POLICY_CHANGE" -> onNavigateToNotice(item.referenceId)
+                "POLICY_CHANGE" -> if (referenceId != null) onNavigateToNotice(referenceId)
                 "DAILY_MESSAGE" -> onNavigateToTodayBattle()
             }
         }

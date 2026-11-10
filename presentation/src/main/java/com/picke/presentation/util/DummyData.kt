@@ -153,7 +153,6 @@ object DummyData {
         ExploreUiModel(
             battleId = "",
             thumbnailUrl = "",
-            type = "",
             title = "test explore1",
             summary = "test summary1",
             tags = listOf("tag1", "tag2", "tag3"),
@@ -163,7 +162,6 @@ object DummyData {
         ExploreUiModel(
             battleId = "",
             thumbnailUrl = "",
-            type = "",
             title = "test explore2",
             summary = "test summary2",
             tags = listOf("tag1"),
@@ -173,7 +171,6 @@ object DummyData {
         ExploreUiModel(
             battleId = "",
             thumbnailUrl = "",
-            type = "",
             title = "test explore3",
             summary = "test summary3",
             tags = listOf("tag2", "tag3"),

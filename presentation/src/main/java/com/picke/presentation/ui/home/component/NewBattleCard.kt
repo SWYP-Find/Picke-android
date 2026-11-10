@@ -28,13 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.BattleOpinionBox
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeNewBattleUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
 
 @Composable
 fun NewBattleCard(
-    item: HomeContentUiModel,
+    item: HomeNewBattleUiModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -118,9 +118,9 @@ fun NewBattleCard(
         ) {
             BattleOpinionBox(
                 modifier = Modifier.weight(1f),
-                opinion = item.leftOpinion,
-                name = item.leftProfileName,
-                imageUrl = item.leftProfileImageUrl
+                opinion = item.optionATitle,
+                name = item.philosopherA,
+                imageUrl = item.philosopherAImageUrl
             )
 
             Surface(
@@ -139,9 +139,9 @@ fun NewBattleCard(
 
             BattleOpinionBox(
                 modifier = Modifier.weight(1f),
-                opinion = item.rightOpinion,
-                name = item.rightProfileName,
-                imageUrl = item.rightProfileImageUrl
+                opinion = item.optionBTitle,
+                name = item.philosopherB,
+                imageUrl = item.philosopherBImageUrl
             )
         }
     }
@@ -151,7 +151,7 @@ fun NewBattleCard(
 @Composable
 fun NewBattleCardPreview() {
     NewBattleCard(
-        item = DummyData.dummyHomeContentItems.first(),
+        item = DummyData.dummyNewBattles.first(),
         onClick = {}
     )
 }

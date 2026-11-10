@@ -6,7 +6,7 @@ import com.picke.presentation.util.toRelativeTimeText
 
 data class CommentUiModel(
     val commentId: Long,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
     val nickname: String,
     val stance: String,
     val optionId: Long = 0L,
@@ -40,6 +40,6 @@ fun PerspectiveDetailBoard.toUiModel() = CommentUiModel(
     timeAgo = createdAt.toRelativeTimeText(),
     likeCount = likeCount,
     isLiked = isLiked,
-    isMine = isMine,
+    isMine = isMyPerspective,
     replyCount = commentCount
 )

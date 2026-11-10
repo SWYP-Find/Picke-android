@@ -1,6 +1,6 @@
 package com.picke.presentation.ui.classroom.classmyopinion.model
 
-import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 
 data class ClassMyPerspectiveUiModel(
     val perspectiveId: Long,
@@ -10,7 +10,7 @@ data class ClassMyPerspectiveUiModel(
     val commentCount: Int
 )
 
-fun PerspectiveDetailBoard.toUiModel() = ClassMyPerspectiveUiModel(
+fun MyPerspectiveBoard.toUiModel() = ClassMyPerspectiveUiModel(
     perspectiveId = perspectiveId,
     optionTitle = optionTitle,
     content = content,

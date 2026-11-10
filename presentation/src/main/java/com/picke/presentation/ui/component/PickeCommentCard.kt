@@ -26,7 +26,7 @@ private const val CONTENT_MAX_LINES = 3
 
 @Composable
 fun PickeCommentCard(
-    profileImageUrl: String,
+    profileImageUrl: String?,
     nickname: String,
     timeAgo: String,
     content: String,

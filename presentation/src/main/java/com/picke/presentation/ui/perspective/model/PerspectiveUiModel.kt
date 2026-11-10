@@ -1,12 +1,12 @@
 package com.picke.presentation.ui.perspective.model
 
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveBoard
-import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.presentation.util.toRelativeTimeText
 
 data class PerspectiveUiModel(
     val perspectiveId: Long,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
     val nickname: String,
     val optionTitle: String,
     val optionId: Long,
@@ -27,13 +27,13 @@ fun PerspectiveBoard.toUiModel() = PerspectiveUiModel(
     optionId = optionId,
     content = content,
     timeAgo = createdAt.toRelativeTimeText(),
-    replyCount = replyCount,
+    replyCount = commentCount,
     likeCount = likeCount,
     isLiked = isLiked,
-    isMine = isMine
+    isMine = isMyPerspective
 )
 
-fun PerspectiveDetailBoard.toUiModel() = PerspectiveUiModel(
+fun MyPerspectiveBoard.toUiModel() = PerspectiveUiModel(
     perspectiveId = perspectiveId,
     profileImageUrl = characterImageUrl,
     nickname = nickname,
@@ -44,6 +44,6 @@ fun PerspectiveDetailBoard.toUiModel() = PerspectiveUiModel(
     replyCount = commentCount,
     likeCount = likeCount,
     isLiked = isLiked,
-    isMine = isMine,
+    isMine = true,
     status = PerspectiveStatus.from(status)
 )

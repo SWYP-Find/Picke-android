@@ -13,14 +13,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AuthResponseDto(
     @SerialName("access_token")
-    val accessToken: String?,
+    val accessToken: String,
     @SerialName("refresh_token")
-    val refreshToken: String?,
+    val refreshToken: String,
     @SerialName("user_tag")
-    val userTag: String?,
-    val status: String?,
+    val userTag: String,
+    val status: String,
     @SerialName("new_user")
-    val isNewUser: Boolean?
+    val isNewUser: Boolean
 )
 
 /**
@@ -64,10 +64,10 @@ data class WithdrawnResponseDto(
  */
 fun AuthResponseDto.toDomain(): AuthBoard {
     return AuthBoard(
-        accessToken = accessToken ?: "",
-        refreshToken = refreshToken ?: "",
-        userTag = userTag ?: "",
-        isNewUser = isNewUser ?: false,
-        status = status ?: ""
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        userTag = userTag,
+        isNewUser = isNewUser,
+        status = status
     )
 }

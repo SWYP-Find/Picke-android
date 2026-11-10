@@ -72,7 +72,7 @@ class AuthRepositoryImpl @Inject constructor(
     private fun saveTokens(dto: AuthResponseDto) {
         val accessToken = dto.accessToken
         val refreshToken = dto.refreshToken
-        check(!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) { "인증 응답에 토큰이 없습니다." }
+        check(accessToken.isNotEmpty() && refreshToken.isNotEmpty()) { "인증 응답에 토큰이 없습니다." }
         preferencesManager.saveAccessToken(accessToken)
         preferencesManager.saveRefreshToken(refreshToken)
     }

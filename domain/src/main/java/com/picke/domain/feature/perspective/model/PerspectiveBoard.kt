@@ -8,33 +8,39 @@ data class PerspectivePage(
 
 data class PerspectiveBoard(
     val perspectiveId: Long,
+    val userTag: String?,
     val nickname: String,
-    val characterType: String,
-    val characterImageUrl: String,
-    val content: String,
-    val isMine: Boolean,
-    val createdAt: String,
-    val optionTitle: String,
+    val characterType: String?,
+    val characterImageUrl: String?,
     val optionId: Long,
-    val replyCount: Int,
+    val optionLabel: String?,
+    val optionTitle: String,
+    val optionStance: String?,
+    val content: String,
     val likeCount: Int,
-    val isLiked: Boolean
+    val commentCount: Int,
+    val isLiked: Boolean,
+    val isMyPerspective: Boolean,
+    val createdAt: String
 )
 
 // '내 관점' 또는 '단일 관점' 조회를 위한 상세 모델
 data class PerspectiveDetailBoard(
     val perspectiveId: Long,
-    val userTag: String,
+    val userTag: String?,
     val nickname: String,
-    val characterImageUrl: String,
-    val optionTitle: String,
+    val characterType: String?,
+    val characterImageUrl: String?,
     val optionId: Long,
+    val optionLabel: String?,
+    val optionTitle: String,
+    val optionStance: String?,
     val content: String,
     val likeCount: Int,
     val commentCount: Int,
     val isLiked: Boolean,
-    val status: String,
-    val isMine: Boolean,
+    val isMyPerspective: Boolean,
+    val status: String?,
     val createdAt: String
 )
 
@@ -53,7 +59,7 @@ data class PerspectiveUpdateBoard(
 // 좋아요 수 조회 모델
 data class PerspectiveLikeCountBoard(
     val perspectiveId: Long,
-    val likeCount: Int
+    val likeCount: Long
 )
 
 // 좋아요 등록/취소 결과 모델

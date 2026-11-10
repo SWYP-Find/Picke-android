@@ -1,6 +1,7 @@
 package com.picke.data.feature.perspective.datasource
 
 import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.perspective.model.MyPerspectiveResponseDto
 import com.picke.data.feature.perspective.model.PerspectiveCreateResponseDto
 import com.picke.data.feature.perspective.model.PerspectiveDetailResponseDto
 import com.picke.data.feature.perspective.model.PerspectiveLikeCountResponseDto
@@ -31,7 +32,7 @@ interface PerspectiveApi {
     @GET("/api/v1/battles/{battleId}/perspectives/me")
     suspend fun getMyPerspectives(
         @Path("battleId") battleId: Long
-    ): BaseResponse<List<PerspectiveDetailResponseDto>>
+    ): BaseResponse<List<MyPerspectiveResponseDto>>
 
     // 3. 특정 관점 단건 조회 -> 저장해둔 perspectiveId 꺼내서 새로고침
     @GET("/api/v1/perspectives/{perspectiveId}")
@@ -107,5 +108,5 @@ interface PerspectiveApi {
     @GET("/api/v1/classes/{classId}/battle/perspectives/me")
     suspend fun getClassMyPerspectives(
         @Path("classId") classId: Long
-    ): BaseResponse<List<PerspectiveDetailResponseDto>>
+    ): BaseResponse<List<MyPerspectiveResponseDto>>
 }

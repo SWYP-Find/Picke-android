@@ -6,7 +6,7 @@ enum class PerspectiveStatus {
     REJECTED;
 
     companion object {
-        fun from(value: String): PerspectiveStatus = entries.find { it.name == value } ?: PUBLISHED
+        fun from(value: String?): PerspectiveStatus = entries.find { it.name == value } ?: PUBLISHED
     }
 }
 

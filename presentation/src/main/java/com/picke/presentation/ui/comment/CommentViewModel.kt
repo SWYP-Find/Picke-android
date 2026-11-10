@@ -75,6 +75,7 @@ class CommentViewModel @Inject constructor(
                 .onSuccess {
                     if (!isEditMode) {
                         analyticsTracker.trackCommunityAction(targetId.toString(), content.length)
+                        fetchMainPerspective()
                     }
                     onSuccess()
                     fetchComments()
@@ -211,6 +212,32 @@ class CommentViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             comments = page.items.map { comment -> comment.toUiModel() },
+                            nextCursor = page.nextCursor,
+                            hasNext = page.hasNext,
+                            isListLoading = false
+                        )
+                    }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(isListLoading = false) }
+                    sendEvent(CommentUiEvent.ShowLoadFailedToast)
+                }
+        }
+    }
+
+    fun fetchNextComments() {
+        val state = _uiState.value
+        if (state.isListLoading || !state.hasNext) return
+
+        _uiState.update { it.copy(isListLoading = true) }
+
+        viewModelScope.launch {
+            commentUseCases.loadCommentsUseCase(targetId, state.nextCursor, size = 10)
+                .onSuccess { page ->
+                    val newItems = page.items.map { comment -> comment.toUiModel() }
+                    _uiState.update {
+                        it.copy(
+                            comments = (it.comments + newItems).distinctBy { item -> item.commentId },
                             nextCursor = page.nextCursor,
                             hasNext = page.hasNext,
                             isListLoading = false

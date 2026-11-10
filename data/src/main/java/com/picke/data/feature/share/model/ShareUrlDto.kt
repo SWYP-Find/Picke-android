@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ShareUrlDto(
-    val shareUrl: String?
+    val shareUrl: String
 )
 
 // DTO -> Domain 매퍼
 fun ShareUrlDto.toDomainModel() = ShareUrl(
-    shareUrl = shareUrl ?: "",
+    shareUrl = shareUrl
 )

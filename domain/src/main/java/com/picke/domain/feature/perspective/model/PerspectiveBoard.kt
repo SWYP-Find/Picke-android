@@ -40,7 +40,24 @@ data class PerspectiveDetailBoard(
     val commentCount: Int,
     val isLiked: Boolean,
     val isMyPerspective: Boolean,
-    val status: String?,
+    val createdAt: String
+)
+
+data class MyPerspectiveBoard(
+    val perspectiveId: Long,
+    val userTag: String?,
+    val nickname: String,
+    val characterType: String?,
+    val characterImageUrl: String?,
+    val optionId: Long,
+    val optionLabel: String?,
+    val optionTitle: String,
+    val optionStance: String?,
+    val content: String,
+    val likeCount: Int,
+    val commentCount: Int,
+    val isLiked: Boolean,
+    val status: String,
     val createdAt: String
 )
 

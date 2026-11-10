@@ -2,6 +2,7 @@ package com.picke.data.feature.perspective.model
 
 import com.picke.data.common.error.mapItemOrNull
 import com.picke.data.common.error.requireField
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
@@ -147,12 +148,11 @@ fun PerspectiveDetailResponseDto.toDomainModel(): PerspectiveDetailBoard =
         commentCount = commentCount,
         isLiked = isLiked,
         isMyPerspective = isMyPerspective,
-        status = null,
         createdAt = createdAt
     )
 
-fun MyPerspectiveResponseDto.toDomainModel(): PerspectiveDetailBoard =
-    PerspectiveDetailBoard(
+fun MyPerspectiveResponseDto.toDomainModel(): MyPerspectiveBoard =
+    MyPerspectiveBoard(
         perspectiveId = perspectiveId,
         userTag = user.userTag,
         nickname = user.nickname.requireField("PerspectiveUserDto.nickname"),
@@ -166,7 +166,6 @@ fun MyPerspectiveResponseDto.toDomainModel(): PerspectiveDetailBoard =
         likeCount = likeCount,
         commentCount = commentCount,
         isLiked = isLiked,
-        isMyPerspective = true,
         status = status,
         createdAt = createdAt
     )

@@ -1,7 +1,7 @@
 package com.picke.presentation.ui.perspective.model
 
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveBoard
-import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.presentation.util.toRelativeTimeText
 
 data class PerspectiveUiModel(
@@ -33,7 +33,7 @@ fun PerspectiveBoard.toUiModel() = PerspectiveUiModel(
     isMine = isMyPerspective
 )
 
-fun PerspectiveDetailBoard.toUiModel() = PerspectiveUiModel(
+fun MyPerspectiveBoard.toUiModel() = PerspectiveUiModel(
     perspectiveId = perspectiveId,
     profileImageUrl = characterImageUrl,
     nickname = nickname,
@@ -44,6 +44,6 @@ fun PerspectiveDetailBoard.toUiModel() = PerspectiveUiModel(
     replyCount = commentCount,
     likeCount = likeCount,
     isLiked = isLiked,
-    isMine = isMyPerspective,
+    isMine = true,
     status = PerspectiveStatus.from(status)
 )

@@ -12,7 +12,6 @@ data class ClassCreateUiState(
     val conditionMethod: ClassCreateMethod? = null,
     val guideMethod: ClassCreateMethod? = null,
     val topic: String = "",
-    val isTopicInvalid: Boolean = false,
     val selectedLevel: ClassLevel = ClassLevel.BEGINNER,
     val selectedCategories: List<ClassCategory> = listOf(ClassCategory.PHILOSOPHY),
     val battles: List<ClassBattleUiModel> = emptyList(),
@@ -45,7 +44,7 @@ data class ClassCreateUiState(
     val isNextEnabled: Boolean
         get() = !isRequesting && when (step) {
             ClassCreateStep.METHOD, ClassCreateStep.SETTING -> true
-            ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty()
+            ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty() && !isTopicTooShort
             ClassCreateStep.SELECTION -> selectedBattle != null
         }
 
@@ -72,4 +71,8 @@ data class ClassCreateUiState(
 
     internal val previousStep: ClassCreateStep?
         get() = ClassCreateStep.entries.getOrNull(step.ordinal - 1)
+
+    companion object {
+        const val TOPIC_MAX_LENGTH = 50
+    }
 }

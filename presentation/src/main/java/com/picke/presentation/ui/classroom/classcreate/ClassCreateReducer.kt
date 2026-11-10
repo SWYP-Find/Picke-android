@@ -16,8 +16,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
         ClassCreateUiAction.NextClick -> when {
-            state.isTopicTooShort -> state.copy(isTopicInvalid = true)
-
             !state.isNextEnabled -> state
 
             state.isMethodChanged -> {
@@ -26,7 +24,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
                     step = ClassCreateStep.CONDITION,
                     conditionMethod = state.method,
                     topic = defaults.topic,
-                    isTopicInvalid = defaults.isTopicInvalid,
                     selectedLevel = defaults.selectedLevel,
                     selectedCategories = defaults.selectedCategories
                 )
@@ -45,8 +42,7 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
 
         is ClassCreateUiAction.TopicChange -> state.copy(
-            topic = action.topic,
-            isTopicInvalid = false
+            topic = if (state.isTopicRequired) action.topic.take(ClassCreateUiState.TOPIC_MAX_LENGTH) else action.topic
         )
 
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)

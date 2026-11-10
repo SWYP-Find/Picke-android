@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.PickeBadge
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeBestBattleUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
@@ -34,15 +34,15 @@ private object BestBattleRankItemDimens {
 
 @Composable
 fun BestBattleRankItem(
-    item: HomeContentUiModel,
+    item: HomeBestBattleUiModel,
     rank: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val versusText = stringResource(
         R.string.home_best_battle_versus,
-        item.leftProfileName ?: stringResource(R.string.home_best_battle_left_default),
-        item.rightProfileName ?: stringResource(R.string.home_best_battle_right_default)
+        item.philosopherA,
+        item.philosopherB
     )
 
     val rankColor = if (rank == 1) PickeTheme.colors.primary500 else PickeTheme.colors.gray100

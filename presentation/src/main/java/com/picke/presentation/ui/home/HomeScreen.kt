@@ -83,7 +83,7 @@ import com.picke.presentation.ui.home.component.HomeSkeleton
 import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
 import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeEditorPickUiModel
 import com.picke.presentation.ui.home.model.HomeUiEvent
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
@@ -275,10 +275,10 @@ fun HomeScreen(
                                         onClick = {
                                             onTrackBattleTap(
                                                 ContentActionType.BATTLE_CARD_TAP,
-                                                item.contentId,
+                                                item.battleId.toString(),
                                                 ContentSection.HOT
                                             )
-                                            onNavigateToVote(item.contentId)
+                                            onNavigateToVote(item.battleId.toString())
                                         }
                                     )
                                 }
@@ -315,10 +315,10 @@ fun HomeScreen(
                                     onClick = {
                                         onTrackBattleTap(
                                             ContentActionType.BATTLE_CARD_TAP,
-                                            item.contentId,
+                                            item.battleId.toString(),
                                             ContentSection.BEST
                                         )
-                                        onNavigateToVote(item.contentId)
+                                        onNavigateToVote(item.battleId.toString())
                                     }
                                 )
                             }
@@ -357,10 +357,10 @@ fun HomeScreen(
                                     onClick = {
                                         onTrackBattleTap(
                                             ContentActionType.NEW_BATTLE_TAP,
-                                            item.contentId,
+                                            item.battleId.toString(),
                                             ContentSection.NEW
                                         )
-                                        onNavigateToVote(item.contentId)
+                                        onNavigateToVote(item.battleId.toString())
                                     }
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -485,7 +485,7 @@ fun HomeSectionHeader(
 
 @Composable
 fun EditorPickSection(
-    items: List<HomeContentUiModel>,
+    items: List<HomeEditorPickUiModel>,
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit
 ) {
@@ -565,7 +565,7 @@ fun EditorPickSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onItemClick(pagerItem.contentId) }
+                    .clickable { onItemClick(pagerItem.battleId.toString()) }
             ) {
                 Box(
                     modifier = Modifier
@@ -607,7 +607,7 @@ fun EditorPickSection(
                             )
                         )
                         Text(
-                            text = pagerItem.leftOpinion ?: "A",
+                            text = pagerItem.optionATitle,
                             style = textStyle,
                             color = Color.White
                         )
@@ -617,7 +617,7 @@ fun EditorPickSection(
                             tint = Color.White
                         )
                         Text(
-                            text = pagerItem.rightOpinion ?: "B",
+                            text = pagerItem.optionBTitle,
                             style = textStyle,
                             color = Color.White
                         )
@@ -683,11 +683,11 @@ fun EditorPickSection(
 fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(
-            editorPicks = DummyData.dummyHomeContentItems,
-            trendingBattles = DummyData.dummyHomeContentItems,
-            bestBattles = DummyData.dummyHomeContentItems,
+            editorPicks = DummyData.dummyEditorPicks,
+            trendingBattles = DummyData.dummyTrendingBattles,
+            bestBattles = DummyData.dummyBestBattles,
             bestComments = DummyData.dummyBestComments,
-            newBattles = DummyData.dummyHomeContentItems
+            newBattles = DummyData.dummyNewBattles
         ),
         onNavigateToAlarm = {},
         onNavigateToVote = {},

@@ -23,9 +23,11 @@ import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.comment.model.CommentUiModel
 import com.picke.presentation.ui.explore.model.ExploreUiModel
-import com.picke.presentation.ui.home.model.ContentUiType
+import com.picke.presentation.ui.home.model.HomeBestBattleUiModel
 import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeEditorPickUiModel
+import com.picke.presentation.ui.home.model.HomeNewBattleUiModel
+import com.picke.presentation.ui.home.model.HomeTrendingBattleUiModel
 import com.picke.presentation.ui.my.ticket.model.TicketUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveVoteOptionUiModel
@@ -180,85 +182,106 @@ object DummyData {
         )
     )
 
-    val dummyHomeContentItems = listOf(
-        HomeContentUiModel(
-            contentId = "",
-            type = ContentUiType.BATTLE,
-            title = "best battle title1",
-            summary = "best battle summary1",
+    val dummyEditorPicks = listOf(
+        HomeEditorPickUiModel(
+            battleId = 1L,
             thumbnailUrl = "",
-            viewCountText = "123",
-            timeInfoText = "best battle time info text1",
-            tags = emptyList()
+            optionATitle = "선하다",
+            optionBTitle = "악하다",
+            title = "인간은 본래 선한가, 악한가?",
+            summary = "맹자와 순자가 말하는 인간의 본성",
+            tags = listOf("철학", "인문"),
+            viewCountText = "1,340"
         ),
-        HomeContentUiModel(
-            contentId = "",
-            type = ContentUiType.QUIZ,
-            title = "best battle title2",
-            summary = "best battle summary2",
+        HomeEditorPickUiModel(
+            battleId = 2L,
             thumbnailUrl = "",
-            viewCountText = "123456",
-            timeInfoText = "best battle time info text2",
-            tags = emptyList()
+            optionATitle = "말해야 한다",
+            optionBTitle = "숨겨도 된다",
+            title = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            summary = "선의의 거짓말과 알 권리 사이",
+            tags = listOf("철학", "윤리"),
+            viewCountText = "980"
+        )
+    )
+
+    val dummyTrendingBattles = listOf(
+        HomeTrendingBattleUiModel(
+            battleId = 1L,
+            thumbnailUrl = "",
+            title = "인간은 본래 선한가, 악한가?",
+            tags = listOf("철학", "인문"),
+            timeInfoText = "8분",
+            viewCountText = "1,340"
         ),
-        HomeContentUiModel(
-            contentId = "",
-            type = ContentUiType.VOTE,
-            title = "best battle title3",
-            summary = "best battle summary3",
+        HomeTrendingBattleUiModel(
+            battleId = 2L,
             thumbnailUrl = "",
-            viewCountText = "1",
-            timeInfoText = "best battle time info text3",
-            tags = emptyList()
-        ),
-        HomeContentUiModel(
-            contentId = "",
-            type = ContentUiType.UNKNOWN,
-            title = "best battle title4",
-            summary = "best battle summary4",
-            thumbnailUrl = "",
-            viewCountText = "111",
-            timeInfoText = "best battle time info text4",
-            tags = emptyList()
+            title = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            tags = listOf("기술"),
+            timeInfoText = "6분",
+            viewCountText = "123"
         )
     )
 
     val dummyBestBattles = listOf(
-        HomeContentUiModel(
-            contentId = "1",
-            type = ContentUiType.BATTLE,
+        HomeBestBattleUiModel(
+            battleId = 1L,
+            philosopherA = "맹자",
+            philosopherB = "순자",
+            title = "인간은 본래 선한가, 악한가?",
+            tags = listOf("철학", "인문"),
+            timeInfoText = "8분",
+            viewCountText = "1,340"
+        ),
+        HomeBestBattleUiModel(
+            battleId = 2L,
+            philosopherA = "칸트",
+            philosopherB = "밀",
+            title = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
+            tags = listOf("철학", "인문"),
+            timeInfoText = "8분",
+            viewCountText = "1,340"
+        ),
+        HomeBestBattleUiModel(
+            battleId = 3L,
+            philosopherA = "플라톤",
+            philosopherB = "튜링",
+            title = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
+            tags = listOf("철학", "인문"),
+            timeInfoText = "8분",
+            viewCountText = "1,340"
+        )
+    )
+
+    val dummyNewBattles = listOf(
+        HomeNewBattleUiModel(
+            battleId = 1L,
             title = "인간은 본래 선한가, 악한가?",
             summary = "맹자와 순자가 말하는 인간의 본성",
-            thumbnailUrl = "",
-            viewCountText = "1,340",
-            timeInfoText = "8분",
+            philosopherA = "맹자",
+            optionATitle = "선하다",
+            philosopherAImageUrl = null,
+            philosopherB = "순자",
+            optionBTitle = "악하다",
+            philosopherBImageUrl = null,
             tags = listOf("철학", "인문"),
-            leftProfileName = "맹자",
-            rightProfileName = "순자"
+            timeInfoText = "8분",
+            viewCountText = "1,340"
         ),
-        HomeContentUiModel(
-            contentId = "2",
-            type = ContentUiType.BATTLE,
+        HomeNewBattleUiModel(
+            battleId = 2L,
             title = "죽음을 앞둔 사람에게 진실을 말해야 하는가?",
             summary = "선의의 거짓말과 알 권리 사이",
-            thumbnailUrl = "",
-            viewCountText = "1,340",
-            timeInfoText = "8분",
-            tags = listOf("철학", "인문"),
-            leftProfileName = "칸트",
-            rightProfileName = "밀"
-        ),
-        HomeContentUiModel(
-            contentId = "3",
-            type = ContentUiType.BATTLE,
-            title = "AI와 사랑에 빠지는 것, 진짜 사랑인가?",
-            summary = "감정의 진정성은 상대가 사람이어야만 성립하는가",
-            thumbnailUrl = "",
-            viewCountText = "1,340",
-            timeInfoText = "8분",
-            tags = listOf("철학", "인문"),
-            leftProfileName = "플라톤",
-            rightProfileName = "튜링"
+            philosopherA = "칸트",
+            optionATitle = "말해야 한다",
+            philosopherAImageUrl = null,
+            philosopherB = "밀",
+            optionBTitle = "숨겨도 된다",
+            philosopherBImageUrl = null,
+            tags = listOf("윤리"),
+            timeInfoText = "6분",
+            viewCountText = "980"
         )
     )
 

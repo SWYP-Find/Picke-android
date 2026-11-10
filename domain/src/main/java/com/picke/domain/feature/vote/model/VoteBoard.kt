@@ -2,18 +2,16 @@ package com.picke.domain.feature.vote.model
 
 data class VoteStatsBoard(
     val totalCount: Int,
-    val updatedAt: String,
+    val updatedAt: String?,
     val options: List<VoteStatsOptionBoard>
 )
 
 data class VoteStatsOptionBoard(
     val optionId: Long,
     val title: String,
-    val imageUrl: String,
-    val isCorrect: Boolean,
+    val imageUrl: String?,
     val voteCount: Int,
-    val ratio: Float,
-    val stance: String
+    val ratio: Float
 )
 
 data class MyVoteBoard(

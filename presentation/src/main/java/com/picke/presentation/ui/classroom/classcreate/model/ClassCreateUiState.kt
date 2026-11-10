@@ -19,7 +19,6 @@ data class ClassCreateUiState(
     val selectedBattleId: Long? = null,
     val topicDraftId: Long? = null,
     val topicBatchNo: Int = 0,
-    val remainingSuggestions: Int = 0,
     val selectedCandidateId: Long? = null,
     val className: String = "",
     val isClassNameInvalid: Boolean = false,
@@ -47,9 +46,6 @@ data class ClassCreateUiState(
             ClassCreateStep.CONDITION -> selectedCategories.isNotEmpty() && !isTopicTooShort
             ClassCreateStep.SELECTION -> selectedBattle != null
         }
-
-    val isRegenerateEnabled: Boolean
-        get() = !isRequesting && remainingSuggestions > 0
 
     val isTopicRequired: Boolean
         get() = method == ClassCreateMethod.AI_TOPIC

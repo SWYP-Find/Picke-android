@@ -25,8 +25,6 @@ sealed interface ClassCreateUiAction {
 
     data object EditConditionClick : StateOnly
 
-    data object RegenerateClick : ClassCreateUiAction
-
     data class BattleSelect(val battle: ClassBattleUiModel) : StateOnly
 
     data class BattlePreviewClick(val battleId: Long) : SideEffectOnly

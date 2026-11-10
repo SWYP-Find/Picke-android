@@ -53,17 +53,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
 
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
 
-        ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
-            state.copy(
-                isRecommendationEmpty = false,
-                selectedBattleId = null,
-                selectedCandidateId = null,
-                isRequesting = true
-            )
-        } else {
-            state
-        }
-
         is ClassCreateUiAction.BattleSelect -> state.copy(
             selectedBattleId = action.battle.battleId,
             selectedCandidateId = action.battle.candidateId
@@ -123,27 +112,23 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
 
         is ClassCreateMutation.TopicDraftCreated -> state.copy(
             topicDraftId = mutation.draftId,
-            topicBatchNo = 0,
-            remainingSuggestions = mutation.remainingSuggestions
+            topicBatchNo = 0
         )
 
         is ClassCreateMutation.TopicsSuggested -> state.copy(
             battles = mutation.battles,
             isRecommendationEmpty = mutation.battles.isEmpty(),
             topicBatchNo = mutation.batchNo,
-            remainingSuggestions = mutation.remainingSuggestions,
             selectedCandidateId = null
         )
 
         is ClassCreateMutation.TopicClarificationNeeded -> state.copy(
             step = ClassCreateStep.CONDITION,
-            remainingSuggestions = mutation.remainingSuggestions,
             errorDialog = ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED,
             clarificationMessage = mutation.message?.ifBlank { null }
         )
 
         ClassCreateMutation.TopicSuggestLimitReached -> state.copy(
-            remainingSuggestions = 0,
             errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
         )
 

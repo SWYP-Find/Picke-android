@@ -67,11 +67,6 @@ class ClassCreateViewModel @Inject constructor(
                 }
             }
 
-            ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
-                val draftId = state.topicDraftId
-                if (draftId == null) createTopicDraft() else suggestTopics(draftId)
-            }
-
             is ClassCreateUiAction.BattlePreviewClick ->
                 sendEvent(ClassCreateUiEvent.NavigateToBattlePreview(action.battleId))
 
@@ -132,10 +127,7 @@ class ClassCreateViewModel @Inject constructor(
                 _uiState.update {
                     reduce(
                         it,
-                        ClassCreateMutation.TopicDraftCreated(
-                            draft.draftId,
-                            draft.remainingSuggestions
-                        )
+                        ClassCreateMutation.TopicDraftCreated(draft.draftId)
                     )
                 }
                 suggestTopics(draft.draftId)
@@ -157,12 +149,10 @@ class ClassCreateViewModel @Inject constructor(
                     val mutation = when (ClassTopicSuggestStatus.from(draft.suggestStatus)) {
                         ClassTopicSuggestStatus.SUCCEEDED -> ClassCreateMutation.TopicsSuggested(
                             batchNo = draft.batchNo,
-                            remainingSuggestions = draft.remainingSuggestions,
                             battles = draft.candidates.map { it.toUiModel() }
                         )
 
                         ClassTopicSuggestStatus.NEEDS_CLARIFICATION -> ClassCreateMutation.TopicClarificationNeeded(
-                            remainingSuggestions = draft.remainingSuggestions,
                             message = draft.clarificationMessage
                         )
 

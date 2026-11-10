@@ -233,7 +233,6 @@ private fun ClassCreateAiSelectionStepPreview() {
                 battles = DummyData.dummyClassAiQuestions.mapIndexed { index, question ->
                     question.copy(candidateId = index + 1L)
                 },
-                remainingSuggestions = 2,
                 selectedCandidateId = 1L
             ),
             onBattleSelect = {},

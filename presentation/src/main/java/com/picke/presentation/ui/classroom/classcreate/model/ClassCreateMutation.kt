@@ -19,21 +19,14 @@ internal sealed interface ClassCreateMutation {
         val isDeadlineOutOfRange: Boolean
     ) : RequestFinished
 
-    data class TopicDraftCreated(
-        val draftId: Long,
-        val remainingSuggestions: Int
-    ) : ClassCreateMutation
+    data class TopicDraftCreated(val draftId: Long) : ClassCreateMutation
 
     data class TopicsSuggested(
         val batchNo: Int,
-        val remainingSuggestions: Int,
         val battles: List<ClassBattleUiModel>
     ) : RequestFinished
 
-    data class TopicClarificationNeeded(
-        val remainingSuggestions: Int,
-        val message: String?
-    ) : RequestFinished
+    data class TopicClarificationNeeded(val message: String?) : RequestFinished
 
     data object TopicSuggestLimitReached : RequestFinished
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 
 @Composable
 fun BattleOpinionBox(
@@ -35,7 +36,11 @@ fun BattleOpinionBox(
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ProfileImage(imageUrl = imageUrl, size = 40.dp)
+        ProfileImage(
+            imageUrl = imageUrl,
+            size = ComponentNumberTokens.avatarMd,
+            kind = ProfileImageKind.PHILOSOPHER
+        )
         Spacer(modifier = Modifier.width(4.dp))
 
         Column(modifier = Modifier.weight(1f)) {

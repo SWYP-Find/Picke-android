@@ -31,6 +31,7 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
 import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeBadgeColor
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -79,7 +80,7 @@ fun MyClassCard(
             ) {
                 PickeBadge(
                     text = stringResource(statusTextRes),
-                    isMuted = !item.isInProgress,
+                    color = if (item.isInProgress) PickeBadgeColor.SECONDARY else PickeBadgeColor.TERTIARY,
                     horizontalPadding = SpacingTokens.s4
                 )
                 Icon(

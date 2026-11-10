@@ -29,6 +29,8 @@ import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -36,9 +38,7 @@ import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
 private object ClassBattleCardDimens {
-    val checkboxSize = 20.dp
     val versusSize = 24.dp
-    val headerMetaGap = 10.dp
 }
 
 @Composable
@@ -110,27 +110,14 @@ private fun ClassBattleCardHeader(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        PickeBadge(
             text = battle.tag,
-            modifier = Modifier
-                .background(
-                    PickeTheme.colors.badgeFilledBackground,
-                    RoundedCornerShape(RadiusTokens.default)
-                )
-                .padding(
-                    horizontal = SpacingTokens.s6,
-                    vertical = SpacingTokens.s2
-                ),
-            color = PickeTheme.colors.badgeFilledText,
-            style = PickeTheme.typography.bodyXxsSemiBold
+            horizontalPadding = SpacingTokens.s4
         )
 
         Row(
             modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(
-                ClassBattleCardDimens.headerMetaGap,
-                Alignment.End
-            ),
+            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6, Alignment.End),
             verticalAlignment = Alignment.CenterVertically
         ) {
             battle.durationMinutes?.let { minutes ->
@@ -157,10 +144,7 @@ private fun ClassBattleCardHeader(
             }
 
             if (isSelected != null) {
-                ClassCheckbox(
-                    isChecked = isSelected,
-                    size = ClassBattleCardDimens.checkboxSize
-                )
+                ClassCheckbox(isChecked = isSelected)
             }
         }
     }
@@ -254,7 +238,8 @@ private fun ClassBattleOptionBox(
         if (showsAvatar) {
             ProfileImage(
                 imageUrl = option.imageUrl,
-                size = ComponentNumberTokens.avatarMd
+                size = ComponentNumberTokens.avatarMd,
+                kind = ProfileImageKind.PHILOSOPHER
             )
         }
 

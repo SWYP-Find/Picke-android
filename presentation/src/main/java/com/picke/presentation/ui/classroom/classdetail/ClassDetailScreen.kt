@@ -35,6 +35,7 @@ import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeBadgeColor
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTopAppBar
@@ -247,7 +248,7 @@ private fun ClassDetailHeaderSection(
     ) {
         PickeBadge(
             text = stringResource(statusTextRes),
-            isMuted = !isInProgress
+            color = if (isInProgress) PickeBadgeColor.SECONDARY else PickeBadgeColor.TERTIARY
         )
         Text(
             text = title,

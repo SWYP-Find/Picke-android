@@ -28,22 +28,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classcreate.component.ClassCreateSelectionHeader
-import com.picke.presentation.ui.classroom.classcreate.component.ClassPillBadge
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeBadgeColor
 import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
+private const val CONDITION_FADE_SOLID_STOP = 0.5f
+
 private object ClassCreateSelectionStepDimens {
-    val conditionFadeWidth = 32.dp
+    val conditionFadeWidth = 60.dp
     val conditionFadeHeight = 32.dp
     val editConditionButtonSize = 36.dp
 }
@@ -54,28 +56,24 @@ internal fun ClassCreateSelectionStep(
     onBattleSelect: (ClassBattleUiModel) -> Unit,
     onBattlePreviewClick: (Long) -> Unit,
     onEditConditionClick: () -> Unit,
-    onRegenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isAiQuestion = uiState.method == ClassCreateMethod.AI_TOPIC
 
     Column(modifier = modifier) {
-        if (!isAiQuestion) {
-            ClassCreateSelectedConditionSection(
-                topic = uiState.topic,
-                level = uiState.selectedLevel,
-                categories = uiState.selectedCategories,
-                onEditConditionClick = onEditConditionClick
-            )
-            Spacer(modifier = Modifier.height(SpacingTokens.s16))
-        }
+        ClassCreateSelectedConditionSection(
+            topic = uiState.topic,
+            level = uiState.selectedLevel,
+            categories = uiState.selectedCategories,
+            onEditConditionClick = onEditConditionClick
+        )
 
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16)) {
-            ClassCreateSelectionHeader(
-                resultCount = uiState.battles.size,
-                showsRegenerate = isAiQuestion,
-                isRegenerateEnabled = uiState.isRegenerateEnabled,
-                onRegenerateClick = onRegenerateClick
+            Text(
+                text = stringResource(R.string.class_create_result_count, uiState.battles.size),
+                color = PickeTheme.colors.textDefault,
+                style = PickeTheme.typography.bodySmSemiBold
             )
 
             if (uiState.isRecommendationEmpty) {
@@ -131,11 +129,23 @@ private fun ClassCreateSelectedConditionSection(
                     horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
                 ) {
                     if (topic.isNotBlank()) {
-                        ClassPillBadge(text = topic)
+                        PickeBadge(
+                            text = topic,
+                            color = PickeBadgeColor.PRIMARY,
+                            horizontalPadding = SpacingTokens.s4
+                        )
                     }
-                    ClassPillBadge(text = stringResource(level.labelRes))
+                    PickeBadge(
+                        text = stringResource(level.labelRes),
+                        color = PickeBadgeColor.PRIMARY,
+                        horizontalPadding = SpacingTokens.s4
+                    )
                     categories.forEach { category ->
-                        ClassPillBadge(text = stringResource(category.labelRes))
+                        PickeBadge(
+                            text = stringResource(category.labelRes),
+                            color = PickeBadgeColor.PRIMARY,
+                            horizontalPadding = SpacingTokens.s4
+                        )
                     }
                 }
                 Box(
@@ -145,10 +155,8 @@ private fun ClassCreateSelectedConditionSection(
                         .height(ClassCreateSelectionStepDimens.conditionFadeHeight)
                         .background(
                             Brush.horizontalGradient(
-                                listOf(
-                                    PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
-                                    PickeTheme.colors.backgroundBeige
-                                )
+                                0f to PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
+                                CONDITION_FADE_SOLID_STOP to PickeTheme.colors.backgroundBeige
                             )
                         )
                 )
@@ -192,7 +200,6 @@ private fun ClassCreateSelectionStepPreview() {
             onBattleSelect = {},
             onBattlePreviewClick = {},
             onEditConditionClick = {},
-            onRegenerateClick = {},
             modifier = Modifier.padding(SpacingTokens.s16)
         )
     }
@@ -211,7 +218,6 @@ private fun ClassCreateEmptySelectionStepPreview() {
             onBattleSelect = {},
             onBattlePreviewClick = {},
             onEditConditionClick = {},
-            onRegenerateClick = {},
             modifier = Modifier.padding(SpacingTokens.s16)
         )
     }
@@ -227,13 +233,11 @@ private fun ClassCreateAiSelectionStepPreview() {
                 battles = DummyData.dummyClassAiQuestions.mapIndexed { index, question ->
                     question.copy(candidateId = index + 1L)
                 },
-                remainingSuggestions = 2,
                 selectedCandidateId = 1L
             ),
             onBattleSelect = {},
             onBattlePreviewClick = {},
             onEditConditionClick = {},
-            onRegenerateClick = {},
             modifier = Modifier.padding(SpacingTokens.s16)
         )
     }

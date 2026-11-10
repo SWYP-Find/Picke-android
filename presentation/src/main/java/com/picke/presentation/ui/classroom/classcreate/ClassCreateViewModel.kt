@@ -59,17 +59,12 @@ class ClassCreateViewModel @Inject constructor(
                 sendEvent(ClassCreateUiEvent.NavigateBack)
             }
 
-            ClassCreateUiAction.NextClick -> if (state.isNextEnabled && !state.isTopicTooShort) {
+            ClassCreateUiAction.NextClick -> if (state.isNextEnabled) {
                 when (state.nextStep) {
                     null -> createClass()
                     ClassCreateStep.SELECTION -> fetchRecommendedBattles()
                     ClassCreateStep.METHOD, ClassCreateStep.CONDITION, ClassCreateStep.SETTING -> Unit
                 }
-            }
-
-            ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
-                val draftId = state.topicDraftId
-                if (draftId == null) createTopicDraft() else suggestTopics(draftId)
             }
 
             is ClassCreateUiAction.BattlePreviewClick ->
@@ -132,10 +127,7 @@ class ClassCreateViewModel @Inject constructor(
                 _uiState.update {
                     reduce(
                         it,
-                        ClassCreateMutation.TopicDraftCreated(
-                            draft.draftId,
-                            draft.remainingSuggestions
-                        )
+                        ClassCreateMutation.TopicDraftCreated(draft.draftId)
                     )
                 }
                 suggestTopics(draft.draftId)
@@ -157,12 +149,10 @@ class ClassCreateViewModel @Inject constructor(
                     val mutation = when (ClassTopicSuggestStatus.from(draft.suggestStatus)) {
                         ClassTopicSuggestStatus.SUCCEEDED -> ClassCreateMutation.TopicsSuggested(
                             batchNo = draft.batchNo,
-                            remainingSuggestions = draft.remainingSuggestions,
                             battles = draft.candidates.map { it.toUiModel() }
                         )
 
                         ClassTopicSuggestStatus.NEEDS_CLARIFICATION -> ClassCreateMutation.TopicClarificationNeeded(
-                            remainingSuggestions = draft.remainingSuggestions,
                             message = draft.clarificationMessage
                         )
 

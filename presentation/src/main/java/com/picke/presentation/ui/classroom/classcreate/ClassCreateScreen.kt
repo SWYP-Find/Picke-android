@@ -139,7 +139,7 @@ private fun ClassCreateContent(
                     method = uiState.method
                 )
 
-                Spacer(modifier = Modifier.height(if (isSelectionStep && uiState.method == ClassCreateMethod.CONTENT) SpacingTokens.s20 else SpacingTokens.s32))
+                Spacer(modifier = Modifier.height(if (isSelectionStep) SpacingTokens.s20 else SpacingTokens.s32))
                 when (uiState.step) {
                     ClassCreateStep.METHOD -> ClassCreateMethodStep(
                         selectedMethod = uiState.method,
@@ -174,9 +174,6 @@ private fun ClassCreateContent(
                         },
                         onEditConditionClick = {
                             onAction(ClassCreateUiAction.EditConditionClick)
-                        },
-                        onRegenerateClick = {
-                            onAction(ClassCreateUiAction.RegenerateClick)
                         }
                     )
 

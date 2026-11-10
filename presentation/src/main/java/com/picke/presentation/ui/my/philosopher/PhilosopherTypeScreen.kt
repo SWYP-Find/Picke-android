@@ -73,9 +73,11 @@ import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.dialog.ShareDialog
 import com.picke.presentation.ui.my.philosopher.model.PhilosopherTypeUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
@@ -457,7 +459,8 @@ fun PhilosopherHeaderSection(philosopher: MyPhilosopher) {
             // 프로필 이미지
             ProfileImage(
                 imageUrl = philosopher.imageUrl,
-                size = 68.dp,
+                size = ComponentNumberTokens.avatarLg,
+                kind = ProfileImageKind.PHILOSOPHER,
                 defaultImageRes = R.drawable.illust_mengzi
             )
 
@@ -775,7 +778,8 @@ fun ChemistryCard(
 
         ProfileImage(
             imageUrl = imageUrl,
-            size = 56.dp,
+            size = ComponentNumberTokens.avatarMd,
+            kind = ProfileImageKind.PHILOSOPHER,
             defaultImageRes = R.drawable.illust_mengzi
         )
         Spacer(modifier = Modifier.height(12.dp))

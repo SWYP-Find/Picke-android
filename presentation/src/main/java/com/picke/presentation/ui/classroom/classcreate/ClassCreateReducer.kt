@@ -16,8 +16,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
 
         ClassCreateUiAction.NextClick -> when {
-            state.isTopicTooShort -> state.copy(isTopicInvalid = true)
-
             !state.isNextEnabled -> state
 
             state.isMethodChanged -> {
@@ -26,7 +24,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
                     step = ClassCreateStep.CONDITION,
                     conditionMethod = state.method,
                     topic = defaults.topic,
-                    isTopicInvalid = defaults.isTopicInvalid,
                     selectedLevel = defaults.selectedLevel,
                     selectedCategories = defaults.selectedCategories
                 )
@@ -45,8 +42,7 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
 
         is ClassCreateUiAction.TopicChange -> state.copy(
-            topic = action.topic,
-            isTopicInvalid = false
+            topic = if (state.isTopicRequired) action.topic.take(ClassCreateUiState.TOPIC_MAX_LENGTH) else action.topic
         )
 
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)
@@ -56,17 +52,6 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         )
 
         ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
-
-        ClassCreateUiAction.RegenerateClick -> if (state.isRegenerateEnabled) {
-            state.copy(
-                isRecommendationEmpty = false,
-                selectedBattleId = null,
-                selectedCandidateId = null,
-                isRequesting = true
-            )
-        } else {
-            state
-        }
 
         is ClassCreateUiAction.BattleSelect -> state.copy(
             selectedBattleId = action.battle.battleId,
@@ -127,27 +112,23 @@ internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): C
 
         is ClassCreateMutation.TopicDraftCreated -> state.copy(
             topicDraftId = mutation.draftId,
-            topicBatchNo = 0,
-            remainingSuggestions = mutation.remainingSuggestions
+            topicBatchNo = 0
         )
 
         is ClassCreateMutation.TopicsSuggested -> state.copy(
             battles = mutation.battles,
             isRecommendationEmpty = mutation.battles.isEmpty(),
             topicBatchNo = mutation.batchNo,
-            remainingSuggestions = mutation.remainingSuggestions,
             selectedCandidateId = null
         )
 
         is ClassCreateMutation.TopicClarificationNeeded -> state.copy(
             step = ClassCreateStep.CONDITION,
-            remainingSuggestions = mutation.remainingSuggestions,
             errorDialog = ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED,
             clarificationMessage = mutation.message?.ifBlank { null }
         )
 
         ClassCreateMutation.TopicSuggestLimitReached -> state.copy(
-            remainingSuggestions = 0,
             errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
         )
 

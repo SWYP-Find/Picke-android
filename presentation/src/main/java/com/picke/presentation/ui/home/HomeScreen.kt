@@ -73,6 +73,7 @@ import com.picke.presentation.ads.showAdFitTransitionPopupAd
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.ContentSection
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
+import com.picke.presentation.ui.component.PickeLoadFailedSection
 import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
@@ -158,7 +159,8 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val isDataEmpty = uiState.editorPicks.isEmpty() &&
+    val editorPicks = uiState.editorPicks
+    val isDataEmpty = editorPicks.isNullOrEmpty() &&
             uiState.trendingBattles.isEmpty() &&
             uiState.bestBattles.isEmpty() &&
             uiState.bestComments.isEmpty() &&
@@ -232,48 +234,21 @@ fun HomeScreen(
                 )
             }
         ) {
-            if (uiState.isLoading && isDataEmpty) {
+            if (editorPicks == null && uiState.isLoading) {
                 HomeSkeleton(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 )
-            } else if (isDataEmpty) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = innerPadding.calculateBottomPadding())
-                ) {
-                    item {
-                        Column(
-                            modifier = Modifier.fillParentMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.logo_picke),
-                                contentDescription = "빈 화면 로고",
-                                modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                                tint = PickeTheme.colors.borderBeigeDefault
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "아직 준비된 배틀이 없어요!",
-                                style = PickeTheme.typography.bodySmRegular,
-                                color = PickeTheme.colors.beige800
-                            )
-                        }
-                    }
-                }
-            } else {
+            } else if (editorPicks != null && !isDataEmpty) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 ) {
-                    if (uiState.editorPicks.isNotEmpty()) {
+                    if (editorPicks.isNotEmpty()) {
                         EditorPickSection(
-                            items = uiState.editorPicks,
+                            items = editorPicks,
                             onItemClick = { contentId ->
                                 onTrackBattleTap(ContentActionType.HERO_TAP, contentId, null)
                                 onNavigateToVote(contentId)
@@ -394,6 +369,41 @@ fun HomeScreen(
                     }
                     Spacer(modifier = Modifier.height(40.dp))
 
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = innerPadding.calculateBottomPadding())
+                ) {
+                    item {
+                        if (editorPicks == null) {
+                            PickeLoadFailedSection(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpacingTokens.s16)
+                            )
+                        } else {
+                            Column(
+                                modifier = Modifier.fillParentMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.logo_picke),
+                                    contentDescription = "빈 화면 로고",
+                                    modifier = Modifier.size(width = 160.dp, height = 120.dp),
+                                    tint = PickeTheme.colors.borderBeigeDefault
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "아직 준비된 배틀이 없어요!",
+                                    style = PickeTheme.typography.bodySmRegular,
+                                    color = PickeTheme.colors.beige800
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

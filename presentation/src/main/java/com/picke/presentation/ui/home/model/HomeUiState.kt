@@ -7,7 +7,7 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val hasNewNotice: Boolean = false,
     val isAlarmStatusLoading: Boolean = true,
-    val editorPicks: List<HomeContentUiModel> = emptyList(),
+    val editorPicks: List<HomeContentUiModel>? = null,
     val trendingBattles: List<HomeContentUiModel> = emptyList(),
     val bestBattles: List<HomeContentUiModel> = emptyList(),
     val bestComments: List<HomeBestCommentUiModel> = emptyList(),

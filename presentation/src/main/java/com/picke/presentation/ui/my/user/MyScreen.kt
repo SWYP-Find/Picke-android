@@ -295,7 +295,7 @@ fun PhilosopherTypeSection(
 ) {
     val lockedName = stringResource(R.string.my_philosopher_locked)
 
-    val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
+    val isLocked = philosopher == null
     val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
     val shape = RoundedCornerShape(RadiusTokens.default)
 

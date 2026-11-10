@@ -1,23 +1,24 @@
 package com.picke.data.feature.classroom.model
 
+import com.picke.data.common.error.requireField
 import com.picke.domain.feature.classroom.model.ClassDetailBoard
 import com.picke.domain.feature.classroom.model.MyClassBoard
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MyClassResponseDto(
-    val classId: Long?,
-    val name: String?,
+    val classId: Long,
+    val name: String,
     val myRole: String?,
-    val battleId: Long?,
-    val battleTitle: String?,
+    val battleId: Long,
+    val battleTitle: String,
     val battleThumbnailUrl: String?,
-    val battleType: String?,
-    val memberCount: Int?,
-    val capacity: Int?,
+    val battleType: String,
+    val memberCount: Int,
+    val capacity: Int,
     val closeAt: String?,
-    val closed: Boolean?,
-    val createdAt: String?
+    val closed: Boolean,
+    val createdAt: String
 )
 
 @Serializable
@@ -38,55 +39,55 @@ data class ClassUpdateRequestDto(
 
 @Serializable
 data class ClassDetailResponseDto(
-    val classId: Long?,
-    val name: String?,
-    val inviteCode: String?,
-    val myRole: String?,
-    val battle: ClassBattleInfoDto?,
-    val battleType: String?,
-    val memberCount: Int?,
-    val capacity: Int?,
+    val classId: Long,
+    val name: String,
+    val inviteCode: String,
+    val myRole: String,
+    val battle: ClassBattleInfoDto,
+    val battleType: String,
+    val memberCount: Int,
+    val capacity: Int,
     val deadline: String?,
     val ticketExpiresAt: String?,
     val closeAt: String?,
-    val closed: Boolean?,
-    val commentRequired: Boolean?,
-    val ownerParticipates: Boolean?
+    val closed: Boolean,
+    val commentRequired: Boolean,
+    val ownerParticipates: Boolean
 )
 
 @Serializable
 data class ClassBattleInfoDto(
-    val battleId: Long?
+    val battleId: Long
 )
 
 fun MyClassResponseDto.toDomainModel() = MyClassBoard(
-    classId = classId ?: 0L,
-    name = name ?: "",
-    myRole = myRole ?: "",
-    battleId = battleId ?: 0L,
-    battleTitle = battleTitle ?: "",
-    battleThumbnailUrl = battleThumbnailUrl ?: "",
-    battleType = battleType ?: "",
-    memberCount = memberCount ?: 0,
-    capacity = capacity ?: 0,
-    closeAt = closeAt ?: "",
-    closed = closed ?: false,
-    createdAt = createdAt ?: ""
+    classId = classId,
+    name = name,
+    myRole = myRole.requireField("MyClassResponseDto.myRole"),
+    battleId = battleId,
+    battleTitle = battleTitle,
+    battleThumbnailUrl = battleThumbnailUrl,
+    battleType = battleType,
+    memberCount = memberCount,
+    capacity = capacity,
+    closeAt = closeAt.requireField("MyClassResponseDto.closeAt"),
+    closed = closed,
+    createdAt = createdAt
 )
 
 fun ClassDetailResponseDto.toDomainModel() = ClassDetailBoard(
-    classId = classId ?: 0L,
-    name = name ?: "",
-    inviteCode = inviteCode ?: "",
-    myRole = myRole ?: "",
-    battleId = battle?.battleId ?: 0L,
-    battleType = battleType ?: "",
-    memberCount = memberCount ?: 0,
-    capacity = capacity ?: 0,
-    deadline = deadline ?: "",
-    ticketExpiresAt = ticketExpiresAt ?: "",
-    closeAt = closeAt ?: "",
-    closed = closed ?: false,
-    commentRequired = commentRequired ?: false,
-    ownerParticipates = ownerParticipates ?: false
+    classId = classId,
+    name = name,
+    inviteCode = inviteCode,
+    myRole = myRole,
+    battleId = battle.battleId,
+    battleType = battleType,
+    memberCount = memberCount,
+    capacity = capacity,
+    deadline = deadline,
+    ticketExpiresAt = ticketExpiresAt.requireField("ClassDetailResponseDto.ticketExpiresAt"),
+    closeAt = closeAt.requireField("ClassDetailResponseDto.closeAt"),
+    closed = closed,
+    commentRequired = commentRequired,
+    ownerParticipates = ownerParticipates
 )

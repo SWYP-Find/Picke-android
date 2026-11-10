@@ -30,6 +30,7 @@ import com.picke.presentation.ui.classroom.model.ClassBattleOptionUiModel
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
 import com.picke.presentation.ui.component.ProfileImage
 import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -237,7 +238,8 @@ private fun ClassBattleOptionBox(
         if (showsAvatar) {
             ProfileImage(
                 imageUrl = option.imageUrl,
-                size = ComponentNumberTokens.avatarMd
+                size = ComponentNumberTokens.avatarMd,
+                kind = ProfileImageKind.PHILOSOPHER
             )
         }
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.util.DummyData
 
@@ -54,7 +55,8 @@ fun VoteOptionCard(
         if (isImageVisible) {
             ProfileImage(
                 imageUrl = option.imageUrl,
-                size = 40.dp
+                size = ComponentNumberTokens.avatarMd,
+                kind = ProfileImageKind.PHILOSOPHER
             )
             Spacer(modifier = Modifier.height(16.dp))
         }

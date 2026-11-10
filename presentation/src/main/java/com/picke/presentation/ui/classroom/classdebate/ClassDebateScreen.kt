@@ -57,6 +57,7 @@ import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.PickeChatSkeleton
 import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -252,6 +253,7 @@ private fun ClassDebateChatSection(
                 } else {
                     Modifier
                 },
+                avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
                 nameBadge = if (isOpponent) aiBadge else null
             )
         }

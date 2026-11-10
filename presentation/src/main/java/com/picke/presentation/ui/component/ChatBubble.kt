@@ -37,7 +37,6 @@ import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 private object ChatBubbleDimens {
-    val avatarSize = 40.dp
     val bubbleMaxWidth = 272.dp
     val playingBarWidth = 2.5.dp
     val playingBarHeights = listOf(6.dp, 10.dp, 15.dp, 10.dp, 6.dp)
@@ -58,6 +57,7 @@ fun ChatBubble(
     isLeft: Boolean,
     showAvatarAndName: Boolean,
     modifier: Modifier = Modifier,
+    avatarKind: ProfileImageKind = ProfileImageKind.PHILOSOPHER,
     isPlaying: Boolean = false,
     isDimmed: Boolean = false,
     nameBadge: String? = null,
@@ -87,6 +87,7 @@ fun ChatBubble(
             ChatBubbleAvatar(
                 avatarUrl = avatarUrl,
                 defaultAvatarRes = defaultAvatarRes,
+                kind = avatarKind,
                 isVisible = showAvatarAndName
             )
         }
@@ -148,6 +149,7 @@ fun ChatBubble(
             ChatBubbleAvatar(
                 avatarUrl = avatarUrl,
                 defaultAvatarRes = defaultAvatarRes,
+                kind = avatarKind,
                 isVisible = showAvatarAndName
             )
         }
@@ -158,19 +160,26 @@ fun ChatBubble(
 private fun ChatBubbleAvatar(
     avatarUrl: String?,
     @DrawableRes defaultAvatarRes: Int,
+    kind: ProfileImageKind,
     isVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val size = if (kind == ProfileImageKind.CHARACTER) {
+        ComponentNumberTokens.avatarSm
+    } else {
+        ComponentNumberTokens.avatarMd
+    }
+
     if (isVisible) {
         ProfileImage(
             imageUrl = avatarUrl,
-            size = ChatBubbleDimens.avatarSize,
+            size = size,
             modifier = modifier,
-            kind = ProfileImageKind.PHILOSOPHER,
+            kind = kind,
             defaultImageRes = defaultAvatarRes
         )
     } else {
-        Spacer(modifier = modifier.size(ChatBubbleDimens.avatarSize))
+        Spacer(modifier = modifier.size(size))
     }
 }
 

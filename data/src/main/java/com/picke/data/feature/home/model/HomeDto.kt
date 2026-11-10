@@ -3,7 +3,6 @@ package com.picke.data.feature.home.model
 import com.picke.data.common.error.mapItemOrNull
 import com.picke.data.common.error.requireField
 import com.picke.domain.feature.home.model.HomeBestBattleBoard
-import com.picke.domain.feature.home.model.HomeBestCommentBoard
 import com.picke.domain.feature.home.model.HomeBoard
 import com.picke.domain.feature.home.model.HomeEditorPickBoard
 import com.picke.domain.feature.home.model.HomeNewBattleBoard
@@ -16,7 +15,6 @@ data class HomeResponseDto(
     val editorPicks: List<EditorPickDto>,
     val trendingBattles: List<TrendingBattleDto>,
     val bestBattles: List<BestBattleDto>,
-    val bestComments: List<BestCommentDto>?,
     val newBattles: List<NewBattleDto>
 )
 
@@ -63,15 +61,6 @@ data class BestBattleDto(
     val viewCount: Int
 )
 
-// TODO: API 연동 - 홈 API에 bestComments가 추가되면 필드 이름 확인
-@Serializable
-data class BestCommentDto(
-    val battleId: Long?,
-    val battleTitle: String?,
-    val optionTitle: String?,
-    val content: String?
-)
-
 @Serializable
 data class NewBattleDto(
     val battleId: Long,
@@ -95,7 +84,6 @@ fun HomeResponseDto.toDomainModel(): HomeBoard =
         editorPicks = editorPicks.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
         trendingBattles = trendingBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
         bestBattles = bestBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
-        bestComments = bestComments?.mapNotNull { it.toDomainModel() } ?: emptyList(),
         newBattles = newBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } }
     )
 
@@ -134,16 +122,6 @@ private fun BestBattleDto.toDomainModel(): HomeBestBattleBoard =
         audioDuration = audioDuration,
         viewCount = viewCount
     )
-
-fun BestCommentDto.toDomainModel(): HomeBestCommentBoard? {
-    val battleId = battleId ?: return null
-    return HomeBestCommentBoard(
-        battleId = battleId,
-        battleTitle = battleTitle ?: "",
-        optionTitle = optionTitle ?: "",
-        content = content ?: ""
-    )
-}
 
 private fun NewBattleDto.toDomainModel(): HomeNewBattleBoard =
     HomeNewBattleBoard(

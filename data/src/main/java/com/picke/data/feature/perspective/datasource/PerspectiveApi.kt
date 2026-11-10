@@ -9,6 +9,7 @@ import com.picke.data.feature.perspective.model.PerspectiveLikeToggleResponseDto
 import com.picke.data.feature.perspective.model.PerspectivePageDto
 import com.picke.data.feature.perspective.model.PerspectiveRequestDto
 import com.picke.data.feature.perspective.model.PerspectiveUpdateResponseDto
+import com.picke.data.feature.perspective.model.WeeklyBestPerspectiveResponseDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -45,6 +46,9 @@ interface PerspectiveApi {
     suspend fun getPerspectiveLikeCount(
         @Path("perspectiveId") perspectiveId: Long
     ): BaseResponse<PerspectiveLikeCountResponseDto>
+
+    @GET("/api/v1/perspectives/weekly-best")
+    suspend fun getWeeklyBestPerspectives(): BaseResponse<WeeklyBestPerspectiveResponseDto>
 
     // 5. 관점 생성 -> 여기서 perspectiveId 저장해놔야함
     @POST("/api/v1/battles/{battleId}/perspectives")

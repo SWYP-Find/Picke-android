@@ -61,6 +61,21 @@ data class MyPerspectiveBoard(
     val createdAt: String
 )
 
+data class WeeklyBestPerspectiveBoard(
+    val weekStart: String,
+    val weekEnd: String,
+    val items: List<WeeklyBestPerspectiveItemBoard>
+)
+
+data class WeeklyBestPerspectiveItemBoard(
+    val perspectiveId: Long,
+    val battleId: Long,
+    val battleTitle: String,
+    val content: String,
+    val likeCount: Long,
+    val participated: Boolean
+)
+
 data class PerspectiveStatusBoard(
     val perspectiveId: Long,
     val status: String,

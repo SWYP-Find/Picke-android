@@ -8,6 +8,7 @@ import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveBoard
 
 interface PerspectiveRepository {
     // 1. 관점 목록 조회
@@ -27,6 +28,8 @@ interface PerspectiveRepository {
 
     // 4. 관점 좋아요 수 조회
     suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard>
+
+    suspend fun getWeeklyBestPerspectives(): Result<WeeklyBestPerspectiveBoard>
 
     // 5. 관점 생성
     suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard>

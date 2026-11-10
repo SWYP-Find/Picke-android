@@ -10,6 +10,8 @@ import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveItemBoard
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -83,6 +85,23 @@ data class MyPerspectiveResponseDto(
 data class PerspectiveLikeCountResponseDto(
     val perspectiveId: Long,
     val likeCount: Long
+)
+
+@Serializable
+data class WeeklyBestPerspectiveResponseDto(
+    val weekStart: String,
+    val weekEnd: String,
+    val items: List<WeeklyBestPerspectiveItemDto>
+)
+
+@Serializable
+data class WeeklyBestPerspectiveItemDto(
+    val perspectiveId: Long,
+    val battleId: Long,
+    val battleTitle: String,
+    val content: String,
+    val likeCount: Long,
+    val participated: Boolean
 )
 
 @Serializable
@@ -174,6 +193,23 @@ fun PerspectiveLikeCountResponseDto.toDomainModel(): PerspectiveLikeCountBoard =
     PerspectiveLikeCountBoard(
         perspectiveId = perspectiveId,
         likeCount = likeCount
+    )
+
+fun WeeklyBestPerspectiveResponseDto.toDomainModel(): WeeklyBestPerspectiveBoard =
+    WeeklyBestPerspectiveBoard(
+        weekStart = weekStart,
+        weekEnd = weekEnd,
+        items = items.map { it.toDomainModel() }
+    )
+
+private fun WeeklyBestPerspectiveItemDto.toDomainModel(): WeeklyBestPerspectiveItemBoard =
+    WeeklyBestPerspectiveItemBoard(
+        perspectiveId = perspectiveId,
+        battleId = battleId,
+        battleTitle = battleTitle,
+        content = content,
+        likeCount = likeCount,
+        participated = participated
     )
 
 fun PerspectiveCreateResponseDto.toDomainModel(): PerspectiveStatusBoard =

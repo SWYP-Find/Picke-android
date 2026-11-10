@@ -5,7 +5,6 @@ data class HomeBoard(
     val editorPicks: List<HomeEditorPickBoard>,
     val trendingBattles: List<HomeTrendingBattleBoard>,
     val bestBattles: List<HomeBestBattleBoard>,
-    val bestComments: List<HomeBestCommentBoard>,
     val newBattles: List<HomeNewBattleBoard>
 )
 
@@ -40,13 +39,6 @@ data class HomeBestBattleBoard(
     val tags: List<String>,
     val audioDuration: Int,
     val viewCount: Int
-)
-
-data class HomeBestCommentBoard(
-    val battleId: Long,
-    val battleTitle: String,
-    val optionTitle: String,
-    val content: String
 )
 
 data class HomeNewBattleBoard(

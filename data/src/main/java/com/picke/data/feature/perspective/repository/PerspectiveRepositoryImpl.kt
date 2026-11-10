@@ -14,6 +14,7 @@ import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveBoard
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
 import javax.inject.Inject
 
@@ -62,6 +63,12 @@ class PerspectiveRepositoryImpl @Inject constructor(
                 .toResult("좋아요 수를 불러오지 못했습니다.")
                 .map { it.toDomainModel() }
         }
+
+    override suspend fun getWeeklyBestPerspectives(): Result<WeeklyBestPerspectiveBoard> = apiCall {
+        perspectiveApi.getWeeklyBestPerspectives()
+            .toResult("주간 베스트 관점을 불러오지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
 
     override suspend fun createPerspective(
         target: BattleTarget,

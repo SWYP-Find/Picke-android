@@ -82,8 +82,8 @@ data class ClassResultInsightBoard(
     val retryable: Boolean,
     val cutoffAt: String?,
     val generatedAt: String?,
-    val insightText: String,
-    val coverage: String,
+    val insightText: String?,
+    val coverage: String?,
     val excludedCount: Int,
     val evidence: List<ClassResultInsightEvidenceBoard>
 )

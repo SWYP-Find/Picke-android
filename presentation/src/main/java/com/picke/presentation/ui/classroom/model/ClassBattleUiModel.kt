@@ -45,7 +45,7 @@ fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUi
 }
 
 fun ClassBattleRecommendationBoard.toUiModel(): ClassBattleUiModel {
-    val durationMinutes = (audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
+    val durationMinutes = audioDuration?.let { (it + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE }
     return ClassBattleUiModel(
         battleId = battleId,
         tag = if (category.isNotBlank()) "#$category" else "",
@@ -73,8 +73,9 @@ private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUi
 )
 
 private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
-    stance = label,
-    subText = philosopherName
+    stance = title,
+    subText = representative,
+    imageUrl = imageUrl
 )
 
 private fun ClassTopicOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(

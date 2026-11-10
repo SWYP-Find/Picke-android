@@ -1,5 +1,6 @@
 package com.picke.data.feature.classroom.repository
 
+import com.picke.data.common.error.mapItemOrNull
 import com.picke.data.common.model.toResult
 import com.picke.data.common.model.toUnitResult
 import com.picke.data.common.network.apiCall
@@ -117,7 +118,9 @@ class ClassroomRepositoryImpl @Inject constructor(
     ): Result<List<ClassBattleRecommendationBoard>> = apiCall {
         classroomApi.getClassBattleRecommendations(difficulty, categories, keyword)
             .toResult("추천 배틀을 불러오지 못했습니다.")
-            .map { response -> response.items?.map { it.toDomainModel() } ?: emptyList() }
+            .map { response ->
+                response.items.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } }
+            }
     }
 
     override suspend fun createClassTopicDraft(

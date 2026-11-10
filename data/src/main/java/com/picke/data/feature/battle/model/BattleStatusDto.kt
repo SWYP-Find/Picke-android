@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BattleStatusDto(
-    val battleId: Long?,
-    val step: String?
+    val battleId: Long,
+    val step: String
 )
 
 fun BattleStatusDto.toDomainModel() = BattleStatusBoard(
-    battleId = battleId ?: 0L,
-    step = step ?: "NONE"
+    battleId = battleId,
+    step = step
 )

@@ -9,7 +9,7 @@ data class BattleDetailUiModel(
     val battleInfo: BattleInfoUiModel,
     val description: String,
     val shareUrl: String,
-    val userVoteStatus: String,
+    val userVoteStatus: String?,
     val currentStep: String,
     val categoryTags: List<BattleTagUiModel>,
     val philosopherTags: List<BattleTagUiModel>,
@@ -20,7 +20,7 @@ data class BattleInfoUiModel(
     val battleId: String,
     val title: String,
     val summary: String,
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
     val viewCount: Int,
     val participantsCount: Int,
     val audioDuration: Int,
@@ -33,7 +33,7 @@ data class BattleOptionUiModel(
     val title: String,
     val stance: String,
     val representative: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val tags: List<BattleTagUiModel>
 )
 

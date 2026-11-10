@@ -69,7 +69,7 @@ fun ClassTopicCandidateBoard.toUiModel() = ClassBattleUiModel(
 private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
     stance = title,
     subText = representative,
-    imageUrl = imageUrl.ifBlank { null }
+    imageUrl = imageUrl
 )
 
 private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(

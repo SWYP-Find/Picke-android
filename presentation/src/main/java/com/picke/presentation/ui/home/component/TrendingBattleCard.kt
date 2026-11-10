@@ -130,7 +130,7 @@ fun TrendingBattleCardPreview() {
     PickeTheme {
         TrendingBattleCard(
             item = DummyData.dummyTrendingBattles.first(),
-            onClick = {},
+            onClick = {}
         )
     }
 }

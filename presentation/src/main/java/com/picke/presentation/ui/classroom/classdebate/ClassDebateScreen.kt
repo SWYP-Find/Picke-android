@@ -233,21 +233,25 @@ private fun ClassDebateChatSection(
             val isOpponent = message.speaker == ClassDebateSpeaker.AI
             val isNewSpeaker = index == 0 || messages[index - 1].speaker != message.speaker
 
-            ChatBubble(
-                text = message.text,
-                speakerName = if (isOpponent) opponentName else myLabel,
-                avatarUrl = if (isOpponent) opponentImageUrl else null,
-                defaultAvatarRes = if (isOpponent) R.drawable.illust_mengzi else R.drawable.illust_owl,
-                isLeft = isOpponent,
-                showAvatarAndName = isNewSpeaker,
-                modifier = if (isNewSpeaker) {
-                    Modifier.padding(top = ClassDebateScreenDimens.speakerGroupSpacing)
-                } else {
-                    Modifier
-                },
-                avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
-                nameBadge = if (isOpponent) aiBadge else null
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = if (isNewSpeaker) ClassDebateScreenDimens.speakerGroupSpacing else SpacingTokens.s0),
+                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+            ) {
+                message.bubbles.forEachIndexed { bubbleIndex, bubble ->
+                    ChatBubble(
+                        text = bubble,
+                        speakerName = if (isOpponent) opponentName else myLabel,
+                        avatarUrl = if (isOpponent) opponentImageUrl else null,
+                        defaultAvatarRes = if (isOpponent) R.drawable.illust_mengzi else R.drawable.illust_owl,
+                        isLeft = isOpponent,
+                        showAvatarAndName = isNewSpeaker && bubbleIndex == 0,
+                        avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
+                        nameBadge = if (isOpponent) aiBadge else null
+                    )
+                }
+            }
         }
 
         if (isPendingVisible) {

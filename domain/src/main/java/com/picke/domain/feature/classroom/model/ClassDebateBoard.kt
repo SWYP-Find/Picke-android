@@ -34,6 +34,7 @@ data class ClassDebateMessageBoard(
     val round: Int,
     val speaker: String,
     val content: String,
+    val bubbles: List<String>,
     val focus: String?,
     val focusLabel: String?,
     val replyToMessageId: Long?,

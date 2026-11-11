@@ -12,5 +12,7 @@ sealed interface PerspectiveUiEvent {
 
     data object ShowAlreadyReportedToast : PerspectiveUiEvent
 
+    data object ShowPerspectiveRequiredToast : PerspectiveUiEvent
+
     data object ShowActionFailedToast : PerspectiveUiEvent
 }

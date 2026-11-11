@@ -3,12 +3,14 @@ package com.picke.presentation.ui.comment
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.comment.usecase.CommentUseCases
 import com.picke.domain.feature.comment.usecase.ReportCommentResult
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.comment.model.CommentUiEvent
 import com.picke.presentation.ui.comment.model.CommentUiState
 import com.picke.presentation.ui.comment.model.toUiModel
@@ -152,7 +154,15 @@ class CommentViewModel @Inject constructor(
                 .onSuccess {
                     sendEvent(CommentUiEvent.NavigateBack)
                 }
-                .onFailure { sendEvent(CommentUiEvent.ShowActionFailedToast) }
+                .onFailure { exception ->
+                    val event =
+                        if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_409_PERSPECTIVE_REQUIRED) {
+                            CommentUiEvent.ShowPerspectiveRequiredToast
+                        } else {
+                            CommentUiEvent.ShowActionFailedToast
+                        }
+                    sendEvent(event)
+                }
         }
     }
 

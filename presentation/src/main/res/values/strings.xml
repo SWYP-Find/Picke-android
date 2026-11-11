@@ -418,6 +418,7 @@
 
     <!-- 클래스 - 댓글 -->
     <string name="class_comment_required">의견을 남겨야 리포트를 볼 수 있어요.</string>
+    <string name="class_comment_delete_blocked">의견이 필수인 클래스라 삭제할 수 없어요. 내용을 수정해 주세요.</string>
 
     <!-- 클래스 - 결과 -->
     <string name="class_result_summary_tab">클래스 요약</string>

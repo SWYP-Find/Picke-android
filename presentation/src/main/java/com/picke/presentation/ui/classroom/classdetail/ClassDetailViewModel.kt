@@ -45,6 +45,7 @@ class ClassDetailViewModel @Inject constructor(
 
     init {
         observeClassChanged()
+        observeClassBattleProgressed()
         fetchClassDetail()
     }
 
@@ -96,6 +97,16 @@ class ClassDetailViewModel @Inject constructor(
             .onEach {
                 savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
                 _uiState.update { reduce(it, ClassDetailMutation.ClassChanged) }
+                fetchClassDetail()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeClassBattleProgressed() {
+        savedStateHandle.getStateFlow(AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, false)
+            .filter { it }
+            .onEach {
+                savedStateHandle[AppRoute.RESULT_CLASS_BATTLE_PROGRESSED] = false
                 fetchClassDetail()
             }
             .launchIn(viewModelScope)

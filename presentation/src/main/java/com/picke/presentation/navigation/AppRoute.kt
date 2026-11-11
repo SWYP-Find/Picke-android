@@ -150,5 +150,6 @@ sealed class AppRoute(val route: String) {
         const val ARG_COMMENT_ID = "commentId"
         const val ARG_SHOWS_BOTTOM_BAR = "showsBottomBar"
         const val RESULT_CLASS_CHANGED = "classChanged"
+        const val RESULT_CLASS_BATTLE_PROGRESSED = "classBattleProgressed"
     }
 }

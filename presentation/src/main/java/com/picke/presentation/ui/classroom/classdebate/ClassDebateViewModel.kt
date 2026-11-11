@@ -55,13 +55,7 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.RetryClick -> if (state.isRetryVisible) retryDebate(state.classId)
 
-            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
-                if (state.isReplyLengthEnough) {
-                    submitReply(state)
-                } else {
-                    sendEvent(ClassDebateUiEvent.ShowReplyTooShortToast)
-                }
-            }
+            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) submitReply(state)
 
             ClassDebateUiAction.FinalVoteClick ->
                 sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))

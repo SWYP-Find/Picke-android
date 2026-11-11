@@ -29,10 +29,7 @@ data class ClassDebateUiState(
         get() = debate.canReply && !isRequesting
 
     val isSendEnabled: Boolean
-        get() = input.isNotBlank() && isInputEnabled
-
-    internal val isReplyLengthEnough: Boolean
-        get() = input.trim().length >= debate.replyMinLength
+        get() = input.trim().length >= debate.replyMinLength && isInputEnabled
 
     internal fun isReplyLengthWithinMax(text: String): Boolean =
         debate.replyMaxLength <= 0 || text.length <= debate.replyMaxLength

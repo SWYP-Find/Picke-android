@@ -20,11 +20,7 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
             state
         }
 
-        ClassDebateUiAction.SendClick -> if (state.isSendEnabled && state.isReplyLengthEnough) {
-            state.copy(isRequesting = true)
-        } else {
-            state
-        }
+        ClassDebateUiAction.SendClick -> if (state.isSendEnabled) state.copy(isRequesting = true) else state
 
         ClassDebateUiAction.FinalVoteDialogReplayClick -> state.copy(isFinalVoteDialogVisible = false)
 

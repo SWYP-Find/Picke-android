@@ -110,10 +110,12 @@ private fun ClassBattleCardHeader(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        PickeBadge(
-            text = battle.tag,
-            horizontalPadding = SpacingTokens.s4
-        )
+        if (battle.tag.isNotEmpty()) {
+            PickeBadge(
+                text = battle.tag,
+                horizontalPadding = SpacingTokens.s4
+            )
+        }
 
         Row(
             modifier = Modifier.weight(1f),

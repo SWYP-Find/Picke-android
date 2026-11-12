@@ -31,8 +31,7 @@ fun PickeCommentCard(
     timeAgo: String,
     content: String,
     modifier: Modifier = Modifier,
-    // TODO: 토큰 동기화 - color/surface/white
-    backgroundColor: Color = PickeTheme.colors.surfaceBeigeDefault,
+    backgroundColor: Color = PickeTheme.colors.colorSurfaceWhite,
     contentColor: Color = PickeTheme.colors.textMuted,
     isContentExpanded: Boolean = false,
     likeCount: Int? = null,
@@ -65,18 +64,16 @@ fun PickeCommentCard(
                 horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // TODO: 토큰 동기화 - color/surface/beige-darker
                 ProfileImage(
                     imageUrl = profileImageUrl,
                     size = ComponentNumberTokens.avatarSm,
-                    backgroundColor = PickeTheme.colors.avatarBackround
+                    backgroundColor = PickeTheme.colors.colorSurfaceBeigeDarker
                 )
 
                 Column(modifier = Modifier.weight(1f)) {
-                    // TODO: 토큰 동기화 - color/text/basic
                     Text(
                         text = nickname,
-                        color = PickeTheme.colors.textDefault,
+                        color = PickeTheme.colors.colorTextBasic,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = PickeTheme.typography.bodyXxsSemiBold
@@ -103,7 +100,6 @@ fun PickeCommentCard(
                 )
 
                 if (onReadMoreClick != null) {
-                    // TODO: 토큰 동기화 - color/text/faint
                     Text(
                         text = stringResource(R.string.comment_read_more),
                         modifier = Modifier
@@ -113,7 +109,7 @@ fun PickeCommentCard(
                                 indication = null,
                                 onClick = onReadMoreClick
                             ),
-                        color = PickeTheme.colors.gray200,
+                        color = PickeTheme.colors.colorTextFaint,
                         style = PickeTheme.typography.captionLgMedium
                     )
                 }
@@ -152,10 +148,9 @@ fun PickeCommentCard(
             }
         }
 
-        // TODO: 토큰 동기화 - color/divider/beige
         HorizontalDivider(
             thickness = ComponentNumberTokens.borderWidthRegular,
-            color = PickeTheme.colors.borderBeigeDefault
+            color = PickeTheme.colors.colorDividerBeige
         )
     }
 }

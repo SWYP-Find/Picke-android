@@ -38,10 +38,8 @@ fun OpinionCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // TODO: 토큰 동기화 - color/border/secondary
-    val borderColor = if (isSelected) PickeTheme.colors.secondary500 else Color.Transparent
-    // TODO: 토큰 동기화 - color/element/gray-darker, color/element/gray-dark
-    val backgroundColor = if (isSelected) PickeTheme.colors.gray900 else PickeTheme.colors.gray700
+    val borderColor = if (isSelected) PickeTheme.colors.colorBorderSecondary else Color.Transparent
+    val backgroundColor = if (isSelected) PickeTheme.colors.colorElementGrayDarker else PickeTheme.colors.colorElementGrayDark
     val shape = RoundedCornerShape(RadiusTokens.default)
 
     Column(

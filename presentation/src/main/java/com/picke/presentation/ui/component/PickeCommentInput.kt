@@ -67,19 +67,17 @@ fun PickeCommentInput(
         }
     }
 
-    // TODO: 토큰 동기화 - color/element/beige
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .imePadding(),
-        color = PickeTheme.colors.beige600,
+        color = PickeTheme.colors.colorElementBeige,
         shadowElevation = PickeCommentInputDimens.shadowElevation
     ) {
         Column(modifier = Modifier.navigationBarsPadding()) {
-            // TODO: 토큰 동기화 - color/border/beige-dark
             HorizontalDivider(
                 thickness = ComponentNumberTokens.borderWidthRegular,
-                color = PickeTheme.colors.beige700
+                color = PickeTheme.colors.colorBorderBeigeDark
             )
 
             Row(

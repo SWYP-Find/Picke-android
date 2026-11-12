@@ -119,10 +119,9 @@ private fun MyPageMenuItemSkeleton() {
         ) {
             PickeSkeletonLine(width = 120.dp, height = 18.dp)
         }
-        // TODO: 토큰 동기화 - color/border/beige-dark
         HorizontalDivider(
             thickness = ComponentNumberTokens.borderWidthRegular,
-            color = PickeTheme.colors.beige700
+            color = PickeTheme.colors.colorBorderBeigeDark
         )
     }
 }

@@ -31,11 +31,10 @@ fun PerspectiveOpinionBadge(
     opinionChanged: Boolean,
     modifier: Modifier = Modifier
 ) {
-    // TODO: 토큰 동기화 - color/element/primary-lighter
     Row(
         modifier = modifier
             .heightIn(min = PerspectiveOpinionBadgeDimens.minHeight)
-            .background(PickeTheme.colors.primary50, RoundedCornerShape(RadiusTokens.default))
+            .background(PickeTheme.colors.colorElementPrimaryLighter, RoundedCornerShape(RadiusTokens.default))
             .padding(horizontal = SpacingTokens.s4),
         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s2),
         verticalAlignment = Alignment.CenterVertically

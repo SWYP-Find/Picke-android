@@ -262,19 +262,17 @@ fun ProfileSection(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // TODO: 토큰 동기화 - color/surface/beige-darker
         ProfileImage(
             imageUrl = profileImage,
             size = 52.dp,
-            backgroundColor = PickeTheme.colors.avatarBackround
+            backgroundColor = PickeTheme.colors.colorSurfaceBeigeDarker
         )
 
         Spacer(modifier = Modifier.width(SpacingTokens.s12))
         Column {
-            // TODO: 토큰 동기화 - color/text/basic
             Text(
                 text = nickname,
-                color = PickeTheme.colors.textDefault,
+                color = PickeTheme.colors.colorTextBasic,
                 style = PickeTheme.typography.headingSm
             )
 
@@ -299,12 +297,11 @@ fun PhilosopherTypeSection(
     val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
     val shape = RoundedCornerShape(RadiusTokens.default)
 
-    // TODO: 토큰 동기화 - color/surface/beige-dark
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(PickeTheme.colors.surfaceBeigeStrong)
+            .background(PickeTheme.colors.colorSurfaceBeigeDark)
             .border(
                 width = ComponentNumberTokens.borderWidthRegular,
                 color = PickeTheme.colors.borderBeigeDefault,
@@ -330,10 +327,9 @@ fun PhilosopherTypeSection(
             )
 
             Spacer(modifier = Modifier.height(SpacingTokens.s4))
-            // TODO: 토큰 동기화 - color/text/basic
             Text(
                 text = if (isLocked) displayName else "$displayName ",
-                color = PickeTheme.colors.textDefault,
+                color = PickeTheme.colors.colorTextBasic,
                 style = PickeTheme.typography.bodySmSemiBold
             )
         }

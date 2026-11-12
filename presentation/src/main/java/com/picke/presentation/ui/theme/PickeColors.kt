@@ -4,6 +4,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.ui.theme.tokens.ComponentColorTokens
+import com.picke.presentation.ui.theme.tokens.ModeColorTokens
+import com.picke.presentation.ui.theme.tokens.PrimitiveColorTokens
 import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 data class PickeColors(
@@ -130,7 +132,26 @@ data class PickeColors(
     val beige800: Color = BrandColorTokens.beige800,
     val beige900: Color = BrandColorTokens.beige900,
     val errorDefault: Color = BrandColorTokens.errorDefault,
-    val warningDefault: Color = BrandColorTokens.warningDefault
+    val warningDefault: Color = BrandColorTokens.warningDefault,
+
+    // Mode
+    val colorSurfaceWhite: Color = ModeColorTokens.colorSurfaceWhite,
+    val colorSurfaceBeigeDark: Color = ModeColorTokens.colorSurfaceBeigeDark,
+    val colorSurfaceBeigeDarker: Color = ModeColorTokens.colorSurfaceBeigeDarker,
+    val colorBorderGrayDark: Color = ModeColorTokens.colorBorderGrayDark,
+    val colorBorderPrimaryLight: Color = ModeColorTokens.colorBorderPrimaryLight,
+    val colorBorderSecondary: Color = ModeColorTokens.colorBorderSecondary,
+    val colorBorderBeigeDark: Color = ModeColorTokens.colorBorderBeigeDark,
+    val colorDividerBeige: Color = ModeColorTokens.colorDividerBeige,
+    val colorTextBasic: Color = ModeColorTokens.colorTextBasic,
+    val colorTextFaint: Color = ModeColorTokens.colorTextFaint,
+    val colorElementPrimaryLighter: Color = ModeColorTokens.colorElementPrimaryLighter,
+    val colorElementBeige: Color = ModeColorTokens.colorElementBeige,
+    val colorElementGrayDark: Color = ModeColorTokens.colorElementGrayDark,
+    val colorElementGrayDarker: Color = ModeColorTokens.colorElementGrayDarker,
+
+    // Primitive palette
+    val colorDanger500: Color = PrimitiveColorTokens.colorDanger500
 )
 
 val LocalPickeColors = staticCompositionLocalOf { PickeColors() }

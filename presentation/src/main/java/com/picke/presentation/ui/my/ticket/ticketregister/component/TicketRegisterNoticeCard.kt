@@ -28,8 +28,7 @@ fun TicketRegisterNoticeCard(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
-    // TODO: 토큰 동기화 - border/primary-light
-    val borderColor = PickeTheme.colors.primary100
+    val borderColor = PickeTheme.colors.colorBorderPrimaryLight
 
     Row(
         modifier = modifier

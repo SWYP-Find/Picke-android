@@ -34,8 +34,7 @@ fun PickeErrorBanner(
     Row(
         modifier = modifier
             .shadow(elevation = PickeErrorBannerDimens.shadowElevation, shape = shape)
-            // TODO: 토큰 동기화 - color/danger/500
-            .background(PickeTheme.colors.errorDefault, shape)
+            .background(PickeTheme.colors.colorDanger500, shape)
             .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12),
         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
         verticalAlignment = Alignment.CenterVertically

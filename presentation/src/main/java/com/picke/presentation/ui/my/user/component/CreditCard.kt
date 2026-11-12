@@ -48,10 +48,9 @@ fun CreditCard(
                     .background(color = PickeTheme.colors.secondary300, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                // TODO: 토큰 동기화 - color/text/basic
                 Text(
                     text = stringResource(R.string.my_point_symbol),
-                    color = PickeTheme.colors.textDefault,
+                    color = PickeTheme.colors.colorTextBasic,
                     style = PickeTheme.typography.captionMdBold
                 )
             }

@@ -42,7 +42,7 @@ internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): Cla
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
 
         is ClassCreateUiAction.TopicChange -> state.copy(
-            topic = if (state.isTopicRequired) action.topic.take(ClassCreateUiState.TOPIC_MAX_LENGTH) else action.topic
+            topic = if (state.isAiMethod) action.topic.take(ClassCreateUiState.TOPIC_MAX_LENGTH) else action.topic
         )
 
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)

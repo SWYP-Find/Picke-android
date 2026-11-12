@@ -40,7 +40,7 @@ internal fun ClassCreateConditionStep(
     ) {
         ClassTitledBlock(
             title = stringResource(R.string.class_create_topic_label),
-            isRequired = uiState.isTopicRequired,
+            isRequired = uiState.isAiMethod,
             contentSpacing = SpacingTokens.s8,
             titleStyle = PickeTheme.typography.bodySmSemiBold
         ) {
@@ -54,7 +54,7 @@ internal fun ClassCreateConditionStep(
                     horizontalPadding = SpacingTokens.s12
                 )
 
-                if (uiState.isTopicRequired) {
+                if (uiState.isAiMethod) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),

@@ -269,7 +269,8 @@ private fun ClassShareCodeSection(
                     .weight(1f)
                     .height(ComponentNumberTokens.buttonPrimaryLargeHeight)
                     .clip(shape)
-                    .background(PickeTheme.colors.buttonSecondaryBackgroundDefault)
+                    // TODO: 토큰 동기화 - color/button/secondary-fill
+                    .background(PickeTheme.colors.surfacePrimarySubtle)
                     .clickable(role = Role.Button, onClick = onShareCodeClick),
                 contentAlignment = Alignment.Center
             ) {

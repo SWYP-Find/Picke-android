@@ -335,7 +335,8 @@ private fun ClassDetailActionSection(
         PickeButton(
             text = stringResource(R.string.class_detail_join_battle),
             onClick = onBattleClick,
-            backgroundColor = PickeTheme.colors.buttonSecondaryBackgroundDefault,
+            // TODO: 토큰 동기화 - color/button/secondary-fill
+            backgroundColor = PickeTheme.colors.surfacePrimarySubtle,
             textColor = PickeTheme.colors.buttonSecondaryTextDefault,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )

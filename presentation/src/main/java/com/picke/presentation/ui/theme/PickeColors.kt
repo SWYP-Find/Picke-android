@@ -145,10 +145,12 @@ data class PickeColors(
     val colorDividerBeige: Color = ModeColorTokens.colorDividerBeige,
     val colorTextBasic: Color = ModeColorTokens.colorTextBasic,
     val colorTextFaint: Color = ModeColorTokens.colorTextFaint,
+    val colorTextDisabled: Color = ModeColorTokens.colorTextDisabled,
     val colorElementPrimaryLighter: Color = ModeColorTokens.colorElementPrimaryLighter,
     val colorElementBeige: Color = ModeColorTokens.colorElementBeige,
     val colorElementGrayDark: Color = ModeColorTokens.colorElementGrayDark,
     val colorElementGrayDarker: Color = ModeColorTokens.colorElementGrayDarker,
+    val colorButtonSecondaryFillDisabled: Color = ModeColorTokens.colorButtonSecondaryFillDisabled,
 
     // Primitive palette
     val colorDanger500: Color = PrimitiveColorTokens.colorDanger500

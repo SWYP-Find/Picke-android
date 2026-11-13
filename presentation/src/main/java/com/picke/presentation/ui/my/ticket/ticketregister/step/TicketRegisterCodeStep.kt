@@ -51,11 +51,12 @@ internal fun TicketRegisterCodeStep(
             }
         }
 
-        // TODO: 토큰 동기화 - button/secondary-fill-disabled, text/disabled
         PickeButton(
             text = stringResource(R.string.ticket_register_code_check),
             onClick = onCodeCheckClick,
             enabled = isCodeCheckEnabled,
+            disabledBackgroundColor = PickeTheme.colors.colorButtonSecondaryFillDisabled,
+            disabledTextColor = PickeTheme.colors.colorTextDisabled,
             minHeight = ComponentNumberTokens.buttonPrimaryLargeHeight
         )
     }

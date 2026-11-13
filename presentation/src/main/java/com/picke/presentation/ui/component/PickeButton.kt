@@ -36,6 +36,7 @@ fun PickeButton(
     backgroundColor: Color = PickeTheme.colors.buttonPrimaryBackgroundDefault,
     disabledBackgroundColor: Color = PickeTheme.colors.buttonPrimaryBackgroundDisabled,
     textColor: Color = PickeTheme.colors.buttonPrimaryTextDefault,
+    disabledTextColor: Color = textColor,
     @DrawableRes iconResId: Int? = null,
     minHeight: Dp = PickeButtonDimens.minHeight
 ) {
@@ -66,7 +67,7 @@ fun PickeButton(
             }
             Text(
                 text = text,
-                color = textColor,
+                color = if (enabled) textColor else disabledTextColor,
                 style = PickeTheme.typography.bodySmSemiBold
             )
         }

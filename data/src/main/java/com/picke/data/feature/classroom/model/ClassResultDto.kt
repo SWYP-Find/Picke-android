@@ -79,7 +79,7 @@ data class ClassResultFeedbackDto(
     val judgmentBasis: String,
     val strength: ClassResultFeedbackPointDto?,
     val nextFocus: ClassResultFeedbackPointDto?,
-    val nextQuestion: String,
+    val nextQuestion: String?,
     val evidence: List<ClassResultFeedbackEvidenceDto>,
     val analysisStatus: String,
     val coverage: String,

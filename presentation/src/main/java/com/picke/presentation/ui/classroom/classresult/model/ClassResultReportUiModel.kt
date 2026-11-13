@@ -10,7 +10,8 @@ data class ClassResultReportUiModel(
     val commentCount: Int,
     val judgmentBasis: String,
     val feedbackItems: List<ClassResultFeedbackItemUiModel>,
-    val coverage: ClassFeedbackCoverage
+    val coverage: ClassFeedbackCoverage,
+    val limited: ClassResultLimitedUiModel? = null
 ) {
     val isStanceChanged: Boolean
         get() = preVoteStance != postVoteStance
@@ -27,5 +28,6 @@ fun ClassResultMyReportBoard.toUiModel() = ClassResultReportUiModel(
     commentCount = commentCount,
     judgmentBasis = feedback?.judgmentBasis ?: "",
     feedbackItems = feedback?.toFeedbackItems() ?: emptyList(),
-    coverage = ClassFeedbackCoverage.from(feedback?.coverage ?: "")
+    coverage = ClassFeedbackCoverage.from(feedback?.coverage ?: ""),
+    limited = feedback?.toLimitedUiModel()
 )

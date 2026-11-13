@@ -82,6 +82,9 @@ data class ClassResultFeedbackDto(
     val nextQuestion: String?,
     val evidence: List<ClassResultFeedbackEvidenceDto>,
     val analysisStatus: String,
+    val limitedReason: String?,
+    val limitedMessage: String?,
+    val limitedNotice: String?,
     val coverage: String,
     val excludedCount: Int
 )
@@ -204,6 +207,9 @@ fun ClassResultFeedbackDto.toDomainModel() = ClassResultFeedbackBoard(
     nextQuestion = nextQuestion,
     evidence = evidence.map { it.toDomainModel() },
     analysisStatus = analysisStatus,
+    limitedReason = limitedReason,
+    limitedMessage = limitedMessage,
+    limitedNotice = limitedNotice,
     coverage = coverage,
     excludedCount = excludedCount
 )

@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classresult.model.ClassFeedbackCoverage
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
+import com.picke.presentation.ui.classroom.classresult.model.ClassResultLimitedUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
@@ -55,7 +56,7 @@ fun ClassResultFeedbackCard(
                 shape
             )
     ) {
-        if (report.judgmentBasis.isNotBlank()) {
+        if (report.limited == null && report.judgmentBasis.isNotBlank()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -78,7 +79,13 @@ fun ClassResultFeedbackCard(
                 .padding(SpacingTokens.s16),
             verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16)
         ) {
-            if (notice != null) {
+            if (report.limited != null) {
+                ClassResultLimitedNotice(limited = report.limited)
+                HorizontalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+            } else if (notice != null) {
                 Text(
                     text = notice,
                     color = PickeTheme.colors.textMuted,
@@ -129,6 +136,33 @@ fun ClassResultFeedbackCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ClassResultLimitedNotice(
+    limited: ClassResultLimitedUiModel,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+    ) {
+        Text(
+            text = limited.headline,
+            color = PickeTheme.colors.textDefault,
+            style = PickeTheme.typography.bodySmSemiBold
+        )
+        Text(
+            text = limited.message,
+            color = PickeTheme.colors.textSubtle,
+            style = PickeTheme.typography.bodyXsRegular
+        )
+        Text(
+            text = limited.notice,
+            color = PickeTheme.colors.textMuted,
+            style = PickeTheme.typography.bodyXxsRegular
+        )
     }
 }
 
@@ -199,6 +233,23 @@ private fun ClassResultFeedbackCardLimitedPreview() {
             state = ClassReportState.LIMITED,
             judgmentBasis = "",
             feedbackItems = DummyData.dummyClassResultReport.feedbackItems.takeLast(1)
+        )
+    )
+}
+
+@Preview(name = "분석 불가 (서버 사유)", showBackground = true)
+@Composable
+private fun ClassResultFeedbackCardLimitedReasonPreview() {
+    ClassResultFeedbackCardStatePreview(
+        report = DummyData.dummyClassResultReport.copy(
+            state = ClassReportState.LIMITED,
+            judgmentBasis = "선택이 낮춰야 한다에서 교정이 우선이다로 바뀌었어요.",
+            feedbackItems = emptyList(),
+            limited = ClassResultLimitedUiModel(
+                headline = "작성된 의견이 없어요.",
+                message = "배틀에 참여했지만 작성된 의견이 없어 사고 과정 분석을 제공하지 않습니다.",
+                notice = "참여 여부와 투표 결과는 확인할 수 있습니다."
+            )
         )
     )
 }

@@ -58,6 +58,9 @@ data class ClassResultFeedbackBoard(
     val nextQuestion: String?,
     val evidence: List<ClassResultFeedbackEvidenceBoard>,
     val analysisStatus: String,
+    val limitedReason: String?,
+    val limitedMessage: String?,
+    val limitedNotice: String?,
     val coverage: String,
     val excludedCount: Int
 )

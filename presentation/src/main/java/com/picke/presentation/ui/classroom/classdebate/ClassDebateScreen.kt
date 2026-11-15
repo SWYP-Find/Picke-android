@@ -145,6 +145,7 @@ private fun ClassDebateContent(
                     input = uiState.input,
                     isInputEnabled = uiState.isInputEnabled,
                     isSendEnabled = uiState.isSendEnabled,
+                    rejectionMessage = uiState.replyRejectionMessage,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
                 )
@@ -340,6 +341,7 @@ private fun ClassDebateComposerSection(
     input: String,
     isInputEnabled: Boolean,
     isSendEnabled: Boolean,
+    rejectionMessage: String?,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -361,38 +363,51 @@ private fun ClassDebateComposerSection(
             thickness = ComponentNumberTokens.borderWidthRegular,
             color = PickeTheme.colors.borderBeigeDefault
         )
-        Row(
+
+        Column(
             modifier = Modifier.padding(
                 start = SpacingTokens.s16,
                 top = SpacingTokens.s16,
                 end = SpacingTokens.s16,
                 bottom = ClassDebateScreenDimens.composerBottomPadding
             ),
-            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
         ) {
-            PickeTextField(
-                value = input,
-                onValueChange = onInputChange,
-                minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                textStyle = PickeTheme.typography.bodyXsMedium,
-                modifier = Modifier.weight(1f),
-                placeholder = stringResource(R.string.class_debate_input_placeholder),
-                enabled = isInputEnabled
-            )
-            IconButton(
-                onClick = onSendClick,
-                modifier = Modifier
-                    .size(ClassDebateScreenDimens.sendButtonSize)
-                    .background(sendButtonColor, CircleShape),
-                enabled = isSendEnabled
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_send),
-                    contentDescription = stringResource(R.string.class_debate_send),
-                    modifier = Modifier.size(ComponentNumberTokens.iconLg),
-                    tint = PickeTheme.colors.textInverse
+            if (rejectionMessage != null) {
+                Text(
+                    text = rejectionMessage,
+                    color = PickeTheme.colors.errorDefault,
+                    style = PickeTheme.typography.captionLgRegular
                 )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PickeTextField(
+                    value = input,
+                    onValueChange = onInputChange,
+                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
+                    modifier = Modifier.weight(1f),
+                    placeholder = stringResource(R.string.class_debate_input_placeholder),
+                    enabled = isInputEnabled
+                )
+                IconButton(
+                    onClick = onSendClick,
+                    modifier = Modifier
+                        .size(ClassDebateScreenDimens.sendButtonSize)
+                        .background(sendButtonColor, CircleShape),
+                    enabled = isSendEnabled
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_send),
+                        contentDescription = stringResource(R.string.class_debate_send),
+                        modifier = Modifier.size(ComponentNumberTokens.iconLg),
+                        tint = PickeTheme.colors.textInverse
+                    )
+                }
             }
         }
     }
@@ -434,6 +449,25 @@ private fun ClassDebateContentPreview() {
                             DummyData.dummyClassDebateMyMessage +
                             DummyData.dummyClassDebateReplies.first()
                 )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "반박 반려", showBackground = true)
+@Composable
+private fun ClassDebateReplyRejectedPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                isLoading = false,
+                battleTitle = battle.title,
+                debate = DummyData.dummyClassDebate,
+                input = "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ",
+                replyRejectionMessage = "내용을 알 수 있는 문장으로 생각을 적어 주세요."
             ),
             onAction = {}
         )

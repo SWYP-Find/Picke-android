@@ -7,6 +7,7 @@ data class ClassDebateUiState(
     val debate: ClassDebateUiModel = ClassDebateUiModel(),
     val input: String = "",
     val replyRequestKey: String? = null,
+    val replyRejectionMessage: String? = null,
     val isRequesting: Boolean = false,
     val isFinalVoteDialogVisible: Boolean = false
 ) {

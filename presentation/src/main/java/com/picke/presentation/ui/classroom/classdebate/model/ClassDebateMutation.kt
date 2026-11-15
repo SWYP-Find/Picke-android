@@ -18,4 +18,6 @@ internal sealed interface ClassDebateMutation {
     data class ReplySubmitted(val debate: ClassDebateUiModel) : RequestFinished
 
     data class ReplyFailed(val requestKey: String) : RequestFinished
+
+    data class ReplyRejected(val message: String) : RequestFinished
 }

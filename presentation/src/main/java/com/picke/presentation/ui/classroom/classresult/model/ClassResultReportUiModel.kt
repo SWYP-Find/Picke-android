@@ -4,6 +4,7 @@ import com.picke.domain.feature.classroom.model.ClassResultMyReportBoard
 
 data class ClassResultReportUiModel(
     val state: ClassReportState,
+    val isRetryable: Boolean,
     val preVoteStance: String,
     val postVoteStance: String,
     val perspectiveCount: Int,
@@ -18,10 +19,14 @@ data class ClassResultReportUiModel(
 
     val myOpinionCount: Int
         get() = perspectiveCount + commentCount
+
+    internal val isRetryVisible: Boolean
+        get() = state == ClassReportState.FAILED && isRetryable
 }
 
 fun ClassResultMyReportBoard.toUiModel() = ClassResultReportUiModel(
     state = ClassReportState.from(state),
+    isRetryable = retryable == true,
     preVoteStance = preOption?.title ?: "",
     postVoteStance = postOption?.title ?: "",
     perspectiveCount = perspectiveCount,

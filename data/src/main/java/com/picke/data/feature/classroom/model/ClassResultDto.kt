@@ -57,6 +57,7 @@ data class ClassResultOptionDto(
 data class ClassResultMyReportResponseDto(
     val classId: Long,
     val state: String,
+    val retryable: Boolean?,
     val closeAt: String?,
     val preOption: ClassResultReportOptionDto?,
     val postOption: ClassResultReportOptionDto?,
@@ -184,6 +185,7 @@ fun ClassResultOptionDto.toDomainModel() = ClassResultOptionBoard(
 fun ClassResultMyReportResponseDto.toDomainModel() = ClassResultMyReportBoard(
     classId = classId,
     state = state,
+    retryable = retryable,
     closeAt = closeAt.requireField("ClassResultMyReportResponseDto.closeAt"),
     preOption = preOption?.toDomainModel(),
     postOption = postOption?.toDomainModel(),

@@ -452,6 +452,8 @@
     <string name="class_result_count_placeholder">-</string>
     <string name="class_result_ai_feedback">AI 피드백</string>
     <string name="class_result_report_not_eligible">참여를 완료하면 AI 피드백을 받을 수 있어요</string>
+    <string name="class_result_report_failed_title">리포트를 불러오지 못했어요.</string>
+    <string name="class_result_report_failed_message">일시적인 오류로 분석 결과를 생성하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
     <string name="class_result_report_limited">판단의 이유를 살펴볼 글이 아직 충분하지 않아요</string>
     <string name="class_result_report_partial">이번 피드백은 일부 발언을 기준으로 작성했어요</string>
     <string name="class_result_judgment_basis">내 판단의 기준</string>

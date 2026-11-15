@@ -35,6 +35,7 @@ data class ClassResultOptionBoard(
 data class ClassResultMyReportBoard(
     val classId: Long,
     val state: String,
+    val retryable: Boolean?,
     val closeAt: String,
     val preOption: ClassResultReportOptionBoard?,
     val postOption: ClassResultReportOptionBoard?,

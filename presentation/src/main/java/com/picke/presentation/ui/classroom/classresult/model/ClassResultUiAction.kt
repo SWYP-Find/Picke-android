@@ -12,5 +12,7 @@ sealed interface ClassResultUiAction {
 
     data object InsightRetryClick : ClassResultUiAction
 
+    data object ReportRetryClick : ClassResultUiAction
+
     data object MyOpinionClick : SideEffectOnly
 }

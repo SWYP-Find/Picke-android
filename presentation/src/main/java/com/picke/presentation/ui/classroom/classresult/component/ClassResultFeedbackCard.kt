@@ -25,6 +25,7 @@ import com.picke.presentation.ui.classroom.classresult.model.ClassFeedbackCovera
 import com.picke.presentation.ui.classroom.classresult.model.ClassReportState
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultLimitedUiModel
 import com.picke.presentation.ui.classroom.classresult.model.ClassResultReportUiModel
+import com.picke.presentation.ui.classroom.component.ClassRetryChip
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
@@ -37,6 +38,8 @@ import java.time.LocalDateTime
 fun ClassResultFeedbackCard(
     report: ClassResultReportUiModel,
     deadline: LocalDateTime?,
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -81,6 +84,15 @@ fun ClassResultFeedbackCard(
         ) {
             if (report.limited != null) {
                 ClassResultLimitedNotice(limited = report.limited)
+                HorizontalDivider(
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+            } else if (report.state == ClassReportState.FAILED) {
+                ClassResultFailedNotice(
+                    isRetryVisible = isRetryVisible,
+                    onRetryClick = onRetryClick
+                )
                 HorizontalDivider(
                     thickness = ComponentNumberTokens.borderWidthRegular,
                     color = PickeTheme.colors.cardBaseBorderDefault
@@ -167,6 +179,32 @@ private fun ClassResultLimitedNotice(
 }
 
 @Composable
+private fun ClassResultFailedNotice(
+    isRetryVisible: Boolean,
+    onRetryClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+    ) {
+        Text(
+            text = stringResource(R.string.class_result_report_failed_title),
+            color = PickeTheme.colors.textDefault,
+            style = PickeTheme.typography.bodySmSemiBold
+        )
+        Text(
+            text = stringResource(R.string.class_result_report_failed_message),
+            color = PickeTheme.colors.textSubtle,
+            style = PickeTheme.typography.bodyXsRegular
+        )
+        if (isRetryVisible) {
+            ClassRetryChip(onClick = onRetryClick)
+        }
+    }
+}
+
+@Composable
 private fun ClassResultFeedbackItem(
     title: String,
     content: String,
@@ -208,7 +246,7 @@ private fun ClassResultReportUiModel.feedbackNotice(deadlineText: String): Strin
 
     ClassReportState.LIMITED -> stringResource(R.string.class_result_report_limited)
 
-    ClassReportState.FAILED -> stringResource(R.string.class_result_insight_failed)
+    ClassReportState.FAILED -> null
 }
 
 @Preview(name = "생성 완료", showBackground = true)
@@ -254,6 +292,19 @@ private fun ClassResultFeedbackCardLimitedReasonPreview() {
     )
 }
 
+@Preview(name = "생성 실패 (다시 시도 가능)", showBackground = true)
+@Composable
+private fun ClassResultFeedbackCardFailedPreview() {
+    ClassResultFeedbackCardStatePreview(
+        report = DummyData.dummyClassResultReport.copy(
+            state = ClassReportState.FAILED,
+            isRetryable = true,
+            judgmentBasis = "",
+            feedbackItems = emptyList()
+        )
+    )
+}
+
 @Preview(name = "마감 전", showBackground = true)
 @Composable
 private fun ClassResultFeedbackCardBeforeClosePreview() {
@@ -274,6 +325,8 @@ private fun ClassResultFeedbackCardStatePreview(report: ClassResultReportUiModel
         ClassResultFeedbackCard(
             report = report,
             deadline = classItem.deadline,
+            isRetryVisible = report.isRetryVisible,
+            onRetryClick = {},
             onMyOpinionClick = {}
         )
     }

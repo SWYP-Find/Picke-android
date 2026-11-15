@@ -789,6 +789,7 @@ object DummyData {
 
     val dummyClassResultReport = ClassResultReportUiModel(
         state = ClassReportState.SUCCEEDED,
+        isRetryable = false,
         preVoteStance = "낮춰야 한다",
         postVoteStance = "교정이 우선이다",
         perspectiveCount = 1,

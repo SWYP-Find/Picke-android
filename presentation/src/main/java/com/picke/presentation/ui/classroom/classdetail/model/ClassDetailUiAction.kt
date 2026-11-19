@@ -34,4 +34,8 @@ sealed interface ClassDetailUiAction {
     data object LeaveConfirm : ClassDetailUiAction
 
     data object LeaveDialogDismiss : StateOnly
+
+    data object ClassChangedReceive : ClassDetailUiAction
+
+    data object ClassBattleProgressedReceive : SideEffectOnly
 }

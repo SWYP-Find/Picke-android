@@ -17,6 +17,4 @@ internal sealed interface ClassDetailMutation {
     ) : ClassDetailMutation
 
     data object ClassDetailLoadFailed : ClassDetailMutation
-
-    data object ClassChanged : ClassDetailMutation
 }

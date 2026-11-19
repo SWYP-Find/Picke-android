@@ -30,4 +30,6 @@ sealed interface MyClassUiAction {
     data object LeaveConfirm : MyClassUiAction
 
     data object LeaveDialogDismiss : StateOnly
+
+    data object ClassChangedReceive : SideEffectOnly
 }

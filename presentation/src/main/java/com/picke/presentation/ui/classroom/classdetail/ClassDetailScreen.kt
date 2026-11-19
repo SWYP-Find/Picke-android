@@ -50,6 +50,10 @@ import java.time.LocalDateTime
 
 @Composable
 fun ClassDetailScreen(
+    hasClassChangedResult: Boolean,
+    onClassChangedResultConsumed: () -> Unit,
+    hasClassBattleProgressedResult: Boolean,
+    onClassBattleProgressedResultConsumed: () -> Unit,
     onBackClick: () -> Unit,
     onClassChanged: () -> Unit,
     onMemberClick: (classId: Long) -> Unit,
@@ -75,6 +79,20 @@ fun ClassDetailScreen(
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     BackHandler { viewModel.onAction(ClassDetailUiAction.BackClick) }
+
+    LaunchedEffect(hasClassChangedResult) {
+        if (hasClassChangedResult) {
+            onClassChangedResultConsumed()
+            viewModel.onAction(ClassDetailUiAction.ClassChangedReceive)
+        }
+    }
+
+    LaunchedEffect(hasClassBattleProgressedResult) {
+        if (hasClassBattleProgressedResult) {
+            onClassBattleProgressedResultConsumed()
+            viewModel.onAction(ClassDetailUiAction.ClassBattleProgressedReceive)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

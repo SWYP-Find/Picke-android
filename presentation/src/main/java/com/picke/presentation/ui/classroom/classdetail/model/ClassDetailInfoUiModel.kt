@@ -9,7 +9,7 @@ data class ClassDetailInfoUiModel(
     val isOperator: Boolean,
     val isInProgress: Boolean,
     val title: String,
-    val memberCount: Int,
+    val activeMemberCount: Int,
     val deadline: LocalDateTime?
 )
 
@@ -17,6 +17,6 @@ fun ClassDetailBoard.toUiModel() = ClassDetailInfoUiModel(
     isOperator = ClassRole.from(myRole).isOwner,
     isInProgress = !closed,
     title = name,
-    memberCount = memberCount,
+    activeMemberCount = activeMemberCount,
     deadline = parseServerDateTime(closeAt)
 )

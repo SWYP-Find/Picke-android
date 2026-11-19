@@ -191,7 +191,7 @@ private fun ClassDetailContent(
                     )
 
                     ClassDetailInfoSection(
-                        memberCount = classInfo.memberCount,
+                        activeMemberCount = classInfo.activeMemberCount,
                         deadline = classInfo.deadline,
                         isOperator = classInfo.isOperator,
                         onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
@@ -278,7 +278,7 @@ private fun ClassDetailHeaderSection(
 
 @Composable
 private fun ClassDetailInfoSection(
-    memberCount: Int,
+    activeMemberCount: Int,
     deadline: LocalDateTime?,
     isOperator: Boolean,
     onMemberClick: () -> Unit,
@@ -304,7 +304,7 @@ private fun ClassDetailInfoSection(
     ) {
         ClassDetailInfoRow(
             title = stringResource(R.string.class_detail_member),
-            description = stringResource(R.string.class_detail_member_count, memberCount),
+            description = stringResource(R.string.class_detail_member_count, activeMemberCount),
             actionText = stringResource(R.string.my_class_view),
             onActionClick = onMemberClick
         )
@@ -393,7 +393,7 @@ private fun ClassDetailContentPreview(isOperator: Boolean) {
                 isOperator = isOperator,
                 isInProgress = classItem.isInProgress,
                 title = classItem.title,
-                memberCount = classItem.memberCount,
+                activeMemberCount = classItem.activeMemberCount,
                 deadline = classItem.deadline
             ),
             battle = DummyData.dummyClassBattles.first()

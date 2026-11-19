@@ -125,7 +125,7 @@ fun MyClassCard(
             ) {
                 MyClassMetaItem(
                     iconResId = R.drawable.ic_class_member,
-                    text = stringResource(R.string.my_class_member_count, item.memberCount)
+                    text = stringResource(R.string.my_class_member_count, item.activeMemberCount)
                 )
                 if (item.deadline != null) {
                     Box(

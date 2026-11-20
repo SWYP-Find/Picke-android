@@ -35,7 +35,8 @@ data class ClassDebatePhilosopherDto(
     val code: String,
     val name: String,
     val typeName: String,
-    val imageKey: String
+    val imageKey: String,
+    val imageUrl: String?
 )
 
 @Serializable
@@ -78,7 +79,8 @@ fun ClassDebatePhilosopherDto.toDomainModel() = ClassDebatePhilosopherBoard(
     code = code,
     name = name,
     typeName = typeName,
-    imageKey = imageKey
+    imageKey = imageKey,
+    imageUrl = imageUrl
 )
 
 fun ClassDebateSideDto.toDomainModel() = ClassDebateSideBoard(

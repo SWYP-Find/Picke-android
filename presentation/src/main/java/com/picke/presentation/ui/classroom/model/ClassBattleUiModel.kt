@@ -80,5 +80,6 @@ private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = 
 
 private fun ClassTopicOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
     stance = label,
-    subText = philosopherName
+    subText = philosopherName,
+    imageUrl = philosopherImageUrl
 )

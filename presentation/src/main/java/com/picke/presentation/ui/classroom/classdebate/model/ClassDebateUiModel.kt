@@ -22,8 +22,7 @@ fun ClassDebateBoard.toUiModel(): ClassDebateUiModel = ClassDebateUiModel(
     canRetry = canRetry,
     myChoice = participantOption.title,
     opponentName = philosopher.name,
-    // TODO: API 연동 - 응답에 철학자 이미지 URL이 생기면 연결 (지금은 imageKey만 옴)
-    opponentImageUrl = null,
+    opponentImageUrl = philosopher.imageUrl,
     messages = messages.map { it.toUiModel() },
     replyMinLength = replyMinLength,
     replyMaxLength = replyMaxLength

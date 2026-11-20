@@ -245,10 +245,10 @@ private fun ClassDebateChatSection(
                         text = bubble,
                         speakerName = if (isOpponent) opponentName else myLabel,
                         avatarUrl = if (isOpponent) opponentImageUrl else null,
-                        defaultAvatarRes = if (isOpponent) R.drawable.illust_mengzi else R.drawable.illust_owl,
                         isLeft = isOpponent,
                         showAvatarAndName = isNewSpeaker && bubbleIndex == 0,
                         avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
+                        defaultAvatarRes = if (isOpponent) null else R.drawable.illust_owl,
                         nameBadge = if (isOpponent) aiBadge else null
                     )
                 }
@@ -261,7 +261,6 @@ private fun ClassDebateChatSection(
                     text = pendingText,
                     speakerName = opponentName,
                     avatarUrl = opponentImageUrl,
-                    defaultAvatarRes = R.drawable.illust_mengzi,
                     isLeft = true,
                     showAvatarAndName = isPendingNewSpeaker,
                     modifier = if (isPendingNewSpeaker) {

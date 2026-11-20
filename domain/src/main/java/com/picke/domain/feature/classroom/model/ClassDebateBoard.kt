@@ -19,7 +19,8 @@ data class ClassDebatePhilosopherBoard(
     val code: String,
     val name: String,
     val typeName: String,
-    val imageKey: String
+    val imageKey: String,
+    val imageUrl: String?
 )
 
 data class ClassDebateSideBoard(

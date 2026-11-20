@@ -25,7 +25,8 @@ data class ClassBattleUiModel(
     val isAiQuestion: Boolean = false,
     // TODO: API 연동 - 클래스 배틀 상세에 의견 수 필드가 생기면 toUiModel()에서 채우고 사전 투표 화면 댓글 수 배지에 연결
     val commentCount: Int = 0,
-    val candidateId: Long? = null
+    val candidateId: Long? = null,
+    val thumbnailUrl: String? = null
 )
 
 fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUiModel {
@@ -40,7 +41,8 @@ fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUi
         description = battleInfo.summary,
         durationMinutes = if (isAiQuestion || durationMinutes == 0) null else durationMinutes,
         options = battleInfo.options.map { it.toClassBattleOptionUiModel() },
-        isAiQuestion = isAiQuestion
+        isAiQuestion = isAiQuestion,
+        thumbnailUrl = battleInfo.thumbnailUrl
     )
 }
 

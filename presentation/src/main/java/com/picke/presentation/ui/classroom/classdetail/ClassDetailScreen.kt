@@ -24,13 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailBattleCard
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfoRow
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailSkeleton
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailInfoUiModel
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
-import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
@@ -336,7 +336,7 @@ private fun ClassDetailBattleSection(
             color = PickeTheme.colors.textMuted,
             style = PickeTheme.typography.bodySmSemiBold
         )
-        ClassBattleCard(battle = battle, onClick = onBattleClick)
+        ClassDetailBattleCard(battle = battle, onClick = onBattleClick)
     }
 }
 

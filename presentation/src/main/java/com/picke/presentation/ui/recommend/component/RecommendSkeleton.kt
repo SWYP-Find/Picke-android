@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -51,14 +51,14 @@ private fun RecommendItemCardSkeleton() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SkeletonLine(width = 50.dp, height = 18.dp)
-            SkeletonLine(width = 70.dp, height = 14.dp)
+            PickeSkeletonLine(width = 50.dp, height = 18.dp)
+            PickeSkeletonLine(width = 70.dp, height = 14.dp)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-        SkeletonLine(width = 200.dp, height = 18.dp)
+        PickeSkeletonLine(width = 200.dp, height = 18.dp)
         Spacer(modifier = Modifier.height(6.dp))
-        SkeletonLine(width = 240.dp, height = 14.dp)
+        PickeSkeletonLine(width = 240.dp, height = 14.dp)
 
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -95,9 +95,9 @@ private fun OpinionBoxSkeleton(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         Column(modifier = Modifier.weight(1f)) {
-            SkeletonLine(width = 50.dp, height = 14.dp)
+            PickeSkeletonLine(width = 50.dp, height = 14.dp)
             Spacer(modifier = Modifier.height(2.dp))
-            SkeletonLine(width = 36.dp, height = 12.dp)
+            PickeSkeletonLine(width = 36.dp, height = 12.dp)
         }
     }
 }

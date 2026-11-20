@@ -4,6 +4,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import com.picke.domain.feature.auth.repository.AuthRepository
 import com.picke.domain.feature.battle.repository.BattleRepository
+import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import com.picke.domain.feature.comment.repository.CommentRepository
 import com.picke.domain.feature.device.repository.DeviceRepository
 import com.picke.domain.feature.explore.repository.ExploreRepository
@@ -11,7 +12,6 @@ import com.picke.domain.feature.home.repository.HomeRepository
 import com.picke.domain.common.local.LocalPreferencesRepository
 import com.picke.domain.feature.mypage.repository.MyPageRepository
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
-import com.picke.domain.feature.pollquiz.repository.PollQuizRepository
 import com.picke.domain.feature.proposal.repository.ProposalRepository
 import com.picke.domain.feature.recommend.repository.RecommendRepository
 import com.picke.domain.feature.scenario.repository.ScenarioRepository
@@ -35,12 +35,47 @@ import com.picke.domain.feature.auth.usecase.WithdrawUseCase
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.battle.usecase.GetBattleDetailUseCase
 import com.picke.domain.feature.battle.usecase.GetBattleStatusUseCase
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.domain.feature.classroom.usecase.CompleteClassTtsUseCase
+import com.picke.domain.feature.classroom.usecase.CreateClassTopicDraftUseCase
+import com.picke.domain.feature.classroom.usecase.CreateClassUseCase
+import com.picke.domain.feature.classroom.usecase.DeleteClassUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassBattleRecommendationsUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassBattleUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassDetailUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassMembersUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultInsightUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultMyActivityUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultMyReportUseCase
+import com.picke.domain.feature.classroom.usecase.GetClassResultUseCase
+import com.picke.domain.feature.classroom.usecase.GetMyClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.GetMyClassesUseCase
+import com.picke.domain.feature.classroom.usecase.JoinClassUseCase
+import com.picke.domain.feature.classroom.usecase.LeaveClassUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassJoinUseCase
+import com.picke.domain.feature.classroom.usecase.PreviewClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.RegisterClassTicketUseCase
+import com.picke.domain.feature.classroom.usecase.RemoveMemberUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassResultInsightUseCase
+import com.picke.domain.feature.classroom.usecase.RetryClassResultMyReportUseCase
+import com.picke.domain.feature.classroom.usecase.SelectClassTopicCandidateUseCase
+import com.picke.domain.feature.classroom.usecase.StartClassDebateUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassDebateReplyUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassMidVoteUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPostVoteUseCase
+import com.picke.domain.feature.classroom.usecase.SubmitClassPreVoteUseCase
+import com.picke.domain.feature.classroom.usecase.SuggestClassTopicsUseCase
+import com.picke.domain.feature.classroom.usecase.UpdateClassUseCase
+import com.picke.domain.feature.classroom.usecase.UpdateMyDisplayNameUseCase
 import com.picke.domain.feature.comment.usecase.CommentUseCases
+import com.picke.domain.feature.comment.usecase.CreateCommentUseCase
 import com.picke.domain.feature.comment.usecase.DeleteCommentUseCase
 import com.picke.domain.feature.comment.usecase.LoadCommentsUseCase
 import com.picke.domain.feature.comment.usecase.ReportCommentUseCase
-import com.picke.domain.feature.comment.usecase.SubmitCommentUseCase
 import com.picke.domain.feature.comment.usecase.ToggleCommentLikeUseCase
+import com.picke.domain.feature.comment.usecase.UpdateCommentUseCase
 import com.picke.domain.feature.device.usecase.DeviceUseCases
 import com.picke.domain.feature.device.usecase.RegisterDeviceUseCase
 import com.picke.domain.feature.explore.usecase.ExploreUseCases
@@ -74,18 +109,17 @@ import com.picke.domain.feature.mypage.usecase.GetMyRecapUseCase
 import com.picke.domain.feature.mypage.usecase.GetNotificationSettingsUseCase
 import com.picke.domain.feature.mypage.usecase.MyPageUseCases
 import com.picke.domain.feature.mypage.usecase.UpdateNotificationSettingsUseCase
+import com.picke.domain.feature.perspective.usecase.CreatePerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.DeletePerspectiveUseCase
-import com.picke.domain.feature.perspective.usecase.GetMyPerspectiveUseCase
+import com.picke.domain.feature.perspective.usecase.GetMyPerspectivesUseCase
+import com.picke.domain.feature.perspective.usecase.GetWeeklyBestPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.LoadMainPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.LoadPerspectivesUseCase
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.domain.feature.perspective.usecase.ReportPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.RetryModerationUseCase
-import com.picke.domain.feature.perspective.usecase.SubmitPerspectiveUseCase
 import com.picke.domain.feature.perspective.usecase.TogglePerspectiveLikeUseCase
-import com.picke.domain.feature.pollquiz.usecase.GetTodayPickVoteUseCase
-import com.picke.domain.feature.pollquiz.usecase.PollQuizUseCases
-import com.picke.domain.feature.pollquiz.usecase.SubmitTodayPickVoteUseCase
+import com.picke.domain.feature.perspective.usecase.UpdatePerspectiveUseCase
 import com.picke.domain.feature.proposal.usecase.ProposalUseCases
 import com.picke.domain.feature.proposal.usecase.SubmitProposalUseCase
 import com.picke.domain.feature.recommend.usecase.GetInterestingRecommendationsUseCase
@@ -158,15 +192,57 @@ object UseCaseModule {
     }
 
     @Provides
+    fun provideClassroomUseCases(
+        classroomRepository: ClassroomRepository
+    ): ClassroomUseCases {
+        return ClassroomUseCases(
+            getMyClassTicketUseCase = GetMyClassTicketUseCase(classroomRepository),
+            previewClassTicketUseCase = PreviewClassTicketUseCase(classroomRepository),
+            registerClassTicketUseCase = RegisterClassTicketUseCase(classroomRepository),
+            getMyClassesUseCase = GetMyClassesUseCase(classroomRepository),
+            getClassDetailUseCase = GetClassDetailUseCase(classroomRepository),
+            getClassBattleUseCase = GetClassBattleUseCase(classroomRepository),
+            createClassUseCase = CreateClassUseCase(classroomRepository),
+            updateClassUseCase = UpdateClassUseCase(classroomRepository),
+            deleteClassUseCase = DeleteClassUseCase(classroomRepository),
+            getClassBattleRecommendationsUseCase = GetClassBattleRecommendationsUseCase(classroomRepository),
+            createClassTopicDraftUseCase = CreateClassTopicDraftUseCase(classroomRepository),
+            suggestClassTopicsUseCase = SuggestClassTopicsUseCase(classroomRepository),
+            selectClassTopicCandidateUseCase = SelectClassTopicCandidateUseCase(classroomRepository),
+            previewClassJoinUseCase = PreviewClassJoinUseCase(classroomRepository),
+            joinClassUseCase = JoinClassUseCase(classroomRepository),
+            getClassMembersUseCase = GetClassMembersUseCase(classroomRepository),
+            updateMyDisplayNameUseCase = UpdateMyDisplayNameUseCase(classroomRepository),
+            leaveClassUseCase = LeaveClassUseCase(classroomRepository),
+            removeMemberUseCase = RemoveMemberUseCase(classroomRepository),
+            submitClassPreVoteUseCase = SubmitClassPreVoteUseCase(classroomRepository),
+            submitClassPostVoteUseCase = SubmitClassPostVoteUseCase(classroomRepository),
+            completeClassTtsUseCase = CompleteClassTtsUseCase(classroomRepository),
+            submitClassMidVoteUseCase = SubmitClassMidVoteUseCase(classroomRepository),
+            getClassDebateUseCase = GetClassDebateUseCase(classroomRepository),
+            startClassDebateUseCase = StartClassDebateUseCase(classroomRepository),
+            submitClassDebateReplyUseCase = SubmitClassDebateReplyUseCase(classroomRepository),
+            retryClassDebateUseCase = RetryClassDebateUseCase(classroomRepository),
+            getClassResultUseCase = GetClassResultUseCase(classroomRepository),
+            getClassResultMyReportUseCase = GetClassResultMyReportUseCase(classroomRepository),
+            getClassResultInsightUseCase = GetClassResultInsightUseCase(classroomRepository),
+            getClassResultMyActivityUseCase = GetClassResultMyActivityUseCase(classroomRepository),
+            retryClassResultInsightUseCase = RetryClassResultInsightUseCase(classroomRepository),
+            retryClassResultMyReportUseCase = RetryClassResultMyReportUseCase(classroomRepository)
+        )
+    }
+
+    @Provides
     fun provideCommentUseCases(
         commentRepository: CommentRepository
     ): CommentUseCases {
         return CommentUseCases(
             loadCommentsUseCase = LoadCommentsUseCase(commentRepository),
+            createCommentUseCase = CreateCommentUseCase(commentRepository),
+            updateCommentUseCase = UpdateCommentUseCase(commentRepository),
             deleteCommentUseCase = DeleteCommentUseCase(commentRepository),
-            reportCommentUseCase = ReportCommentUseCase(commentRepository),
-            submitCommentUseCase = SubmitCommentUseCase(commentRepository),
-            toggleCommentLikeUseCase = ToggleCommentLikeUseCase(commentRepository)
+            toggleCommentLikeUseCase = ToggleCommentLikeUseCase(commentRepository),
+            reportCommentUseCase = ReportCommentUseCase(commentRepository)
         )
     }
 
@@ -217,24 +293,16 @@ object UseCaseModule {
         perspectiveRepository: PerspectiveRepository
     ): PerspectiveUseCases {
         return PerspectiveUseCases(
-            getMyPerspectiveUseCase = GetMyPerspectiveUseCase(perspectiveRepository),
-            deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
-            loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
             loadPerspectivesUseCase = LoadPerspectivesUseCase(perspectiveRepository),
-            reportPerspectiveUseCase = ReportPerspectiveUseCase(perspectiveRepository),
+            getMyPerspectivesUseCase = GetMyPerspectivesUseCase(perspectiveRepository),
+            loadMainPerspectiveUseCase = LoadMainPerspectiveUseCase(perspectiveRepository),
+            getWeeklyBestPerspectivesUseCase = GetWeeklyBestPerspectivesUseCase(perspectiveRepository),
+            createPerspectiveUseCase = CreatePerspectiveUseCase(perspectiveRepository),
+            updatePerspectiveUseCase = UpdatePerspectiveUseCase(perspectiveRepository),
+            deletePerspectiveUseCase = DeletePerspectiveUseCase(perspectiveRepository),
             retryModerationUseCase = RetryModerationUseCase(perspectiveRepository),
-            submitPerspectiveUseCase = SubmitPerspectiveUseCase(perspectiveRepository),
-            togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository)
-        )
-    }
-
-    @Provides
-    fun providePollQuizUseCases(
-        pollQuizRepository: PollQuizRepository
-    ): PollQuizUseCases {
-        return PollQuizUseCases(
-            getTodayPickVoteUseCase = GetTodayPickVoteUseCase(pollQuizRepository),
-            submitTodayPickVoteUseCase = SubmitTodayPickVoteUseCase(pollQuizRepository)
+            togglePerspectiveLikeUseCase = TogglePerspectiveLikeUseCase(perspectiveRepository),
+            reportPerspectiveUseCase = ReportPerspectiveUseCase(perspectiveRepository)
         )
     }
 
@@ -291,8 +359,8 @@ object UseCaseModule {
         voteRepository: VoteRepository
     ): VoteUseCases {
         return VoteUseCases(
-            getMyVoteHistoryUseCase = GetMyVoteHistoryUseCase(voteRepository),
             getVoteStatsUseCase = GetVoteStatsUseCase(voteRepository),
+            getMyVoteHistoryUseCase = GetMyVoteHistoryUseCase(voteRepository),
             submitVoteUseCase = SubmitVoteUseCase(voteRepository)
         )
     }

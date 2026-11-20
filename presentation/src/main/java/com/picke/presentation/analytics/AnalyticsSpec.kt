@@ -1,7 +1,7 @@
 package com.picke.presentation.analytics
 
-import com.picke.presentation.AppRoute
-import com.picke.presentation.ui.main.BottomNavItem
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.navigation.BottomNavItem
 
 /**
  * Pické Mixpanel 이벤트 명세 (크로스플랫폼 계약서) 상수 정의
@@ -135,6 +135,7 @@ object ContentActionType {
 /** content_action.section 허용값 */
 object ContentSection {
     const val BEST = "best"
+    const val BEST_COMMENT = "best_comment"
     const val HOT = "hot"
     const val NEW = "new"
     const val VOTE = "vote"
@@ -170,13 +171,27 @@ object AnalyticsScreen {
     const val COMMENT_REPLY = "comment_reply"
     const val NOTIFICATION = "notification"
     const val POINT = "point"
+    const val TICKET = "ticket"
+    const val TICKET_REGISTER = "ticket_register"
+    const val TICKET_REGISTER_COMPLETE = "ticket_register_complete"
     const val SETTINGS = "settings"
     const val WITHDRAW = "withdraw"
     const val RECAP = "recap"
     const val CLASS = "class"
     const val CLASS_CREATE = "class_create"
+    const val CLASS_EDIT = "class_edit"
+    const val CLASS_BATTLE_PREVIEW = "class_battle_preview"
+    const val CLASS_JOIN = "class_join"
     const val MY_CLASS = "my_class"
     const val CLASS_SHARE = "class_share"
+    const val CLASS_DETAIL = "class_detail"
+    const val CLASS_MEMBER = "class_member"
+    const val CLASS_VOTE = "class_vote"
+    const val CLASS_SCENARIO = "class_scenario"
+    const val CLASS_COMMENT = "class_comment"
+    const val CLASS_DEBATE = "class_debate"
+    const val CLASS_RESULT = "class_result"
+    const val CLASS_MY_OPINION = "class_my_opinion"
 
     fun fromRoute(route: String): String? = when (route) {
         AppRoute.Onboarding.route -> ONBOARDING
@@ -193,13 +208,27 @@ object AnalyticsScreen {
         AppRoute.Recommend.route -> CURATION
         AppRoute.Alarm.route -> NOTIFICATION
         AppRoute.Point.route -> POINT
+        AppRoute.Ticket.route -> TICKET
+        AppRoute.TicketRegister.route -> TICKET_REGISTER
+        AppRoute.TicketRegisterComplete.route -> TICKET_REGISTER_COMPLETE
         AppRoute.Setting.route -> SETTINGS
         AppRoute.Withdraw.route -> WITHDRAW
         AppRoute.PhilosopherType.route, AppRoute.OtherPhilosopher.route -> RECAP
         BottomNavItem.Class.route -> CLASS
         AppRoute.ClassCreate.route -> CLASS_CREATE
+        AppRoute.ClassEdit.route -> CLASS_EDIT
+        AppRoute.ClassBattlePreview.route -> CLASS_BATTLE_PREVIEW
+        AppRoute.ClassJoin.route -> CLASS_JOIN
         AppRoute.MyClass.route -> MY_CLASS
         AppRoute.ClassShare.route -> CLASS_SHARE
+        AppRoute.ClassDetail.route -> CLASS_DETAIL
+        AppRoute.ClassMember.route -> CLASS_MEMBER
+        AppRoute.ClassVote.route -> CLASS_VOTE
+        AppRoute.ClassScenario.route -> CLASS_SCENARIO
+        AppRoute.ClassPerspective.route -> CLASS_COMMENT
+        AppRoute.ClassDebate.route -> CLASS_DEBATE
+        AppRoute.ClassResult.route -> CLASS_RESULT
+        AppRoute.ClassMyOpinion.route -> CLASS_MY_OPINION
         else -> null
     }
 }

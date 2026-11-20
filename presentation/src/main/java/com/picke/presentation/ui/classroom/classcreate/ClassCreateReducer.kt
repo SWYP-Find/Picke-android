@@ -1,6 +1,7 @@
 package com.picke.presentation.ui.classroom.classcreate
 
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMutation
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
@@ -10,39 +11,135 @@ private const val MAX_CATEGORY_COUNT = 3
 
 internal fun reduce(state: ClassCreateUiState, action: ClassCreateUiAction): ClassCreateUiState =
     when (action) {
+        is ClassCreateUiAction.SideEffectOnly -> state
+
         ClassCreateUiAction.BackClick -> state.copy(step = state.previousStep ?: state.step)
-        ClassCreateUiAction.NextClick -> state.copy(step = state.nextStep ?: state.step)
-        ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
+
+        ClassCreateUiAction.NextClick -> when {
+            !state.isNextEnabled -> state
+
+            state.isMethodChanged -> {
+                val defaults = ClassCreateUiState()
+                state.copy(
+                    step = ClassCreateStep.CONDITION,
+                    conditionMethod = state.method,
+                    topic = defaults.topic,
+                    selectedLevel = defaults.selectedLevel,
+                    selectedCategories = defaults.selectedCategories
+                )
+            }
+
+            else -> state.copy(
+                step = state.nextStep ?: state.step,
+                battles = if (state.isNextSelection) emptyList() else state.battles,
+                isRecommendationEmpty = false,
+                isRequesting = state.nextStep == null || state.isNextSelection
+            )
+        }
 
         is ClassCreateUiAction.MethodSelect -> state.copy(method = action.method)
+
         is ClassCreateUiAction.GuideClick -> state.copy(guideMethod = action.method)
-        ClassCreateUiAction.GuideSheetDismiss -> state.copy(guideMethod = null)
-        is ClassCreateUiAction.TopicChange -> state.copy(topic = action.topic)
+
+        is ClassCreateUiAction.TopicChange -> state.copy(
+            topic = if (state.isAiMethod) action.topic.take(ClassCreateUiState.TOPIC_MAX_LENGTH) else action.topic
+        )
+
         is ClassCreateUiAction.LevelSelect -> state.copy(selectedLevel = action.level)
-        is ClassCreateUiAction.CategorySelect -> state.copy(selectedCategories = state.selectedCategories.toggle(action.category))
 
-        is ClassCreateUiAction.BattleSelect -> state.copy(selectedBattleId = action.battleId)
-        is ClassCreateUiAction.BattlePreviewClick -> state
-        ClassCreateUiAction.RegenerateClick -> state.copy(selectedBattleId = null)
+        is ClassCreateUiAction.CategorySelect -> state.copy(
+            selectedCategories = state.selectedCategories.toggle(action.category)
+        )
 
-        is ClassCreateUiAction.ClassNameChange -> state.copy(className = action.name)
-        is ClassCreateUiAction.DeadlineToggle -> state.copy(isDeadlineEnabled = action.isEnabled)
+        ClassCreateUiAction.EditConditionClick -> state.copy(step = ClassCreateStep.CONDITION)
+
+        is ClassCreateUiAction.BattleSelect -> state.copy(
+            selectedBattleId = action.battle.battleId,
+            selectedCandidateId = action.battle.candidateId
+        )
+
+        is ClassCreateUiAction.ClassNameChange -> state.copy(
+            className = action.name,
+            isClassNameInvalid = false
+        )
+
+        is ClassCreateUiAction.DeadlineToggle -> state.copy(
+            isDeadlineEnabled = action.isEnabled,
+            isDeadlineOutOfRange = false
+        )
+
         ClassCreateUiAction.DeadlineFieldClick -> state.copy(isDeadlineSheetVisible = state.isDeadlineEnabled)
-        is ClassCreateUiAction.DeadlineConfirm -> state.copy(deadline = action.deadline, isDeadlineSheetVisible = false)
-        ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
+
         is ClassCreateUiAction.CommentRequiredToggle -> state.copy(isCommentRequired = action.isRequired)
+
         is ClassCreateUiAction.OperatorJoinToggle -> state.copy(isOperatorJoin = action.isJoined)
+
+        ClassCreateUiAction.GuideSheetDismiss -> state.copy(guideMethod = null)
+
+        is ClassCreateUiAction.DeadlineConfirm -> state.copy(
+            deadline = action.deadline,
+            isDeadlineSheetVisible = false,
+            isDeadlineOutOfRange = false
+        )
+
+        ClassCreateUiAction.DeadlineSheetDismiss -> state.copy(isDeadlineSheetVisible = false)
+
+        ClassCreateUiAction.ErrorDialogDismiss -> state.copy(
+            errorDialog = null,
+            clarificationMessage = null
+        )
     }
 
-internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState =
-    when (mutation) {
+internal fun reduce(state: ClassCreateUiState, mutation: ClassCreateMutation): ClassCreateUiState {
+    val reduced = when (mutation) {
+        is ClassCreateMutation.RequestFailed -> state.copy(
+            step = if (state.isSelectionEmpty) ClassCreateStep.CONDITION else state.step,
+            errorDialog = mutation.errorDialog
+        )
+
+        is ClassCreateMutation.TicketEndDateLoaded -> state.copy(ticketEndDate = mutation.ticketEndDate)
+
         is ClassCreateMutation.BattlesLoaded -> state.copy(
             battles = mutation.battles,
+            isRecommendationEmpty = mutation.battles.isEmpty(),
             selectedBattleId = null
         )
 
-        is ClassCreateMutation.DeadlineReset -> state.copy(deadline = mutation.deadline)
+        is ClassCreateMutation.SettingInvalid -> state.copy(
+            isClassNameInvalid = mutation.isClassNameInvalid,
+            isDeadlineOutOfRange = mutation.isDeadlineOutOfRange
+        )
+
+        is ClassCreateMutation.TopicDraftCreated -> state.copy(
+            topicDraftId = mutation.draftId,
+            topicBatchNo = 0
+        )
+
+        is ClassCreateMutation.TopicsSuggested -> state.copy(
+            battles = mutation.battles,
+            isRecommendationEmpty = mutation.battles.isEmpty(),
+            topicBatchNo = mutation.batchNo,
+            selectedCandidateId = null
+        )
+
+        is ClassCreateMutation.TopicClarificationNeeded -> state.copy(
+            step = ClassCreateStep.CONDITION,
+            errorDialog = ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED,
+            clarificationMessage = mutation.message?.ifBlank { null }
+        )
+
+        ClassCreateMutation.TopicSuggestLimitReached -> state.copy(
+            errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
+        )
+
+        is ClassCreateMutation.DeadlineReset -> state.copy(
+            deadline = mutation.deadline,
+            isDeadlineOutOfRange = false
+        )
     }
+
+    return if (mutation is ClassCreateMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}
 
 private fun List<ClassCategory>.toggle(category: ClassCategory): List<ClassCategory> =
     when {

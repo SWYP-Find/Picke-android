@@ -4,13 +4,13 @@ import com.picke.data.feature.alarm.datasource.AlarmApi
 import com.picke.data.feature.attendance.datasource.AttendanceApi
 import com.picke.data.feature.auth.datasource.AuthApi
 import com.picke.data.feature.battle.datasource.BattleApi
+import com.picke.data.feature.classroom.datasource.ClassroomApi
 import com.picke.data.feature.comment.datasource.CommentApi
 import com.picke.data.feature.device.datasource.DeviceApi
 import com.picke.data.feature.explore.datasource.ExploreApi
 import com.picke.data.feature.home.datasource.HomeApi
 import com.picke.data.feature.mypage.datasource.MyPageApi
 import com.picke.data.feature.perspective.datasource.PerspectiveApi
-import com.picke.data.feature.pollquiz.datasource.PollQuizApi
 import com.picke.data.feature.proposal.datasource.ProposalApi
 import com.picke.data.feature.recommend.datasource.RecommendApi
 import com.picke.data.feature.scenario.datasource.ScenarioApi
@@ -101,12 +101,6 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun providePollQuizApi(retrofit: Retrofit): PollQuizApi {
-        return retrofit.create(PollQuizApi::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun provideShareApi(retrofit: Retrofit): ShareApi {
         return retrofit.create(ShareApi::class.java)
     }
@@ -127,5 +121,11 @@ object ApiModule {
     @Singleton
     fun provideAttendanceApi(retrofit: Retrofit): AttendanceApi {
         return retrofit.create(AttendanceApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClassroomApi(retrofit: Retrofit): ClassroomApi {
+        return retrofit.create(ClassroomApi::class.java)
     }
 }

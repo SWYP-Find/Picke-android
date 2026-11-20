@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.home
 
+import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -28,14 +30,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +64,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
@@ -66,34 +73,39 @@ import com.picke.presentation.ads.showAdFitTransitionPopupAd
 import com.picke.presentation.analytics.ContentActionType
 import com.picke.presentation.analytics.ContentSection
 import com.picke.presentation.ui.attendance.AttendanceCheckBottomSheet
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeLoadFailedSection
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.home.component.BestBattleRankItem
+import com.picke.presentation.ui.home.component.HomeBestCommentItem
 import com.picke.presentation.ui.home.component.HomeSectionEmpty
 import com.picke.presentation.ui.home.component.HomeSkeleton
 import com.picke.presentation.ui.home.component.NewBattleCard
 import com.picke.presentation.ui.home.component.TrendingBattleCard
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeBestCommentUiModel
+import com.picke.presentation.ui.home.model.HomeEditorPickUiModel
+import com.picke.presentation.ui.home.model.HomeUiEvent
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
     scrollToTopTrigger: Int = 0,
-    isNotificationSheetPending: Boolean = false,
+    isNotificationSheetPending: Boolean = false
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     LaunchedEffect(isNotificationSheetPending) {
         if (!isNotificationSheetPending) {
@@ -111,53 +123,60 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                HomeUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     HomeScreen(
         uiState = uiState,
         onNavigateToAlarm = onNavigateToAlarm,
         onNavigateToVote = onNavigateToVote,
         onTrackBattleTap = viewModel::trackBattleTap,
-        onNavigateToTrendingBattle = onNavigateToTrendingBattle,
-        onNavigateToBestBattle = onNavigateToBestBattle,
-        onNavigateToTodayPicke = onNavigateToTodayPicke,
-        onNavigateToNewBattle = onNavigateToNewBattle,
-        onFetchHomeData = { viewModel.fetchHomeData() },
+        onRefresh = { viewModel.fetchHomeData(isRefresh = true) },
         onDismissAttendanceCheckSheet = { viewModel.dismissAttendanceCheckSheet() },
-        scrollToTopTrigger = scrollToTopTrigger
+        scrollToTopTrigger = scrollToTopTrigger,
+        modifier = modifier
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
     onNavigateToAlarm: () -> Unit,
     onNavigateToVote: (String) -> Unit,
     onTrackBattleTap: (action: String, contentId: String, section: String?) -> Unit,
-    onNavigateToTrendingBattle: () -> Unit,
-    onNavigateToBestBattle: () -> Unit,
-    onNavigateToTodayPicke: () -> Unit,
-    onNavigateToNewBattle: () -> Unit,
-    onFetchHomeData: () -> Unit,
+    onRefresh: () -> Unit,
     onDismissAttendanceCheckSheet: () -> Unit,
     scrollToTopTrigger: Int,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val pullToRefreshState = rememberPullToRefreshState()
 
-    val isDataEmpty = uiState.editorPicks.isEmpty() &&
+    val editorPicks = uiState.editorPicks
+    val isDataEmpty = editorPicks.isNullOrEmpty() &&
             uiState.trendingBattles.isEmpty() &&
             uiState.bestBattles.isEmpty() &&
+            uiState.bestComments.isEmpty() &&
             uiState.newBattles.isEmpty()
 
     LaunchedEffect(scrollToTopTrigger) {
         if (scrollToTopTrigger > 0) {
             scrollState.animateScrollTo(0)
-            onFetchHomeData()
         }
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 showLogo = true,
                 centerTitle = false,
                 backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -198,181 +217,194 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        if (uiState.isLoading && isDataEmpty) {
-            HomeSkeleton(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
-                    .verticalScroll(scrollState)
-            )
-        } else if (isDataEmpty) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.logo_picke),
-                    contentDescription = "빈 화면 로고",
-                    modifier = Modifier.size(width = 160.dp, height = 120.dp),
-                    tint = PickeTheme.colors.borderBeigeDefault
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "아직 준비된 배틀이 없어요!",
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.beige800
+        PullToRefreshBox(
+            isRefreshing = uiState.isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding()),
+            state = pullToRefreshState,
+            indicator = {
+                PullToRefreshDefaults.Indicator(
+                    state = pullToRefreshState,
+                    isRefreshing = uiState.isRefreshing,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    containerColor = PickeTheme.colors.surfaceBeigeDefault,
+                    color = PickeTheme.colors.primary500
                 )
             }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
-                    .verticalScroll(scrollState)
-            ) {
-                if (uiState.editorPicks.isNotEmpty()) {
-                    EditorPickSection(
-                        items = uiState.editorPicks,
-                        onItemClick = { contentId ->
-                            onTrackBattleTap(ContentActionType.HERO_TAP, contentId, null)
-                            onNavigateToVote(contentId)
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_trending),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToTrendingBattle
+        ) {
+            if (editorPicks == null && uiState.isLoading) {
+                HomeSkeleton(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                )
+            } else if (editorPicks != null && !isDataEmpty) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    if (editorPicks.isNotEmpty()) {
+                        EditorPickSection(
+                            items = editorPicks,
+                            onItemClick = { contentId ->
+                                onTrackBattleTap(ContentActionType.HERO_TAP, contentId, null)
+                                onNavigateToVote(contentId)
+                            }
                         )
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-                    if (uiState.trendingBattles.isNotEmpty()) {
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            HomeSectionHeader(
+                                title = stringResource(R.string.home_section_trending),
+                                highlightText = stringResource(R.string.home_highlight_battle)
+                            )
+                        }
+                        if (uiState.trendingBattles.isNotEmpty()) {
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(uiState.trendingBattles) { item ->
+                                    TrendingBattleCard(
+                                        item = item,
+                                        onClick = {
+                                            onTrackBattleTap(
+                                                ContentActionType.BATTLE_CARD_TAP,
+                                                item.battleId.toString(),
+                                                ContentSection.HOT
+                                            )
+                                            onNavigateToVote(item.battleId.toString())
+                                        }
+                                    )
+                                }
+                            }
+                        } else {
+                            HomeSectionEmpty(
+                                message = stringResource(R.string.home_trending_empty),
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_HOME)
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    if (uiState.bestBattles.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
                         ) {
-                            items(uiState.trendingBattles) { item ->
-                                TrendingBattleCard(
+                            HomeSectionHeader(
+                                title = stringResource(R.string.home_section_best),
+                                highlightText = stringResource(R.string.home_highlight_battle)
+                            )
+
+                            uiState.bestBattles.take(3).forEachIndexed { index, item ->
+                                BestBattleRankItem(
                                     item = item,
+                                    rank = index + 1,
                                     onClick = {
                                         onTrackBattleTap(
                                             ContentActionType.BATTLE_CARD_TAP,
-                                            item.contentId,
-                                            ContentSection.HOT
+                                            item.battleId.toString(),
+                                            ContentSection.BEST
                                         )
-                                        onNavigateToVote(item.contentId)
+                                        onNavigateToVote(item.battleId.toString())
                                     }
                                 )
                             }
                         }
-                    } else {
-                        HomeSectionEmpty(
-                            message = stringResource(R.string.home_trending_empty),
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
-                }
 
-                Spacer(modifier = Modifier.height(40.dp))
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_HOME)
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                if (uiState.bestBattles.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_best),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToBestBattle
+                    if (uiState.bestComments.isNotEmpty()) {
+                        HomeBestCommentSection(
+                            comments = uiState.bestComments,
+                            onCommentClick = { item ->
+                                onTrackBattleTap(
+                                    ContentActionType.BATTLE_CARD_TAP,
+                                    item.battleId.toString(),
+                                    ContentSection.BEST_COMMENT
+                                )
+                                onNavigateToVote(item.battleId.toString())
+                            }
                         )
+                        Spacer(modifier = Modifier.height(SpacingTokens.s32))
+                    }
 
-                        uiState.bestBattles.take(3).forEachIndexed { index, item ->
-                            BestBattleRankItem(
-                                item = item,
-                                rank = index + 1,
-                                onClick = {
-                                    onTrackBattleTap(
-                                        ContentActionType.BATTLE_CARD_TAP,
-                                        item.contentId,
-                                        ContentSection.BEST
-                                    )
-                                    onNavigateToVote(item.contentId)
-                                }
+                    if (uiState.newBattles.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            HomeSectionHeader(
+                                title = stringResource(R.string.home_section_new),
+                                highlightText = stringResource(R.string.home_highlight_battle)
                             )
+                            uiState.newBattles.forEach { item ->
+                                NewBattleCard(
+                                    item = item,
+                                    onClick = {
+                                        onTrackBattleTap(
+                                            ContentActionType.NEW_BATTLE_TAP,
+                                            item.battleId.toString(),
+                                            ContentSection.NEW
+                                        )
+                                        onNavigateToVote(item.battleId.toString())
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
+                    Spacer(modifier = Modifier.height(40.dp))
 
-                // 4. 오늘의 Pické (투표/퀴즈)
-                //  - 홈에서 오늘의 Pické 섹션을 노출하지 않기로 하여 전체 주석 처리.
-                //  - 백엔드에서 데이터를 내려주더라도 홈에서는 그리지 않는다. 필요 시 아래 블록을 복원하면 된다.
-                /*
-                if (uiState.todayPicks.isNotEmpty()) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_today_picke),
-                            highlightText = stringResource(R.string.home_highlight_picke),
-                            onMoreClick = onNavigateToTodayPicke
-                        )
-                        uiState.todayPicks.forEach { item ->
-                            TodayPickeCard(
-                                item = item,
-                                onVoteClick = { optionId ->
-                                    viewModel.submitTodayPickVote(
-                                        battleId = item.contentId,
-                                        optionId = optionId,
-                                        type = item.type
-                                    )
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
                 }
-                */
-
-                if (uiState.newBattles.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        HomeSectionHeader(
-                            title = stringResource(R.string.home_section_new),
-                            highlightText = stringResource(R.string.home_highlight_battle),
-                            onMoreClick = onNavigateToNewBattle
-                        )
-                        uiState.newBattles.forEach { item ->
-                            NewBattleCard(
-                                item = item,
-                                onClick = {
-                                    onTrackBattleTap(
-                                        ContentActionType.NEW_BATTLE_TAP,
-                                        item.contentId,
-                                        ContentSection.NEW
-                                    )
-                                    onNavigateToVote(item.contentId)
-                                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = innerPadding.calculateBottomPadding())
+                ) {
+                    item {
+                        if (editorPicks == null) {
+                            PickeLoadFailedSection(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpacingTokens.s16)
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
+                        } else {
+                            Column(
+                                modifier = Modifier.fillParentMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.logo_picke),
+                                    contentDescription = "빈 화면 로고",
+                                    modifier = Modifier.size(width = 160.dp, height = 120.dp),
+                                    tint = PickeTheme.colors.borderBeigeDefault
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "아직 준비된 배틀이 없어요!",
+                                    style = PickeTheme.typography.bodySmRegular,
+                                    color = PickeTheme.colors.beige800
+                                )
+                            }
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(40.dp))
-
             }
         }
     }
@@ -386,10 +418,39 @@ fun HomeScreen(
 }
 
 @Composable
+private fun HomeBestCommentSection(
+    comments: List<HomeBestCommentUiModel>,
+    onCommentClick: (HomeBestCommentUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+            HomeSectionHeader(
+                title = stringResource(R.string.home_section_best_comment),
+                highlightText = stringResource(R.string.home_highlight_comment)
+            )
+        }
+
+        comments.forEachIndexed { index, item ->
+            HomeBestCommentItem(
+                item = item,
+                onClick = { onCommentClick(item) }
+            )
+            if (index < comments.lastIndex) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+                    thickness = ComponentNumberTokens.borderWidthRegular,
+                    color = PickeTheme.colors.cardBaseBorderDefault
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun HomeSectionHeader(
     title: String,
-    highlightText: String? = null,
-    onMoreClick: () -> Unit,
+    highlightText: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -419,18 +480,12 @@ fun HomeSectionHeader(
             style = PickeTheme.typography.headingMd,
             color = PickeTheme.colors.textDefault
         )
-        /*Text(
-            text = stringResource(R.string.more),
-            style = PickeTheme.typography.bodyXsMedium,
-            color = PickeTheme.colors.textSubtler,
-            modifier = Modifier.clickable { onMoreClick() }
-        )*/
     }
 }
 
 @Composable
 fun EditorPickSection(
-    items: List<HomeContentUiModel>,
+    items: List<HomeEditorPickUiModel>,
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit
 ) {
@@ -510,7 +565,7 @@ fun EditorPickSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onItemClick(pagerItem.contentId) }
+                    .clickable { onItemClick(pagerItem.battleId.toString()) }
             ) {
                 Box(
                     modifier = Modifier
@@ -552,7 +607,7 @@ fun EditorPickSection(
                             )
                         )
                         Text(
-                            text = pagerItem.leftOpinion ?: "A",
+                            text = pagerItem.optionATitle,
                             style = textStyle,
                             color = Color.White
                         )
@@ -562,7 +617,7 @@ fun EditorPickSection(
                             tint = Color.White
                         )
                         Text(
-                            text = pagerItem.rightOpinion ?: "B",
+                            text = pagerItem.optionBTitle,
                             style = textStyle,
                             color = Color.White
                         )
@@ -623,25 +678,21 @@ fun EditorPickSection(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 2200)
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(
-            editorPicks = DummyData.dummyHomeContentItems,
-            trendingBattles = DummyData.dummyHomeContentItems,
-            bestBattles = DummyData.dummyHomeContentItems,
-            newBattles = DummyData.dummyHomeContentItems,
-            todayPicks = listOf(DummyData.dummyVotePick, DummyData.dummyQuizPick)
+            editorPicks = DummyData.dummyEditorPicks,
+            trendingBattles = DummyData.dummyTrendingBattles,
+            bestBattles = DummyData.dummyBestBattles,
+            bestComments = DummyData.dummyBestComments,
+            newBattles = DummyData.dummyNewBattles
         ),
         onNavigateToAlarm = {},
         onNavigateToVote = {},
         onTrackBattleTap = { _, _, _ -> },
-        onNavigateToTrendingBattle = {},
-        onNavigateToBestBattle = {},
-        onNavigateToTodayPicke = {},
-        onNavigateToNewBattle = {},
-        onFetchHomeData = {},
+        onRefresh = {},
         onDismissAttendanceCheckSheet = {},
         scrollToTopTrigger = 0
     )

@@ -1,16 +1,16 @@
 package com.picke.domain.feature.comment.model
 
 data class CommentUserBoard(
-    val userTag: String,
+    val userTag: String?,
     val nickname: String,
     val characterType: String,
-    val characterImageUrl: String
+    val characterImageUrl: String?
 )
 
 data class CommentBoard(
     val commentId: Long,
     val user: CommentUserBoard,
-    val stance: String,
+    val stance: String?,
     val content: String,
     val likeCount: Int,
     val isLiked: Boolean,
@@ -27,7 +27,7 @@ data class CommentPageBoard(
 data class CommentCreateBoard(
     val commentId: Long,
     val user: CommentUserBoard,
-    val stance: String,
+    val stance: String?,
     val content: String,
     val likeCount: Int,
     val isLiked: Boolean,

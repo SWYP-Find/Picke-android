@@ -1,7 +1,6 @@
 package com.picke.presentation.ui.todaybattle.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,59 +21,75 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object TodayBattleSkeletonDimens {
+    val cardMinHeight = 140.dp
+    val quoteTopSpacing = 10.dp
+    val imageHeight = 512.dp
+    val vsSize = 40.dp
+}
 
 @Composable
 fun TodayBattleSkeleton(modifier: Modifier = Modifier) {
     val darkShimmerBase = PickeTheme.colors.gray600
     val darkShimmerHighlight = PickeTheme.colors.gray400
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .height(TodayBattleSkeletonDimens.imageHeight)
                 .shimmer(darkShimmerBase, darkShimmerHighlight)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .padding(
+                    start = SpacingTokens.s16,
+                    end = SpacingTokens.s16,
+                    bottom = SpacingTokens.s40
+                ),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32, Alignment.Bottom)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OpinionCardSkeleton(
-                    darkShimmerBase = darkShimmerBase,
-                    darkShimmerHighlight = darkShimmerHighlight
-                )
-                OpinionCardSkeleton(
-                    darkShimmerBase = darkShimmerBase,
-                    darkShimmerHighlight = darkShimmerHighlight
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
+                    OpinionCardSkeleton(
+                        darkShimmerBase = darkShimmerBase,
+                        darkShimmerHighlight = darkShimmerHighlight
+                    )
+                    OpinionCardSkeleton(
+                        darkShimmerBase = darkShimmerBase,
+                        darkShimmerHighlight = darkShimmerHighlight
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .size(TodayBattleSkeletonDimens.vsSize)
+                        .clip(CircleShape)
+                        .shimmer(darkShimmerBase, darkShimmerHighlight)
                 )
             }
 
             Spacer(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
+                    .fillMaxWidth()
+                    .height(ComponentNumberTokens.buttonPrimaryLargeHeight)
+                    .clip(RoundedCornerShape(RadiusTokens.default))
                     .shimmer(darkShimmerBase, darkShimmerHighlight)
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(20.dp)
-                .height(48.dp)
-                .clip(RoundedCornerShape(2.dp))
-                .shimmer(darkShimmerBase, darkShimmerHighlight)
-        )
     }
 }
 
@@ -85,30 +101,30 @@ private fun OpinionCardSkeleton(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(4.dp))
-            .background(PickeTheme.colors.gray600)
-            .padding(vertical = 18.dp),
+            .heightIn(min = TodayBattleSkeletonDimens.cardMinHeight)
+            .clip(RoundedCornerShape(RadiusTokens.default))
+            .background(PickeTheme.colors.gray700)
+            .padding(vertical = SpacingTokens.s24),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SkeletonLine(
+        PickeSkeletonLine(
             width = 40.dp,
             height = 12.dp,
             baseColor = darkShimmerBase,
             highlightColor = darkShimmerHighlight
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
-        SkeletonLine(
+        Spacer(modifier = Modifier.height(SpacingTokens.s8))
+        PickeSkeletonLine(
             width = 120.dp,
             height = 22.dp,
             baseColor = darkShimmerBase,
             highlightColor = darkShimmerHighlight
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
-        SkeletonLine(
+        Spacer(modifier = Modifier.height(TodayBattleSkeletonDimens.quoteTopSpacing))
+        PickeSkeletonLine(
             width = 160.dp,
             height = 12.dp,
             baseColor = darkShimmerBase,

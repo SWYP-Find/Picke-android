@@ -1,11 +1,8 @@
 package com.picke.presentation.ui.login
 
 import android.app.Activity
-import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,7 +18,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,16 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.kakao.sdk.auth.AuthCodeClient
-import com.kakao.sdk.auth.model.Prompt
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.ui.component.PickeButton
 import com.picke.presentation.ui.component.TermsOfServiceBottomSheet
 import com.picke.presentation.ui.login.model.LoginUiState
 import com.picke.presentation.ui.login.model.Provider
@@ -56,7 +46,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showTermsSheet by rememberSaveable { mutableStateOf(false) }
     var pendingIsNewUser by rememberSaveable { mutableStateOf(false) }
 
@@ -64,20 +54,19 @@ fun LoginScreen(
         (context as? Activity)?.finish()
     }
 
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            val account = task.getResult(ApiException::class.java)
-            account.serverAuthCode?.let { authCode ->
-                viewModel.handleSocialLoginSuccess(Provider.GOOGLE, authCode)
-            }
-        } catch (e: ApiException) {
-            Toast.makeText(context, "구글 로그인에 실패했습니다. \n다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+    val kakaoLoginFailedMessage = stringResource(R.string.login_kakao_failed)
+    val googleLoginFailedMessage = stringResource(R.string.login_google_failed)
+
+    val launchGoogleLogin = rememberGoogleLoginLauncher(
+        onAuthCodeReceive = { authCode ->
+            viewModel.handleSocialLoginSuccess(Provider.GOOGLE, authCode)
+        },
+        onFailure = {
+            Toast.makeText(context, googleLoginFailedMessage, Toast.LENGTH_SHORT).show()
             viewModel.resetState()
-        }
-    }
+        },
+        onCancel = { viewModel.resetState() }
+    )
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
@@ -113,23 +102,24 @@ fun LoginScreen(
         isLoading = uiState is LoginUiState.Loading,
         onKakaoClick = {
             viewModel.onKakaoLoginStart()
-            loginWithKakaoForAuthCode(context, viewModel) { token ->
-                viewModel.handleSocialLoginSuccess(Provider.KAKAO, token)
-            }
+            loginWithKakao(
+                context = context,
+                onAuthCodeReceive = { authCode ->
+                    viewModel.handleSocialLoginSuccess(Provider.KAKAO, authCode)
+                },
+                onFailure = {
+                    Toast.makeText(context, kakaoLoginFailedMessage, Toast.LENGTH_SHORT).show()
+                    viewModel.resetState()
+                },
+                onCancel = { viewModel.resetState() }
+            )
         },
         onGoogleClick = {
             if (BuildConfig.GOOGLE_WEB_CLIENT_ID.isEmpty()) {
                 Toast.makeText(context, "로그인 설정 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.onGoogleLoginStart()
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestServerAuthCode(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-                    .requestEmail()
-                    .build()
-                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                googleSignInClient.signOut().addOnCompleteListener {
-                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                }
+                launchGoogleLogin()
             }
         },
     )
@@ -177,7 +167,7 @@ private fun LoginScreenContent(
                 CircularProgressIndicator(color = PickeTheme.colors.primary900)
                 Spacer(modifier = Modifier.height(16.dp))
             } else {
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.login_with_kakao),
                     onClick = onKakaoClick,
                     backgroundColor = Color(0xFFFEE500),
@@ -185,7 +175,7 @@ private fun LoginScreenContent(
                     iconResId = R.drawable.logo_login_kakao
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                CustomButton(
+                PickeButton(
                     text = stringResource(R.string.login_with_google),
                     onClick = onGoogleClick,
                     backgroundColor = Color.White,
@@ -210,45 +200,5 @@ private fun LoginScreenPreview() {
 private fun LoginScreenLoadingPreview() {
     PickeTheme {
         LoginScreenContent(isLoading = true)
-    }
-}
-
-// 카카오 SDK 실행 헬퍼 함수
-private fun loginWithKakaoForAuthCode(
-    context: Context,
-    viewModel: LoginViewModel,
-    onSuccess: (String) -> Unit
-) {
-    val callback: (String?, Throwable?) -> Unit = { authCode, error ->
-        if (error != null) {
-            Toast.makeText(context, "카카오 로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
-            viewModel.resetState()
-        } else if (authCode != null) {
-            onSuccess(authCode)
-        }
-    }
-
-    if (AuthCodeClient.instance.isKakaoTalkLoginAvailable(context)) {
-        AuthCodeClient.instance.authorizeWithKakaoTalk(context) { authCode, error ->
-            if (error != null) {
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    viewModel.resetState()
-                    return@authorizeWithKakaoTalk
-                }
-                AuthCodeClient.instance.authorizeWithKakaoAccount(
-                    context = context,
-                    prompts = listOf(Prompt.LOGIN),
-                    callback = callback
-                )
-            } else if (authCode != null) {
-                onSuccess(authCode)
-            }
-        }
-    } else {
-        AuthCodeClient.instance.authorizeWithKakaoAccount(
-            context = context,
-            prompts = listOf(Prompt.LOGIN),
-            callback = callback
-        )
     }
 }

@@ -6,9 +6,10 @@ import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
 internal fun reduce(state: ClassShareUiState, mutation: ClassShareMutation): ClassShareUiState =
     when (mutation) {
         is ClassShareMutation.ClassShareLoaded -> state.copy(
-            className = mutation.className,
-            deadline = mutation.deadline,
-            code = mutation.code,
+            isLoading = false,
+            classInfo = mutation.classInfo,
             battle = mutation.battle
         )
+
+        ClassShareMutation.ClassShareLoadFailed -> state.copy(isLoading = false)
     }

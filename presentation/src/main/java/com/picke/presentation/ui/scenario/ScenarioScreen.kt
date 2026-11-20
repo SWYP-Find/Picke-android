@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.scenario
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,25 +15,36 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
-import com.picke.presentation.ui.scenario.component.AudioPlayerBar
-import com.picke.presentation.ui.scenario.component.ChatBubble
+import com.picke.presentation.ui.component.AudioPlayerBar
+import com.picke.presentation.ui.component.PickeChatSkeleton
+import com.picke.presentation.ui.component.PickeErrorBanner
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.scenario.component.InteractiveOptionsUI
 import com.picke.presentation.ui.scenario.component.OptionConfirmButton
+import com.picke.presentation.ui.scenario.component.ScenarioChatBubble
+import com.picke.presentation.ui.scenario.model.ScenarioOptionUiModel
+import com.picke.presentation.ui.scenario.model.ScenarioUiEvent
 import com.picke.presentation.ui.scenario.model.ScenarioUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
+
+private object ScenarioScreenDimens {
+    val speakerGroupSpacing = 14.dp
+}
 
 @Composable
 fun ScenarioScreen(
@@ -41,10 +53,27 @@ fun ScenarioScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     LaunchedEffect(battleId) {
         viewModel.loadScenario(battleId)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                ScenarioUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                ScenarioUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
@@ -77,10 +106,10 @@ fun ScenarioScreen(
     onSpeedClick: () -> Unit,
     onReplayClick: () -> Unit,
     onSeekToPosition: (Float) -> Unit,
-    onSelectOption: (String) -> Unit,
+    onSelectOption: (ScenarioOptionUiModel) -> Unit,
     onDismissFinalDialog: () -> Unit,
     onRestartCurrentAudio: () -> Unit,
-    onNextClick: () -> Unit,
+    onNextClick: () -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -123,7 +152,7 @@ fun ScenarioScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = uiState.title,
                     centerTitle = true,
                     backgroundColor = PickeTheme.colors.backgroundBeige
@@ -136,88 +165,108 @@ fun ScenarioScreen(
                 currentPositionMs = uiState.currentPositionMs,
                 totalDurationMs = uiState.totalDurationMs,
                 playbackSpeed = uiState.playbackSpeed,
+                isForwardEnabled = uiState.isForwardEnabled,
                 onPlayPauseClick = onPlayPauseClick,
                 onSeek = onSeek,
                 onRewindClick = onRewindClick,
                 onForwardClick = onForwardClick,
                 onSpeedClick = onSpeedClick,
-                onReplayClick = onReplayClick,
+                onReplayClick = onReplayClick
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            state = listState,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-            contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            itemsIndexed(allDisplayScripts) { index, script ->
-                val isNewSpeaker =
-                    index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
-                val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
-                val showAvatarAndName = isNewSpeaker || isNewNode
+            if (uiState.isLoading) {
+                PickeChatSkeleton()
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = SpacingTokens.s16),
+                    contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    itemsIndexed(allDisplayScripts) { index, script ->
+                        val isNewSpeaker =
+                            index == 0 || allDisplayScripts[index - 1].speakerType != script.speakerType
+                        val isNewNode = uiState.pastChoices.any { it.scriptIndex == index - 1 }
+                        val showAvatarAndName = isNewSpeaker || isNewNode
 
-                val isPastScript = index < uiState.pastScripts.size
-                val currentAudioScriptIndex = index - uiState.pastScripts.size
+                        val isPastScript = index < uiState.pastScripts.size
+                        val currentAudioScriptIndex = index - uiState.pastScripts.size
 
-                if (showAvatarAndName && index > 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                        if (showAvatarAndName && index > 0) {
+                            Spacer(modifier = Modifier.height(ScenarioScreenDimens.speakerGroupSpacing))
+                        }
 
-                ChatBubble(
-                    script = script,
-                    isActive = uiState.isPlaying && if (isPastScript) {
-                        index == uiState.activePastIndex
-                    } else {
-                        currentAudioScriptIndex == uiState.activeIndex
-                    },
-                    showAvatarAndName = showAvatarAndName,
-                    onClick = {
-                        if (!isPastScript && uiState.totalDurationMs > 0) {
-                            val targetRatio =
-                                script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
-                            onSeekToPosition(targetRatio)
+                        ScenarioChatBubble(
+                            script = script,
+                            isActive = uiState.isPlaying && if (isPastScript) {
+                                index == uiState.activePastIndex
+                            } else {
+                                currentAudioScriptIndex == uiState.activeIndex
+                            },
+                            showAvatarAndName = showAvatarAndName,
+                            onClick = {
+                                if (!isPastScript && uiState.totalDurationMs > 0) {
+                                    val targetRatio =
+                                        script.startTimeMs.toFloat() / uiState.totalDurationMs.toFloat()
+                                    onSeekToPosition(targetRatio)
+                                }
+                            }
+                        )
+
+                        val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
+                        if (pastChoice != null) {
+                            InteractiveOptionsUI(
+                                options = pastChoice.options,
+                                selectedOptionId = pastChoice.selectedOptionId,
+                                onOptionClick = {}
+                            )
                         }
                     }
+
+                    if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
+                        item {
+                            InteractiveOptionsUI(
+                                options = uiState.interactiveOptions,
+                                selectedOptionId = null,
+                                onOptionClick = onSelectOption,
+                                isRequesting = uiState.isRequesting
+                            )
+                        }
+                    }
+                    if (uiState.isReviewing) {
+                        item {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            OptionConfirmButton(
+                                text = stringResource(R.string.scenario_go_to_final_vote),
+                                isEnabled = true,
+                                onClick = onNextClick
+                            )
+                        }
+                    }
+
+                }
+            }
+
+            if (uiState.showAudioError) {
+                PickeErrorBanner(
+                    message = stringResource(R.string.scenario_audio_load_error),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = SpacingTokens.s16)
                 )
-
-                val pastChoice = uiState.pastChoices.find { it.scriptIndex == index }
-                if (pastChoice != null) {
-                    InteractiveOptionsUI(
-                        options = pastChoice.options,
-                        selectedNodeId = pastChoice.selectedNextNodeId,
-                        onOptionClick = {}
-                    )
-                }
             }
-
-            if (uiState.interactiveOptions.isNotEmpty() && uiState.showOptions) {
-                item {
-                    InteractiveOptionsUI(
-                        options = uiState.interactiveOptions,
-                        selectedNodeId = null,
-                        onOptionClick = onSelectOption
-                    )
-                }
-            }
-            if (uiState.isReviewing) {
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    OptionConfirmButton(
-                        text = stringResource(R.string.scenario_go_to_final_vote),
-                        isEnabled = true,
-                        onClick = onNextClick
-                    )
-                }
-            }
-
         }
 
         if (uiState.showFinalVoteDialog) {
-            CustomConfirmDialog(
+            PickeConfirmDialog(
                 message = stringResource(R.string.scenario_final_vote_dialog_message),
                 dismissText = stringResource(R.string.scenario_final_vote_dialog_dismiss),
                 confirmText = stringResource(R.string.scenario_final_vote_dialog_confirm),
@@ -231,12 +280,13 @@ fun ScenarioScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 1000)
 @Composable
 fun ScenarioScreenPreview() {
     PickeTheme {
         ScenarioScreen(
             uiState = ScenarioUiState(
+                isLoading = false,
                 pastScripts = DummyData.dummyScripts,
                 pastChoices = DummyData.dummyPastChoices,
                 scripts = DummyData.dummyScripts,

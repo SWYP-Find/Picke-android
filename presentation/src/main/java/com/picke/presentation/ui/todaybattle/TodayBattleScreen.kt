@@ -1,5 +1,6 @@
 ﻿package com.picke.presentation.ui.todaybattle
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -11,24 +12,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -43,46 +41,67 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.SubcomposeAsyncImage
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.analytics.ShareChannel
 import com.picke.presentation.analytics.ShareTarget
-import com.picke.presentation.ui.component.CustomButton
+import com.picke.presentation.share.captureBitmap
+import com.picke.presentation.share.launchBitmapShare
+import com.picke.presentation.share.loadBitmapFromUrl
+import com.picke.presentation.share.shareBattleToInstagramStoryDarkMode
+import com.picke.presentation.share.shareBattleToKakao
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.PickeButton
+import com.picke.presentation.ui.component.PickeTopAppBarAction
 import com.picke.presentation.ui.component.dialog.ShareDialog
-import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.ui.todaybattle.component.OpinionCard
 import com.picke.presentation.ui.todaybattle.component.TodayBattleSkeleton
-import com.picke.presentation.ui.todaybattle.component.TopIndicatorBar
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiModel
 import com.picke.presentation.ui.todaybattle.model.TodayBattleUiState
 import com.picke.presentation.util.DummyData
-import com.picke.presentation.util.captureBitmap
-import com.picke.presentation.util.launchBitmapShare
-import com.picke.presentation.util.loadBitmapFromUrl
-import com.picke.presentation.util.shareBattleToInstagramStoryDarkMode
-import com.picke.presentation.util.shareBattleToKakao
+import kotlinx.coroutines.launch
+
+private const val CLIP_LABEL = "battle_link"
+private const val IMAGE_DIM_ALPHA = 0.2f
+private const val GRADIENT_SOLID_STOP = 0.445f
+
+private object TodayBattleScreenDimens {
+    val tagMinHeight = 20.dp
+    val timerHorizontalPadding = 13.dp
+    val timerVerticalPadding = 7.dp
+    val vsSize = 40.dp
+    val imageHeight = 512.dp
+}
 
 @Composable
 fun TodayBattleScreen(
     viewModel: TodayBattleViewModel = hiltViewModel(),
-    initialBattleId: String? = null,
     onBackClick: () -> Unit,
     onNavigateToScenario: (String) -> Unit,
     onNavigateToPerspective: (String) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
-    val uiState by viewModel.uiState.collectAsState()
+    val clipboard = LocalClipboard.current
+
+    val linkCopiedMessage = stringResource(R.string.share_link_copied)
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -92,7 +111,6 @@ fun TodayBattleScreen(
 
     TodayBattleScreen(
         uiState = uiState,
-        initialBattleId = initialBattleId,
         onBackClick = onBackClick,
         onEnterBattle = { currentBattleId, selectedOptionId ->
             viewModel.enterBattle(
@@ -106,9 +124,11 @@ fun TodayBattleScreen(
             viewModel.getShareLink(
                 battleId = currentBattleId,
                 onSuccess = { url ->
-                    clipboardManager.setText(AnnotatedString(url))
-                    Toast.makeText(context, "링크가 클립보드에 복사되었습니다.", Toast.LENGTH_SHORT).show()
-                    viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, url)))
+                        Toast.makeText(context, linkCopiedMessage, Toast.LENGTH_SHORT).show()
+                        viewModel.trackShareAction(ShareTarget.BATTLE, ShareChannel.LINK)
+                    }
                 },
                 onError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
@@ -122,7 +142,6 @@ fun TodayBattleScreen(
 @Composable
 fun TodayBattleScreen(
     uiState: TodayBattleUiState,
-    initialBattleId: String?,
     onBackClick: () -> Unit,
     onEnterBattle: (String, String?) -> Unit,
     onGetShareLink: (Int) -> Unit,
@@ -130,42 +149,43 @@ fun TodayBattleScreen(
 ) {
     val context = LocalContext.current
 
-    val battleList = uiState.battleList
+    val imageLoadFailedMessage = stringResource(R.string.share_image_load_failed)
+    val shareFailedMessage = stringResource(R.string.share_failed)
+    val captureFailedMessage = stringResource(R.string.share_capture_failed)
 
-    val pagerState = rememberPagerState(pageCount = { battleList.size })
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
 
-    var selectedOptionId by remember(pagerState.currentPage) { mutableStateOf<String?>(null) }
+    var selectedOptionId by remember { mutableStateOf<String?>(null) }
     var showShareDialog by remember { mutableStateOf(false) }
     var isSharing by remember { mutableStateOf(false) }
 
+    val battle = uiState.battle
     val isButtonEnabled = selectedOptionId != null && !uiState.isEntering
-    val currentBattle = if (battleList.isNotEmpty()) battleList[pagerState.currentPage] else null
 
     val onKakaoShareClick = {
-        currentBattle?.let { battle ->
+        battle?.let { currentBattle ->
             isSharing = true
             coroutineScope.launchBitmapShare(
-                loadBitmap = { loadBitmapFromUrl(context, battle.imageUrl) },
+                loadBitmap = { loadBitmapFromUrl(context, currentBattle.imageUrl) },
                 onBitmapReady = { bitmap ->
                     shareBattleToKakao(
                         context = context,
                         bitmap = bitmap,
-                        battleId = battle.battleId,
-                        battleTitle = battle.title,
-                        battleDescription = battle.description,
+                        battleId = currentBattle.battleId,
+                        battleTitle = currentBattle.title,
+                        battleDescription = currentBattle.description,
                         onComplete = { isSharing = false },
                         onSuccess = { onTrackShareAction(ShareTarget.BATTLE, ShareChannel.KAKAO) }
                     )
                 },
                 onBitmapMissing = {
                     isSharing = false
-                    Toast.makeText(context, "이미지 로드 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, imageLoadFailedMessage, Toast.LENGTH_SHORT).show()
                 },
                 onError = {
                     isSharing = false
-                    Toast.makeText(context, "공유 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, shareFailedMessage, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -185,16 +205,9 @@ fun TodayBattleScreen(
             },
             onError = {
                 isSharing = false
-                Toast.makeText(context, "캡처 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, captureFailedMessage, Toast.LENGTH_SHORT).show()
             }
         )
-    }
-
-    LaunchedEffect(battleList, initialBattleId) {
-        if (initialBattleId != null && battleList.isNotEmpty()) {
-            val targetPage = battleList.indexOfFirst { it.battleId == initialBattleId }
-            if (targetPage >= 0) pagerState.animateScrollToPage(targetPage)
-        }
     }
 
     if (uiState.isLoading) {
@@ -205,45 +218,30 @@ fun TodayBattleScreen(
         ) {
             TodayBattleSkeleton(modifier = Modifier.fillMaxSize())
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(40.dp)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+            Box(modifier = Modifier.statusBarsPadding()) {
+                PickeTopAppBar(
+                    onBackClick = onBackClick,
+                    backgroundColor = Color.Transparent,
+                    backIconColor = PickeTheme.colors.textInverse
+                )
             }
         }
 
         return
     }
 
-    if (battleList.isEmpty()) {
+    if (battle == null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(20.dp)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White
-                    )
-                }
+            Box(modifier = Modifier.statusBarsPadding()) {
+                PickeTopAppBar(
+                    onBackClick = onBackClick,
+                    backgroundColor = Color.Transparent,
+                    backIconColor = PickeTheme.colors.textInverse
+                )
             }
 
             Column(
@@ -269,32 +267,16 @@ fun TodayBattleScreen(
         return
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Color.Black,
-            bottomBar = {
-                CustomButton(
-                    text = stringResource(R.string.battle_start),
-                    onClick = {
-                        if (isButtonEnabled) {
-                            val currentBattleId = battleList[pagerState.currentPage].battleId
-                            onEnterBattle(currentBattleId, selectedOptionId)
-                        }
-                    },
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .padding(20.dp),
-                    backgroundColor = if (isButtonEnabled) PickeTheme.colors.primary500 else PickeTheme.colors.primary300,
-                    textColor = PickeTheme.colors.surfaceBeigeDefault
-                )
-            }
-        ) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PickeTheme.colors.gray800)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding())
-                    .background(Color.Black)
+                    .fillMaxWidth()
+                    .weight(1f)
                     .drawWithCache {
                         onDrawWithContent {
                             graphicsLayer.record {
@@ -304,61 +286,42 @@ fun TodayBattleScreen(
                         }
                     }
             ) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
-                    BattleContent(
-                        item = battleList[page],
-                        selectedOptionId = selectedOptionId,
-                        onOptionSelect = { optionId -> selectedOptionId = optionId }
+                BattleContent(
+                    item = battle,
+                    selectedOptionId = selectedOptionId,
+                    onOptionSelect = { optionId -> selectedOptionId = optionId }
+                )
+            }
+
+            PickeButton(
+                text = stringResource(R.string.battle_start),
+                onClick = { onEnterBattle(battle.battleId, selectedOptionId) },
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(
+                        start = SpacingTokens.s16,
+                        end = SpacingTokens.s16,
+                        bottom = SpacingTokens.s40
+                    ),
+                enabled = isButtonEnabled,
+                disabledBackgroundColor = PickeTheme.colors.primary300
+            )
+        }
+
+        Box(modifier = Modifier.statusBarsPadding()) {
+            PickeTopAppBar(
+                onBackClick = onBackClick,
+                backgroundColor = Color.Transparent,
+                backIconColor = PickeTheme.colors.textInverse,
+                actions = {
+                    PickeTopAppBarAction(
+                        iconRes = R.drawable.ic_share,
+                        contentDescription = stringResource(R.string.top_app_bar_share),
+                        onClick = { showShareDialog = true },
+                        tint = PickeTheme.colors.textInverse
                     )
                 }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                ) {
-                    if (battleList.size > 1) {
-                        TopIndicatorBar(
-                            currentPage = pagerState.currentPage,
-                            totalPages = battleList.size
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = onBackClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_arrow_left),
-                                contentDescription = "뒤로가기",
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        IconButton(
-                            onClick = { showShareDialog = true },
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = "공유",
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                }
-            }
+            )
         }
 
         if (showShareDialog) {
@@ -373,8 +336,7 @@ fun TodayBattleScreen(
                 },
                 onCopyLinkClick = {
                     showShareDialog = false
-                    val currentBattleId = battleList[pagerState.currentPage].battleId.toInt()
-                    onGetShareLink(currentBattleId)
+                    onGetShareLink(battle.battleId.toInt())
                 },
                 onDismiss = { showShareDialog = false }
             )
@@ -398,155 +360,174 @@ fun TodayBattleScreen(
 fun BattleContent(
     item: TodayBattleUiModel,
     selectedOptionId: String?,
-    onOptionSelect: (String) -> Unit
+    onOptionSelect: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(
+    val gradientColor = PickeTheme.colors.gray800
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(gradientColor)
+    ) {
+        AsyncImage(
+            model = item.imageUrl,
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        ) {
-            SubcomposeAsyncImage(
-                model = item.imageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawWithCache {
-                        onDrawWithContent {
-                            drawContent()
-                            drawRect(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Black.copy(alpha = 0.2f),
-                                        Color.Black.copy(alpha = 0.6f),
-                                        Color.Black
-                                    ),
-                                    startY = 0f,
-                                    endY = size.height
-                                )
-                            )
-                        }
-                    },
-                contentScale = ContentScale.Crop,
-                loading = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .shimmer(PickeTheme.colors.gray600, PickeTheme.colors.gray400)
+                .height(TodayBattleScreenDimens.imageHeight)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(color = Color.Black.copy(alpha = IMAGE_DIM_ALPHA))
+                    }
+                },
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            0f to Color.Transparent,
+                            GRADIENT_SOLID_STOP to gradientColor
+                        )
                     )
                 }
-            )
-
+                .padding(
+                    start = SpacingTokens.s16,
+                    end = SpacingTokens.s16,
+                    bottom = SpacingTokens.s32
+                ),
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32, Alignment.Bottom),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item.tags.forEach { tag ->
-                        Surface(
-                            color = Color.White,
-                            shape = RoundedCornerShape(2.dp)
-                        ) {
-                            Text(
-                                text = "#$tag",
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                style = PickeTheme.typography.captionLgMedium,
-                                color = PickeTheme.colors.primary500
-                            )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s20),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
+                            item.tags.forEach { tag ->
+                                Surface(
+                                    shape = RoundedCornerShape(RadiusTokens.default),
+                                    color = PickeTheme.colors.colorElementBeige
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .heightIn(min = TodayBattleScreenDimens.tagMinHeight)
+                                            .padding(horizontal = SpacingTokens.s4),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "#$tag",
+                                            color = PickeTheme.colors.textPrimary,
+                                            style = PickeTheme.typography.bodyXxsSemiBold
+                                        )
+                                    }
+                                }
+                            }
                         }
+
+                        Text(
+                            text = item.title,
+                            color = PickeTheme.colors.textInverse,
+                            textAlign = TextAlign.Center,
+                            style = PickeTheme.typography.headingXlBold
+                        )
                     }
+
+                    Text(
+                        text = item.description,
+                        color = PickeTheme.colors.textMuted,
+                        textAlign = TextAlign.Center,
+                        style = PickeTheme.typography.bodySmRegular
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = item.title,
-                    style = PickeTheme.typography.displayMd,
-                    color = PickeTheme.colors.surfaceBeigeDefault,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = item.description,
-                    style = PickeTheme.typography.bodySmRegular,
-                    color = PickeTheme.colors.gray400,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
                 Surface(
+                    shape = RoundedCornerShape(RadiusTokens.default),
                     color = Color.Transparent,
-                    shape = RoundedCornerShape(2.dp),
-                    border = BorderStroke(1.dp, PickeTheme.colors.textSubtle)
+                    border = BorderStroke(
+                        width = ComponentNumberTokens.borderWidthRegular,
+                        color = PickeTheme.colors.colorBorderGrayDark
+                    )
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        modifier = Modifier.padding(
+                            horizontal = TodayBattleScreenDimens.timerHorizontalPadding,
+                            vertical = TodayBattleScreenDimens.timerVerticalPadding
+                        ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_clock),
                             contentDescription = null,
-                            modifier = Modifier.size(12.dp),
-                            tint = Color.Gray
+                            modifier = Modifier.size(ComponentNumberTokens.iconSm),
+                            tint = PickeTheme.colors.textMuted
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(SpacingTokens.s4))
                         Text(
-                            item.timeLeft,
-                            style = PickeTheme.typography.captionSmSemiBold,
-                            color = Color.LightGray
+                            text = item.timeLeft,
+                            color = PickeTheme.colors.textMuted,
+                            style = PickeTheme.typography.bodyXxsSemiBold
+                        )
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
+                    if (item.options.isNotEmpty()) {
+                        val optionA = item.options[0]
+                        OpinionCard(
+                            name = optionA.name,
+                            opinion = optionA.opinion,
+                            quote = optionA.quote,
+                            isSelected = selectedOptionId == optionA.optionId,
+                            onClick = { onOptionSelect(optionA.optionId) }
+                        )
+                    }
+
+                    if (item.options.size > 1) {
+                        val optionB = item.options[1]
+                        OpinionCard(
+                            name = optionB.name,
+                            opinion = optionB.opinion,
+                            quote = optionB.quote,
+                            isSelected = selectedOptionId == optionB.optionId,
+                            onClick = { onOptionSelect(optionB.optionId) }
+                        )
+                    }
+                }
+
+                Surface(
+                    modifier = Modifier.size(TodayBattleScreenDimens.vsSize),
+                    shape = CircleShape,
+                    color = PickeTheme.colors.secondary200
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = stringResource(R.string.class_battle_versus),
+                            color = PickeTheme.colors.colorTextBasic,
+                            style = PickeTheme.typography.bodySmSemiBold
                         )
                     }
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                if (item.options.isNotEmpty()) {
-                    val optionA = item.options[0]
-                    OpinionCard(
-                        name = optionA.name,
-                        opinion = optionA.opinion,
-                        quote = optionA.quote,
-                        isSelected = selectedOptionId == optionA.optionId,
-                        onClick = { onOptionSelect(optionA.optionId) }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-                if (item.options.size > 1) {
-                    val optionB = item.options[1]
-                    OpinionCard(
-                        name = optionB.name,
-                        opinion = optionB.opinion,
-                        quote = optionB.quote,
-                        isSelected = selectedOptionId == optionB.optionId,
-                        onClick = { onOptionSelect(optionB.optionId) }
-                    )
-                }
-            }
-
-            Surface(
-                modifier = Modifier.size(40.dp),
-                shape = CircleShape,
-                color = PickeTheme.colors.secondary200
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("VS", style = PickeTheme.typography.bodySmSemiBold, color = Color.Black)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -556,9 +537,9 @@ fun TodayBattleScreenPreview() {
     PickeTheme {
         TodayBattleScreen(
             uiState = TodayBattleUiState(
-                battleList = DummyData.dummyTodayBattles
+                isLoading = false,
+                battle = DummyData.dummyTodayBattle
             ),
-            initialBattleId = "",
             onBackClick = { },
             onEnterBattle = { _, _ -> },
             onGetShareLink = { },

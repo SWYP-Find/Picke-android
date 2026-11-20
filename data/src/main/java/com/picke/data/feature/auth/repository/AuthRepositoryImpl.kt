@@ -2,34 +2,35 @@ package com.picke.data.feature.auth.repository
 
 import com.picke.data.common.local.PreferencesManager
 import com.picke.data.common.model.toResult
+import com.picke.data.common.network.TokenRefresher
 import com.picke.data.common.network.apiCall
 import com.picke.data.feature.auth.datasource.AuthApi
+import com.picke.data.feature.auth.model.AuthResponseDto
 import com.picke.data.feature.auth.model.SocialLoginRequest
 import com.picke.data.feature.auth.model.WithdrawalRequest
 import com.picke.data.feature.auth.model.toDomain
 import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.auth.model.AuthBoard
 import com.picke.domain.feature.auth.repository.AuthRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val tokenRefresher: TokenRefresher
 ) : AuthRepository {
 
-    override suspend fun refreshAccessToken(): Result<Unit> {
-        return apiCall {
-            val refreshToken = preferencesManager.getRefreshToken()
-                ?: return Result.failure(Throwable("리프레쉬 토큰 없음"))
-
-            authApi.refreshAccessToken(refreshToken)
-                .toResult("토큰을 갱신하지 못했습니다.")
-                .map { dto ->
-                    preferencesManager.saveAccessToken(dto.accessToken)
-                    preferencesManager.saveRefreshToken(dto.refreshToken)
-                }
+    override suspend fun refreshAccessToken(): Result<Unit> = apiCall {
+        val staleAccessToken = preferencesManager.getAccessToken()
+        val accessToken = withContext(Dispatchers.IO) { tokenRefresher.refresh(staleAccessToken) }
+        if (accessToken == null) {
+            Result.failure(ApiErrorException("토큰을 갱신하지 못했습니다."))
+        } else {
+            Result.success(Unit)
         }
     }
 
@@ -45,8 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
         authApi.login(provider, request)
             .toResult("로그인하지 못했습니다.")
             .map { dto ->
-                preferencesManager.saveAccessToken(dto.accessToken)
-                preferencesManager.saveRefreshToken(dto.refreshToken)
+                saveTokens(dto)
                 dto.toDomain()
             }
     }
@@ -67,5 +67,13 @@ class AuthRepositoryImpl @Inject constructor(
                 if (!dto.withdrawn) throw ApiErrorException("회원 탈퇴를 하지 못했습니다.")
             }
             .onSuccess { preferencesManager.clearAll() }
+    }
+
+    private fun saveTokens(dto: AuthResponseDto) {
+        val accessToken = dto.accessToken
+        val refreshToken = dto.refreshToken
+        check(accessToken.isNotEmpty() && refreshToken.isNotEmpty()) { "인증 응답에 토큰이 없습니다." }
+        preferencesManager.saveAccessToken(accessToken)
+        preferencesManager.saveRefreshToken(refreshToken)
     }
 }

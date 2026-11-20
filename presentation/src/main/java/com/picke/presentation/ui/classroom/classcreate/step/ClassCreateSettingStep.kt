@@ -1,35 +1,23 @@
 package com.picke.presentation.ui.classroom.classcreate.step
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classcreate.component.ClassSettingToggle
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
-import com.picke.presentation.ui.classroom.component.ClassFormField
-import com.picke.presentation.ui.classroom.component.ClassTextField
-import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
-import com.picke.presentation.ui.component.CustomToggle
+import com.picke.presentation.ui.classroom.component.ClassDeadlineField
+import com.picke.presentation.ui.classroom.component.ClassSettingErrorText
+import com.picke.presentation.ui.classroom.component.ClassTitledBlock
+import com.picke.presentation.ui.component.PickeTextField
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
-import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 import java.time.LocalDateTime
@@ -53,18 +41,25 @@ internal fun ClassCreateSettingStep(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s32)
     ) {
-        ClassFormField(
+        ClassTitledBlock(
             title = stringResource(R.string.class_setting_name_label),
             isRequired = true,
             contentSpacing = SpacingTokens.s8
         ) {
-            ClassTextField(
-                value = uiState.className,
-                onValueChange = onClassNameChange,
-                minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                textStyle = PickeTheme.typography.bodyXsMedium,
-                placeholder = stringResource(R.string.class_setting_name_placeholder)
-            )
+            Column {
+                PickeTextField(
+                    value = uiState.className,
+                    onValueChange = onClassNameChange,
+                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
+                    placeholder = stringResource(R.string.class_setting_name_placeholder),
+                    isError = uiState.isClassNameInvalid
+                )
+                ClassSettingErrorText(
+                    text = stringResource(R.string.class_setting_name_blank_error),
+                    isVisible = uiState.isClassNameInvalid
+                )
+            }
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
@@ -76,15 +71,23 @@ internal fun ClassCreateSettingStep(
                 toggleWidth = ClassCreateSettingStepDimens.deadlineToggleWidth,
                 toggleHeight = ClassCreateSettingStepDimens.deadlineToggleHeight
             )
-            ClassDeadlineField(
-                deadline = uiState.deadline,
-                isEnabled = uiState.isDeadlineEnabled,
-                onClick = onDeadlineClick
-            )
+
+            Column {
+                ClassDeadlineField(
+                    deadline = uiState.deadline,
+                    isEnabled = uiState.isDeadlineEnabled,
+                    onClick = onDeadlineClick,
+                    isError = uiState.isDeadlineOutOfRange
+                )
+                ClassSettingErrorText(
+                    text = stringResource(R.string.class_setting_deadline_range_error),
+                    isVisible = uiState.isDeadlineOutOfRange
+                )
+            }
         }
 
         uiState.selectedBattle?.let { battle ->
-            ClassFormField(title = stringResource(R.string.class_setting_selected_battle)) {
+            ClassTitledBlock(title = stringResource(R.string.class_setting_selected_battle)) {
                 ClassBattleCard(battle = battle)
             }
         }
@@ -106,98 +109,6 @@ internal fun ClassCreateSettingStep(
     }
 }
 
-@Composable
-private fun ClassDeadlineField(
-    deadline: LocalDateTime?,
-    isEnabled: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val shape = RoundedCornerShape(RadiusTokens.default)
-    val deadlineText = rememberClassDeadlineText(deadline)
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = ComponentNumberTokens.inputTextfieldHeight)
-            .clip(shape)
-            .background(
-                if (isEnabled) {
-                    PickeTheme.colors.inputTextfieldBackgroundDefault
-                } else {
-                    PickeTheme.colors.inputTextfieldBackgroundDisabled
-                }
-            )
-            .border(
-                ComponentNumberTokens.borderWidthRegular,
-                PickeTheme.colors.inputTextfieldBorderDefault,
-                shape
-            )
-            .clickable(
-                enabled = isEnabled,
-                onClick = onClick
-            )
-            .padding(
-                horizontal = SpacingTokens.s8,
-                vertical = SpacingTokens.s8
-            ),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        if (isEnabled && deadline != null) {
-            Text(
-                text = deadlineText,
-                color = PickeTheme.colors.textDefault,
-                style = PickeTheme.typography.bodySmMedium
-            )
-        } else {
-            Text(
-                text = stringResource(R.string.class_setting_deadline_placeholder),
-                color = PickeTheme.colors.inputTextfieldTextDefault,
-                style = PickeTheme.typography.bodyXsMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun ClassSettingToggle(
-    title: String,
-    description: String,
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    toggleWidth: Dp = ComponentNumberTokens.toggleWidth,
-    toggleHeight: Dp = ComponentNumberTokens.toggleHeight
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s2)
-        ) {
-            Text(
-                text = title,
-                color = PickeTheme.colors.textDefault,
-                style = PickeTheme.typography.bodyMdSemiBold
-            )
-            Text(
-                text = description,
-                color = PickeTheme.colors.textMuted,
-                style = PickeTheme.typography.captionLgRegular
-            )
-        }
-
-        CustomToggle(
-            isChecked = isChecked,
-            onCheckedChange = onCheckedChange,
-            width = toggleWidth,
-            height = toggleHeight
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun ClassCreateSettingStepPreview() {
@@ -208,6 +119,50 @@ private fun ClassCreateSettingStepPreview() {
                 selectedBattleId = DummyData.dummyClassBattles[1].battleId,
                 className = "2학년 3반 1학기 토론",
                 deadline = LocalDateTime.of(2026, 9, 23, 18, 0)
+            ),
+            onClassNameChange = {},
+            onDeadlineToggle = {},
+            onDeadlineClick = {},
+            onCommentRequiredToggle = {},
+            onOperatorJoinToggle = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "클래스명 공백", showBackground = true)
+@Composable
+private fun ClassCreateSettingStepBlankNamePreview() {
+    PickeTheme {
+        ClassCreateSettingStep(
+            uiState = ClassCreateUiState(
+                battles = listOf(DummyData.dummyClassBattles[1]),
+                selectedBattleId = DummyData.dummyClassBattles[1].battleId,
+                className = "   ",
+                isClassNameInvalid = true,
+                deadline = LocalDateTime.of(2026, 9, 23, 18, 0)
+            ),
+            onClassNameChange = {},
+            onDeadlineToggle = {},
+            onDeadlineClick = {},
+            onCommentRequiredToggle = {},
+            onOperatorJoinToggle = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "마감일 범위 오류", showBackground = true)
+@Composable
+private fun ClassCreateSettingStepDeadlineErrorPreview() {
+    PickeTheme {
+        ClassCreateSettingStep(
+            uiState = ClassCreateUiState(
+                battles = listOf(DummyData.dummyClassBattles[1]),
+                selectedBattleId = DummyData.dummyClassBattles[1].battleId,
+                className = "2학년 3반 1학기 토론",
+                deadline = LocalDateTime.of(2026, 9, 23, 18, 0),
+                isDeadlineOutOfRange = true
             ),
             onClassNameChange = {},
             onDeadlineToggle = {},

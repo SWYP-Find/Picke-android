@@ -1,5 +1,16 @@
 package com.picke.presentation.ui.comment.model
 
-sealed class CommentUiEvent {
-    data class ShowToast(val message: String) : CommentUiEvent()
+sealed interface CommentUiEvent {
+
+    data object NavigateBack : CommentUiEvent
+
+    data object ShowReportedToast : CommentUiEvent
+
+    data object ShowAlreadyReportedToast : CommentUiEvent
+
+    data object ShowPerspectiveRequiredToast : CommentUiEvent
+
+    data object ShowActionFailedToast : CommentUiEvent
+
+    data object ShowLoadFailedToast : CommentUiEvent
 }

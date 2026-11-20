@@ -1,0 +1,211 @@
+package com.picke.data.feature.classroom.datasource
+
+import com.picke.data.common.model.BaseResponse
+import com.picke.data.feature.classroom.model.ClassBattleDetailResponseDto
+import com.picke.data.feature.classroom.model.ClassBattleRecommendationResponseDto
+import com.picke.data.feature.classroom.model.ClassCreateRequestDto
+import com.picke.data.feature.classroom.model.ClassDebateReplyRequestDto
+import com.picke.data.feature.classroom.model.ClassDebateResponseDto
+import com.picke.data.feature.classroom.model.ClassDetailResponseDto
+import com.picke.data.feature.classroom.model.ClassJoinPreviewResponseDto
+import com.picke.data.feature.classroom.model.ClassJoinRequestDto
+import com.picke.data.feature.classroom.model.ClassMemberNameUpdateRequestDto
+import com.picke.data.feature.classroom.model.ClassMemberResponseDto
+import com.picke.data.feature.classroom.model.ClassMidVoteRequestDto
+import com.picke.data.feature.classroom.model.ClassResultInsightResponseDto
+import com.picke.data.feature.classroom.model.ClassResultMyActivityResponseDto
+import com.picke.data.feature.classroom.model.ClassResultMyReportResponseDto
+import com.picke.data.feature.classroom.model.ClassResultResponseDto
+import com.picke.data.feature.classroom.model.ClassTicketPreviewResponseDto
+import com.picke.data.feature.classroom.model.ClassTicketRegisterRequestDto
+import com.picke.data.feature.classroom.model.ClassTicketResponseDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicDraftResponseDto
+import com.picke.data.feature.classroom.model.ClassTopicSelectionRequestDto
+import com.picke.data.feature.classroom.model.ClassTopicVersionResponseDto
+import com.picke.data.feature.classroom.model.ClassUpdateRequestDto
+import com.picke.data.feature.classroom.model.MyClassResponseDto
+import com.picke.data.feature.vote.model.VoteRequestDto
+import com.picke.data.feature.vote.model.VoteResponseDto
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface ClassroomApi {
+
+    @GET("/api/v1/class-tickets/me")
+    suspend fun getMyClassTicket(): BaseResponse<ClassTicketResponseDto>
+
+    @GET("/api/v1/class-tickets/preview")
+    suspend fun previewClassTicket(
+        @Query("code") code: String
+    ): BaseResponse<ClassTicketPreviewResponseDto>
+
+    @POST("/api/v1/class-tickets/register")
+    suspend fun registerClassTicket(
+        @Body request: ClassTicketRegisterRequestDto
+    ): BaseResponse<ClassTicketResponseDto>
+
+    @GET("/api/v1/classes")
+    suspend fun getMyClasses(): BaseResponse<List<MyClassResponseDto>>
+
+    @GET("/api/v1/classes/{classId}")
+    suspend fun getClassDetail(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @GET("/api/v1/classes/{classId}/battle")
+    suspend fun getClassBattle(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassBattleDetailResponseDto>
+
+    @POST("/api/v1/classes")
+    suspend fun createClass(
+        @Body request: ClassCreateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @PATCH("/api/v1/classes/{classId}")
+    suspend fun updateClass(
+        @Path("classId") classId: Long,
+        @Body request: ClassUpdateRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @DELETE("/api/v1/classes/{classId}")
+    suspend fun deleteClass(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
+
+    @GET("/api/v1/class-battle-recommendations")
+    suspend fun getClassBattleRecommendations(
+        @Query("difficulty") difficulty: String,
+        @Query("categories") categories: List<String>,
+        @Query("keyword") keyword: String?
+    ): BaseResponse<ClassBattleRecommendationResponseDto>
+
+    @POST("/api/v1/class-topic-drafts")
+    suspend fun createClassTopicDraft(
+        @Body request: ClassTopicDraftRequestDto
+    ): BaseResponse<ClassTopicDraftResponseDto>
+
+    @POST("/api/v1/class-topic-drafts/{draftId}/suggestions")
+    suspend fun suggestClassTopics(
+        @Path("draftId") draftId: Long
+    ): BaseResponse<ClassTopicDraftResponseDto>
+
+    @POST("/api/v1/class-topic-drafts/{draftId}/selection")
+    suspend fun selectClassTopicCandidate(
+        @Path("draftId") draftId: Long,
+        @Body request: ClassTopicSelectionRequestDto
+    ): BaseResponse<ClassTopicVersionResponseDto>
+
+    @GET("/api/v1/classes/join/preview")
+    suspend fun previewClassJoin(
+        @Query("inviteCode") inviteCode: String
+    ): BaseResponse<ClassJoinPreviewResponseDto>
+
+    @POST("/api/v1/classes/join")
+    suspend fun joinClass(
+        @Body request: ClassJoinRequestDto
+    ): BaseResponse<ClassDetailResponseDto>
+
+    @GET("/api/v1/classes/{classId}/members")
+    suspend fun getClassMembers(
+        @Path("classId") classId: Long
+    ): BaseResponse<List<ClassMemberResponseDto>>
+
+    @PATCH("/api/v1/classes/{classId}/members/me")
+    suspend fun updateMyDisplayName(
+        @Path("classId") classId: Long,
+        @Body request: ClassMemberNameUpdateRequestDto
+    ): BaseResponse<ClassMemberResponseDto>
+
+    @DELETE("/api/v1/classes/{classId}/members/me")
+    suspend fun leaveClass(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
+
+    @DELETE("/api/v1/classes/{classId}/members/{memberId}")
+    suspend fun removeMember(
+        @Path("classId") classId: Long,
+        @Path("memberId") memberId: Long
+    ): BaseResponse<Unit>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/pre")
+    suspend fun submitClassPreVote(
+        @Path("classId") classId: Long,
+        @Body request: VoteRequestDto
+    ): BaseResponse<VoteResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/post")
+    suspend fun submitClassPostVote(
+        @Path("classId") classId: Long,
+        @Body request: VoteRequestDto
+    ): BaseResponse<VoteResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/tts-complete")
+    suspend fun completeClassTts(
+        @Path("classId") classId: Long
+    ): BaseResponse<Unit>
+
+    @POST("/api/v1/classes/{classId}/battle/votes/mid")
+    suspend fun submitClassMidVote(
+        @Path("classId") classId: Long,
+        @Body request: ClassMidVoteRequestDto
+    ): BaseResponse<VoteResponseDto>
+
+    @GET("/api/v1/classes/{classId}/battle/debate")
+    suspend fun getClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/debate")
+    suspend fun startClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/debate/replies")
+    suspend fun submitClassDebateReply(
+        @Path("classId") classId: Long,
+        @Body request: ClassDebateReplyRequestDto
+    ): BaseResponse<ClassDebateResponseDto>
+
+    @POST("/api/v1/classes/{classId}/battle/debate/retry")
+    suspend fun retryClassDebate(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassDebateResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result")
+    suspend fun getClassResult(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/my-report")
+    suspend fun getClassResultMyReport(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultMyReportResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/insight")
+    suspend fun getClassResultInsight(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultInsightResponseDto>
+
+    @GET("/api/v1/classes/{classId}/result/my-activity")
+    suspend fun getClassResultMyActivity(
+        @Path("classId") classId: Long,
+        @Query("cursor") cursor: String?
+    ): BaseResponse<ClassResultMyActivityResponseDto>
+
+    @POST("/api/v1/classes/{classId}/result/insight/retry")
+    suspend fun retryClassResultInsight(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultInsightResponseDto>
+
+    @POST("/api/v1/classes/{classId}/result/my-report/retry")
+    suspend fun retryClassResultMyReport(
+        @Path("classId") classId: Long
+    ): BaseResponse<ClassResultMyReportResponseDto>
+}

@@ -6,22 +6,31 @@ import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.alarm.usecase.AlarmUseCases
 import com.picke.domain.feature.attendance.usecase.AttendanceUseCases
 import com.picke.domain.feature.home.usecase.HomeUseCases
+import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.ui.attendance.toAttendanceCheckUiState
+import com.picke.presentation.ui.home.model.HomeUiEvent
 import com.picke.presentation.ui.home.model.HomeUiState
 import com.picke.presentation.ui.home.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+private const val BEST_COMMENT_COUNT = 3
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val homeUseCases: HomeUseCases,
+    private val perspectiveUseCases: PerspectiveUseCases,
     private val attendanceUseCases: AttendanceUseCases,
     private val alarmUseCases: AlarmUseCases,
     private val localPreferencesUseCases: LocalPreferencesUseCases,
@@ -31,10 +40,13 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _uiEvent = Channel<HomeUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<HomeUiEvent> = _uiEvent.receiveAsFlow()
+
     private var isAttendanceFlowTriggered = false
 
     init {
-        fetchHomeData()
+        fetchHomeData(isRefresh = false)
     }
 
     fun checkInAndShowAttendanceSheetIfNeeded() {
@@ -44,6 +56,7 @@ class HomeViewModel @Inject constructor(
         isAttendanceFlowTriggered = true
 
         viewModelScope.launch {
+            // TODO: 성공·실패 처리 - 출석 체크 결과(지급 포인트·이미 출석)를 쓰지 않고, 실패해도 주간 출석 시트를 띄움
             attendanceUseCases.checkAttendanceUseCase()
             attendanceUseCases.getWeeklyAttendanceUseCase()
                 .onSuccess { weeklyAttendance ->
@@ -63,40 +76,42 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(attendanceCheckUiState = null) }
     }
 
-    fun fetchHomeData() {
+    fun fetchHomeData(isRefresh: Boolean) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { if (isRefresh) it.copy(isRefreshing = true) else it.copy(isLoading = true) }
 
-            homeUseCases.fetchHomeDataUseCase()
-                .onSuccess { boardData ->
-                    _uiState.update { state ->
-                        state.copy(
-                            isLoading = false,
-                            editorPicks = boardData.editorPicks.map { it.toUiModel() },
-                            trendingBattles = boardData.trendingBattles.map { it.toUiModel() },
-                            bestBattles = boardData.bestBattles.map { it.toUiModel() },
-                            newBattles = boardData.newBattles.map { it.toUiModel() },
-                            todayPicks = emptyList()
-                        )
-                    }
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
-                }
+            val homeDeferred = async { homeUseCases.fetchHomeDataUseCase() }
+            val weeklyBestDeferred =
+                async { perspectiveUseCases.getWeeklyBestPerspectivesUseCase() }
+            val home = homeDeferred.await().getOrNull()
+            val weeklyBest = weeklyBestDeferred.await().getOrNull()
+
+            if (home == null || weeklyBest == null) {
+                _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+                _uiEvent.send(HomeUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            _uiState.update { state ->
+                state.copy(
+                    isLoading = false,
+                    isRefreshing = false,
+                    editorPicks = home.editorPicks.map { it.toUiModel() },
+                    trendingBattles = home.trendingBattles.map { it.toUiModel() },
+                    bestBattles = home.bestBattles.map { it.toUiModel() },
+                    bestComments = weeklyBest.items.take(BEST_COMMENT_COUNT).map { it.toUiModel() },
+                    newBattles = home.newBattles.map { it.toUiModel() }
+                )
+            }
         }
     }
 
     fun fetchUnreadAlarmStatus() {
-        _uiState.update { it.copy(isAlarmStatusLoading = true) }
-
         viewModelScope.launch {
             alarmUseCases.getUnreadAlarmStatusUseCase()
                 .onSuccess { hasUnread ->
                     _uiState.update {
-                        it.copy(
-                            hasNewNotice = hasUnread,
-                            isAlarmStatusLoading = false
-                        )
+                        it.copy(hasNewNotice = hasUnread, isAlarmStatusLoading = false)
                     }
                 }
                 .onFailure {

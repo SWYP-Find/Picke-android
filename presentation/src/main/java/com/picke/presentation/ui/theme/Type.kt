@@ -26,6 +26,7 @@ data class PickeTypography(
 
     // heading
     val headingXl: TextStyle,
+    val headingXlBold: TextStyle,
     val headingLg: TextStyle,
     val headingMd: TextStyle,
     val headingSm: TextStyle,
@@ -97,6 +98,7 @@ val pickeTypography = PickeTypography(
     displayMd = pretendard(30.sp, FontWeight.SemiBold, LineHeightHeading),
 
     headingXl = pretendard(24.sp, FontWeight.SemiBold, LineHeightHeading),
+    headingXlBold = pretendard(24.sp, FontWeight.Bold, LineHeightHeading),
     headingLg = pretendard(20.sp, FontWeight.SemiBold, LineHeightHeading),
     headingMd = pretendard(18.sp, FontWeight.SemiBold, LineHeightHeading),
     headingSm = pretendard(16.sp, FontWeight.SemiBold, LineHeightHeading),

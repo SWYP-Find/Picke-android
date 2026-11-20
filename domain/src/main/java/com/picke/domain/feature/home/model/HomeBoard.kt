@@ -1,67 +1,58 @@
 package com.picke.domain.feature.home.model
 
-import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
-
-enum class ContentDomainType {
-    BATTLE, VOTE, QUIZ, UNKNOWN
-}
-
 data class HomeBoard(
-    val editorPicks: List<HomeContent>,
-    val trendingBattles: List<HomeContent>,
-    val bestBattles: List<HomeContent>,
-    val todayPicks: List<TodayPick>,
-    val newBattles: List<HomeContent>
+    val newNotice: Boolean,
+    val editorPicks: List<HomeEditorPickBoard>,
+    val trendingBattles: List<HomeTrendingBattleBoard>,
+    val bestBattles: List<HomeBestBattleBoard>,
+    val newBattles: List<HomeNewBattleBoard>
 )
 
-data class HomeContent(
-    val contentId: String,
-    val type: ContentDomainType,
+data class HomeEditorPickBoard(
+    val battleId: Long,
+    val thumbnailUrl: String,
+    val optionATitle: String,
+    val optionBTitle: String,
     val title: String,
     val summary: String,
-    val thumbnailUrl: String,
-    val viewCount: Int,
-    val audioDuration: Int,
     val tags: List<String>,
-    val options: List<ContentOption>
+    val viewCount: Int,
+    val audioDuration: Int
 )
 
-data class ContentOption(
-    val text: String,
-    val philosopherName: String?,
-    val imageUrl: String?
+data class HomeTrendingBattleBoard(
+    val badgeLabel: String,
+    val battleId: Long,
+    val thumbnailUrl: String,
+    val title: String,
+    val tags: List<String>,
+    val audioDuration: Int,
+    val viewCount: Int
 )
 
-sealed class TodayPick {
-    abstract val contentId: String
-    abstract val title: String
-    abstract val summary: String
-    abstract val participantsCount: Int
+data class HomeBestBattleBoard(
+    val badgeLabel: String,
+    val battleId: Long,
+    val philosopherA: String,
+    val philosopherB: String,
+    val title: String,
+    val tags: List<String>,
+    val audioDuration: Int,
+    val viewCount: Int
+)
 
-    abstract val selectedOptionId: Long?
-
-    abstract val options: List<PollQuizOptionStatBoard>
-    abstract val type: String
-
-    data class VotePick(
-        override val contentId: String,
-        override val title: String,
-        val titlePrefix: String,
-        val titleSuffix: String,
-        override val summary: String,
-        override val participantsCount: Int,
-        override val selectedOptionId: Long?,
-        override val options: List<PollQuizOptionStatBoard>,
-        override val type: String = "POLL"
-    ) : TodayPick()
-
-    data class QuizPick(
-        override val contentId: String,
-        override val title: String,
-        override val summary: String,
-        override val participantsCount: Int,
-        override val selectedOptionId: Long?,
-        override val options: List<PollQuizOptionStatBoard>,
-        override val type: String = "QUIZ"
-    ) : TodayPick()
-}
+data class HomeNewBattleBoard(
+    val battleId: Long,
+    val thumbnailUrl: String?,
+    val title: String,
+    val summary: String,
+    val philosopherA: String,
+    val optionATitle: String,
+    val philosopherAImageUrl: String?,
+    val philosopherB: String,
+    val optionBTitle: String,
+    val philosopherBImageUrl: String?,
+    val tags: List<String>,
+    val audioDuration: Int,
+    val viewCount: Int
+)

@@ -28,8 +28,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.component.ClassStatusBadge
+import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiModel
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeBadgeColor
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
@@ -48,14 +50,22 @@ fun MyClassCard(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val deadlineText = rememberClassDeadlineText(item.deadline, R.string.class_deadline_full_format)
+
     val shape = RoundedCornerShape(RadiusTokens.default)
+    val statusTextRes =
+        if (item.isInProgress) R.string.my_class_status_in_progress else R.string.my_class_status_ended
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(PickeTheme.colors.surfaceBeigeDefault)
-            .border(ComponentNumberTokens.borderWidthRegular, PickeTheme.colors.borderBeigeDefault, shape)
+            .background(PickeTheme.colors.cardBaseBackgroundDefault)
+            .border(
+                ComponentNumberTokens.borderWidthRegular,
+                PickeTheme.colors.cardBaseBorderDefault,
+                shape
+            )
             .clickable(onClick = onClick)
             .padding(SpacingTokens.s12),
         verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)
@@ -68,7 +78,11 @@ fun MyClassCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                ClassStatusBadge(isInProgress = item.isInProgress)
+                PickeBadge(
+                    text = stringResource(statusTextRes),
+                    color = if (item.isInProgress) PickeBadgeColor.SECONDARY else PickeBadgeColor.TERTIARY,
+                    horizontalPadding = SpacingTokens.s4
+                )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_more),
                     contentDescription = stringResource(R.string.more),
@@ -83,14 +97,14 @@ fun MyClassCard(
             Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s4)) {
                 Text(
                     text = item.title,
-                    color = PickeTheme.colors.textSubtler,
+                    color = PickeTheme.colors.cardBaseTextTitle,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = PickeTheme.typography.headingSm
                 )
                 Text(
                     text = item.topic,
-                    color = PickeTheme.colors.textMuted,
+                    color = PickeTheme.colors.cardBaseTextDecription,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = PickeTheme.typography.bodyXsRegular
@@ -99,41 +113,30 @@ fun MyClassCard(
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s12)) {
-            HorizontalDivider(thickness = ComponentNumberTokens.borderWidthRegular, color = PickeTheme.colors.borderBeigeDefault)
+            HorizontalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.cardBaseBorderDefault
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.weight(1f, fill = false),
-                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MyClassMetaItem(iconResId = R.drawable.ic_class_member, text = stringResource(R.string.my_class_member_count, item.memberCount))
+                MyClassMetaItem(
+                    iconResId = R.drawable.ic_class_member,
+                    text = stringResource(R.string.my_class_member_count, item.activeMemberCount)
+                )
+                if (item.deadline != null) {
                     Box(
                         modifier = Modifier
                             .size(MyClassCardDimens.metaDotSize)
                             .background(PickeTheme.colors.textMuted, CircleShape)
                     )
-                    MyClassMetaItem(iconResId = R.drawable.ic_class_deadline, text = item.deadlineText)
-                }
 
-                Row(
-                    modifier = Modifier.padding(start = SpacingTokens.s8),
-                    horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.my_class_view),
-                        color = PickeTheme.colors.textPrimary,
-                        style = PickeTheme.typography.captionLgBold
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_right_a),
-                        contentDescription = null,
-                        modifier = Modifier.size(ComponentNumberTokens.iconXs),
-                        tint = PickeTheme.colors.textPrimary
+                    MyClassMetaItem(
+                        iconResId = R.drawable.ic_class_deadline,
+                        text = stringResource(R.string.class_deadline_until, deadlineText)
                     )
                 }
             }
@@ -160,7 +163,7 @@ private fun MyClassMetaItem(
         )
         Text(
             text = text,
-            color = PickeTheme.colors.textMuted,
+            color = PickeTheme.colors.cardBaseTextDecription,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = PickeTheme.typography.captionLgRegular

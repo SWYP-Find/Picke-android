@@ -1,5 +1,7 @@
 package com.picke.domain.feature.vote.usecase
 
+import com.picke.domain.common.exception.ApiErrorCode
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.vote.repository.VoteRepository
 
 sealed class SubmitVoteResult {
@@ -23,7 +25,7 @@ class SubmitVoteUseCase(
 
         return result.map { SubmitVoteResult.Success as SubmitVoteResult }
             .recoverCatching { error ->
-                if (error.message?.contains("CREDIT_400_INSUFFICIENT") == true) {
+                if ((error as? ApiErrorException)?.code == ApiErrorCode.CREDIT_400_INSUFFICIENT) {
                     SubmitVoteResult.InsufficientPoints
                 } else {
                     throw error

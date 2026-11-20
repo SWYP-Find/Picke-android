@@ -3,6 +3,7 @@ package com.picke.presentation.ui.vote
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.battle.usecase.BattleUseCases
 import com.picke.domain.feature.share.usecase.ShareUseCases
 import com.picke.domain.feature.vote.usecase.SubmitVoteResult
@@ -10,13 +11,18 @@ import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.BattleStepName
 import com.picke.presentation.analytics.ShareTarget
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.vote.model.VoteType
+import com.picke.presentation.ui.vote.model.VoteUiEvent
 import com.picke.presentation.ui.vote.model.VoteUiState
 import com.picke.presentation.ui.vote.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,10 +36,13 @@ class VoteViewModel @Inject constructor(
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
-    val battleId: String = checkNotNull(savedStateHandle["battleId"])
+    val battleId: String = checkNotNull(savedStateHandle[AppRoute.ARG_BATTLE_ID])
 
     private val _uiState = MutableStateFlow(VoteUiState(isLoading = true))
     val uiState: StateFlow<VoteUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<VoteUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<VoteUiEvent> = _uiEvent.receiveAsFlow()
 
     init {
         fetchVoteDetail()
@@ -50,15 +59,13 @@ class VoteViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            battleDetail = detailBoard.toUiModel(),
-                            error = null
+                            battleDetail = detailBoard.toUiModel()
                         )
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update {
-                        it.copy(isLoading = false, error = error.message)
-                    }
+                .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.send(VoteUiEvent.ShowLoadFailedToast)
                 }
         }
     }
@@ -68,8 +75,10 @@ class VoteViewModel @Inject constructor(
         selectedOptionId: String,
         onSuccess: () -> Unit
     ) {
+        if (_uiState.value.isRequesting) return
+
+        _uiState.update { it.copy(isRequesting = true) }
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
             val optionIdLong = selectedOptionId.toLongOrNull() ?: 0L
             val battleIdLong = battleId.toLongOrNull() ?: 0L
 
@@ -88,8 +97,9 @@ class VoteViewModel @Inject constructor(
                                     choice = selectedOptionId
                                 )
                             } else {
-                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(battleIdLong)
-                                    .getOrNull()?.opinionChanged
+                                val isChanged = voteUseCases.getMyVoteHistoryUseCase(
+                                    BattleTarget.General(battleIdLong)
+                                ).getOrNull()?.opinionChanged
                                 analyticsTracker.trackBattleStep(
                                     stepName = BattleStepName.POST_VOTE,
                                     contentId = battleId,
@@ -98,19 +108,20 @@ class VoteViewModel @Inject constructor(
                                 )
                             }
 
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update { it.copy(isRequesting = false) }
                             onSuccess()
                         }
 
                         is SubmitVoteResult.InsufficientPoints -> {
                             _uiState.update {
-                                it.copy(isInsufficientPoints = true, isLoading = false)
+                                it.copy(isInsufficientPoints = true, isRequesting = false)
                             }
                         }
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(error = error.message, isLoading = false) }
+                .onFailure {
+                    _uiState.update { it.copy(isRequesting = false) }
+                    _uiEvent.send(VoteUiEvent.ShowActionFailedToast)
                 }
         }
     }

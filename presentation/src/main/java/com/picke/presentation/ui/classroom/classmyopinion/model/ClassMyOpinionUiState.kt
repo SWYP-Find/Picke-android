@@ -1,0 +1,15 @@
+package com.picke.presentation.ui.classroom.classmyopinion.model
+
+data class ClassMyOpinionUiState(
+    val classId: Long = 0L,
+    val isLoading: Boolean = true,
+    val perspectives: List<ClassMyPerspectiveUiModel>? = null,
+    val comments: List<ClassMyCommentUiModel> = emptyList(),
+    val myDisplayName: String = "",
+    val nextCursor: String? = null,
+    val hasNext: Boolean = false,
+    val isRequesting: Boolean = false
+) {
+    internal val canLoadMoreComments: Boolean
+        get() = hasNext && !isRequesting
+}

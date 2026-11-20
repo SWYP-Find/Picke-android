@@ -1,11 +1,12 @@
 package com.picke.presentation.ui.comment.model
 
 import com.picke.domain.feature.comment.model.CommentBoard
+import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.presentation.util.toRelativeTimeText
 
 data class CommentUiModel(
-    val commentId: String,
-    val profileImageUrl: String,
+    val commentId: Long,
+    val profileImageUrl: String?,
     val nickname: String,
     val stance: String,
     val optionId: Long = 0L,
@@ -18,13 +19,27 @@ data class CommentUiModel(
 )
 
 fun CommentBoard.toUiModel() = CommentUiModel(
-    commentId = commentId.toString(),
+    commentId = commentId,
     profileImageUrl = user.characterImageUrl,
     nickname = user.nickname,
-    stance = stance,
+    stance = stance.orEmpty(),
     content = content,
     timeAgo = createdAt.toRelativeTimeText(),
     likeCount = likeCount,
     isLiked = isLiked,
     isMine = isMine
+)
+
+fun PerspectiveDetailBoard.toUiModel() = CommentUiModel(
+    commentId = perspectiveId,
+    profileImageUrl = characterImageUrl,
+    nickname = nickname,
+    stance = optionTitle,
+    optionId = optionId,
+    content = content,
+    timeAgo = createdAt.toRelativeTimeText(),
+    likeCount = likeCount,
+    isLiked = isLiked,
+    isMine = isMyPerspective,
+    replyCount = commentCount
 )

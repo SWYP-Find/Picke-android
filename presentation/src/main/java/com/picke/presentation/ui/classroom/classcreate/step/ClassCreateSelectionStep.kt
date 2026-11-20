@@ -28,19 +28,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
-import com.picke.presentation.ui.classroom.classcreate.component.ClassPillBadge
+import com.picke.presentation.ui.classroom.classcreate.component.ClassTopicSkeleton
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCategory
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiState
 import com.picke.presentation.ui.classroom.classcreate.model.ClassLevel
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.component.PickeBadge
+import com.picke.presentation.ui.component.PickeBadgeColor
+import com.picke.presentation.ui.component.PickeEmptyState
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
+private const val CONDITION_FADE_SOLID_STOP = 0.5f
+private const val TOPIC_SKELETON_COUNT = 3
+
 private object ClassCreateSelectionStepDimens {
-    val conditionFadeWidth = 32.dp
+    val conditionFadeWidth = 60.dp
     val conditionFadeHeight = 32.dp
     val editConditionButtonSize = 36.dp
 }
@@ -48,37 +56,59 @@ private object ClassCreateSelectionStepDimens {
 @Composable
 internal fun ClassCreateSelectionStep(
     uiState: ClassCreateUiState,
-    onBattleSelect: (Long) -> Unit,
+    onBattleSelect: (ClassBattleUiModel) -> Unit,
     onBattlePreviewClick: (Long) -> Unit,
     onEditConditionClick: () -> Unit,
-    onRegenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isAiQuestion = uiState.method == ClassCreateMethod.AI_TOPIC
+    val isAiQuestion = uiState.isAiMethod
+    val loadingTextRes = if (isAiQuestion) {
+        R.string.class_create_topic_generating
+    } else {
+        R.string.class_create_result_count_loading
+    }
+    val resultText = if (uiState.isSelectionLoading) {
+        stringResource(loadingTextRes)
+    } else {
+        stringResource(R.string.class_create_result_count, uiState.battles.size)
+    }
 
     Column(modifier = modifier) {
-        if (!isAiQuestion) {
-            ClassCreateSelectedConditionSection(
-                topic = uiState.topic,
-                level = uiState.selectedLevel,
-                categories = uiState.selectedCategories,
-                onEditConditionClick = onEditConditionClick
-            )
-            Spacer(modifier = Modifier.height(SpacingTokens.s16))
-        }
+        ClassCreateSelectedConditionSection(
+            topic = uiState.topic,
+            level = uiState.selectedLevel,
+            categories = uiState.selectedCategories,
+            onEditConditionClick = onEditConditionClick
+        )
 
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
         Column(verticalArrangement = Arrangement.spacedBy(SpacingTokens.s16)) {
-            ClassCreateSelectionHeader(
-                resultCount = uiState.battles.size,
-                showsRegenerate = isAiQuestion,
-                onRegenerateClick = onRegenerateClick
+            Text(
+                text = resultText,
+                color = PickeTheme.colors.textDefault,
+                style = PickeTheme.typography.bodySmSemiBold
             )
+
+            if (uiState.isRecommendationEmpty) {
+                PickeEmptyState(
+                    message = stringResource(R.string.class_create_recommend_empty),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = SpacingTokens.s80)
+                )
+            }
+
+            if (uiState.isSelectionLoading) {
+                repeat(TOPIC_SKELETON_COUNT) {
+                    ClassTopicSkeleton()
+                }
+            }
 
             uiState.battles.forEach { battle ->
                 ClassBattleCard(
                     battle = battle,
-                    isSelected = battle.battleId == uiState.selectedBattleId,
-                    onClick = { onBattleSelect(battle.battleId) },
+                    isSelected = battle == uiState.selectedBattle,
+                    onClick = { onBattleSelect(battle) },
                     onPreviewClick = if (isAiQuestion) null else ({ onBattlePreviewClick(battle.battleId) })
                 )
             }
@@ -118,11 +148,23 @@ private fun ClassCreateSelectedConditionSection(
                     horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
                 ) {
                     if (topic.isNotBlank()) {
-                        ClassPillBadge(text = topic)
+                        PickeBadge(
+                            text = topic,
+                            color = PickeBadgeColor.PRIMARY,
+                            horizontalPadding = SpacingTokens.s4
+                        )
                     }
-                    ClassPillBadge(text = stringResource(level.labelRes))
+                    PickeBadge(
+                        text = stringResource(level.labelRes),
+                        color = PickeBadgeColor.PRIMARY,
+                        horizontalPadding = SpacingTokens.s4
+                    )
                     categories.forEach { category ->
-                        ClassPillBadge(text = stringResource(category.labelRes))
+                        PickeBadge(
+                            text = stringResource(category.labelRes),
+                            color = PickeBadgeColor.PRIMARY,
+                            horizontalPadding = SpacingTokens.s4
+                        )
                     }
                 }
                 Box(
@@ -132,10 +174,8 @@ private fun ClassCreateSelectedConditionSection(
                         .height(ClassCreateSelectionStepDimens.conditionFadeHeight)
                         .background(
                             Brush.horizontalGradient(
-                                listOf(
-                                    PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
-                                    PickeTheme.colors.backgroundBeige
-                                )
+                                0f to PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
+                                CONDITION_FADE_SOLID_STOP to PickeTheme.colors.backgroundBeige
                             )
                         )
                 )
@@ -165,46 +205,6 @@ private fun ClassCreateSelectedConditionSection(
     }
 }
 
-@Composable
-private fun ClassCreateSelectionHeader(
-    resultCount: Int,
-    showsRegenerate: Boolean,
-    onRegenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(R.string.class_create_result_count, resultCount),
-            color = PickeTheme.colors.textDefault,
-            style = PickeTheme.typography.bodySmSemiBold
-        )
-
-        if (showsRegenerate) {
-            Row(
-                modifier = Modifier.clickable(onClick = onRegenerateClick),
-                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s4),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_replay),
-                    contentDescription = null,
-                    modifier = Modifier.size(ComponentNumberTokens.iconSm),
-                    tint = PickeTheme.colors.textMuted
-                )
-                Text(
-                    text = stringResource(R.string.class_create_regenerate),
-                    color = PickeTheme.colors.textMuted,
-                    style = PickeTheme.typography.bodyXsSemiBold
-                )
-            }
-        }
-    }
-}
-
 @Preview(name = "기존 콘텐츠", showBackground = true)
 @Composable
 private fun ClassCreateSelectionStepPreview() {
@@ -219,7 +219,24 @@ private fun ClassCreateSelectionStepPreview() {
             onBattleSelect = {},
             onBattlePreviewClick = {},
             onEditConditionClick = {},
-            onRegenerateClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "추천 결과 없음", showBackground = true)
+@Composable
+private fun ClassCreateEmptySelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                topic = "AI와 인간 사이의 윤리와 사상에 대해서",
+                selectedCategories = listOf(ClassCategory.PHILOSOPHY, ClassCategory.SOCIETY),
+                isRecommendationEmpty = true
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
             modifier = Modifier.padding(SpacingTokens.s16)
         )
     }
@@ -232,13 +249,51 @@ private fun ClassCreateAiSelectionStepPreview() {
         ClassCreateSelectionStep(
             uiState = ClassCreateUiState(
                 method = ClassCreateMethod.AI_TOPIC,
-                battles = DummyData.dummyClassAiQuestions,
-                selectedBattleId = DummyData.dummyClassAiQuestions.first().battleId
+                battles = DummyData.dummyClassAiQuestions.mapIndexed { index, question ->
+                    question.copy(candidateId = index + 1L)
+                },
+                selectedCandidateId = 1L
             ),
             onBattleSelect = {},
             onBattlePreviewClick = {},
             onEditConditionClick = {},
-            onRegenerateClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "AI 질문 생성 중", showBackground = true)
+@Composable
+private fun ClassCreateGeneratingSelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.AI_TOPIC,
+                topic = "범죄",
+                isRequesting = true
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "추천 배틀 불러오는 중", showBackground = true)
+@Composable
+private fun ClassCreateLoadingSelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.CONTENT,
+                isRequesting = true
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
             modifier = Modifier.padding(SpacingTokens.s16)
         )
     }

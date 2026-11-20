@@ -1,0 +1,36 @@
+package com.picke.presentation.ui.classroom
+
+import com.picke.presentation.ui.classroom.model.ClassMutation
+import com.picke.presentation.ui.classroom.model.ClassTicketDialog
+import com.picke.presentation.ui.classroom.model.ClassTicketStatus
+import com.picke.presentation.ui.classroom.model.ClassUiAction
+import com.picke.presentation.ui.classroom.model.ClassUiState
+
+internal fun reduce(state: ClassUiState, action: ClassUiAction): ClassUiState =
+    when (action) {
+        is ClassUiAction.SideEffectOnly -> state
+
+        ClassUiAction.CreateClick -> state.copy(isRequesting = true)
+
+        ClassUiAction.TicketDialogRegisterClick -> state.copy(ticketDialog = null)
+
+        ClassUiAction.TicketDialogDismiss -> state.copy(ticketDialog = null)
+    }
+
+internal fun reduce(state: ClassUiState, mutation: ClassMutation): ClassUiState {
+    val reduced = when (mutation) {
+        ClassMutation.RequestFailed -> state
+
+        is ClassMutation.TicketStatusLoaded -> state.copy(
+            ticketStatus = mutation.ticketStatus,
+            ticketDialog = when (mutation.ticketStatus) {
+                ClassTicketStatus.NONE -> ClassTicketDialog.NO_PERMISSION
+                ClassTicketStatus.UNREGISTERED -> ClassTicketDialog.UNREGISTERED
+                ClassTicketStatus.EXPIRED -> ClassTicketDialog.EXPIRED
+                ClassTicketStatus.ACTIVE -> null
+            }
+        )
+    }
+
+    return if (mutation is ClassMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
+}

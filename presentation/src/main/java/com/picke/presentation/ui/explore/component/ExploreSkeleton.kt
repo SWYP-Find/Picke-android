@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
 import com.picke.presentation.ui.theme.PickeTheme
 
@@ -56,19 +56,19 @@ private fun ExploreCardSkeleton() {
                 .fillMaxHeight()
         ) {
             Row {
-                SkeletonLine(width = 36.dp, height = 18.dp)
+                PickeSkeletonLine(width = 36.dp, height = 18.dp)
                 Spacer(modifier = Modifier.width(6.dp))
-                SkeletonLine(width = 160.dp, height = 18.dp)
+                PickeSkeletonLine(width = 160.dp, height = 18.dp)
             }
             Spacer(modifier = Modifier.height(6.dp))
-            SkeletonLine(width = 220.dp, height = 14.dp)
+            PickeSkeletonLine(width = 220.dp, height = 14.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 180.dp, height = 14.dp)
+            PickeSkeletonLine(width = 180.dp, height = 14.dp)
 
             Spacer(modifier = Modifier.weight(1f))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                SkeletonLine(width = 90.dp, height = 14.dp)
+                PickeSkeletonLine(width = 90.dp, height = 14.dp)
             }
         }
     }

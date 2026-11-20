@@ -4,6 +4,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.picke.presentation.ui.theme.tokens.BrandColorTokens
 import com.picke.presentation.ui.theme.tokens.ComponentColorTokens
+import com.picke.presentation.ui.theme.tokens.ModeColorTokens
+import com.picke.presentation.ui.theme.tokens.PrimitiveColorTokens
 import com.picke.presentation.ui.theme.tokens.SemanticColorTokens
 
 data class PickeColors(
@@ -51,6 +53,9 @@ data class PickeColors(
     // Action
     val actionPrimaryDisabled: Color = SemanticColorTokens.actionPrimaryDisabled,
 
+    // Component — Avatar
+    val avatarBackround: Color = ComponentColorTokens.avatarBackround,
+
     // Component — Button
     val buttonPrimaryBackgroundDefault: Color = ComponentColorTokens.buttonPrimaryBackgroundDefault,
     val buttonPrimaryBackgroundPressed: Color = ComponentColorTokens.buttonPrimaryBackgroundPressed,
@@ -59,6 +64,8 @@ data class PickeColors(
     val buttonSecondaryBackgroundDefault: Color = ComponentColorTokens.buttonSecondaryBackgroundDefault,
     val buttonSecondaryBackgroundPressed: Color = ComponentColorTokens.buttonSecondaryBackgroundPressed,
     val buttonSecondaryTextDefault: Color = ComponentColorTokens.buttonSecondaryTextDefault,
+    val buttonIconBackgroundDefault: Color = ComponentColorTokens.buttonIconBackgroundDefault,
+    val buttonIconBackgroundDisabled: Color = ComponentColorTokens.buttonIconBackgroundDisabled,
 
     // Component — Input
     val inputTextfieldBackgroundDefault: Color = ComponentColorTokens.inputTextfieldBackgroundDefault,
@@ -110,11 +117,15 @@ data class PickeColors(
     val gray50: Color = BrandColorTokens.gray50,
     val gray100: Color = BrandColorTokens.gray100,
     val gray200: Color = BrandColorTokens.gray200,
+    val gray300: Color = BrandColorTokens.gray300,
     val gray400: Color = BrandColorTokens.gray400,
     val gray600: Color = BrandColorTokens.gray600,
+    val gray700: Color = BrandColorTokens.gray700,
     val gray800: Color = BrandColorTokens.gray800,
     val gray900: Color = BrandColorTokens.gray900,
+    val beige50: Color = BrandColorTokens.beige50,
     val beige100: Color = BrandColorTokens.beige100,
+    val beige300: Color = BrandColorTokens.beige300,
     val beige500: Color = BrandColorTokens.beige500,
     val beige600: Color = BrandColorTokens.beige600,
     val beige700: Color = BrandColorTokens.beige700,
@@ -122,6 +133,27 @@ data class PickeColors(
     val beige900: Color = BrandColorTokens.beige900,
     val errorDefault: Color = BrandColorTokens.errorDefault,
     val warningDefault: Color = BrandColorTokens.warningDefault,
+
+    // Mode
+    val colorSurfaceWhite: Color = ModeColorTokens.colorSurfaceWhite,
+    val colorSurfaceBeigeDark: Color = ModeColorTokens.colorSurfaceBeigeDark,
+    val colorSurfaceBeigeDarker: Color = ModeColorTokens.colorSurfaceBeigeDarker,
+    val colorBorderGrayDark: Color = ModeColorTokens.colorBorderGrayDark,
+    val colorBorderPrimaryLight: Color = ModeColorTokens.colorBorderPrimaryLight,
+    val colorBorderSecondary: Color = ModeColorTokens.colorBorderSecondary,
+    val colorBorderBeigeDark: Color = ModeColorTokens.colorBorderBeigeDark,
+    val colorDividerBeige: Color = ModeColorTokens.colorDividerBeige,
+    val colorTextBasic: Color = ModeColorTokens.colorTextBasic,
+    val colorTextFaint: Color = ModeColorTokens.colorTextFaint,
+    val colorTextDisabled: Color = ModeColorTokens.colorTextDisabled,
+    val colorElementPrimaryLighter: Color = ModeColorTokens.colorElementPrimaryLighter,
+    val colorElementBeige: Color = ModeColorTokens.colorElementBeige,
+    val colorElementGrayDark: Color = ModeColorTokens.colorElementGrayDark,
+    val colorElementGrayDarker: Color = ModeColorTokens.colorElementGrayDarker,
+    val colorButtonSecondaryFillDisabled: Color = ModeColorTokens.colorButtonSecondaryFillDisabled,
+
+    // Primitive palette
+    val colorDanger500: Color = PrimitiveColorTokens.colorDanger500
 )
 
 val LocalPickeColors = staticCompositionLocalOf { PickeColors() }

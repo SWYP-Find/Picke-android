@@ -1,11 +1,13 @@
 package com.picke.presentation.ui.classroom.myclass.model
 
 data class MyClassUiState(
+    val isLoading: Boolean = true,
     val selectedFilter: MyClassFilter = MyClassFilter.ALL,
     val classes: List<MyClassUiModel> = emptyList(),
     val managingClassId: Long? = null,
     val isDeleteDialogVisible: Boolean = false,
-    val isLeaveDialogVisible: Boolean = false
+    val isLeaveDialogVisible: Boolean = false,
+    val isRequesting: Boolean = false
 ) {
     val managingClass: MyClassUiModel?
         get() = classes.firstOrNull { it.id == managingClassId }

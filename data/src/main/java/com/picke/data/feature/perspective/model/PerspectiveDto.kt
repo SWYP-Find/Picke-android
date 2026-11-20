@@ -1,5 +1,8 @@
 package com.picke.data.feature.perspective.model
 
+import com.picke.data.common.error.mapItemOrNull
+import com.picke.data.common.error.requireField
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
@@ -7,12 +10,16 @@ import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveItemBoard
+import kotlinx.serialization.Serializable
 
-// [공통 DTO]
+@Serializable
 data class PerspectiveRequestDto(
     val content: String
 )
 
+@Serializable
 data class PerspectiveUserDto(
     val userTag: String?,
     val nickname: String?,
@@ -20,132 +27,208 @@ data class PerspectiveUserDto(
     val characterImageUrl: String?
 )
 
+@Serializable
 data class PerspectiveOptionDto(
-    val optionId: Long?,
-    val title: String?,
+    val optionId: Long,
+    val label: String?,
+    val title: String,
     val stance: String?
 )
 
-// [API 1: 관점 리스트 조회]
+@Serializable
 data class PerspectivePageDto(
     val items: List<PerspectiveDto>?,
     val nextCursor: String?,
-    val hasNext: Boolean?
+    val hasNext: Boolean
 )
 
+@Serializable
 data class PerspectiveDto(
-    val perspectiveId: Long?,
-    val user: PerspectiveUserDto?,
-    val option: PerspectiveOptionDto?,
-    val content: String?,
-    val likeCount: Int?,
-    val commentCount: Int?,
-    val isLiked: Boolean?,
-    val isMyPerspective: Boolean?,
-    val createdAt: String?
+    val perspectiveId: Long,
+    val user: PerspectiveUserDto,
+    val option: PerspectiveOptionDto,
+    val content: String,
+    val likeCount: Int,
+    val commentCount: Int,
+    val isLiked: Boolean,
+    val isMyPerspective: Boolean,
+    val createdAt: String
 )
 
-// [API 2 & 4 & 5 & 6 & 7 유지보수용 DTO]
-data class PerspectiveCreateResponseDto(
-    val perspectiveId: Long?,
-    val status: String?,
-    val createdAt: String?
-)
-
-// [API 3: 내 관점 조회 & API 4: 관점 단건 조회 공통 DTO]
+@Serializable
 data class PerspectiveDetailResponseDto(
-    val perspectiveId: Long?,
-    val user: PerspectiveUserDto?,
-    val option: PerspectiveOptionDto?,
-    val content: String?,
-    val likeCount: Int?,
-    val commentCount: Int?,
-    val isLiked: Boolean?,
-    val status: String?,
-    val isMyPerspective: Boolean?,
-    val createdAt: String?
+    val perspectiveId: Long,
+    val user: PerspectiveUserDto,
+    val option: PerspectiveOptionDto,
+    val content: String,
+    val likeCount: Int,
+    val commentCount: Int,
+    val isLiked: Boolean,
+    val isMyPerspective: Boolean,
+    val createdAt: String
 )
 
-// [API 8: 관점 좋아요 수 조회 응답 DTO]
+@Serializable
+data class MyPerspectiveResponseDto(
+    val perspectiveId: Long,
+    val user: PerspectiveUserDto,
+    val option: PerspectiveOptionDto,
+    val content: String,
+    val likeCount: Int,
+    val commentCount: Int,
+    val isLiked: Boolean,
+    val status: String,
+    val createdAt: String
+)
+
+@Serializable
 data class PerspectiveLikeCountResponseDto(
-    val perspectiveId: Long?,
-    val likeCount: Int?
+    val perspectiveId: Long,
+    val likeCount: Long
 )
 
-// [API 9 & 10: 관점 좋아요 등록 및 취소 응답 DTO]
-data class PerspectiveLikeToggleResponseDto(
-    val perspectiveId: Long?,
-    val likeCount: Int?,
-    val isLiked: Boolean?
+@Serializable
+data class WeeklyBestPerspectiveResponseDto(
+    val weekStart: String,
+    val weekEnd: String,
+    val items: List<WeeklyBestPerspectiveItemDto>
 )
 
+@Serializable
+data class WeeklyBestPerspectiveItemDto(
+    val perspectiveId: Long,
+    val battleId: Long,
+    val battleTitle: String,
+    val content: String,
+    val likeCount: Long,
+    val participated: Boolean
+)
+
+@Serializable
+data class PerspectiveCreateResponseDto(
+    val perspectiveId: Long,
+    val status: String,
+    val createdAt: String
+)
+
+@Serializable
 data class PerspectiveUpdateResponseDto(
-    val perspectiveId: Long?,
-    val content: String?,
-    val updatedAt: String?
+    val perspectiveId: Long,
+    val content: String,
+    val updatedAt: String
 )
 
-// ==========================================
-// DTO -> Domain Mappers
-// ==========================================
-
-fun PerspectivePageDto.toDomainModel() = PerspectivePage(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextCursor = this.nextCursor,
-    hasNext = this.hasNext ?: false
+@Serializable
+data class PerspectiveLikeToggleResponseDto(
+    val perspectiveId: Long,
+    val likeCount: Int,
+    val isLiked: Boolean
 )
 
-fun PerspectiveDto.toDomainModel() = PerspectiveBoard(
-    commentId = this.perspectiveId?.toString() ?: "",
-    nickname = this.user?.nickname ?: "알 수 없음",
-    characterType = this.user?.characterType ?: "",
-    characterImageUrl = this.user?.characterImageUrl ?: "",
-    content = this.content ?: "",
-    isMine = this.isMyPerspective ?: false,
-    createdAt = this.createdAt ?: "",
-    optionTitle = this.option?.title ?: "",
-    optionId = this.option?.optionId ?: 0L,
-    replyCount = this.commentCount ?: 0,
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false
-)
+fun PerspectivePageDto.toDomainModel(): PerspectivePage =
+    PerspectivePage(
+        items = items?.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } } ?: emptyList(),
+        nextCursor = nextCursor,
+        hasNext = hasNext
+    )
 
-fun PerspectiveCreateResponseDto.toDomainModel() = PerspectiveStatusBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    status = this.status ?: "UNKNOWN",
-    createdAt = this.createdAt ?: ""
-)
+private fun PerspectiveDto.toDomainModel(): PerspectiveBoard =
+    PerspectiveBoard(
+        perspectiveId = perspectiveId,
+        userTag = user.userTag,
+        nickname = user.nickname.requireField("PerspectiveUserDto.nickname"),
+        characterType = user.characterType,
+        characterImageUrl = user.characterImageUrl,
+        optionId = option.optionId,
+        optionLabel = option.label,
+        optionTitle = option.title,
+        optionStance = option.stance,
+        content = content,
+        likeCount = likeCount,
+        commentCount = commentCount,
+        isLiked = isLiked,
+        isMyPerspective = isMyPerspective,
+        createdAt = createdAt
+    )
 
-// 내 관점 단건, 일반 단건 매퍼 통합
-fun PerspectiveDetailResponseDto.toDomainModel() = PerspectiveDetailBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    userTag = this.user?.userTag ?: "",
-    nickname = this.user?.nickname ?: "알 수 없음",
-    characterImageUrl = this.user?.characterImageUrl ?: "",
-    optionTitle = this.option?.title ?: "",
-    optionId = this.option?.optionId ?: 0L,
-    content = this.content ?: "",
-    likeCount = this.likeCount ?: 0,
-    commentCount = this.commentCount ?: 0,
-    isLiked = this.isLiked ?: false,
-    status = this.status ?: "PUBLISHED",
-    isMine = this.isMyPerspective ?: true,
-    createdAt = this.createdAt ?: ""
-)
+fun PerspectiveDetailResponseDto.toDomainModel(): PerspectiveDetailBoard =
+    PerspectiveDetailBoard(
+        perspectiveId = perspectiveId,
+        userTag = user.userTag,
+        nickname = user.nickname.requireField("PerspectiveUserDto.nickname"),
+        characterType = user.characterType,
+        characterImageUrl = user.characterImageUrl,
+        optionId = option.optionId,
+        optionLabel = option.label,
+        optionTitle = option.title,
+        optionStance = option.stance,
+        content = content,
+        likeCount = likeCount,
+        commentCount = commentCount,
+        isLiked = isLiked,
+        isMyPerspective = isMyPerspective,
+        createdAt = createdAt
+    )
 
-fun PerspectiveUpdateResponseDto.toDomainModel() = PerspectiveUpdateBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    content = this.content ?: "",
-    updatedAt = this.updatedAt ?: ""
-)
+fun MyPerspectiveResponseDto.toDomainModel(): MyPerspectiveBoard =
+    MyPerspectiveBoard(
+        perspectiveId = perspectiveId,
+        userTag = user.userTag,
+        nickname = user.nickname.requireField("PerspectiveUserDto.nickname"),
+        characterType = user.characterType,
+        characterImageUrl = user.characterImageUrl,
+        optionId = option.optionId,
+        optionLabel = option.label,
+        optionTitle = option.title,
+        optionStance = option.stance,
+        content = content,
+        likeCount = likeCount,
+        commentCount = commentCount,
+        isLiked = isLiked,
+        status = status,
+        createdAt = createdAt
+    )
 
-fun PerspectiveLikeCountResponseDto.toDomainModel() = PerspectiveLikeCountBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    likeCount = this.likeCount ?: 0
-)
+fun PerspectiveLikeCountResponseDto.toDomainModel(): PerspectiveLikeCountBoard =
+    PerspectiveLikeCountBoard(
+        perspectiveId = perspectiveId,
+        likeCount = likeCount
+    )
 
-fun PerspectiveLikeToggleResponseDto.toDomainModel() = PerspectiveLikeToggleBoard(
-    perspectiveId = this.perspectiveId ?: 0L,
-    likeCount = this.likeCount ?: 0,
-    isLiked = this.isLiked ?: false
-)
+fun WeeklyBestPerspectiveResponseDto.toDomainModel(): WeeklyBestPerspectiveBoard =
+    WeeklyBestPerspectiveBoard(
+        weekStart = weekStart,
+        weekEnd = weekEnd,
+        items = items.map { it.toDomainModel() }
+    )
+
+private fun WeeklyBestPerspectiveItemDto.toDomainModel(): WeeklyBestPerspectiveItemBoard =
+    WeeklyBestPerspectiveItemBoard(
+        perspectiveId = perspectiveId,
+        battleId = battleId,
+        battleTitle = battleTitle,
+        content = content,
+        likeCount = likeCount,
+        participated = participated
+    )
+
+fun PerspectiveCreateResponseDto.toDomainModel(): PerspectiveStatusBoard =
+    PerspectiveStatusBoard(
+        perspectiveId = perspectiveId,
+        status = status,
+        createdAt = createdAt
+    )
+
+fun PerspectiveUpdateResponseDto.toDomainModel(): PerspectiveUpdateBoard =
+    PerspectiveUpdateBoard(
+        perspectiveId = perspectiveId,
+        content = content,
+        updatedAt = updatedAt
+    )
+
+fun PerspectiveLikeToggleResponseDto.toDomainModel(): PerspectiveLikeToggleBoard =
+    PerspectiveLikeToggleBoard(
+        perspectiveId = perspectiveId,
+        likeCount = likeCount,
+        isLiked = isLiked
+    )

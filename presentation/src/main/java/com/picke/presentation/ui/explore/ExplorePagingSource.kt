@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.picke.domain.feature.explore.usecase.SearchBattlesUseCase
 import com.picke.presentation.ui.explore.model.ExploreUiModel
 import com.picke.presentation.ui.explore.model.toUiModel
+import kotlin.coroutines.cancellation.CancellationException
 
 class ExplorePagingSource(
     private val searchBattlesUseCase: SearchBattlesUseCase,
@@ -35,6 +36,8 @@ class ExplorePagingSource(
                 },
                 onFailure = { LoadResult.Error(it) }
             )
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

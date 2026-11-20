@@ -15,8 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.component.shimmer
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+private object HomeSkeletonDimens {
+    val sectionTitleWidth = 80.dp
+    val sectionTitleHeight = 20.dp
+    val lineHeight = 14.dp
+    val bestCommentTitleWidth = 160.dp
+    val bestCommentLineWidth = 280.dp
+    val bestCommentShortLineWidth = 200.dp
+}
 
 @Composable
 fun HomeSkeleton(modifier: Modifier = Modifier) {
@@ -25,7 +35,7 @@ fun HomeSkeleton(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SkeletonLine(width = 120.dp, height = 20.dp)
+            PickeSkeletonLine(width = 120.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 repeat(2) {
@@ -36,7 +46,7 @@ fun HomeSkeleton(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(40.dp))
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SkeletonLine(width = 80.dp, height = 20.dp)
+            PickeSkeletonLine(width = 80.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(16.dp))
             repeat(3) {
                 BestBattleRowSkeleton()
@@ -45,8 +55,18 @@ fun HomeSkeleton(modifier: Modifier = Modifier) {
         }
         Spacer(modifier = Modifier.height(16.dp))
 
+        Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+            PickeSkeletonLine(width = HomeSkeletonDimens.sectionTitleWidth, height = HomeSkeletonDimens.sectionTitleHeight)
+            Spacer(modifier = Modifier.height(SpacingTokens.s16))
+            repeat(3) {
+                BestCommentRowSkeleton()
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
+            }
+        }
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
+
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SkeletonLine(width = 100.dp, height = 20.dp)
+            PickeSkeletonLine(width = 100.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(12.dp))
             repeat(2) {
                 NewBattleCardSkeleton()
@@ -65,8 +85,8 @@ private fun EditorPickSkeleton() {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            SkeletonLine(width = 70.dp, height = 16.dp)
-            SkeletonLine(width = 32.dp, height = 16.dp)
+            PickeSkeletonLine(width = 70.dp, height = 16.dp)
+            PickeSkeletonLine(width = 32.dp, height = 16.dp)
         }
 
         Spacer(
@@ -80,19 +100,19 @@ private fun EditorPickSkeleton() {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            SkeletonLine(width = 160.dp, height = 20.dp)
+            PickeSkeletonLine(width = 160.dp, height = 20.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 240.dp, height = 16.dp)
+            PickeSkeletonLine(width = 240.dp, height = 16.dp)
             Spacer(modifier = Modifier.height(4.dp))
-            SkeletonLine(width = 200.dp, height = 16.dp)
+            PickeSkeletonLine(width = 200.dp, height = 16.dp)
 
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                SkeletonLine(width = 100.dp, height = 14.dp)
-                SkeletonLine(width = 40.dp, height = 14.dp)
+                PickeSkeletonLine(width = 100.dp, height = 14.dp)
+                PickeSkeletonLine(width = 40.dp, height = 14.dp)
             }
         }
     }
@@ -109,7 +129,7 @@ private fun TrendingCardSkeleton() {
                 .shimmer()
         )
         Spacer(modifier = Modifier.height(12.dp))
-        SkeletonLine(width = 160.dp, height = 16.dp)
+        PickeSkeletonLine(width = 160.dp, height = 16.dp)
     }
 }
 
@@ -125,10 +145,22 @@ private fun BestBattleRowSkeleton() {
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
-            SkeletonLine(width = 200.dp, height = 18.dp)
+            PickeSkeletonLine(width = 200.dp, height = 18.dp)
             Spacer(modifier = Modifier.height(8.dp))
-            SkeletonLine(width = 100.dp, height = 14.dp)
+            PickeSkeletonLine(width = 100.dp, height = 14.dp)
         }
+    }
+}
+
+@Composable
+private fun BestCommentRowSkeleton() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SpacingTokens.s8)
+    ) {
+        PickeSkeletonLine(width = HomeSkeletonDimens.bestCommentTitleWidth, height = HomeSkeletonDimens.lineHeight)
+        PickeSkeletonLine(width = HomeSkeletonDimens.bestCommentLineWidth, height = HomeSkeletonDimens.lineHeight)
+        PickeSkeletonLine(width = HomeSkeletonDimens.bestCommentShortLineWidth, height = HomeSkeletonDimens.lineHeight)
     }
 }
 

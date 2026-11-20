@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.user
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,10 +26,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,15 +44,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.ads.AdFitBannerAd
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.component.shimmer
-import com.picke.presentation.ui.my.user.componenet.CreditCard
-import com.picke.presentation.ui.my.user.componenet.MyPageMenuItem
-import com.picke.presentation.ui.my.user.componenet.MySkeleton
+import com.picke.presentation.ui.my.user.component.CreditCard
+import com.picke.presentation.ui.my.user.component.MyPageMenuItem
+import com.picke.presentation.ui.my.user.component.MySkeleton
 import com.picke.presentation.ui.my.user.model.MyPhilosopherUiModel
+import com.picke.presentation.ui.my.user.model.MyUiEvent
 import com.picke.presentation.ui.my.user.model.MyUiState
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.RadiusTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun MyScreen(
@@ -60,11 +68,16 @@ fun MyScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
+    onNavigateToTicket: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: MyViewModel = hiltViewModel()
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -81,6 +94,15 @@ fun MyScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                MyUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     MyScreen(
         uiState = uiState,
         onNavigateToAlarm = onNavigateToAlarm,
@@ -90,6 +112,8 @@ fun MyScreen(
         onNavigateToContent = onNavigateToContent,
         onNavigateToNotice = onNavigateToNotice,
         onNavigateToPoint = onNavigateToPoint,
+        onNavigateToTicket = onNavigateToTicket,
+        modifier = modifier
     )
 }
 
@@ -103,12 +127,15 @@ fun MyScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToNotice: () -> Unit,
     onNavigateToPoint: () -> Unit,
+    onNavigateToTicket: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 centerTitle = false,
                 actions = {
@@ -158,7 +185,7 @@ fun MyScreen(
                     }
                 }
             )
-        },
+        }
     ) { innerPadding ->
         if (uiState.isLoading) {
             MySkeleton(
@@ -171,28 +198,28 @@ fun MyScreen(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-                ProfileSection(
-                    nickname = uiState.profile?.nickname ?: "사용자",
-                    userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
-                    profileImage = uiState.profile?.characterImageUrl
-                )
+                Column(modifier = Modifier.padding(horizontal = SpacingTokens.s16)) {
+                    ProfileSection(
+                        nickname = uiState.profile?.nickname ?: stringResource(R.string.my_nickname_default),
+                        userHandle = uiState.profile?.userTag?.let { "@$it" } ?: "",
+                        profileImage = uiState.profile?.characterImageUrl
+                    )
 
-                Spacer(modifier = Modifier.height(20.dp))
-                CreditCard(
-                    credit = uiState.tier?.currentPoint ?: 0,
-                    onClick = onNavigateToPoint
-                )
+                    Spacer(modifier = Modifier.height(SpacingTokens.s16))
+                    CreditCard(
+                        credit = uiState.tier?.currentPoint ?: 0,
+                        onClick = onNavigateToPoint
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
-                PhilosopherTypeSection(
-                    philosopher = uiState.philosopher,
-                    onClick = { onNavigateToPhilosopher() }
-                )
+                    Spacer(modifier = Modifier.height(SpacingTokens.s16))
+                    PhilosopherTypeSection(
+                        philosopher = uiState.philosopher,
+                        onClick = { onNavigateToPhilosopher() }
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(SpacingTokens.s16))
                 MyPageMenuItem(
                     title = stringResource(R.string.my_menu_discussion),
                     onClick = { onNavigateToDiscussion() }
@@ -205,10 +232,16 @@ fun MyScreen(
                     title = stringResource(R.string.my_menu_notice),
                     onClick = { onNavigateToNotice() }
                 )
+                MyPageMenuItem(
+                    title = stringResource(R.string.my_menu_ticket),
+                    onClick = onNavigateToTicket
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Box(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SpacingTokens.s16),
                     contentAlignment = Alignment.Center
                 ) {
                     AdFitBannerAd(adUnitId = BuildConfig.ADFIT_BANNER_MY)
@@ -222,7 +255,7 @@ fun MyScreen(
 fun ProfileSection(
     nickname: String,
     userHandle: String,
-    profileImage: Any?
+    profileImage: String?
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -230,19 +263,24 @@ fun ProfileSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = profileImage ?: R.drawable.illust_mengzi,
-            modifier = Modifier.size(52.dp),
+            imageUrl = profileImage,
+            size = 52.dp,
+            backgroundColor = PickeTheme.colors.colorSurfaceBeigeDarker
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s12))
         Column {
-            Text(text = nickname, style = PickeTheme.typography.headingSm)
+            Text(
+                text = nickname,
+                color = PickeTheme.colors.colorTextBasic,
+                style = PickeTheme.typography.headingSm
+            )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s2))
             Text(
                 text = userHandle,
-                style = PickeTheme.typography.bodyXsRegular,
-                color = PickeTheme.colors.textSubtler
+                color = PickeTheme.colors.textMuted,
+                style = PickeTheme.typography.bodyXsRegular
             )
         }
     }
@@ -253,45 +291,53 @@ fun PhilosopherTypeSection(
     philosopher: MyPhilosopherUiModel?,
     onClick: () -> Unit
 ) {
-    val isLocked = philosopher == null || philosopher.philosopherType == "UNKNOWN"
-    val displayImage = if (isLocked) R.drawable.img_lock else philosopher?.imageUrl
-    val displayName = if (isLocked) "??형" else philosopher?.philosopherLabel ?: ""
+    val lockedName = stringResource(R.string.my_philosopher_locked)
+
+    val isLocked = philosopher == null
+    val displayName = if (isLocked) lockedName else philosopher?.philosopherLabel ?: ""
+    val shape = RoundedCornerShape(RadiusTokens.default)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(2.dp))
-            .background(PickeTheme.colors.surfaceBeigeStrong)
-            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
+            .clip(shape)
+            .background(PickeTheme.colors.colorSurfaceBeigeDark)
+            .border(
+                width = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.borderBeigeDefault,
+                shape = shape
+            )
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(SpacingTokens.s16),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            model = displayImage,
-            modifier = Modifier.size(40.dp),
+            imageUrl = if (isLocked) null else philosopher?.imageUrl,
+            size = ComponentNumberTokens.avatarMd,
+            kind = if (isLocked) ProfileImageKind.LOCKED else ProfileImageKind.PHILOSOPHER,
+            defaultImageRes = if (isLocked) R.drawable.img_lock else null
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(SpacingTokens.s12))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.my_menu_philosopher),
-                style = PickeTheme.typography.captionMdMedium,
-                color = PickeTheme.colors.textSubtler
+                color = PickeTheme.colors.textMuted,
+                style = PickeTheme.typography.captionMdMedium
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(SpacingTokens.s4))
             Text(
                 text = if (isLocked) displayName else "$displayName ",
-                style = PickeTheme.typography.bodySmSemiBold,
-                color = PickeTheme.colors.textSubtle
+                color = PickeTheme.colors.colorTextBasic,
+                style = PickeTheme.typography.bodySmSemiBold
             )
         }
 
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_right_a),
             contentDescription = null,
-            modifier = Modifier.size(12.dp),
+            modifier = Modifier.size(ComponentNumberTokens.iconSm),
             tint = PickeTheme.colors.textDefault
         )
     }
@@ -309,7 +355,8 @@ fun MyScreenPreview() {
             onNavigateToPhilosopher = { },
             onNavigateToContent = { },
             onNavigateToNotice = { },
-            onNavigateToPoint = { }
+            onNavigateToPoint = { },
+            onNavigateToTicket = { }
         )
     }
 }

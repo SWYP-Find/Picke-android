@@ -34,11 +34,12 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun InteractiveOptionsUI(
     options: List<ScenarioOptionUiModel>,
-    selectedNodeId: String?,
-    onOptionClick: (String) -> Unit
+    selectedOptionId: Long?,
+    onOptionClick: (ScenarioOptionUiModel) -> Unit,
+    isRequesting: Boolean = false
 ) {
-    var pendingSelectedId by remember(options) { mutableStateOf<String?>(null) }
-    val selectGuideText = if (selectedNodeId == null) {
+    var pendingOption by remember(options) { mutableStateOf<ScenarioOptionUiModel?>(null) }
+    val selectGuideText = if (selectedOptionId == null) {
         stringResource(R.string.scenario_option_guide_select)
     } else {
         stringResource(R.string.scenario_option_guide_selected)
@@ -69,29 +70,25 @@ fun InteractiveOptionsUI(
 
         Spacer(modifier = Modifier.height(24.dp))
         options.forEach { option ->
-            val isCommitted = selectedNodeId == option.nextNodeId
-            val isPending = pendingSelectedId == option.nextNodeId
+            val isCommitted = selectedOptionId == option.optionId
+            val isPending = pendingOption?.optionId == option.optionId
             val isSelected = isCommitted || isPending
 
             OptionSelectionCard(
                 text = option.label,
                 isSelected = isSelected,
-                isEnabled = selectedNodeId == null,
-                onClick = {
-                    if (selectedNodeId == null) {
-                        pendingSelectedId = option.nextNodeId
-                    }
-                }
+                isEnabled = selectedOptionId == null && !isRequesting,
+                onClick = { pendingOption = option }
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        if (selectedNodeId == null) {
+        if (selectedOptionId == null) {
             OptionConfirmButton(
                 text = stringResource(R.string.scenario_option_confirm),
-                isEnabled = pendingSelectedId != null,
+                isEnabled = pendingOption != null && !isRequesting,
                 onClick = {
-                    pendingSelectedId?.let { onOptionClick(it) }
+                    pendingOption?.let { onOptionClick(it) }
                 }
             )
         }
@@ -141,7 +138,7 @@ fun InteractiveOptionsUIPreview() {
     PickeTheme {
         InteractiveOptionsUI(
             options = DummyData.dummyPastChoices.first().options,
-            selectedNodeId = "",
+            selectedOptionId = DummyData.dummyPastChoices.first().selectedOptionId,
             onOptionClick = {}
         )
     }

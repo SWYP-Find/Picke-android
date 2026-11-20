@@ -35,7 +35,7 @@ import com.picke.presentation.ui.alarm.component.AlarmCard
 import com.picke.presentation.ui.alarm.component.AlarmListSkeleton
 import com.picke.presentation.ui.alarm.model.AlarmUiEvent
 import com.picke.presentation.ui.alarm.model.AlarmUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
@@ -54,12 +54,21 @@ fun AlarmScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val readAllFailedMessage = stringResource(R.string.alarm_read_all_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
-                is AlarmUiEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
+                AlarmUiEvent.ShowReadAllFailedToast ->
+                    Toast.makeText(context, readAllFailedMessage, Toast.LENGTH_SHORT).show()
+
+                AlarmUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
+
+                AlarmUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -79,15 +88,16 @@ fun AlarmScreen(
         onFetchMore = { viewModel.fetchAlarms() },
         onAlarmClick = { item ->
             if (!item.isRead) viewModel.readAlarm(item.notificationId)
+            val referenceId = item.referenceId
+            val perspectiveId = item.perspectiveId
             when (item.detailCode) {
-                "NEW_BATTLE" -> onNavigateToPreVote(item.referenceId.toString())
-                "COMMENT_LIKE", "NEW_COMMENT" -> if (item.perspectiveId != 0L) onNavigateToComment(
-                    item.perspectiveId.toString(),
-                    item.referenceId.toString()
-                )
+                "NEW_BATTLE" -> if (referenceId != null) onNavigateToPreVote(referenceId.toString())
+                "COMMENT_LIKE", "NEW_COMMENT" -> if (perspectiveId != null && referenceId != null) {
+                    onNavigateToComment(perspectiveId.toString(), referenceId.toString())
+                }
 
                 "CREDIT_EARNED" -> onNavigateToPoint()
-                "POLICY_CHANGE" -> onNavigateToNotice(item.referenceId)
+                "POLICY_CHANGE" -> if (referenceId != null) onNavigateToNotice(referenceId)
                 "DAILY_MESSAGE" -> onNavigateToTodayBattle()
             }
         }
@@ -114,7 +124,7 @@ fun AlarmScreen(
         containerColor = PickeTheme.colors.backgroundBeige,
         modifier = Modifier.systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.alarm),
                 centerTitle = true,
                 showLogo = false,
@@ -126,7 +136,11 @@ fun AlarmScreen(
                         style = PickeTheme.typography.bodyXsMedium,
                         color = PickeTheme.colors.textSubtler,
                         modifier = Modifier
-                            .clickable { onReadAllClick() }
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = onReadAllClick
+                            )
                             .padding(end = 12.dp, top = 8.dp, bottom = 8.dp)
                     )
                 }

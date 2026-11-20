@@ -409,7 +409,7 @@
     <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
     <string name="class_debate_intro_start_format_gwa">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
     <string name="class_debate_intro_start_format_wa">%1$s와 %2$d라운드 토론을 시작해보세요.</string>
-    <string name="class_debate_input_placeholder">내용을 입력하세요</string>
+    <string name="class_debate_input_placeholder">%1$d자 이상 내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
     <string name="class_debate_generating">생각을 정리하고 있어요</string>
     <string name="class_debate_failed">응답을 준비하지 못했어요. 다시 시도해 주세요</string>

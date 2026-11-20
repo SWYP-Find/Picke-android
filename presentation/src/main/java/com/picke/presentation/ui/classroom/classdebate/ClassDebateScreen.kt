@@ -145,6 +145,7 @@ private fun ClassDebateContent(
                     input = uiState.input,
                     isInputEnabled = uiState.isInputEnabled,
                     isSendEnabled = uiState.isSendEnabled,
+                    replyMinLength = uiState.debate.replyMinLength,
                     rejectionMessage = uiState.replyRejectionMessage,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
@@ -340,6 +341,7 @@ private fun ClassDebateComposerSection(
     input: String,
     isInputEnabled: Boolean,
     isSendEnabled: Boolean,
+    replyMinLength: Int,
     rejectionMessage: String?,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
@@ -390,7 +392,7 @@ private fun ClassDebateComposerSection(
                     minHeight = ComponentNumberTokens.inputTextfieldHeight,
                     textStyle = PickeTheme.typography.bodyXsMedium,
                     modifier = Modifier.weight(1f),
-                    placeholder = stringResource(R.string.class_debate_input_placeholder),
+                    placeholder = stringResource(R.string.class_debate_input_placeholder, replyMinLength),
                     enabled = isInputEnabled
                 )
                 IconButton(

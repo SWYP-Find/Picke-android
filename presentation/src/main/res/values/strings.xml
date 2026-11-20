@@ -111,6 +111,7 @@
     <string name="ticket_register_dialog_invalid_code">코드 번호를 다시 확인해주세요!</string>
     <string name="ticket_register_dialog_register_failed">코드 등록이 완료되지 않았습니다\n네트워크 확인 후 한 번 더 시도해주세요</string>
     <string name="ticket_register_dialog_expired">해당 이용권은 등록기간이 만료되었습니다</string>
+    <string name="ticket_register_dialog_locked">코드를 5번 잘못 입력했습니다\n1시간 후에 다시 시도해주세요</string>
     <string name="ticket_register_dialog_confirm">확인</string>
 
     <!-- 이용권 등록 완료 -->

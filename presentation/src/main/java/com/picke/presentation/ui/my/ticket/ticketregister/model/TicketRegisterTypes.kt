@@ -14,5 +14,6 @@ enum class TicketRegisterDialog {
     ALREADY_REGISTERED,
     INVALID_CODE,
     REGISTER_FAILED,
-    EXPIRED
+    EXPIRED,
+    LOCKED
 }

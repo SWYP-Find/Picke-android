@@ -303,7 +303,7 @@ object DummyData {
     val dummyVoteOptions = listOf(
         PerspectiveVoteOptionUiModel(
             optionId = 1L,
-            title = "변기는 변기다",
+            title = "변기는 변기다 변기는 변기다",
             imageUrl = "",
             ratio = 59.5f
         ),

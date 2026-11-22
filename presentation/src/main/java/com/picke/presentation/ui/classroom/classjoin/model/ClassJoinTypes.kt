@@ -14,8 +14,10 @@ enum class ClassCodeBoxState {
 
 enum class ClassJoinDialog {
     INVALID_CODE,
+    MEMBER_REMOVED,
     CLASS_FULL,
     CLASS_CLOSED,
+    TICKET_ENDED,
     CLASS_DELETED,
     ALREADY_JOINED
 }

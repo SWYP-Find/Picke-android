@@ -97,6 +97,7 @@ fun PerspectiveScreen(
     val commentRequiredMessage = stringResource(R.string.class_comment_required)
     val reportedMessage = stringResource(R.string.comment_report_success)
     val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
+    val perspectiveRequiredMessage = stringResource(R.string.class_comment_delete_blocked)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     var lastToast by remember { mutableStateOf<Toast?>(null) }
@@ -122,6 +123,9 @@ fun PerspectiveScreen(
 
                 PerspectiveUiEvent.ShowAlreadyReportedToast ->
                     showToast(alreadyReportedMessage)
+
+                PerspectiveUiEvent.ShowPerspectiveRequiredToast ->
+                    showToast(perspectiveRequiredMessage)
 
                 PerspectiveUiEvent.ShowActionFailedToast ->
                     showToast(actionFailedMessage)

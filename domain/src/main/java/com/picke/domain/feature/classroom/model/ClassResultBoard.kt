@@ -35,6 +35,7 @@ data class ClassResultOptionBoard(
 data class ClassResultMyReportBoard(
     val classId: Long,
     val state: String,
+    val retryable: Boolean?,
     val closeAt: String,
     val preOption: ClassResultReportOptionBoard?,
     val postOption: ClassResultReportOptionBoard?,
@@ -55,9 +56,12 @@ data class ClassResultFeedbackBoard(
     val judgmentBasis: String,
     val strength: ClassResultFeedbackPointBoard?,
     val nextFocus: ClassResultFeedbackPointBoard?,
-    val nextQuestion: String,
+    val nextQuestion: String?,
     val evidence: List<ClassResultFeedbackEvidenceBoard>,
     val analysisStatus: String,
+    val limitedReason: String?,
+    val limitedMessage: String?,
+    val limitedNotice: String?,
     val coverage: String,
     val excludedCount: Int
 )

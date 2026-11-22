@@ -68,6 +68,7 @@ fun CommentScreen(
 
     val reportedMessage = stringResource(R.string.comment_report_success)
     val alreadyReportedMessage = stringResource(R.string.comment_report_duplicate)
+    val perspectiveRequiredMessage = stringResource(R.string.class_comment_delete_blocked)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
@@ -99,6 +100,9 @@ fun CommentScreen(
 
                 CommentUiEvent.ShowAlreadyReportedToast ->
                     showToast(alreadyReportedMessage)
+
+                CommentUiEvent.ShowPerspectiveRequiredToast ->
+                    showToast(perspectiveRequiredMessage)
 
                 CommentUiEvent.ShowActionFailedToast ->
                     showToast(actionFailedMessage)

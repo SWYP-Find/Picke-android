@@ -37,10 +37,9 @@ fun MyPageMenuItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // TODO: 토큰 동기화 - color/text/basic
             Text(
                 text = title,
-                color = PickeTheme.colors.textDefault,
+                color = PickeTheme.colors.colorTextBasic,
                 style = PickeTheme.typography.bodySmSemiBold
             )
             Icon(
@@ -50,11 +49,10 @@ fun MyPageMenuItem(
                 tint = PickeTheme.colors.textDefault
             )
         }
-        // TODO: 토큰 동기화 - color/border/beige-dark
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = SpacingTokens.s16),
             thickness = ComponentNumberTokens.borderWidthRegular,
-            color = PickeTheme.colors.beige700
+            color = PickeTheme.colors.colorBorderBeigeDark
         )
     }
 }

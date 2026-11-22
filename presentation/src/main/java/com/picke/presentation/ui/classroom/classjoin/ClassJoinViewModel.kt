@@ -85,9 +85,11 @@ class ClassJoinViewModel @Inject constructor(
             return
         }
         val dialog = when (code) {
-            ClassErrorCode.CLASS_404_CODE, ClassErrorCode.CLASS_403_REMOVED -> ClassJoinDialog.INVALID_CODE
+            ClassErrorCode.CLASS_404_CODE -> ClassJoinDialog.INVALID_CODE
+            ClassErrorCode.CLASS_403_REMOVED -> ClassJoinDialog.MEMBER_REMOVED
             ClassErrorCode.CLASS_409_FULL -> ClassJoinDialog.CLASS_FULL
-            ClassErrorCode.CLASS_409_CLOSED, ClassErrorCode.CLASS_409_TICKET_ENDED -> ClassJoinDialog.CLASS_CLOSED
+            ClassErrorCode.CLASS_409_CLOSED -> ClassJoinDialog.CLASS_CLOSED
+            ClassErrorCode.CLASS_409_TICKET_ENDED -> ClassJoinDialog.TICKET_ENDED
             ClassErrorCode.CLASS_409_DELETED -> ClassJoinDialog.CLASS_DELETED
             ClassErrorCode.CLASS_409_JOINED, ClassErrorCode.CLASS_409_OWNER -> ClassJoinDialog.ALREADY_JOINED
             else -> null

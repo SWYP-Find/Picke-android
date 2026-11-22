@@ -3,6 +3,7 @@ package com.picke.presentation.ui.classroom.classdebate
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.classroom.model.ClassDebateBoard
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.presentation.navigation.AppRoute
@@ -11,6 +12,7 @@ import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiAction
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiEvent
 import com.picke.presentation.ui.classroom.classdebate.model.ClassDebateUiState
 import com.picke.presentation.ui.classroom.classdebate.model.toUiModel
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -55,13 +57,7 @@ class ClassDebateViewModel @Inject constructor(
 
             ClassDebateUiAction.RetryClick -> if (state.isRetryVisible) retryDebate(state.classId)
 
-            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
-                if (state.isReplyLengthEnough) {
-                    submitReply(state)
-                } else {
-                    sendEvent(ClassDebateUiEvent.ShowReplyTooShortToast)
-                }
-            }
+            ClassDebateUiAction.SendClick -> if (state.isSendEnabled) submitReply(state)
 
             ClassDebateUiAction.FinalVoteClick ->
                 sendEvent(ClassDebateUiEvent.NavigateToFinalVote(state.classId))
@@ -133,10 +129,27 @@ class ClassDebateViewModel @Inject constructor(
                 _uiState.update {
                     reduce(it, ClassDebateMutation.ReplySubmitted(debate.toUiModel()))
                 }
-            }.onFailure {
-                _uiState.update { reduce(it, ClassDebateMutation.ReplyFailed(requestKey)) }
-                sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+            }.onFailure { exception ->
+                val rejectionMessage = replyRejectionMessage(exception)
+                if (rejectionMessage == null) {
+                    _uiState.update { reduce(it, ClassDebateMutation.ReplyFailed(requestKey)) }
+                    sendEvent(ClassDebateUiEvent.ShowActionFailedToast)
+                } else {
+                    _uiState.update {
+                        reduce(it, ClassDebateMutation.ReplyRejected(rejectionMessage))
+                    }
+                }
             }
         }
     }
+
+    private fun replyRejectionMessage(exception: Throwable): String? =
+        when ((exception as? ApiErrorException)?.code) {
+            ClassErrorCode.CLASS_400_DEBATE_BLOCKED,
+            ClassErrorCode.CLASS_400_DEBATE_INJECTION,
+            ClassErrorCode.CLASS_400_DEBATE_MEANINGLESS,
+            ClassErrorCode.CLASS_400_DEBATE_PERSONAL_INFO -> exception.message?.ifBlank { null }
+
+            else -> null
+        }
 }

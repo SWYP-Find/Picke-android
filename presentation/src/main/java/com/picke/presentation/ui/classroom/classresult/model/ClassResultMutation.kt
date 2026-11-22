@@ -25,4 +25,6 @@ internal sealed interface ClassResultMutation {
     data object ClassResultLoadFailed : ClassResultMutation
 
     data class InsightRetried(val insight: ClassResultInsightUiModel) : RequestFinished
+
+    data class ReportRetried(val report: ClassResultReportUiModel) : RequestFinished
 }

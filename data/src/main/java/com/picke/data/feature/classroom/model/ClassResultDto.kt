@@ -57,6 +57,7 @@ data class ClassResultOptionDto(
 data class ClassResultMyReportResponseDto(
     val classId: Long,
     val state: String,
+    val retryable: Boolean?,
     val closeAt: String?,
     val preOption: ClassResultReportOptionDto?,
     val postOption: ClassResultReportOptionDto?,
@@ -79,9 +80,12 @@ data class ClassResultFeedbackDto(
     val judgmentBasis: String,
     val strength: ClassResultFeedbackPointDto?,
     val nextFocus: ClassResultFeedbackPointDto?,
-    val nextQuestion: String,
+    val nextQuestion: String?,
     val evidence: List<ClassResultFeedbackEvidenceDto>,
     val analysisStatus: String,
+    val limitedReason: String?,
+    val limitedMessage: String?,
+    val limitedNotice: String?,
     val coverage: String,
     val excludedCount: Int
 )
@@ -181,6 +185,7 @@ fun ClassResultOptionDto.toDomainModel() = ClassResultOptionBoard(
 fun ClassResultMyReportResponseDto.toDomainModel() = ClassResultMyReportBoard(
     classId = classId,
     state = state,
+    retryable = retryable,
     closeAt = closeAt.requireField("ClassResultMyReportResponseDto.closeAt"),
     preOption = preOption?.toDomainModel(),
     postOption = postOption?.toDomainModel(),
@@ -204,6 +209,9 @@ fun ClassResultFeedbackDto.toDomainModel() = ClassResultFeedbackBoard(
     nextQuestion = nextQuestion,
     evidence = evidence.map { it.toDomainModel() },
     analysisStatus = analysisStatus,
+    limitedReason = limitedReason,
+    limitedMessage = limitedMessage,
+    limitedNotice = limitedNotice,
     coverage = coverage,
     excludedCount = excludedCount
 )

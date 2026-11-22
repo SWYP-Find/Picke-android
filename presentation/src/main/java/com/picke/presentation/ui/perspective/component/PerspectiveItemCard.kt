@@ -38,9 +38,9 @@ fun PerspectiveItemCard(
 ) {
     val status = item.status
     val isReviewing = status != PerspectiveStatus.PUBLISHED
-    // TODO: 토큰 동기화 - color/surface/white, 거절 상태 배경 (Figma 디자인 없음)
+    // TODO: 토큰 동기화 - 거절 상태 배경 (Figma 디자인 없음)
     val backgroundColor = when (status) {
-        PerspectiveStatus.PUBLISHED -> PickeTheme.colors.surfaceBeigeDefault
+        PerspectiveStatus.PUBLISHED -> PickeTheme.colors.colorSurfaceWhite
         PerspectiveStatus.PENDING -> PickeTheme.colors.secondary50
         PerspectiveStatus.REJECTED -> Color(0xFFFFF9F9)
     }

@@ -15,6 +15,12 @@ internal fun reduce(state: ClassResultUiState, action: ClassResultUiAction): Cla
         } else {
             state
         }
+
+        ClassResultUiAction.ReportRetryClick -> if (state.isReportRetryEnabled) {
+            state.copy(isRequesting = true)
+        } else {
+            state
+        }
     }
 
 internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): ClassResultUiState {
@@ -39,6 +45,8 @@ internal fun reduce(state: ClassResultUiState, mutation: ClassResultMutation): C
         ClassResultMutation.ClassResultLoadFailed -> state.copy(isLoading = false)
 
         is ClassResultMutation.InsightRetried -> state.copy(insight = mutation.insight)
+
+        is ClassResultMutation.ReportRetried -> state.copy(report = mutation.report)
     }
     return if (mutation is ClassResultMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced
 }

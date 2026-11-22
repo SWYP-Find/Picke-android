@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -87,10 +86,6 @@ fun ClassDebateScreen(
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
-    val replyTooShortText =
-        stringResource(R.string.class_debate_reply_too_short, uiState.debate.replyMinLength)
-
-    val replyTooShortMessage by rememberUpdatedState(replyTooShortText)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -101,9 +96,6 @@ fun ClassDebateScreen(
 
                 ClassDebateUiEvent.ShowLoadFailedToast ->
                     Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
-
-                ClassDebateUiEvent.ShowReplyTooShortToast ->
-                    Toast.makeText(context, replyTooShortMessage, Toast.LENGTH_SHORT).show()
 
                 ClassDebateUiEvent.ShowActionFailedToast ->
                     Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
@@ -153,6 +145,8 @@ private fun ClassDebateContent(
                     input = uiState.input,
                     isInputEnabled = uiState.isInputEnabled,
                     isSendEnabled = uiState.isSendEnabled,
+                    replyMinLength = uiState.debate.replyMinLength,
+                    rejectionMessage = uiState.replyRejectionMessage,
                     onInputChange = { input -> onAction(ClassDebateUiAction.InputChange(input)) },
                     onSendClick = { onAction(ClassDebateUiAction.SendClick) }
                 )
@@ -241,21 +235,25 @@ private fun ClassDebateChatSection(
             val isOpponent = message.speaker == ClassDebateSpeaker.AI
             val isNewSpeaker = index == 0 || messages[index - 1].speaker != message.speaker
 
-            ChatBubble(
-                text = message.text,
-                speakerName = if (isOpponent) opponentName else myLabel,
-                avatarUrl = if (isOpponent) opponentImageUrl else null,
-                defaultAvatarRes = if (isOpponent) R.drawable.illust_mengzi else R.drawable.illust_owl,
-                isLeft = isOpponent,
-                showAvatarAndName = isNewSpeaker,
-                modifier = if (isNewSpeaker) {
-                    Modifier.padding(top = ClassDebateScreenDimens.speakerGroupSpacing)
-                } else {
-                    Modifier
-                },
-                avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
-                nameBadge = if (isOpponent) aiBadge else null
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = if (isNewSpeaker) ClassDebateScreenDimens.speakerGroupSpacing else SpacingTokens.s0),
+                verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
+            ) {
+                message.bubbles.forEachIndexed { bubbleIndex, bubble ->
+                    ChatBubble(
+                        text = bubble,
+                        speakerName = if (isOpponent) opponentName else myLabel,
+                        avatarUrl = if (isOpponent) opponentImageUrl else null,
+                        isLeft = isOpponent,
+                        showAvatarAndName = isNewSpeaker && bubbleIndex == 0,
+                        avatarKind = if (isOpponent) ProfileImageKind.PHILOSOPHER else ProfileImageKind.CHARACTER,
+                        defaultAvatarRes = if (isOpponent) null else R.drawable.illust_owl,
+                        nameBadge = if (isOpponent) aiBadge else null
+                    )
+                }
+            }
         }
 
         if (isPendingVisible) {
@@ -264,7 +262,6 @@ private fun ClassDebateChatSection(
                     text = pendingText,
                     speakerName = opponentName,
                     avatarUrl = opponentImageUrl,
-                    defaultAvatarRes = R.drawable.illust_mengzi,
                     isLeft = true,
                     showAvatarAndName = isPendingNewSpeaker,
                     modifier = if (isPendingNewSpeaker) {
@@ -344,6 +341,8 @@ private fun ClassDebateComposerSection(
     input: String,
     isInputEnabled: Boolean,
     isSendEnabled: Boolean,
+    replyMinLength: Int,
+    rejectionMessage: String?,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -365,38 +364,51 @@ private fun ClassDebateComposerSection(
             thickness = ComponentNumberTokens.borderWidthRegular,
             color = PickeTheme.colors.borderBeigeDefault
         )
-        Row(
+
+        Column(
             modifier = Modifier.padding(
                 start = SpacingTokens.s16,
                 top = SpacingTokens.s16,
                 end = SpacingTokens.s16,
                 bottom = ClassDebateScreenDimens.composerBottomPadding
             ),
-            horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(SpacingTokens.s6)
         ) {
-            PickeTextField(
-                value = input,
-                onValueChange = onInputChange,
-                minHeight = ComponentNumberTokens.inputTextfieldHeight,
-                textStyle = PickeTheme.typography.bodyXsMedium,
-                modifier = Modifier.weight(1f),
-                placeholder = stringResource(R.string.class_debate_input_placeholder),
-                enabled = isInputEnabled
-            )
-            IconButton(
-                onClick = onSendClick,
-                modifier = Modifier
-                    .size(ClassDebateScreenDimens.sendButtonSize)
-                    .background(sendButtonColor, CircleShape),
-                enabled = isSendEnabled
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_send),
-                    contentDescription = stringResource(R.string.class_debate_send),
-                    modifier = Modifier.size(ComponentNumberTokens.iconLg),
-                    tint = PickeTheme.colors.textInverse
+            if (rejectionMessage != null) {
+                Text(
+                    text = rejectionMessage,
+                    color = PickeTheme.colors.errorDefault,
+                    style = PickeTheme.typography.captionLgRegular
                 )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PickeTextField(
+                    value = input,
+                    onValueChange = onInputChange,
+                    minHeight = ComponentNumberTokens.inputTextfieldHeight,
+                    textStyle = PickeTheme.typography.bodyXsMedium,
+                    modifier = Modifier.weight(1f),
+                    placeholder = stringResource(R.string.class_debate_input_placeholder, replyMinLength),
+                    enabled = isInputEnabled
+                )
+                IconButton(
+                    onClick = onSendClick,
+                    modifier = Modifier
+                        .size(ClassDebateScreenDimens.sendButtonSize)
+                        .background(sendButtonColor, CircleShape),
+                    enabled = isSendEnabled
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_send),
+                        contentDescription = stringResource(R.string.class_debate_send),
+                        modifier = Modifier.size(ComponentNumberTokens.iconLg),
+                        tint = PickeTheme.colors.textInverse
+                    )
+                }
             }
         }
     }
@@ -438,6 +450,25 @@ private fun ClassDebateContentPreview() {
                             DummyData.dummyClassDebateMyMessage +
                             DummyData.dummyClassDebateReplies.first()
                 )
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "반박 반려", showBackground = true)
+@Composable
+private fun ClassDebateReplyRejectedPreview() {
+    val battle = DummyData.dummyClassAiQuestions.first()
+
+    PickeTheme {
+        ClassDebateContent(
+            uiState = ClassDebateUiState(
+                isLoading = false,
+                battleTitle = battle.title,
+                debate = DummyData.dummyClassDebate,
+                input = "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ",
+                replyRejectionMessage = "내용을 알 수 있는 문장으로 생각을 적어 주세요."
             ),
             onAction = {}
         )

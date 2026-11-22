@@ -131,6 +131,7 @@ class TicketRegisterViewModel @Inject constructor(
             ClassErrorCode.TICKET_409_CLAIMED -> TicketRegisterDialog.ALREADY_REGISTERED
             ClassErrorCode.TICKET_404_CODE, ClassErrorCode.TICKET_409_REVOKED -> TicketRegisterDialog.INVALID_CODE
             ClassErrorCode.TICKET_409_REG_EXP -> TicketRegisterDialog.EXPIRED
+            ClassErrorCode.TICKET_429_LOCKED -> TicketRegisterDialog.LOCKED
             else -> TicketRegisterDialog.REGISTER_FAILED
         }
 }

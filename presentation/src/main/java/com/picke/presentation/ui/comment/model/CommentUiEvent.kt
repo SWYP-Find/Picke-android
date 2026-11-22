@@ -8,6 +8,8 @@ sealed interface CommentUiEvent {
 
     data object ShowAlreadyReportedToast : CommentUiEvent
 
+    data object ShowPerspectiveRequiredToast : CommentUiEvent
+
     data object ShowActionFailedToast : CommentUiEvent
 
     data object ShowLoadFailedToast : CommentUiEvent

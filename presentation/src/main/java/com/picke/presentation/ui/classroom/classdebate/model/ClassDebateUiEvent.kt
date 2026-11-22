@@ -7,7 +7,5 @@ sealed interface ClassDebateUiEvent {
 
     data object ShowLoadFailedToast : ClassDebateUiEvent
 
-    data object ShowReplyTooShortToast : ClassDebateUiEvent
-
     data object ShowActionFailedToast : ClassDebateUiEvent
 }

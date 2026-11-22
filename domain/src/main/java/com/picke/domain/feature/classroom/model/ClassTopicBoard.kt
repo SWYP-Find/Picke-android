@@ -36,5 +36,6 @@ data class ClassTopicOptionBoard(
     val rationale: String,
     val philosopher: String,
     val philosopherName: String,
-    val philosopherImageKey: String
+    val philosopherImageKey: String,
+    val philosopherImageUrl: String?
 )

@@ -87,4 +87,6 @@ interface ClassroomRepository {
     ): Result<ClassResultMyActivityBoard>
 
     suspend fun retryClassResultInsight(classId: Long): Result<ClassResultInsightBoard>
+
+    suspend fun retryClassResultMyReport(classId: Long): Result<ClassResultMyReportBoard>
 }

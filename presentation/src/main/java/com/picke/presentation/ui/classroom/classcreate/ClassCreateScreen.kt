@@ -5,12 +5,10 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -21,9 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,10 +44,6 @@ import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-
-private object ClassCreateScreenDimens {
-    val bottomFadeHeight = 70.dp
-}
 
 @Composable
 fun ClassCreateScreen(
@@ -98,7 +90,6 @@ private fun ClassCreateContent(
     modifier: Modifier = Modifier
 ) {
     val isSelectionStep = uiState.step == ClassCreateStep.SELECTION
-    val showsBottomFade = isSelectionStep || uiState.step == ClassCreateStep.SETTING
 
     Scaffold(
         modifier = modifier
@@ -123,95 +114,73 @@ private fun ClassCreateContent(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(SpacingTokens.s16)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(SpacingTokens.s16)
-            ) {
-                ClassCreateHeaderSection(
-                    step = uiState.step,
-                    method = uiState.method
+            ClassCreateHeaderSection(
+                step = uiState.step,
+                method = uiState.method
+            )
+
+            Spacer(modifier = Modifier.height(if (isSelectionStep) SpacingTokens.s20 else SpacingTokens.s32))
+            when (uiState.step) {
+                ClassCreateStep.METHOD -> ClassCreateMethodStep(
+                    selectedMethod = uiState.method,
+                    onMethodSelect = { method ->
+                        onAction(ClassCreateUiAction.MethodSelect(method))
+                    },
+                    onGuideClick = { method ->
+                        onAction(ClassCreateUiAction.GuideClick(method))
+                    }
                 )
 
-                Spacer(modifier = Modifier.height(if (isSelectionStep) SpacingTokens.s20 else SpacingTokens.s32))
-                when (uiState.step) {
-                    ClassCreateStep.METHOD -> ClassCreateMethodStep(
-                        selectedMethod = uiState.method,
-                        onMethodSelect = { method ->
-                            onAction(ClassCreateUiAction.MethodSelect(method))
-                        },
-                        onGuideClick = { method ->
-                            onAction(ClassCreateUiAction.GuideClick(method))
-                        }
-                    )
+                ClassCreateStep.CONDITION -> ClassCreateConditionStep(
+                    uiState = uiState,
+                    onTopicChange = { topic ->
+                        onAction(ClassCreateUiAction.TopicChange(topic))
+                    },
+                    onLevelSelect = { level ->
+                        onAction(ClassCreateUiAction.LevelSelect(level))
+                    },
+                    onCategorySelect = { category ->
+                        onAction(ClassCreateUiAction.CategorySelect(category))
+                    }
+                )
 
-                    ClassCreateStep.CONDITION -> ClassCreateConditionStep(
-                        uiState = uiState,
-                        onTopicChange = { topic ->
-                            onAction(ClassCreateUiAction.TopicChange(topic))
-                        },
-                        onLevelSelect = { level ->
-                            onAction(ClassCreateUiAction.LevelSelect(level))
-                        },
-                        onCategorySelect = { category ->
-                            onAction(ClassCreateUiAction.CategorySelect(category))
-                        }
-                    )
+                ClassCreateStep.SELECTION -> ClassCreateSelectionStep(
+                    uiState = uiState,
+                    onBattleSelect = { battle ->
+                        onAction(ClassCreateUiAction.BattleSelect(battle))
+                    },
+                    onBattlePreviewClick = { battleId ->
+                        onAction(ClassCreateUiAction.BattlePreviewClick(battleId))
+                    },
+                    onEditConditionClick = {
+                        onAction(ClassCreateUiAction.EditConditionClick)
+                    }
+                )
 
-                    ClassCreateStep.SELECTION -> ClassCreateSelectionStep(
-                        uiState = uiState,
-                        onBattleSelect = { battle ->
-                            onAction(ClassCreateUiAction.BattleSelect(battle))
-                        },
-                        onBattlePreviewClick = { battleId ->
-                            onAction(ClassCreateUiAction.BattlePreviewClick(battleId))
-                        },
-                        onEditConditionClick = {
-                            onAction(ClassCreateUiAction.EditConditionClick)
-                        }
-                    )
-
-                    ClassCreateStep.SETTING -> ClassCreateSettingStep(
-                        uiState = uiState,
-                        onClassNameChange = { name ->
-                            onAction(ClassCreateUiAction.ClassNameChange(name))
-                        },
-                        onDeadlineToggle = { isEnabled ->
-                            onAction(ClassCreateUiAction.DeadlineToggle(isEnabled))
-                        },
-                        onDeadlineClick = {
-                            onAction(ClassCreateUiAction.DeadlineFieldClick)
-                        },
-                        onCommentRequiredToggle = { isRequired ->
-                            onAction(ClassCreateUiAction.CommentRequiredToggle(isRequired))
-                        },
-                        onOperatorJoinToggle = { isJoined ->
-                            onAction(ClassCreateUiAction.OperatorJoinToggle(isJoined))
-                        }
-                    )
-                }
-            }
-
-            if (showsBottomFade) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(ClassCreateScreenDimens.bottomFadeHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
-                                    PickeTheme.colors.backgroundBeige
-                                )
-                            )
-                        )
+                ClassCreateStep.SETTING -> ClassCreateSettingStep(
+                    uiState = uiState,
+                    onClassNameChange = { name ->
+                        onAction(ClassCreateUiAction.ClassNameChange(name))
+                    },
+                    onDeadlineToggle = { isEnabled ->
+                        onAction(ClassCreateUiAction.DeadlineToggle(isEnabled))
+                    },
+                    onDeadlineClick = {
+                        onAction(ClassCreateUiAction.DeadlineFieldClick)
+                    },
+                    onCommentRequiredToggle = { isRequired ->
+                        onAction(ClassCreateUiAction.CommentRequiredToggle(isRequired))
+                    },
+                    onOperatorJoinToggle = { isJoined ->
+                        onAction(ClassCreateUiAction.OperatorJoinToggle(isJoined))
+                    }
                 )
             }
         }

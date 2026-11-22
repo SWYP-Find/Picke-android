@@ -14,14 +14,15 @@ internal fun reduce(state: ClassDebateUiState, action: ClassDebateUiAction): Cla
         is ClassDebateUiAction.InputChange -> if (state.isReplyLengthWithinMax(action.input)) {
             state.copy(
                 input = action.input,
-                replyRequestKey = if (action.input == state.input) state.replyRequestKey else null
+                replyRequestKey = if (action.input == state.input) state.replyRequestKey else null,
+                replyRejectionMessage = if (action.input == state.input) state.replyRejectionMessage else null
             )
         } else {
             state
         }
 
-        ClassDebateUiAction.SendClick -> if (state.isSendEnabled && state.isReplyLengthEnough) {
-            state.copy(isRequesting = true)
+        ClassDebateUiAction.SendClick -> if (state.isSendEnabled) {
+            state.copy(replyRejectionMessage = null, isRequesting = true)
         } else {
             state
         }
@@ -53,6 +54,11 @@ internal fun reduce(state: ClassDebateUiState, mutation: ClassDebateMutation): C
         )
 
         is ClassDebateMutation.ReplyFailed -> state.copy(replyRequestKey = mutation.requestKey)
+
+        is ClassDebateMutation.ReplyRejected -> state.copy(
+            replyRequestKey = null,
+            replyRejectionMessage = mutation.message
+        )
     }
 
     return if (mutation is ClassDebateMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced

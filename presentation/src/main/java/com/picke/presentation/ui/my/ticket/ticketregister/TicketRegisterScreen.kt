@@ -118,7 +118,8 @@ private fun TicketRegisterContent(
 
             TicketRegisterDialog.INVALID_CODE,
             TicketRegisterDialog.REGISTER_FAILED,
-            TicketRegisterDialog.EXPIRED -> PickeSingleActionDialog(
+            TicketRegisterDialog.EXPIRED,
+            TicketRegisterDialog.LOCKED -> PickeSingleActionDialog(
                 message = stringResource(dialog.messageRes()),
                 buttonText = stringResource(R.string.ticket_register_dialog_confirm),
                 onConfirm = { onAction(TicketRegisterUiAction.DialogDismiss) },
@@ -134,6 +135,7 @@ private fun TicketRegisterDialog.messageRes(): Int = when (this) {
     TicketRegisterDialog.INVALID_CODE -> R.string.ticket_register_dialog_invalid_code
     TicketRegisterDialog.REGISTER_FAILED -> R.string.ticket_register_dialog_register_failed
     TicketRegisterDialog.EXPIRED -> R.string.ticket_register_dialog_expired
+    TicketRegisterDialog.LOCKED -> R.string.ticket_register_dialog_locked
 }
 
 @Preview(name = "코드 입력", showBackground = true)

@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
 import com.picke.presentation.share.launchTextShare
 import com.picke.presentation.ui.classroom.classshare.component.ClassShareSkeleton
@@ -90,6 +91,7 @@ fun ClassShareScreen(
                     context = context,
                     text = context.getString(
                         R.string.class_share_code_message,
+                        BuildConfig.PLAY_STORE_URL,
                         event.className,
                         event.code
                     ),

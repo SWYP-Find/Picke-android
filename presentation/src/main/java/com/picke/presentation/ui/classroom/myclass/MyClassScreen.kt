@@ -39,6 +39,8 @@ private const val MY_CLASS_SKELETON_COUNT = 3
 
 @Composable
 fun MyClassScreen(
+    hasClassChangedResult: Boolean,
+    onClassChangedResultConsumed: () -> Unit,
     onBackClick: () -> Unit,
     onClassClick: (classId: Long) -> Unit,
     onEditClick: (classId: Long) -> Unit,
@@ -52,6 +54,13 @@ fun MyClassScreen(
 
     val loadFailedMessage = stringResource(R.string.toast_load_failed)
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
+    LaunchedEffect(hasClassChangedResult) {
+        if (hasClassChangedResult) {
+            onClassChangedResultConsumed()
+            viewModel.onAction(MyClassUiAction.ClassChangedReceive)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

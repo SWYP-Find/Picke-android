@@ -3,12 +3,17 @@ package com.picke.presentation.ui.classroom.classshare
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.navigation.AppRoute
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareMutation
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
-import com.picke.presentation.util.DummyData
+import com.picke.presentation.ui.classroom.classshare.model.toUiModel
+import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,11 +26,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassShareViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        ClassShareUiState(classId = savedStateHandle.get<Long>(CLASS_ID_KEY) ?: 0L)
+        ClassShareUiState(classId = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID) ?: 0L)
     )
     val uiState: StateFlow<ClassShareUiState> = _uiState.asStateFlow()
 
@@ -40,9 +46,16 @@ class ClassShareViewModel @Inject constructor(
         val state = _uiState.value
         when (action) {
             ClassShareUiAction.BackClick -> sendEvent(ClassShareUiEvent.NavigateBack)
-            ClassShareUiAction.ShareCodeClick -> sendEvent(ClassShareUiEvent.ShareCode(state.code))
-            ClassShareUiAction.CopyCodeClick -> sendEvent(ClassShareUiEvent.CopyCode(state.code))
-            ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToClass(state.classId))
+
+            ClassShareUiAction.ShareCodeClick -> state.classInfo?.let { classInfo ->
+                sendEvent(ClassShareUiEvent.ShareCode(classInfo.className, classInfo.code))
+            }
+
+            ClassShareUiAction.CopyCodeClick -> state.classInfo?.let { classInfo ->
+                sendEvent(ClassShareUiEvent.CopyCode(classInfo.code))
+            }
+
+            ClassShareUiAction.GoToClassClick -> sendEvent(ClassShareUiEvent.NavigateToMyClass)
         }
     }
 
@@ -51,19 +64,24 @@ class ClassShareViewModel @Inject constructor(
     }
 
     private fun fetchClassShare() {
-        // TODO: API 연동 - 클래스 정보·참여 코드 조회로 교체
-        val classItem =
-            DummyData.dummyMyClasses.firstOrNull { it.id == _uiState.value.classId } ?: return
-        val mutation = ClassShareMutation.ClassShareLoaded(
-            className = classItem.title,
-            deadline = DummyData.dummyClassDeadline,
-            code = DummyData.dummyClassCode,
-            battle = DummyData.dummyClassBattles.first()
-        )
-        _uiState.update { reduce(it, mutation) }
-    }
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
 
-    companion object {
-        private const val CLASS_ID_KEY = "classId"
+            if (classDetail == null || classBattle == null) {
+                _uiState.update { reduce(it, ClassShareMutation.ClassShareLoadFailed) }
+                sendEvent(ClassShareUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            val mutation = ClassShareMutation.ClassShareLoaded(
+                classInfo = classDetail.toUiModel(),
+                battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType))
+            )
+            _uiState.update { reduce(it, mutation) }
+        }
     }
 }

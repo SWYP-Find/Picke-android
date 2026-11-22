@@ -1,66 +1,73 @@
 package com.picke.data.feature.recommend.model
 
+import com.picke.data.common.error.mapItemOrNull
+import com.picke.data.common.error.requireField
 import com.picke.domain.feature.recommend.model.RecommendBoard
 import com.picke.domain.feature.recommend.model.RecommendOptionBoard
 import com.picke.domain.feature.recommend.model.RecommendPageBoard
 import com.picke.domain.feature.recommend.model.RecommendTagBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class RecommendTagDto(
-    val tagId: Long?,
-    val name: String?
+    val tagId: Long,
+    val name: String
 )
 
+@Serializable
 data class RecommendOptionDto(
-    val optionId: Long?,
-    val title: String?,
+    val optionId: Long,
+    val title: String,
     val stance: String?,
     val representative: String?,
-    val imageUrl: String?
+    val imageUrl: String
 )
 
+@Serializable
 data class RecommendationItemDto(
-    val battleId: Long?,
-    val title: String?,
+    val battleId: Long,
+    val title: String,
     val summary: String?,
     val audioDuration: Int?,
     val viewCount: Int?,
-    val tags: List<RecommendTagDto>?,
-    val participantsCount: Int?,
-    val options: List<RecommendOptionDto>?
+    val tags: List<RecommendTagDto>,
+    val participantsCount: Int,
+    val options: List<RecommendOptionDto>
 )
 
+@Serializable
 data class RecommendationPageResponseDto(
-    val items: List<RecommendationItemDto>?,
+    val items: List<RecommendationItemDto>,
     val nextCursor: String?,
-    val hasNext: Boolean?
+    val hasNext: Boolean
 )
 
 fun RecommendTagDto.toDomainModel() = RecommendTagBoard(
-    tagId = this.tagId ?: 0L,
-    name = this.name ?: ""
+    tagId = tagId,
+    name = name
 )
 
 fun RecommendOptionDto.toDomainModel() = RecommendOptionBoard(
-    optionId = this.optionId ?: 0L,
-    title = this.title ?: "",
-    stance = this.stance ?: "",
-    representative = this.representative ?: "",
-    imageUrl = this.imageUrl ?: ""
+    optionId = optionId,
+    title = title,
+    stance = stance.requireField("RecommendOptionDto.stance"),
+    representative = representative.requireField("RecommendOptionDto.representative"),
+    imageUrl = imageUrl
 )
 
 fun RecommendationItemDto.toDomainModel() = RecommendBoard(
-    battleId = this.battleId ?: 0L,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    audioDuration = this.audioDuration ?: 0,
-    viewCount = this.viewCount ?: 0,
-    tags = this.tags?.map { it.toDomainModel() } ?: emptyList(),
-    participantsCount = this.participantsCount ?: 0,
-    options = this.options?.map { it.toDomainModel() } ?: emptyList()
+    battleId = battleId,
+    title = title,
+    summary = summary.requireField("RecommendationItemDto.summary"),
+    audioDuration = audioDuration.requireField("RecommendationItemDto.audioDuration"),
+    viewCount = viewCount.requireField("RecommendationItemDto.viewCount"),
+    tags = tags.map { it.toDomainModel() },
+    participantsCount = participantsCount,
+    options = options.map { it.toDomainModel() }
 )
 
 fun RecommendationPageResponseDto.toDomainModel() = RecommendPageBoard(
-    items = this.items?.map { it.toDomainModel() } ?: emptyList(),
-    nextCursor = this.nextCursor,
-    hasNext = this.hasNext ?: false
+    items = items.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+    nextCursor = nextCursor,
+    hasNext = hasNext
 )

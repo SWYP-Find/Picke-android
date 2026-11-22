@@ -1,15 +1,14 @@
 package com.picke.presentation.ui.classroom.classcreate
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -20,9 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.classcreate.component.ClassMethodGuideSheet
-import com.picke.presentation.ui.classroom.classcreate.component.deadline.ClassDeadlineSheet
+import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateErrorDialog
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateMethod
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateStep
 import com.picke.presentation.ui.classroom.classcreate.model.ClassCreateUiAction
@@ -41,22 +39,25 @@ import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateMethodSte
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSelectionStep
 import com.picke.presentation.ui.classroom.classcreate.step.ClassCreateSettingStep
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.classroom.component.deadline.ClassDeadlineSheet
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeSingleActionDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
-
-private object ClassCreateScreenDimens {
-    val bottomFadeHeight = 70.dp
-}
 
 @Composable
 fun ClassCreateScreen(
     onBackClick: () -> Unit,
     onNavigateToShare: (classId: Long) -> Unit,
+    onNavigateToBattlePreview: (battleId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassCreateViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     BackHandler { viewModel.onAction(ClassCreateUiAction.BackClick) }
 
@@ -64,7 +65,13 @@ fun ClassCreateScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassCreateUiEvent.NavigateBack -> onBackClick()
+
                 is ClassCreateUiEvent.NavigateToShare -> onNavigateToShare(event.classId)
+
+                is ClassCreateUiEvent.NavigateToBattlePreview -> onNavigateToBattlePreview(event.battleId)
+
+                ClassCreateUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -83,14 +90,13 @@ private fun ClassCreateContent(
     modifier: Modifier = Modifier
 ) {
     val isSelectionStep = uiState.step == ClassCreateStep.SELECTION
-    val showsBottomFade = isSelectionStep || uiState.step == ClassCreateStep.SETTING
 
     Scaffold(
         modifier = modifier
             .background(PickeTheme.colors.backgroundBeige)
             .systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(uiState.step.titleRes()),
                 onBackClick = { onAction(ClassCreateUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -108,98 +114,73 @@ private fun ClassCreateContent(
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(SpacingTokens.s16)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(SpacingTokens.s16)
-            ) {
-                ClassCreateHeaderSection(
-                    step = uiState.step,
-                    method = uiState.method
+            ClassCreateHeaderSection(
+                step = uiState.step,
+                method = uiState.method
+            )
+
+            Spacer(modifier = Modifier.height(if (isSelectionStep) SpacingTokens.s20 else SpacingTokens.s32))
+            when (uiState.step) {
+                ClassCreateStep.METHOD -> ClassCreateMethodStep(
+                    selectedMethod = uiState.method,
+                    onMethodSelect = { method ->
+                        onAction(ClassCreateUiAction.MethodSelect(method))
+                    },
+                    onGuideClick = { method ->
+                        onAction(ClassCreateUiAction.GuideClick(method))
+                    }
                 )
 
-                Spacer(modifier = Modifier.height(if (isSelectionStep && uiState.method == ClassCreateMethod.CONTENT) SpacingTokens.s20 else SpacingTokens.s32))
-                when (uiState.step) {
-                    ClassCreateStep.METHOD -> ClassCreateMethodStep(
-                        selectedMethod = uiState.method,
-                        onMethodSelect = { method ->
-                            onAction(ClassCreateUiAction.MethodSelect(method))
-                        },
-                        onGuideClick = { method ->
-                            onAction(ClassCreateUiAction.GuideClick(method))
-                        }
-                    )
+                ClassCreateStep.CONDITION -> ClassCreateConditionStep(
+                    uiState = uiState,
+                    onTopicChange = { topic ->
+                        onAction(ClassCreateUiAction.TopicChange(topic))
+                    },
+                    onLevelSelect = { level ->
+                        onAction(ClassCreateUiAction.LevelSelect(level))
+                    },
+                    onCategorySelect = { category ->
+                        onAction(ClassCreateUiAction.CategorySelect(category))
+                    }
+                )
 
-                    ClassCreateStep.CONDITION -> ClassCreateConditionStep(
-                        uiState = uiState,
-                        onTopicChange = { topic ->
-                            onAction(ClassCreateUiAction.TopicChange(topic))
-                        },
-                        onLevelSelect = { level ->
-                            onAction(ClassCreateUiAction.LevelSelect(level))
-                        },
-                        onCategorySelect = { category ->
-                            onAction(ClassCreateUiAction.CategorySelect(category))
-                        }
-                    )
+                ClassCreateStep.SELECTION -> ClassCreateSelectionStep(
+                    uiState = uiState,
+                    onBattleSelect = { battle ->
+                        onAction(ClassCreateUiAction.BattleSelect(battle))
+                    },
+                    onBattlePreviewClick = { battleId ->
+                        onAction(ClassCreateUiAction.BattlePreviewClick(battleId))
+                    },
+                    onEditConditionClick = {
+                        onAction(ClassCreateUiAction.EditConditionClick)
+                    }
+                )
 
-                    ClassCreateStep.SELECTION -> ClassCreateSelectionStep(
-                        uiState = uiState,
-                        onBattleSelect = { battleId ->
-                            onAction(ClassCreateUiAction.BattleSelect(battleId))
-                        },
-                        onBattlePreviewClick = { battleId ->
-                            onAction(ClassCreateUiAction.BattlePreviewClick(battleId))
-                        },
-                        onEditConditionClick = {
-                            onAction(ClassCreateUiAction.EditConditionClick)
-                        },
-                        onRegenerateClick = {
-                            onAction(ClassCreateUiAction.RegenerateClick)
-                        }
-                    )
-
-                    ClassCreateStep.SETTING -> ClassCreateSettingStep(
-                        uiState = uiState,
-                        onClassNameChange = { name ->
-                            onAction(ClassCreateUiAction.ClassNameChange(name))
-                        },
-                        onDeadlineToggle = { isEnabled ->
-                            onAction(ClassCreateUiAction.DeadlineToggle(isEnabled))
-                        },
-                        onDeadlineClick = {
-                            onAction(ClassCreateUiAction.DeadlineFieldClick)
-                        },
-                        onCommentRequiredToggle = { isRequired ->
-                            onAction(ClassCreateUiAction.CommentRequiredToggle(isRequired))
-                        },
-                        onOperatorJoinToggle = { isJoined ->
-                            onAction(ClassCreateUiAction.OperatorJoinToggle(isJoined))
-                        }
-                    )
-                }
-            }
-
-            if (showsBottomFade) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(ClassCreateScreenDimens.bottomFadeHeight)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    PickeTheme.colors.backgroundBeige.copy(alpha = 0f),
-                                    PickeTheme.colors.backgroundBeige
-                                )
-                            )
-                        )
+                ClassCreateStep.SETTING -> ClassCreateSettingStep(
+                    uiState = uiState,
+                    onClassNameChange = { name ->
+                        onAction(ClassCreateUiAction.ClassNameChange(name))
+                    },
+                    onDeadlineToggle = { isEnabled ->
+                        onAction(ClassCreateUiAction.DeadlineToggle(isEnabled))
+                    },
+                    onDeadlineClick = {
+                        onAction(ClassCreateUiAction.DeadlineFieldClick)
+                    },
+                    onCommentRequiredToggle = { isRequired ->
+                        onAction(ClassCreateUiAction.CommentRequiredToggle(isRequired))
+                    },
+                    onOperatorJoinToggle = { isJoined ->
+                        onAction(ClassCreateUiAction.OperatorJoinToggle(isJoined))
+                    }
                 )
             }
         }
@@ -217,6 +198,17 @@ private fun ClassCreateContent(
         ClassMethodGuideSheet(
             method = method,
             onDismiss = { onAction(ClassCreateUiAction.GuideSheetDismiss) }
+        )
+    }
+
+    val errorDialog = uiState.errorDialog
+    if (errorDialog != null) {
+        val message = uiState.clarificationMessage ?: stringResource(errorDialog.messageRes())
+        PickeSingleActionDialog(
+            message = message,
+            buttonText = stringResource(R.string.dialog_ok),
+            onConfirm = { onAction(ClassCreateUiAction.ErrorDialogDismiss) },
+            onDismiss = { onAction(ClassCreateUiAction.ErrorDialogDismiss) }
         )
     }
 }
@@ -278,12 +270,63 @@ private fun ClassCreateUiState.nextButtonRes(): Int = when (step) {
     ClassCreateStep.SETTING -> R.string.class_setting_create
 }
 
+@StringRes
+private fun ClassCreateErrorDialog.messageRes(): Int = when (this) {
+    ClassCreateErrorDialog.BATTLE_SEARCH_FAILED -> R.string.class_create_dialog_battle_search_failed
+    ClassCreateErrorDialog.TOPIC_GENERATION_FAILED -> R.string.class_create_dialog_topic_generation_failed
+    ClassCreateErrorDialog.TOPIC_CLARIFICATION_NEEDED -> R.string.class_create_dialog_topic_clarification_needed
+    ClassCreateErrorDialog.CLASS_CREATION_FAILED -> R.string.class_create_dialog_class_creation_failed
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ClassCreateScreenPreview() {
     PickeTheme {
         ClassCreateContent(
             uiState = ClassCreateUiState(),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "배틀 검색 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentBattleSearchFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                errorDialog = ClassCreateErrorDialog.BATTLE_SEARCH_FAILED
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "AI 주제 생성 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentTopicGenerationFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.AI_TOPIC,
+                errorDialog = ClassCreateErrorDialog.TOPIC_GENERATION_FAILED
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "클래스 개설 실패", showBackground = true)
+@Composable
+private fun ClassCreateContentClassCreationFailedPreview() {
+    PickeTheme {
+        ClassCreateContent(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SETTING,
+                errorDialog = ClassCreateErrorDialog.CLASS_CREATION_FAILED
+            ),
             onAction = {}
         )
     }

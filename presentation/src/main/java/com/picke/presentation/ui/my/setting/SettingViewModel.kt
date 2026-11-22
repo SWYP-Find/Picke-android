@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picke.domain.common.local.LocalPreferencesUseCases
 import com.picke.domain.feature.auth.usecase.AuthUseCases
-import com.picke.presentation.R
 import com.picke.presentation.analytics.AnalyticsScreen
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.analytics.UiActionName
@@ -45,7 +44,7 @@ class SettingViewModel @Inject constructor(
                     _uiEvent.send(SettingUiEvent.NavigateToLogin)
                 }
                 .onFailure {
-                    _uiEvent.send(SettingUiEvent.ShowToast(R.string.setting_logout_error))
+                    _uiEvent.send(SettingUiEvent.ShowLogoutFailedToast)
                 }
 
             _uiState.update { it.copy(isLoading = false) }
@@ -63,7 +62,7 @@ class SettingViewModel @Inject constructor(
                     _uiEvent.send(SettingUiEvent.NavigateToLogin)
                 }
                 .onFailure {
-                    _uiEvent.send(SettingUiEvent.ShowToast(R.string.setting_withdraw_error))
+                    _uiEvent.send(SettingUiEvent.ShowWithdrawFailedToast)
                 }
 
             _uiState.update { it.copy(isLoading = false) }

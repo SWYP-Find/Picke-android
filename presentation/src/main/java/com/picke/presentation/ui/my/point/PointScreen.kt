@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.point
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,15 +38,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.CustomTopAppBarAction
-import com.picke.presentation.ui.component.dialog.CustomReverseConfirmDialog
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBarAction
+import com.picke.presentation.ui.component.dialog.PickeReverseConfirmDialog
+import com.picke.presentation.ui.my.point.model.PointUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 
 data class PointHistoryUiModel(
@@ -57,27 +61,41 @@ data class PointHistoryUiModel(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PointScreen(
-    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onNavigateToMakeBattle: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: PointViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+
     var showChargeDialog by remember { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                PointUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = "포인트 내역",
                 centerTitle = true,
                 showLogo = false,
                 onBackClick = { onBackClick() },
                 backgroundColor = PickeTheme.colors.backgroundBeige,
                 actions = {
-                    CustomTopAppBarAction(
+                    PickeTopAppBarAction(
                         iconRes = R.drawable.ic_point,
                         contentDescription = stringResource(R.string.setting),
                         onClick = { showChargeDialog = true },
@@ -170,7 +188,7 @@ fun PointScreen(
     }
 
     if (showChargeDialog) {
-        CustomReverseConfirmDialog(
+        PickeReverseConfirmDialog(
             title = "나만의 배틀을 제안해주세요",
             message = "-30P를 사용해 원하는 주제를 제안하고,\n" +
                     "채택되면 +100P를 돌려받아요.",

@@ -1,0 +1,175 @@
+package com.picke.presentation.ui.classroom.classdetail
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
+import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailMutation
+import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
+import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
+import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
+import com.picke.presentation.ui.classroom.classdetail.model.toUiModel
+import com.picke.presentation.ui.classroom.model.ClassBattleStep
+import com.picke.presentation.ui.classroom.model.ClassBattleType
+import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
+import com.picke.presentation.ui.classroom.model.toUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ClassDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val classroomUseCases: ClassroomUseCases
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(
+        ClassDetailUiState(classId = savedStateHandle.get<Long>(AppRoute.ARG_CLASS_ID) ?: 0L)
+    )
+    val uiState: StateFlow<ClassDetailUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<ClassDetailUiEvent>(Channel.BUFFERED)
+    val uiEvent: Flow<ClassDetailUiEvent> = _uiEvent.receiveAsFlow()
+
+    init {
+        fetchClassDetail()
+    }
+
+    fun onAction(action: ClassDetailUiAction) {
+        val previousState = _uiState.value
+        _uiState.update { reduce(it, action) }
+        handleSideEffect(previousState, action)
+    }
+
+    private fun handleSideEffect(state: ClassDetailUiState, action: ClassDetailUiAction) {
+        when (action) {
+            is ClassDetailUiAction.StateOnly -> Unit
+
+            ClassDetailUiAction.BackClick -> if (state.isClassChanged) {
+                sendEvent(ClassDetailUiEvent.NavigateBackAfterClassChanged)
+            } else {
+                sendEvent(ClassDetailUiEvent.NavigateBack)
+            }
+
+            ClassDetailUiAction.MemberClick -> sendEvent(ClassDetailUiEvent.NavigateToMember(state.classId))
+
+            ClassDetailUiAction.DeadlineEditClick -> sendEvent(
+                ClassDetailUiEvent.NavigateToEdit(state.classId)
+            )
+
+            ClassDetailUiAction.BattleClick -> startBattle(state)
+
+            ClassDetailUiAction.ResultClick -> sendEvent(ClassDetailUiEvent.NavigateToResult(state.classId))
+
+            ClassDetailUiAction.ManageEditClick -> sendEvent(ClassDetailUiEvent.NavigateToEdit(state.classId))
+
+            ClassDetailUiAction.ManageShareCodeClick -> sendEvent(
+                ClassDetailUiEvent.NavigateToShare(state.classId)
+            )
+
+            ClassDetailUiAction.DeleteConfirm -> if (!state.isRequesting) deleteClass()
+
+            ClassDetailUiAction.LeaveConfirm -> if (!state.isRequesting) leaveClass()
+
+            ClassDetailUiAction.ClassChangedReceive -> fetchClassDetail()
+
+            ClassDetailUiAction.ClassBattleProgressedReceive -> fetchClassDetail()
+        }
+    }
+
+    private fun sendEvent(event: ClassDetailUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    private fun fetchClassDetail() {
+        val classId = _uiState.value.classId
+        viewModelScope.launch {
+            val classDetailDeferred = async { classroomUseCases.getClassDetailUseCase(classId) }
+            val classBattleDeferred = async { classroomUseCases.getClassBattleUseCase(classId) }
+            val classDetail = classDetailDeferred.await().getOrNull()
+            val classBattle = classBattleDeferred.await().getOrNull()
+
+            if (classDetail == null || classBattle == null) {
+                _uiState.update { reduce(it, ClassDetailMutation.ClassDetailLoadFailed) }
+                sendEvent(ClassDetailUiEvent.ShowLoadFailedToast)
+                return@launch
+            }
+
+            val mutation = ClassDetailMutation.ClassDetailLoaded(
+                classInfo = classDetail.toUiModel(),
+                battle = classBattle.toUiModel(ClassBattleType.from(classDetail.battleType)),
+                battleStep = ClassBattleStep.from(classBattle.battle.currentStep),
+                canParticipate = classBattle.canParticipate
+            )
+            _uiState.update { reduce(it, mutation) }
+        }
+    }
+
+    private fun startBattle(state: ClassDetailUiState) {
+        val classInfo = state.classInfo
+        val battle = state.battle
+        val event = when {
+            classInfo == null -> ClassDetailUiEvent.ShowLoadFailedToast
+
+            !classInfo.isInProgress -> ClassDetailUiEvent.ShowDeadlinePassedToast
+
+            battle == null -> ClassDetailUiEvent.ShowLoadFailedToast
+
+            !state.canParticipate -> ClassDetailUiEvent.ShowNotParticipatingToast
+
+            else -> battleStepEvent(state.classId, state.battleStep, battle)
+        }
+        sendEvent(event)
+    }
+
+    private fun battleStepEvent(
+        classId: Long,
+        step: ClassBattleStep,
+        battle: ClassBattleUiModel
+    ): ClassDetailUiEvent = when (step) {
+        ClassBattleStep.NONE -> ClassDetailUiEvent.NavigateToPreVote(classId)
+
+        ClassBattleStep.PRE_VOTE,
+        ClassBattleStep.TTS_LISTENING -> if (battle.isAiQuestion) {
+            ClassDetailUiEvent.NavigateToDebate(classId)
+        } else {
+            ClassDetailUiEvent.NavigateToScenario(classId, battle.battleId)
+        }
+
+        ClassBattleStep.POST_VOTE -> ClassDetailUiEvent.NavigateToFinalVote(classId)
+
+        ClassBattleStep.COMPLETED ->
+            ClassDetailUiEvent.NavigateToPerspective(classId, battle.battleId)
+    }
+
+    private fun deleteClass() {
+        viewModelScope.launch {
+            classroomUseCases.deleteClassUseCase(_uiState.value.classId)
+                .onSuccess { sendEvent(ClassDetailUiEvent.NavigateBackAfterClassRemoved) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassDetailMutation.RequestFailed) }
+                    sendEvent(ClassDetailUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
+
+    private fun leaveClass() {
+        viewModelScope.launch {
+            classroomUseCases.leaveClassUseCase(_uiState.value.classId)
+                .onSuccess { sendEvent(ClassDetailUiEvent.NavigateBackAfterClassRemoved) }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassDetailMutation.RequestFailed) }
+                    sendEvent(ClassDetailUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
+}

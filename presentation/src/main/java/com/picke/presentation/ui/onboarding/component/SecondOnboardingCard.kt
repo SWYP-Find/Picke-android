@@ -30,10 +30,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.R
+import com.picke.presentation.ui.component.PickeIconCount
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -59,14 +61,14 @@ fun SecondOnboardingCard(modifier: Modifier = Modifier) {
                 SecondOnboardingItemCard(
                     profileResId = R.drawable.illust_raccoon,
                     nickname = "사유하는 라쿤",
-                    replyCount = "23",
-                    likeCount = "1,340"
+                    replyCount = 23,
+                    likeCount = 1340
                 )
                 SecondOnboardingItemCard(
                     profileResId = R.drawable.illust_dochi,
                     nickname = "사유하는 고슴도치",
-                    replyCount = "0",
-                    likeCount = "0"
+                    replyCount = 0,
+                    likeCount = 0
                 )
             }
         }
@@ -163,8 +165,8 @@ fun SecondOnboardingHeader() {
 fun SecondOnboardingItemCard(
     profileResId: Int,
     nickname: String,
-    replyCount: String,
-    likeCount: String,
+    replyCount: Int,
+    likeCount: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -247,33 +249,17 @@ fun SecondOnboardingItemCard(
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_message),
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp),
-                    tint = PickeTheme.colors.textMuted
-                )
-
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = replyCount,
-                    style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.textMuted
+                PickeIconCount(
+                    iconRes = R.drawable.ic_message,
+                    contentDescription = stringResource(R.string.comment_reply),
+                    count = replyCount
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_heart_plus),
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp),
-                    tint = PickeTheme.colors.textMuted
-                )
-
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = likeCount,
-                    style = PickeTheme.typography.bodyXxsMedium,
-                    color = PickeTheme.colors.textMuted
+                PickeIconCount(
+                    iconRes = R.drawable.ic_heart_plus,
+                    contentDescription = stringResource(R.string.comment_like),
+                    count = likeCount
                 )
             }
         }

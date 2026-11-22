@@ -44,7 +44,11 @@ fun ClassManageSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ClassBottomSheet(onDismiss = onDismiss, modifier = modifier) {
+    ClassBottomSheet(
+        onDismiss = onDismiss,
+        modifier = modifier,
+        contentHorizontalPadding = SpacingTokens.s0
+    ) {
         ClassManageSheetContent(
             isOperator = isOperator,
             onEditClick = onEditClick,
@@ -67,7 +71,7 @@ private fun ClassManageSheetContent(
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.class_manage_title),
-            modifier = Modifier.padding(bottom = SpacingTokens.s20),
+            modifier = Modifier.padding(start = SpacingTokens.s16, end = SpacingTokens.s16, bottom = SpacingTokens.s20),
             color = PickeTheme.colors.textDefault,
             style = PickeTheme.typography.headingXl.copy(letterSpacing = ClassManageSheetDimens.titleLetterSpacing)
         )
@@ -112,7 +116,7 @@ private fun ClassManageSheetContent(
 @Composable
 private fun ClassManageDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = SpacingTokens.s16),
         thickness = ComponentNumberTokens.borderWidthRegular,
         color = PickeTheme.colors.cardBaseBorderDefault
     )
@@ -131,7 +135,7 @@ private fun ClassManageItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(vertical = SpacingTokens.s12),
+            .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s12),
         horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s12),
         verticalAlignment = Alignment.CenterVertically
     ) {

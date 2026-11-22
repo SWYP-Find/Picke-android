@@ -5,7 +5,9 @@
     <string name="setting">설정</string>
     <string name="login_your_think">당신의 생각을</string>
     <string name="login_with_kakao">카카오로 로그인</string>
+    <string name="login_kakao_failed">카카오 로그인에 실패했습니다.</string>
     <string name="login_with_google">구글로 로그인</string>
+    <string name="login_google_failed">구글 로그인에 실패했습니다. \n다시 시도해 주세요.</string>
     <string name="onboarding_start">시작하기</string>
 
     <!-- 상단 바 -->
@@ -14,23 +16,50 @@
     <string name="top_app_bar_share">공유</string>
     <string name="top_app_bar_close">닫기</string>
     <string name="top_app_bar_next">다음</string>
+    <string name="top_app_bar_report">리포트</string>
 
     <!-- 다이얼로그 -->
     <string name="dialog_confirm">네, 확인합니다</string>
     <string name="dialog_dismiss">뒤로가기</string>
+    <string name="dialog_ok">확인</string>
+    <string name="dialog_register">등록하기</string>
     <string name="share_dialog_title">공유하기</string>
     <string name="share_dialog_close">닫기</string>
     <string name="share_dialog_kakao">카카오톡</string>
     <string name="share_dialog_instagram">인스타그램</string>
     <string name="share_dialog_copy_link">링크 복사</string>
 
+    <!-- 토스트 -->
+    <string name="toast_load_failed">정보를 불러오지 못했어요</string>
+    <string name="toast_action_failed">요청을 처리하지 못했어요</string>
+    <string name="share_image_load_failed">이미지 로드 실패</string>
+    <string name="share_failed">공유 실패</string>
+    <string name="share_capture_failed">캡처 실패</string>
+    <string name="share_link_copied">링크가 클립보드에 복사되었습니다.</string>
+    <string name="share_image_save_failed">이미지 저장에 실패했습니다.</string>
+    <string name="share_image_upload_failed">이미지 업로드에 실패했습니다.</string>
+    <string name="share_image_process_failed">이미지 처리 중 에러가 발생했습니다.</string>
+    <string name="share_kakao_not_installed">카카오톡이 설치되어 있지 않습니다.</string>
+    <string name="share_instagram_not_installed">인스타그램이 설치되어 있지 않습니다.</string>
+
+    <!-- 카카오톡 공유 메시지 -->
+    <string name="share_kakao_recap_title">나의 철학자 유형은 [%1$s형]!</string>
+    <string name="share_kakao_recap_button">내 철학 유형 알아보러 가기</string>
+    <string name="share_kakao_battle_title">💥 배틀 주제: %1$s</string>
+    <string name="share_kakao_battle_button">배틀 참여하러 가기🙆‍♂️</string>
+    <string name="alarm_read_all_failed">알림 읽음 처리에 실패했습니다. 다시 시도해주세요.</string>
+
     <!-- 마이   -->
     <string name="my_point">내 포인트</string>
+    <string name="my_point_symbol">P</string>
+    <string name="my_nickname_default">사용자</string>
+    <string name="my_philosopher_locked">\?\?형</string>
     <string name="my_charge_free">무료 충전</string>
     <string name="my_menu_discussion">내 배틀 기록</string>
     <string name="my_menu_philosopher">나의 철학자 유형</string>
     <string name="my_menu_content">내 콘텐츠 활동</string>
     <string name="my_menu_notice">공지방 · 이벤트</string>
+    <string name="my_menu_ticket">클래스 이용권</string>
     <string name="my_setting_profile">프로필 편집</string>
     <string name="my_setting_alarm">알림 설정</string>
     <string name="help_and_opinion">도움말 및 의견</string>
@@ -44,26 +73,82 @@
     <string name="my_worst">WORST</string>
     <string name="my_best">BEST</string>
 
+    <!-- 이용권 -->
+    <string name="ticket_name">클래스 %1$d인 이용권</string>
+    <string name="ticket_description">함께 생각을 나누는 모임을 시작하세요</string>
+    <string name="ticket_info_member">참여 인원</string>
+    <string name="ticket_info_member_value">클래스당 최대 %1$d명</string>
+    <string name="ticket_info_period">이용 기간</string>
+    <string name="ticket_info_period_from_registration">등록일부터 %1$d개월</string>
+    <string name="ticket_info_period_range">%1$s – %2$s</string>
+    <string name="ticket_info_class_creation">클래스 생성</string>
+    <string name="ticket_info_class_creation_value">이용 기간 내 무제한</string>
+    <string name="ticket_check_in_my_page">등록 후 마이페이지에서 이용권을 확인할 수 있어요</string>
+
+    <!-- 클래스 이용권 -->
+    <string name="ticket_title">클래스 이용권</string>
+    <string name="ticket_in_use">사용 중인 이용권</string>
+    <string name="ticket_add_register">이용권 추가등록하기</string>
+
+    <!-- 이용권 등록 -->
+    <string name="ticket_register_title">이용권 등록하기</string>
+    <string name="ticket_register_code_headline">클래스 이용권을 등록하세요</string>
+    <string name="ticket_register_code_description">이메일을 통해 리워드로 받은 코드를 입력해 주세요\n등록 전에 이용권 내용을 확인할 수 있어요</string>
+    <string name="ticket_register_code_label">이용권 코드</string>
+    <string name="ticket_register_code_required">\u0020*</string>
+    <string name="ticket_register_code_placeholder">전달 받은 코드를 입력해주세요</string>
+    <string name="ticket_register_guide_code_location">이용권 코드는 어디서 확인하나요?</string>
+    <string name="ticket_register_guide_code_location_answer">펀딩 리워드 발송 안내에서 확인해 주세요. 코드를 받지 못했다면 해당 펀딩의 문의 경로를 이용해 주세요.</string>
+    <string name="ticket_register_guide_join_code">클래스 참여 코드와 다른가요?</string>
+    <string name="ticket_register_guide_join_code_answer">이용권 코드는 모임을 여는 데 사용하는 리워드예요. 모임에 참가하려면 \'클래스 탭\' - \'클래스 참여하기\'에서 참여 코드를 입력해 주세요.</string>
+    <string name="ticket_register_code_check">코드 확인하기</string>
+    <string name="ticket_register_confirm_headline">이 이용권을 등록할까요?</string>
+    <string name="ticket_register_confirm_description">이용 조건과 주의사항을 확인해 주세요</string>
+    <string name="ticket_register_notice">등록하는 순간 이용 기간이 시작돼요\n클래스를 만들기 전에도 기간은 흘러가요</string>
+    <string name="ticket_register_action">이용권 등록하기</string>
+    <string name="ticket_register_dialog_already_registered">이미 등록된 이용권입니다\n다른 이용권을 등록해주세요!</string>
+    <string name="ticket_register_dialog_register">등록하기</string>
+    <string name="ticket_register_dialog_invalid_code">코드 번호를 다시 확인해주세요!</string>
+    <string name="ticket_register_dialog_register_failed">코드 등록이 완료되지 않았습니다\n네트워크 확인 후 한 번 더 시도해주세요</string>
+    <string name="ticket_register_dialog_expired">해당 이용권은 등록기간이 만료되었습니다</string>
+    <string name="ticket_register_dialog_locked">코드를 5번 잘못 입력했습니다\n1시간 후에 다시 시도해주세요</string>
+    <string name="ticket_register_dialog_confirm">확인</string>
+
+    <!-- 이용권 등록 완료 -->
+    <string name="ticket_register_complete_headline">이용권이 등록됐어요</string>
+    <string name="ticket_register_complete_description">이제 우리만의 클래스를 열고\n사람들을 초대해보세요</string>
+    <string name="ticket_register_complete_check">이용권 확인하기</string>
+
     <!-- 홈   -->
     <string name="more">더보기</string>
     <string name="home_section_trending">지금 뜨는 배틀</string>
     <string name="home_section_best">Best 배틀</string>
-    <string name="home_section_today_picke">오늘의 Pické</string>
+    <string name="home_section_best_comment">Best 댓글</string>
     <string name="home_section_new">새로운 배틀</string>
     <string name="home_highlight_battle">배틀</string>
-    <string name="home_highlight_picke">Pické</string>
+    <string name="home_highlight_comment">댓글</string>
     <string name="home_editor_pick">EDITOR PICK</string>
     <string name="home_trending_empty">지금 뜨는 배틀이 아직 없어요</string>
+    <string name="home_best_battle_versus">%1$s VS %2$s</string>
+    <string name="home_best_battle_tag">#%1$s</string>
 
     <!-- 탐색 -->
     <string name="explore_hot_rank">인기순</string>
     <string name="explore_recent_rank">최신순</string>
+    <string name="explore_empty">아직 준비된 배틀이 없어요!</string>
 
     <string name="battle_start">배틀 입장하기</string>
 
     <!-- tts & 투표  -->
     <string name="prevote">사전 투표하기</string>
     <string name="postvote">최종 투표하기</string>
+    <string name="vote_comment_count">댓글 수</string>
+    <string name="vote_submit">투표하기</string>
+    <string name="vote_point_shortage_message">컨텐츠를 시청하기 위한\n포인트가 부족해요!</string>
+    <string name="vote_point_shortage_sub_message">매일 출석체크만 해도 5P를 받을 수 있어요!</string>
+    <string name="vote_point_shortage_button">배틀 주제 구경하러 가기</string>
+    <string name="vote_battle_not_found">해당 배틀은 존재하지 않습니다</string>
+    <string name="vote_versus">VS</string>
 
     <!-- 시나리오   -->
     <string name="scenario_go_to_final_vote">최종투표 하러가기</string>
@@ -78,6 +163,7 @@
     <string name="scenario_audio_pause">일시정지</string>
     <string name="scenario_audio_replay">다시듣기</string>
     <string name="scenario_audio_playback_speed">배속</string>
+    <string name="scenario_audio_load_error">오디오를 불러오는 중 문제가 발생했어요</string>
 
     <!-- 설정   -->
     <string name="setting_alarm_category_function">기능별 알림 설정</string>
@@ -99,6 +185,19 @@
     <string name="setting_alarm_marketing_desc">내 의견에 답글이 달리면 알려드려요</string>
     <string name="setting_logout_error">로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="setting_withdraw_error">탈퇴 요청에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="setting_withdraw_title">정말 떠나시나요? 아쉬워요 😢</string>
+    <string name="setting_withdraw_description">지금까지 픽케를 이용해주셔서 감사합니다.\n더 나은 서비스를 만들기 위해, 탈퇴 이유를 알려주세요.</string>
+    <string name="setting_withdraw_reason_rarely_use">자주 이용하지 않아요</string>
+    <string name="setting_withdraw_reason_no_topic">보고 싶은 배틀 주제가 없어요</string>
+    <string name="setting_withdraw_reason_battle_style">배틀 방식이 제게 잘 맞지 않아요</string>
+    <string name="setting_withdraw_reason_inconvenient">서비스 이용이 불편해요</string>
+    <string name="setting_withdraw_reason_no_time">이용할 시간이 없어요</string>
+    <string name="setting_withdraw_reason_etc">기타</string>
+    <string name="setting_withdraw_reason_required">탈퇴 사유를 선택해주세요.</string>
+    <string name="setting_withdraw_submit">제출하기</string>
+    <string name="setting_withdraw_go_back">픽케로 다시 돌아가기</string>
+    <string name="setting_withdraw_confirm_message">탈퇴 시 지금까지의 이용기록이 영구 삭제 됩니다.\n그럼에도 탈퇴하시겠습니까?</string>
+    <string name="setting_withdraw_confirm">네, 탈퇴합니다</string>
 
     <!-- 약관 -->
     <string name="policy_title_terms">서비스 이용약관</string>
@@ -113,11 +212,14 @@
 
     <!-- 클래스 - 탭 -->
     <string name="class_title">클래스</string>
-    <string name="class_intro_title">함께 생각을 나누는\n클래스를 시작해 보세요</string>
+    <string name="class_intro_title">우리끼리 생각을 나누는\n클래스를 시작해 보세요</string>
     <string name="class_intro_description">콘텐츠를 직접 만들고 사람들을 초대하세요.</string>
     <string name="class_join_code_description">참여 코드 입력</string>
     <string name="class_my_class_description">참여중인 클래스</string>
     <string name="class_ticket_register">이용권 등록하기</string>
+    <string name="class_create_dialog_no_permission">클래스를 열려면 이용권이 필요해요\n클래스 기능을 먼저 알아보세요!</string>
+    <string name="class_create_dialog_unregistered">등록된 이용권이 없습니다\n이용권 등록 먼저 해주세요!</string>
+    <string name="class_create_dialog_expired">사용 중이던 이용권이 종료되었습니다\n새로운 이용권을 등록해주세요!</string>
 
     <!-- 클래스 - 만들기 -->
     <string name="class_create_title">새 클래스 만들기</string>
@@ -133,6 +235,8 @@
     <string name="class_create_headline">어떤 주제로\n이야기 나눌까요?</string>
     <string name="class_create_description">관심 있는 주제나 배틀 조건을 선택해 주세요.</string>
     <string name="class_create_topic_label">찾고 싶은 주제</string>
+    <string name="class_create_topic_helper">2자 이상 입력해주세요</string>
+    <string name="class_create_topic_count">%1$d/%2$d</string>
     <string name="class_create_topic_placeholder">예) AI, 범죄, 촉법</string>
     <string name="class_form_required_mark">\u0020*</string>
     <string name="class_create_level_label">대상 수준</string>
@@ -155,9 +259,18 @@
     <string name="class_create_selected_condition">선택한 조건</string>
     <string name="class_create_edit_condition">조건 수정</string>
     <string name="class_create_result_count">추천 결과 %1$d개</string>
-    <string name="class_create_regenerate">다시 추천</string>
+    <string name="class_create_topic_generating">AI가 질문을 만들고 있어요</string>
+    <string name="class_create_result_count_loading">추천 결과 -개</string>
+    <string name="class_create_recommend_empty">조건에 맞는 추천 배틀이 없어요!</string>
     <string name="class_create_select_battle">배틀 선택하기</string>
     <string name="class_create_select_question">질문 선택하기</string>
+    <string name="class_create_dialog_battle_search_failed">배틀 검색에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
+    <string name="class_create_dialog_topic_generation_failed">주제 생성에 실패했습니다\n네트워크 확인 후 다시 시도해주세요!</string>
+    <string name="class_create_dialog_topic_clarification_needed">주제를 조금 더 자세히 적어주세요\n어떤 상황인지 함께 적으면 좋아요!</string>
+    <string name="class_create_dialog_class_creation_failed">클래스 개설이 완료되지 않았습니다\n네트워크 확인 후 다시 시도해주세요</string>
+
+    <!-- 클래스 - 배틀 미리듣기 -->
+    <string name="class_battle_preview_badge">1분 미리 듣기 중</string>
 
     <!-- 클래스 - 만들기 방식 가이드 시트 -->
     <string name="class_guide_content_title">Pické 배틀 이용 가이드</string>
@@ -178,13 +291,21 @@
 
     <!-- 클래스 - 설정 -->
     <string name="class_setting_title">클래스 설정</string>
+    <string name="class_edit_title">클래스 수정</string>
+    <string name="class_edit_headline">클래스 정보를 수정해 주세요</string>
+    <string name="class_edit_save">클래스 수정하기</string>
+    <string name="class_edit_deadline_range_error">기존 마감일 이후부터 이용권 종료일까지 선택할 수 있어요</string>
     <string name="class_setting_headline">거의 다 왔어요!\n클래스 정보를 입력해 주세요</string>
     <string name="class_setting_name_label">클래스 명</string>
     <string name="class_setting_name_placeholder">ex) 2학년 3반 1학기 토론</string>
+    <string name="class_setting_name_blank_error">공백만으로는 클래스를 만들 수 없어요</string>
     <string name="class_setting_deadline_label">참여 마감일</string>
     <string name="class_setting_deadline_description">마감 전까지 학생이 클래스에 참여할 수 있어요</string>
     <string name="class_setting_deadline_placeholder">마감일</string>
     <string name="class_setting_deadline_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="class_setting_deadline_range_error">현재 시각 이후부터 이용권 종료일까지 선택할 수 있어요</string>
+    <string name="class_deadline_full_format">yyyy. MM. dd. EEEE HH:mm</string>
+    <string name="class_deadline_until">%1$s까지</string>
     <string name="class_deadline_sheet_today">오늘</string>
     <string name="class_deadline_sheet_date_format">M월 d일 (E)</string>
     <string name="class_deadline_sheet_confirm">수정하기</string>
@@ -204,10 +325,31 @@
     <string name="class_share_go_to_class">클래스로 이동하기</string>
     <string name="class_share_copy_code">참여 코드 복사</string>
     <string name="class_share_code_copied">참여 코드를 복사했어요</string>
+    <string name="class_share_code_message">쉽고 재밌는 배틀 앱, 픽케 클래스에 초대합니다. 접속하려면 다음 링크를 클릭하세요.\n링크: %1$s\n클래스명: %2$s\n참여 코드: %3$s</string>
+    <string name="class_share_sheet_title">[픽케] \'%1$s\' 클래스 초대</string>
 
     <!-- 클래스 - 참여 -->
+    <string name="class_join_title">클래스 참여</string>
     <string name="class_join_action">클래스 참여하기</string>
+    <string name="class_join_headline">공유받은 코드로\n클래스에 참여하세요</string>
+    <string name="class_join_description">전달받은 %1$d자리 코드를 입력해 주세요.</string>
     <string name="class_join_code_label">참여 코드</string>
+    <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
+    <string name="class_join_name_count">%1$d/%2$d</string>
+    <string name="class_join_dialog_invalid_code">코드와 일치하는 클래스를 찾지 못했어요\n참여 코드를 한 번 더 확인해 주세요</string>
+    <string name="class_join_dialog_member_removed">다시 참여할 수 없는 클래스예요\n운영자에게 확인해 주세요</string>
+    <string name="class_join_dialog_class_full">해당 클래스의 참여 인원이 모두 찼어요\n모임 주최자에게 확인해 주세요</string>
+    <string name="class_join_dialog_class_closed">참여가 마감된 클래스예요\n다른 코드를 입력해 주세요</string>
+    <string name="class_join_dialog_ticket_ended">이용 기간이 끝난 클래스예요\n다른 코드를 입력해 주세요</string>
+    <string name="class_join_dialog_class_deleted">더 이상 이용할 수 없는 클래스예요\n이 클래스는 삭제되어 입장할 수 없어요</string>
+    <string name="class_join_dialog_already_joined">이미 참여 중인 클래스예요</string>
+
+    <!-- 클래스 - 이름 입력 시트 -->
+    <string name="class_name_sheet_title">이름을 입력해주세요</string>
+    <string name="class_name_sheet_description">이 클래스에서만 보이는 이름이에요.\n입장 후에도 수정할 수 있어요.</string>
+    <string name="class_name_sheet_enter">입장하기</string>
+    <string name="class_name_sheet_edit">수정하기</string>
+    <string name="class_name_sheet_edit_description">이 클래스에서만 보이는 이름이에요.</string>
 
     <!-- 클래스 - 내 클래스 -->
     <string name="my_class_title">내 클래스</string>
@@ -216,6 +358,20 @@
     <string name="my_class_status_ended">종료</string>
     <string name="my_class_member_count">멤버 %1$d명</string>
     <string name="my_class_view">보기</string>
+    <string name="my_class_empty_all">아직 참여한 클래스가 없어요!</string>
+    <string name="my_class_empty_in_progress">진행 중인 클래스가 없어요!</string>
+    <string name="my_class_empty_ended">종료된 클래스가 없어요!</string>
+
+    <!-- 클래스 - 상세 -->
+    <string name="class_detail_title">클래스 상세</string>
+    <string name="class_detail_member">클래스 멤버</string>
+    <string name="class_detail_member_count">총 %1$d명이 참여하고 있어요</string>
+    <string name="class_detail_this_battle">이번 클래스 배틀</string>
+    <string name="class_detail_join_battle">배틀 참여</string>
+    <string name="class_detail_view_result">결과 보기</string>
+    <string name="class_detail_deadline_passed">참여 기간이 마감되었어요.</string>
+    <string name="class_detail_not_participating">운영자 참여를 켜지 않은 클래스라 배틀에 참여할 수 없어요.</string>
+    <string name="class_detail_edit">수정</string>
 
     <!-- 클래스 - 관리 시트 -->
     <string name="class_manage_title">클래스 관리</string>
@@ -232,8 +388,129 @@
     <string name="class_leave_confirm">클래스에서 나가면 해당 클래스의 활동과 결과를 더 이상 확인할 수 없어요.</string>
     <string name="class_leave">나가기</string>
 
+    <!-- 클래스 - 멤버 -->
+    <string name="class_member_search_placeholder">이름을 입력해주세요.</string>
+    <string name="class_member_count">멤버 %1$d</string>
+    <string name="class_member_operator">운영자</string>
+    <string name="class_member_me">나</string>
+    <string name="class_member_remove_confirm">%1$s님을 클래스에서 내보낼까요?\n한 번 내보내면 되돌릴 수 없어요.</string>
+    <string name="class_member_remove">내보내기</string>
+
     <!-- 클래스 - 배틀 -->
     <string name="class_battle_duration">%1$d분</string>
     <string name="class_battle_preview">미리듣기</string>
     <string name="class_battle_versus">VS</string>
+
+    <!-- 클래스 - AI 토론 -->
+    <string name="class_debate_round_format">ROUND %1$d · 입장에 반박해보세요</string>
+    <string name="class_debate_intro_choice">‘%1$s’</string>
+    <string name="class_debate_intro_choice_format_eul">사전투표에서 %1$s을 선택하셨네요.</string>
+    <string name="class_debate_intro_choice_format_reul">사전투표에서 %1$s를 선택하셨네요.</string>
+    <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
+    <string name="class_debate_intro_start_format_gwa">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_intro_start_format_wa">%1$s와 %2$d라운드 토론을 시작해보세요.</string>
+    <string name="class_debate_input_placeholder">%1$d자 이상 내용을 입력하세요</string>
+    <string name="class_debate_send">보내기</string>
+    <string name="class_debate_generating">생각을 정리하고 있어요</string>
+    <string name="class_debate_failed">응답을 준비하지 못했어요. 다시 시도해 주세요</string>
+    <string name="class_retry">다시 시도</string>
+    <string name="class_debate_final_vote">최종투표하기</string>
+    <string name="class_debate_final_vote_dialog_message">최종투표하고 투표 결과를 보시겠습니까?</string>
+    <string name="class_debate_final_vote_dialog_replay">다시 들어볼래요</string>
+    <string name="class_debate_ai_badge">AI</string>
+
+    <!-- 클래스 - 댓글 -->
+    <string name="class_comment_required">의견을 남겨야 리포트를 볼 수 있어요.</string>
+    <string name="class_comment_delete_blocked">의견이 필수인 클래스라 삭제할 수 없어요. 내용을 수정해 주세요.</string>
+
+    <!-- 클래스 - 결과 -->
+    <string name="class_result_summary_tab">클래스 요약</string>
+    <string name="class_result_report_tab">내 리포트</string>
+    <string name="class_result_ai_insight">AI 인사이트</string>
+    <string name="class_result_ai_before_close">%1$s 이후 AI 피드백이 제공돼요</string>
+    <string name="class_result_insight_limited">아직 요약할 의견이 충분하지 않아요</string>
+    <string name="class_result_insight_failed">AI 요약을 준비하지 못했어요</string>
+    <string name="class_result_participation">클래스 참여 현황</string>
+    <string name="class_result_battle_rate">배틀 참여율</string>
+    <string name="class_result_battle_members">참여한 멤버</string>
+    <string name="class_result_comment_rate">댓글 작성율</string>
+    <string name="class_result_comment_members">댓글을 남긴 멤버</string>
+    <string name="class_result_rate">%1$s%%</string>
+    <string name="class_result_member_ratio">%1$d / %2$d명</string>
+    <string name="class_result_no_participation">아직 참여 없음</string>
+    <string name="class_result_stance">입장 분포</string>
+    <string name="class_result_people_count">%1$d명</string>
+    <string name="class_result_total_label">총 참여</string>
+    <string name="class_result_opinions">주요 의견</string>
+    <string name="class_result_best_comment">BEST 댓글</string>
+    <string name="class_result_most_debated_comment">가장 논쟁이 활발했던 댓글</string>
+    <string name="class_result_quote">“%1$s”</string>
+    <string name="class_result_my_vote">내 투표 결과</string>
+    <string name="class_result_pre_vote">사전 선택</string>
+    <string name="class_result_post_vote">사후 선택</string>
+    <string name="class_result_stance_changed">입장 변경</string>
+    <string name="class_result_comment_count">댓글</string>
+    <string name="class_result_reply_count">대댓글</string>
+    <string name="class_result_received_like_count">받은 추천</string>
+    <string name="class_result_count_placeholder">-</string>
+    <string name="class_result_ai_feedback">AI 피드백</string>
+    <string name="class_result_report_not_eligible">참여를 완료하면 AI 피드백을 받을 수 있어요</string>
+    <string name="class_result_report_failed_title">리포트를 불러오지 못했어요.</string>
+    <string name="class_result_report_failed_message">일시적인 오류로 분석 결과를 생성하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="class_result_report_limited">판단의 이유를 살펴볼 글이 아직 충분하지 않아요</string>
+    <string name="class_result_report_partial">이번 피드백은 일부 발언을 기준으로 작성했어요</string>
+    <string name="class_result_judgment_basis">내 판단의 기준</string>
+    <string name="class_result_strength">이번에 잘한 점</string>
+    <string name="class_result_next_focus">한 가지 더 살펴볼 점</string>
+    <string name="class_result_next_question">다음 생각 한 걸음</string>
+    <string name="class_result_my_opinion_link">내가 남긴 의견 %1$d개 보기</string>
+
+    <!-- 클래스 - 내가 남긴 의견 -->
+    <string name="class_my_opinion_title">내가 남긴 의견</string>
+    <string name="class_my_opinion_comments">남긴 댓글</string>
+    <string name="class_my_opinion_replies">남긴 대댓글</string>
+    <string name="class_my_opinion_reply_author">%1$s의 답글</string>
+    <string name="class_my_opinion_like">추천</string>
+    <string name="class_my_opinion_reply">답글</string>
+
+    <!-- 댓글 -->
+    <string name="comment_report_success">신고가 정상 접수되었습니다.</string>
+    <string name="comment_report_duplicate">이미 신고한 사용자입니다.</string>
+    <string name="comment_me">나</string>
+    <string name="comment_status_pending">검수중</string>
+    <string name="comment_status_rejected">거절됨</string>
+    <string name="comment_read_more">자세히 보기</string>
+    <string name="comment_like">좋아요</string>
+    <string name="comment_reply">댓글</string>
+    <string name="comment_menu_delete">삭제</string>
+    <string name="comment_menu_edit">수정</string>
+    <string name="comment_menu_report">신고</string>
+    <string name="comment_report_title">신고사유</string>
+    <string name="comment_report_confirm">신고하기</string>
+    <string name="comment_perspective_delete_message">관점을 삭제하시겠습니까?</string>
+    <string name="comment_delete_confirm">삭제하기</string>
+    <string name="comment_input_hint_perspective">의견을 남겨보세요...</string>
+    <string name="comment_input_hint_reply">댓글을 남겨보세요...</string>
+    <string name="comment_input_hint_edit">수정할 내용을 입력해주세요...</string>
+    <string name="comment_submit">등록</string>
+    <string name="comment_vote_rate">%1$s%%</string>
+    <string name="comment_opinion_changed">생각이 바뀌었어요</string>
+    <string name="comment_opinion_same">생각이 동일해요</string>
+    <string name="comment_tab_all">전체</string>
+    <string name="comment_perspective_title">관점 남기기</string>
+    <string name="comment_sort_popular">인기순</string>
+    <string name="comment_sort_latest">최신순</string>
+    <string name="comment_like_own_perspective">본인이 쓴 관점에는 좋아요를 누를 수 없습니다.</string>
+    <string name="comment_like_own_reply">본인이 쓴 댓글에는 좋아요를 누를 수 없습니다.</string>
+    <string name="comment_empty_all">아직 작성된 관점이 없습니다</string>
+    <string name="comment_empty_option">아직 작성된 \"%1$s\" 관점이 없습니다</string>
+    <string name="comment_empty_image">빈 화면 로고</string>
+    <string name="comment_reply_title">댓글</string>
+    <string name="comment_reply_delete_message">댓글을 삭제하시겠습니까?</string>
+    <string name="comment_reply_count">답글 %1$d개</string>
+    <string name="comment_report_reason_promotion">영리목적/홍보성</string>
+    <string name="comment_report_reason_spam">같은 내용 반복 게시</string>
+    <string name="comment_report_reason_obscene">음란성/선정성</string>
+    <string name="comment_report_reason_abuse">욕설/인신공격</string>
+    <string name="comment_report_reason_etc">기타</string>
 </resources>

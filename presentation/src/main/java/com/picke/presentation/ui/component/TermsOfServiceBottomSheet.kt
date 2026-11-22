@@ -135,25 +135,30 @@ fun TermsOfServiceBottomSheet(
                     text = stringResource(R.string.terms_sheet_required_terms),
                     isAgreed = isServiceTermsAgreed,
                     onToggle = { isServiceTermsAgreed = !isServiceTermsAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_terms to BuildConfig.TERMS_OF_SERVICE_URL }
+                    onViewDetail = {
+                        openedPolicy =
+                            R.string.policy_title_terms to BuildConfig.TERMS_OF_SERVICE_URL
+                    }
                 )
                 TermsItem(
                     text = stringResource(R.string.terms_sheet_required_privacy),
                     isAgreed = isPrivacyPolicyAgreed,
                     onToggle = { isPrivacyPolicyAgreed = !isPrivacyPolicyAgreed },
-                    onViewDetail = { openedPolicy = R.string.policy_title_privacy to BuildConfig.PRIVACY_POLICY_URL }
+                    onViewDetail = {
+                        openedPolicy =
+                            R.string.policy_title_privacy to BuildConfig.PRIVACY_POLICY_URL
+                    }
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // Confirm Button
-            CustomButton(
+            PickeButton(
                 text = stringResource(R.string.terms_sheet_agree),
-                onClick = { if (isAllAgreed) onConfirm() },
-                backgroundColor = if (isAllAgreed) PickeTheme.colors.buttonPrimaryBackgroundDefault else PickeTheme.colors.buttonPrimaryBackgroundDisabled,
-                textColor = PickeTheme.colors.textInverse,
-                modifier = Modifier.fillMaxWidth()
+                onClick = onConfirm,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isAllAgreed
             )
         }
     }
@@ -226,7 +231,7 @@ private fun TermsItem(
             tint = PickeTheme.colors.textDefault,
             modifier = Modifier
                 .size(20.dp)
-                .clickable { onViewDetail() }
+                .clickable(interactionSource = null, indication = null, onClick = onViewDetail)
         )
     }
 }

@@ -8,21 +8,10 @@ import com.picke.data.feature.auth.model.WithdrawalRequest
 import com.picke.data.feature.auth.model.WithdrawnResponseDto
 import retrofit2.http.Body
 import retrofit2.http.HTTP
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface AuthApi {
-    /**
-     * 1. 토큰 재발급 API
-     *
-     * @param refreshToken 헤더에 담아 보낼 토큰 문자열
-     */
-    @POST("/api/v1/auth/refresh")
-    suspend fun refreshAccessToken(
-        @Header("X-Refresh-Token") refreshToken: String
-    ): BaseResponse<AuthResponseDto>
-
     /**
      * 2. 소셜 로그인 API
      *

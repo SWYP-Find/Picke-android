@@ -1,0 +1,41 @@
+package com.picke.presentation.ui.classroom.classdebate.model
+
+data class ClassDebateUiState(
+    val classId: Long = 0L,
+    val isLoading: Boolean = true,
+    val battleTitle: String = "",
+    val debate: ClassDebateUiModel = ClassDebateUiModel(),
+    val input: String = "",
+    val replyRequestKey: String? = null,
+    val replyRejectionMessage: String? = null,
+    val isRequesting: Boolean = false,
+    val isFinalVoteDialogVisible: Boolean = false
+) {
+    val isFinished: Boolean
+        get() = debate.status == ClassDebateStatus.COMPLETED
+
+    val displayRound: Int
+        get() = debate.round.coerceIn(1, TOTAL_ROUNDS)
+
+    val isOpponentGenerating: Boolean
+        get() = isRequesting || debate.status == ClassDebateStatus.GENERATING
+
+    val isOpponentFailed: Boolean
+        get() = !isRequesting && debate.status == ClassDebateStatus.FAILED
+
+    val isRetryVisible: Boolean
+        get() = isOpponentFailed && debate.canRetry
+
+    val isInputEnabled: Boolean
+        get() = debate.canReply && !isRequesting
+
+    val isSendEnabled: Boolean
+        get() = input.trim().length >= debate.replyMinLength && isInputEnabled
+
+    internal fun isReplyLengthWithinMax(text: String): Boolean =
+        debate.replyMaxLength <= 0 || text.length <= debate.replyMaxLength
+
+    companion object {
+        const val TOTAL_ROUNDS = 3
+    }
+}

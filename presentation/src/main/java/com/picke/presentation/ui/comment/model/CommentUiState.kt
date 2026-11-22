@@ -1,12 +1,14 @@
 package com.picke.presentation.ui.comment.model
 
 data class CommentUiState(
-    val targetId: String = "",
+    val targetId: Long = 0L,
     val firstOptionId: Long = 0L,
     val mainPerspective: CommentUiModel? = null,
     val comments: List<CommentUiModel> = emptyList(),
     val nextCursor: String? = null,
     val hasNext: Boolean = true,
-    val isLoading: Boolean = false,
-    val editingCommentId: Long? = null
+    val isLoading: Boolean = true,
+    val isListLoading: Boolean = false,
+    val editingCommentId: Long? = null,
+    val isEditingMainPerspective: Boolean = false
 )

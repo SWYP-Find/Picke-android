@@ -41,30 +41,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
+import com.picke.presentation.share.launchTextShare
+import com.picke.presentation.ui.classroom.classshare.component.ClassShareSkeleton
+import com.picke.presentation.ui.classroom.classshare.model.ClassShareInfoUiModel
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiAction
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiEvent
 import com.picke.presentation.ui.classroom.classshare.model.ClassShareUiState
 import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassBottomButton
-import com.picke.presentation.ui.classroom.component.ClassFormField
+import com.picke.presentation.ui.classroom.component.ClassTitledBlock
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeLoadFailedSection
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.theme.tokens.RadiusTokens
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
-import java.time.LocalDateTime
 
 private const val CLIP_LABEL = "class_code"
+private const val SHARE_PREVIEW_IMAGE_FILE_NAME = "class_share_preview.png"
 
 @Composable
 fun ClassShareScreen(
     onBackClick: () -> Unit,
-    onShareCodeClick: (code: String) -> Unit,
-    onGoToClassClick: (classId: Long) -> Unit,
+    onGoToClassClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClassShareViewModel = hiltViewModel()
 ) {
@@ -74,12 +78,31 @@ fun ClassShareScreen(
     val clipboard = LocalClipboard.current
 
     val codeCopiedMessage = stringResource(R.string.class_share_code_copied)
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 ClassShareUiEvent.NavigateBack -> onBackClick()
-                is ClassShareUiEvent.ShareCode -> onShareCodeClick(event.code)
+
+                ClassShareUiEvent.NavigateToMyClass -> onGoToClassClick()
+
+                is ClassShareUiEvent.ShareCode -> launchTextShare(
+                    context = context,
+                    text = context.getString(
+                        R.string.class_share_code_message,
+                        BuildConfig.PLAY_STORE_URL,
+                        event.className,
+                        event.code
+                    ),
+                    previewTitle = context.getString(
+                        R.string.class_share_sheet_title,
+                        event.className
+                    ),
+                    previewImageRes = R.drawable.logo_picke_appicon,
+                    previewImageFileName = SHARE_PREVIEW_IMAGE_FILE_NAME
+                )
+
                 is ClassShareUiEvent.CopyCode -> {
                     clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(CLIP_LABEL, event.code)))
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
@@ -87,7 +110,8 @@ fun ClassShareScreen(
                     }
                 }
 
-                is ClassShareUiEvent.NavigateToClass -> onGoToClassClick(event.classId)
+                ClassShareUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -110,7 +134,7 @@ private fun ClassShareContent(
             .background(PickeTheme.colors.backgroundBeige)
             .systemBarsPadding(),
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.class_share_title),
                 onBackClick = { onAction(ClassShareUiAction.BackClick) },
                 backgroundColor = PickeTheme.colors.backgroundBeige
@@ -135,14 +159,23 @@ private fun ClassShareContent(
         ) {
             ClassShareHeaderSection()
 
-            ClassShareCodeSection(
-                uiState = uiState,
-                onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
-                onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
-            )
+            if (uiState.isLoading) {
+                ClassShareSkeleton()
+            } else {
+                val classInfo = uiState.classInfo
+                if (classInfo != null) {
+                    ClassShareCodeSection(
+                        classInfo = classInfo,
+                        onShareCodeClick = { onAction(ClassShareUiAction.ShareCodeClick) },
+                        onCopyCodeClick = { onAction(ClassShareUiAction.CopyCodeClick) }
+                    )
 
-            uiState.battle?.let { battle ->
-                ClassShareBattleSection(battle = battle)
+                    uiState.battle?.let { battle ->
+                        ClassShareBattleSection(battle = battle)
+                    }
+                } else {
+                    PickeLoadFailedSection(modifier = Modifier.fillMaxWidth())
+                }
             }
         }
     }
@@ -170,13 +203,13 @@ private fun ClassShareHeaderSection(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ClassShareCodeSection(
-    uiState: ClassShareUiState,
+    classInfo: ClassShareInfoUiModel,
     onShareCodeClick: () -> Unit,
     onCopyCodeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
-    val deadlineText = rememberClassDeadlineText(uiState.deadline)
+    val deadlineText = rememberClassDeadlineText(classInfo.deadline)
 
     Column(
         modifier = modifier
@@ -197,13 +230,13 @@ private fun ClassShareCodeSection(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = uiState.className,
+                text = classInfo.className,
                 color = PickeTheme.colors.textDefault,
                 style = PickeTheme.typography.headingMd
             )
             Text(
                 text = stringResource(R.string.class_share_deadline, deadlineText),
-                modifier = Modifier.alpha(if (uiState.hasDeadline) 1f else 0f),
+                modifier = Modifier.alpha(if (classInfo.hasDeadline) 1f else 0f),
                 color = PickeTheme.colors.textMuted,
                 style = PickeTheme.typography.bodySmMedium
             )
@@ -224,7 +257,7 @@ private fun ClassShareCodeSection(
                 style = PickeTheme.typography.bodySmSemiBold
             )
             Text(
-                text = uiState.code,
+                text = classInfo.code,
                 color = PickeTheme.colors.textPrimary,
                 style = PickeTheme.typography.displayMd
             )
@@ -275,7 +308,7 @@ private fun ClassShareBattleSection(
     battle: ClassBattleUiModel,
     modifier: Modifier = Modifier
 ) {
-    ClassFormField(
+    ClassTitledBlock(
         title = stringResource(R.string.class_setting_selected_battle),
         modifier = modifier
     ) {
@@ -286,14 +319,19 @@ private fun ClassShareBattleSection(
 @Preview(name = "마감일 있음", showBackground = true)
 @Composable
 private fun ClassShareContentPreview() {
+    val classItem = DummyData.dummyMyClasses.first()
+
     PickeTheme {
         ClassShareContent(
             uiState = ClassShareUiState(
-                classId = 1L,
-                className = "2학년 3반 1학기 토론",
-                deadline = LocalDateTime.of(2026, 9, 23, 18, 0),
-                code = "PK7M2Q",
-                battle = DummyData.dummyClassBattles[1]
+                isLoading = false,
+                classId = classItem.id,
+                classInfo = ClassShareInfoUiModel(
+                    className = classItem.title,
+                    deadline = DummyData.dummyClassDeadline,
+                    code = DummyData.dummyClassCode
+                ),
+                battle = DummyData.dummyClassBattles.first()
             ),
             onAction = {}
         )
@@ -303,13 +341,19 @@ private fun ClassShareContentPreview() {
 @Preview(name = "마감일 없음", showBackground = true)
 @Composable
 private fun ClassShareContentNoDeadlinePreview() {
+    val classItem = DummyData.dummyMyClasses.first()
+
     PickeTheme {
         ClassShareContent(
             uiState = ClassShareUiState(
-                classId = 1L,
-                className = "2학년 3반 1학기 토론",
-                code = "PK7M2Q",
-                battle = DummyData.dummyClassBattles[1]
+                isLoading = false,
+                classId = classItem.id,
+                classInfo = ClassShareInfoUiModel(
+                    className = classItem.title,
+                    deadline = null,
+                    code = DummyData.dummyClassCode
+                ),
+                battle = DummyData.dummyClassBattles.first()
             ),
             onAction = {}
         )

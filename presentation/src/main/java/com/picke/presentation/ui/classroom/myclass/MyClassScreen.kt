@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.classroom.myclass
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,33 +22,62 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.myclass.component.MyClassCard
+import com.picke.presentation.ui.classroom.myclass.component.MyClassSkeleton
 import com.picke.presentation.ui.classroom.myclass.model.MyClassFilter
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiAction
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiEvent
 import com.picke.presentation.ui.classroom.myclass.model.MyClassUiState
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeEmptyState
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.SortFilterChip
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.ui.theme.tokens.SpacingTokens
 import com.picke.presentation.util.DummyData
 
+private const val MY_CLASS_SKELETON_COUNT = 3
+
 @Composable
 fun MyClassScreen(
+    hasClassChangedResult: Boolean,
+    onClassChangedResultConsumed: () -> Unit,
     onBackClick: () -> Unit,
     onClassClick: (classId: Long) -> Unit,
+    onEditClick: (classId: Long) -> Unit,
     onShareCodeClick: (classId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyClassViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
+    val actionFailedMessage = stringResource(R.string.toast_action_failed)
+
+    LaunchedEffect(hasClassChangedResult) {
+        if (hasClassChangedResult) {
+            onClassChangedResultConsumed()
+            viewModel.onAction(MyClassUiAction.ClassChangedReceive)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 MyClassUiEvent.NavigateBack -> onBackClick()
+
                 is MyClassUiEvent.NavigateToDetail -> onClassClick(event.classId)
+
+                is MyClassUiEvent.NavigateToEdit -> onEditClick(event.classId)
+
                 is MyClassUiEvent.NavigateToShare -> onShareCodeClick(event.classId)
+
+                MyClassUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+
+                MyClassUiEvent.ShowActionFailedToast ->
+                    Toast.makeText(context, actionFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -71,7 +102,7 @@ private fun MyClassContent(
             .fillMaxSize()
             .background(PickeTheme.colors.backgroundBeige)
     ) {
-        CustomTopAppBar(
+        PickeTopAppBar(
             title = stringResource(R.string.my_class_title),
             onBackClick = { onAction(MyClassUiAction.BackClick) },
             backgroundColor = PickeTheme.colors.backgroundBeige,
@@ -91,6 +122,21 @@ private fun MyClassContent(
                     selectedFilter = uiState.selectedFilter,
                     onFilterSelect = { filter -> onAction(MyClassUiAction.FilterSelect(filter)) }
                 )
+            }
+
+            if (uiState.isLoading && uiState.classes.isEmpty()) {
+                items(count = MY_CLASS_SKELETON_COUNT) {
+                    MyClassSkeleton()
+                }
+            }
+
+            if (!uiState.isLoading && uiState.filteredClasses.isEmpty()) {
+                item(key = "empty") {
+                    PickeEmptyState(
+                        message = stringResource(uiState.selectedFilter.emptyMessageRes),
+                        modifier = Modifier.fillParentMaxSize()
+                    )
+                }
             }
 
             items(items = uiState.filteredClasses, key = { it.id }) { item ->
@@ -115,7 +161,7 @@ private fun MyClassContent(
     }
 
     if (uiState.isDeleteDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_delete_confirm),
             onConfirm = { onAction(MyClassUiAction.DeleteConfirm) },
             onDismiss = { onAction(MyClassUiAction.DeleteDialogDismiss) },
@@ -124,7 +170,7 @@ private fun MyClassContent(
     }
 
     if (uiState.isLeaveDialogVisible) {
-        CustomConfirmDialog(
+        PickeConfirmDialog(
             message = stringResource(R.string.class_leave_confirm),
             onConfirm = { onAction(MyClassUiAction.LeaveConfirm) },
             onDismiss = { onAction(MyClassUiAction.LeaveDialogDismiss) },
@@ -174,6 +220,17 @@ private fun MyClassMemberPreview() {
             uiState = MyClassUiState(
                 classes = DummyData.dummyMyClasses.map { it.copy(isOperator = false) }
             ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(name = "빈 목록", showBackground = true)
+@Composable
+private fun MyClassEmptyPreview() {
+    PickeTheme {
+        MyClassContent(
+            uiState = MyClassUiState(isLoading = false),
             onAction = {}
         )
     }

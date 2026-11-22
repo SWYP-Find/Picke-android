@@ -36,6 +36,7 @@ android {
     val googleOauthRedirectUrl = properties.getProperty("GOOGLE_OAUTH_REDIRECT_URL") ?: ""
     val battleShareUrl = properties.getProperty("BATTLE_SHARE_URL") ?: ""
     val appLinkHost = properties.getProperty("APP_LINK_HOST") ?: ""
+    val playStoreUrl = properties.getProperty("PLAY_STORE_URL") ?: ""
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -55,6 +56,7 @@ android {
         buildConfigField("String", "GOOGLE_OAUTH_REDIRECT_URL", "\"$googleOauthRedirectUrl\"")
         buildConfigField("String", "BATTLE_SHARE_URL", "\"$battleShareUrl\"")
         buildConfigField("String", "APP_LINK_HOST", "\"$appLinkHost\"")
+        buildConfigField("String", "PLAY_STORE_URL", "\"$playStoreUrl\"")
     }
 
     buildFeatures {
@@ -116,6 +118,9 @@ dependencies {
     implementation(libs.kakao.sdk.user)
     implementation(libs.kakao.share)
     implementation(libs.google.play.services.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.google.googleid)
     implementation(libs.play.services.ads)
     implementation(libs.kakao.adfit)
     implementation(libs.mixpanel.android)
@@ -139,4 +144,9 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.datasource.okhttp)
+
+    // [Test]
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

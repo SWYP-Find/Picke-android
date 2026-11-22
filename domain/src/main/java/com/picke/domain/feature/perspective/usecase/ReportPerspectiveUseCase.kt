@@ -1,5 +1,7 @@
 package com.picke.domain.feature.perspective.usecase
 
+import com.picke.domain.common.exception.ApiErrorCode
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
 
 sealed class ReportPerspectiveResult {
@@ -14,7 +16,7 @@ class ReportPerspectiveUseCase(
         return perspectiveRepository.reportPerspective(perspectiveId)
             .map { ReportPerspectiveResult.Reported as ReportPerspectiveResult }
             .recoverCatching { error ->
-                if (error.message == "ALREADY_REPORTED") {
+                if ((error as? ApiErrorException)?.code == ApiErrorCode.REPORT_409) {
                     ReportPerspectiveResult.AlreadyReported
                 } else {
                     throw error

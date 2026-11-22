@@ -1,0 +1,133 @@
+package com.picke.presentation.ui.my.user.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.picke.presentation.ui.component.PickeSkeletonLine
+import com.picke.presentation.ui.component.shimmer
+import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
+
+@Composable
+fun MySkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        ProfileSectionSkeleton()
+
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
+        CreditCardSkeleton()
+
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
+        PhilosopherTypeCardSkeleton()
+
+        Spacer(modifier = Modifier.height(SpacingTokens.s16))
+        repeat(3) {
+            MyPageMenuItemSkeleton()
+        }
+    }
+}
+
+@Composable
+private fun ProfileSectionSkeleton() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(CircleShape)
+                .shimmer()
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            PickeSkeletonLine(width = 100.dp, height = 20.dp)
+            Spacer(modifier = Modifier.height(SpacingTokens.s2))
+            PickeSkeletonLine(width = 60.dp, height = 14.dp)
+        }
+    }
+}
+
+@Composable
+private fun CreditCardSkeleton() {
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .clip(RoundedCornerShape(2.dp))
+            .shimmer()
+    )
+}
+
+@Composable
+private fun PhilosopherTypeCardSkeleton() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(2.dp))
+            .background(PickeTheme.colors.surfaceBeigeStrong)
+            .border(1.dp, PickeTheme.colors.borderBeigeDefault, RoundedCornerShape(2.dp))
+            .padding(SpacingTokens.s16),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .shimmer()
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            PickeSkeletonLine(width = 60.dp, height = 14.dp)
+            Spacer(modifier = Modifier.height(4.dp))
+            PickeSkeletonLine(width = 100.dp, height = 18.dp)
+        }
+    }
+}
+
+@Composable
+private fun MyPageMenuItemSkeleton() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PickeSkeletonLine(width = 120.dp, height = 18.dp)
+        }
+        HorizontalDivider(
+            thickness = ComponentNumberTokens.borderWidthRegular,
+            color = PickeTheme.colors.colorBorderBeigeDark
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MySkeletonPreview() {
+    PickeTheme { MySkeleton() }
+}

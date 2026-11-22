@@ -30,13 +30,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.picke.presentation.R
 import com.picke.presentation.ui.component.shimmer
-import com.picke.presentation.ui.home.model.HomeContentUiModel
+import com.picke.presentation.ui.home.model.HomeTrendingBattleUiModel
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.DummyData
 
 @Composable
 fun TrendingBattleCard(
-    item: HomeContentUiModel,
+    item: HomeTrendingBattleUiModel,
     onClick: () -> Unit
 ) {
     Column(
@@ -129,8 +129,8 @@ fun TrendingBattleCard(
 fun TrendingBattleCardPreview() {
     PickeTheme {
         TrendingBattleCard(
-            item = DummyData.dummyHomeContentItems.first(),
-            onClick = {},
+            item = DummyData.dummyTrendingBattles.first(),
+            onClick = {}
         )
     }
 }

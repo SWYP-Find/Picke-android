@@ -5,10 +5,10 @@ enum class SpeakerType {
 }
 
 data class ScenarioPhilosopher(
-    val name: String,
-    val stance: String,
-    val quote: String,
-    val imageUrl: String
+    val name: String?,
+    val stance: String?,
+    val quote: String?,
+    val imageUrl: String?
 )
 
 data class ScenarioBoard(
@@ -35,11 +35,12 @@ data class ScenarioScript(
     val scriptId: String,
     val startTimeMs: Long,
     val speakerType: SpeakerType,
-    val speakerName: String,
+    val speakerName: String?,
     val text: String
 )
 
 data class ScenarioOption(
+    val optionId: Long,
     val label: String,
     val nextNodeId: String
 )

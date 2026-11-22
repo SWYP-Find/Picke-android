@@ -31,10 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
-import com.picke.presentation.ui.component.dialog.CustomConfirmDialog
+import com.picke.presentation.ui.component.PickeTopAppBar
+import com.picke.presentation.ui.component.dialog.PickeConfirmDialog
 import com.picke.presentation.ui.my.setting.model.SettingUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.SpacingTokens
 
 @Composable
 fun SettingScreen(
@@ -45,6 +46,7 @@ fun SettingScreen(
     onNavigateToTermsOfService: () -> Unit,
     onNavigateToWithdraw: () -> Unit,
     onNavigateToLogin: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -52,25 +54,27 @@ fun SettingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val logoutFailedMessage = stringResource(R.string.setting_logout_error)
+    val withdrawFailedMessage = stringResource(R.string.setting_withdraw_error)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 SettingUiEvent.NavigateToLogin -> onNavigateToLogin()
-                is SettingUiEvent.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        context.getString(event.messageResId),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+
+                SettingUiEvent.ShowLogoutFailedToast ->
+                    Toast.makeText(context, logoutFailedMessage, Toast.LENGTH_SHORT).show()
+
+                SettingUiEvent.ShowWithdrawFailedToast ->
+                    Toast.makeText(context, withdrawFailedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = stringResource(R.string.setting),
                     centerTitle = true,
                     showLogo = false,
@@ -84,7 +88,6 @@ fun SettingScreen(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
             ) {
                 SettingMenuItem(
                     title = stringResource(R.string.my_setting_alarm),
@@ -116,7 +119,7 @@ fun SettingScreen(
             }
 
             if (showLogoutDialog) {
-                CustomConfirmDialog(
+                PickeConfirmDialog(
                     message = "로그아웃 시 원활한 이용이 어려울 수 있습니다.\n그럼에도 로그아웃하시겠습니까?",
                     confirmText = "네, 로그아웃합니다",
                     dismissText = "뒤로가기",
@@ -131,7 +134,7 @@ fun SettingScreen(
             }
 
             if (showWithdrawDialog) {
-                CustomConfirmDialog(
+                PickeConfirmDialog(
                     message = "탈퇴 시 지금까지의 이용기록이 영구 삭제 됩니다.\n그럼에도 탈퇴하시겠습니까?",
                     confirmText = "네, 탈퇴합니다",
                     dismissText = "뒤로가기",
@@ -163,17 +166,17 @@ fun SettingScreen(
 @Composable
 fun SettingMenuItem(
     title: String,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .clickable { onClick() }
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(horizontal = SpacingTokens.s16, vertical = SpacingTokens.s20),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -189,6 +192,10 @@ fun SettingMenuItem(
                 tint = PickeTheme.colors.textDefault
             )
         }
-        HorizontalDivider(color = PickeTheme.colors.borderBeigeDefault, thickness = 1.dp)
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = SpacingTokens.s16),
+            color = PickeTheme.colors.borderBeigeDefault,
+            thickness = 1.dp
+        )
     }
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
 
 // DiscussionHistoryCard와 동일한 padding 값을 그대로 써서
@@ -48,18 +48,18 @@ private fun DiscussionHistoryCardSkeleton() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            SkeletonLine(width = 50.dp, height = 18.dp)
-            SkeletonLine(width = 160.dp, height = 18.dp)
+            PickeSkeletonLine(width = 50.dp, height = 18.dp)
+            PickeSkeletonLine(width = 160.dp, height = 18.dp)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        SkeletonLine(width = 240.dp, height = 16.dp)
+        PickeSkeletonLine(width = 240.dp, height = 16.dp)
         Spacer(modifier = Modifier.height(4.dp))
-        SkeletonLine(width = 200.dp, height = 16.dp)
+        PickeSkeletonLine(width = 200.dp, height = 16.dp)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SkeletonLine(width = 80.dp, height = 14.dp)
+        PickeSkeletonLine(width = 80.dp, height = 14.dp)
     }
 }

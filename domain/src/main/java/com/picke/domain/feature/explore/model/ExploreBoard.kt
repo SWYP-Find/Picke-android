@@ -9,7 +9,6 @@ data class ExploreTagBoard(
 data class ExploreItemBoard(
     val battleId: Long,
     val thumbnailUrl: String,
-    val type: String,
     val title: String,
     val summary: String,
     val tags: List<ExploreTagBoard>,

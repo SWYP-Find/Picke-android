@@ -4,6 +4,7 @@ import com.picke.data.feature.alarm.repository.AlarmRepositoryImpl
 import com.picke.data.feature.attendance.repository.AttendanceRepositoryImpl
 import com.picke.data.feature.auth.repository.AuthRepositoryImpl
 import com.picke.data.feature.battle.repository.BattleRepositoryImpl
+import com.picke.data.feature.classroom.repository.ClassroomRepositoryImpl
 import com.picke.data.feature.comment.repository.CommentRepositoryImpl
 import com.picke.data.feature.device.repository.DeviceRepositoryImpl
 import com.picke.data.feature.explore.repository.ExploreRepositoryImpl
@@ -11,7 +12,6 @@ import com.picke.data.feature.home.repository.HomeRepositoryImpl
 import com.picke.data.common.local.LocalPreferencesRepositoryImpl
 import com.picke.data.feature.mypage.repository.MyPageRepositoryImpl
 import com.picke.data.feature.perspective.repository.PerspectiveRepositoryImpl
-import com.picke.data.feature.pollquiz.repository.PollQuizRepositoryImpl
 import com.picke.data.feature.proposal.repository.ProposalRepositoryImpl
 import com.picke.data.feature.recommend.repository.RecommendRepositoryImpl
 import com.picke.data.feature.scenario.repository.ScenarioRepositoryImpl
@@ -22,6 +22,7 @@ import com.picke.domain.feature.alarm.repository.AlarmRepository
 import com.picke.domain.feature.attendance.repository.AttendanceRepository
 import com.picke.domain.feature.auth.repository.AuthRepository
 import com.picke.domain.feature.battle.repository.BattleRepository
+import com.picke.domain.feature.classroom.repository.ClassroomRepository
 import com.picke.domain.feature.comment.repository.CommentRepository
 import com.picke.domain.feature.device.repository.DeviceRepository
 import com.picke.domain.feature.explore.repository.ExploreRepository
@@ -29,7 +30,6 @@ import com.picke.domain.feature.home.repository.HomeRepository
 import com.picke.domain.common.local.LocalPreferencesRepository
 import com.picke.domain.feature.mypage.repository.MyPageRepository
 import com.picke.domain.feature.perspective.repository.PerspectiveRepository
-import com.picke.domain.feature.pollquiz.repository.PollQuizRepository
 import com.picke.domain.feature.proposal.repository.ProposalRepository
 import com.picke.domain.feature.recommend.repository.RecommendRepository
 import com.picke.domain.feature.scenario.repository.ScenarioRepository
@@ -119,12 +119,6 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindPollQuizRepository(
-        pollQuizRepositoryImpl: PollQuizRepositoryImpl
-    ): PollQuizRepository
-
-    @Binds
-    @Singleton
     abstract fun bindShareRepository(
         shareRepositoryImpl: ShareRepositoryImpl
     ): ShareRepository
@@ -146,6 +140,12 @@ abstract class RepositoryModule {
     abstract fun bindAttendanceRepository(
         attendanceRepositoryImpl: AttendanceRepositoryImpl
     ): AttendanceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindClassroomRepository(
+        classroomRepositoryImpl: ClassroomRepositoryImpl
+    ): ClassroomRepository
 
     @Binds
     @Singleton

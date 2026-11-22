@@ -1,5 +1,14 @@
 package com.picke.presentation.ui.classroom.model
 
+import com.picke.domain.feature.battle.model.BattleOptionBoard
+import com.picke.domain.feature.classroom.model.ClassBattleDetailBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationBoard
+import com.picke.domain.feature.classroom.model.ClassBattleRecommendationOptionBoard
+import com.picke.domain.feature.classroom.model.ClassTopicCandidateBoard
+import com.picke.domain.feature.classroom.model.ClassTopicOptionBoard
+
+private const val SECONDS_PER_MINUTE = 60
+
 data class ClassBattleOptionUiModel(
     val stance: String,
     val subText: String,
@@ -13,5 +22,66 @@ data class ClassBattleUiModel(
     val description: String,
     val durationMinutes: Int? = null,
     val options: List<ClassBattleOptionUiModel> = emptyList(),
-    val isAiQuestion: Boolean = false
+    val isAiQuestion: Boolean = false,
+    // TODO: API 연동 - 클래스 배틀 상세에 의견 수 필드가 생기면 toUiModel()에서 채우고 사전 투표 화면 댓글 수 배지에 연결
+    val commentCount: Int = 0,
+    val candidateId: Long? = null,
+    val thumbnailUrl: String? = null
+)
+
+fun ClassBattleDetailBoard.toUiModel(battleType: ClassBattleType): ClassBattleUiModel {
+    val battleInfo = battle.battleInfo
+    val isAiQuestion = battleType.isAiBattle
+    val categoryName = battle.categoryTags.firstOrNull()?.name
+    val durationMinutes = (battleInfo.audioDuration + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE
+    return ClassBattleUiModel(
+        battleId = battleInfo.battleId.toLongOrNull() ?: 0L,
+        tag = if (categoryName != null) "#$categoryName" else "",
+        title = battleInfo.title,
+        description = battleInfo.summary,
+        durationMinutes = if (isAiQuestion || durationMinutes == 0) null else durationMinutes,
+        options = battleInfo.options.map { it.toClassBattleOptionUiModel() },
+        isAiQuestion = isAiQuestion,
+        thumbnailUrl = battleInfo.thumbnailUrl
+    )
+}
+
+fun ClassBattleRecommendationBoard.toUiModel(): ClassBattleUiModel {
+    val durationMinutes = audioDuration?.let { (it + SECONDS_PER_MINUTE - 1) / SECONDS_PER_MINUTE }
+    return ClassBattleUiModel(
+        battleId = battleId,
+        tag = if (category.isNotBlank()) "#$category" else "",
+        title = title,
+        description = summary,
+        durationMinutes = if (durationMinutes == 0) null else durationMinutes,
+        options = options.map { it.toClassBattleOptionUiModel() }
+    )
+}
+
+fun ClassTopicCandidateBoard.toUiModel() = ClassBattleUiModel(
+    battleId = 0L,
+    tag = if (category.isNotBlank()) "#$category" else "",
+    title = question,
+    description = description,
+    options = options.map { it.toClassBattleOptionUiModel() },
+    isAiQuestion = true,
+    candidateId = candidateId
+)
+
+private fun BattleOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = title,
+    subText = representative,
+    imageUrl = imageUrl
+)
+
+private fun ClassBattleRecommendationOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = title,
+    subText = representative,
+    imageUrl = imageUrl
+)
+
+private fun ClassTopicOptionBoard.toClassBattleOptionUiModel() = ClassBattleOptionUiModel(
+    stance = label,
+    subText = philosopherName,
+    imageUrl = philosopherImageUrl
 )

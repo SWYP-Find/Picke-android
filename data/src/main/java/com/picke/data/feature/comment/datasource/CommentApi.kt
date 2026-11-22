@@ -17,12 +17,11 @@ import retrofit2.http.Query
 interface CommentApi {
 
     // 1. 댓글 목록 조회 (페이지네이션)
-    //@GET("/api/v1/perspectives/{perspectiveId}/comments")
     @GET("/api/v1/perspectives/{perspectiveId}/comments/labeled")
     suspend fun getComments(
         @Path("perspectiveId") perspectiveId: Long,
-        @Query("cursor") cursor: String? = null,
-        @Query("size") size: Int = 10
+        @Query("cursor") cursor: String?,
+        @Query("size") size: Int
     ): BaseResponse<CommentListResponseDto>
 
     // 2. 댓글 생성
@@ -32,20 +31,20 @@ interface CommentApi {
         @Body request: CommentRequestDto
     ): BaseResponse<CommentCreateResponseDto>
 
-    // 3. 댓글 삭제
-    @DELETE("/api/v1/perspectives/{perspectiveId}/comments/{commentId}")
-    suspend fun deleteComment(
-        @Path("perspectiveId") perspectiveId: Long,
-        @Path("commentId") commentId: Long
-    ): BaseResponse<String>
-
-    // 4. 댓글 수정
+    // 3. 댓글 수정
     @PATCH("/api/v1/perspectives/{perspectiveId}/comments/{commentId}")
     suspend fun updateComment(
         @Path("perspectiveId") perspectiveId: Long,
         @Path("commentId") commentId: Long,
         @Body request: CommentRequestDto
     ): BaseResponse<CommentUpdateResponseDto>
+
+    // 4. 댓글 삭제
+    @DELETE("/api/v1/perspectives/{perspectiveId}/comments/{commentId}")
+    suspend fun deleteComment(
+        @Path("perspectiveId") perspectiveId: Long,
+        @Path("commentId") commentId: Long
+    ): BaseResponse<String>
 
     // 5. 댓글 좋아요 등록
     @POST("/api/v1/comments/{commentId}/likes")

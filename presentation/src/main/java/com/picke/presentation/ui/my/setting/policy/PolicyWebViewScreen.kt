@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.picke.presentation.BuildConfig
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.theme.PickeTheme
 
 @Composable
@@ -43,7 +43,7 @@ fun PolicyWebViewScreen(
     Scaffold(
         topBar = {
             Box(modifier = Modifier.statusBarsPadding()) {
-                CustomTopAppBar(
+                PickeTopAppBar(
                     title = stringResource(titleRes),
                     centerTitle = true,
                     showLogo = false,

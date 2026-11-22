@@ -1,48 +1,54 @@
 package com.picke.domain.feature.perspective.repository
 
+import com.picke.domain.common.model.BattleTarget
+import com.picke.domain.feature.perspective.model.MyPerspectiveBoard
 import com.picke.domain.feature.perspective.model.PerspectiveDetailBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeCountBoard
 import com.picke.domain.feature.perspective.model.PerspectiveLikeToggleBoard
 import com.picke.domain.feature.perspective.model.PerspectivePage
 import com.picke.domain.feature.perspective.model.PerspectiveStatusBoard
 import com.picke.domain.feature.perspective.model.PerspectiveUpdateBoard
+import com.picke.domain.feature.perspective.model.WeeklyBestPerspectiveBoard
 
 interface PerspectiveRepository {
     // 1. 관점 목록 조회
     suspend fun getPerspectives(
-        battleId: Long,
-        cursor: String? = null,
-        size: Int = 10,
-        optionId: Long? = null,
-        sort: String = "latest"
+        target: BattleTarget,
+        cursor: String?,
+        size: Int,
+        optionId: Long?,
+        sort: String
     ): Result<PerspectivePage>
 
-    // 2. 관점 생성
-    suspend fun createPerspective(battleId: Long, content: String): Result<PerspectiveStatusBoard>
+    // 2. 내 관점 조회
+    suspend fun getMyPerspectives(target: BattleTarget): Result<List<MyPerspectiveBoard>>
 
-    // 3. 내 관점 조회
-    suspend fun getMyPerspective(battleId: Long): Result<PerspectiveDetailBoard>
-
-    // 4. 관점 단건 조회
+    // 3. 관점 단건 조회
     suspend fun getPerspective(perspectiveId: Long): Result<PerspectiveDetailBoard>
 
-    // 5. 관점 삭제
-    suspend fun deletePerspective(perspectiveId: Long): Result<Unit>
+    // 4. 관점 좋아요 수 조회
+    suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard>
+
+    suspend fun getWeeklyBestPerspectives(): Result<WeeklyBestPerspectiveBoard>
+
+    // 5. 관점 생성
+    suspend fun createPerspective(target: BattleTarget, content: String): Result<PerspectiveStatusBoard>
 
     // 6. 관점 수정
     suspend fun updatePerspective(perspectiveId: Long, content: String): Result<PerspectiveUpdateBoard>
 
-    // 7. 관점 검수 재시도
-    suspend fun retryModeration(perspectiveId: Long): Result<Unit>
+    // 7. 관점 삭제
+    suspend fun deletePerspective(perspectiveId: Long): Result<Unit>
 
-    // 8. 관점 좋아요 수 조회
-    suspend fun getPerspectiveLikeCount(perspectiveId: Long): Result<PerspectiveLikeCountBoard>
+    // 8. 관점 검수 재시도
+    suspend fun retryModeration(perspectiveId: Long): Result<Unit>
 
     // 9. 관점 좋아요 등록
     suspend fun likePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard>
 
     // 10. 관점 좋아요 취소
     suspend fun unlikePerspective(perspectiveId: Long): Result<PerspectiveLikeToggleBoard>
+
     // 11. 관점 신고
-    suspend fun reportPerspective(perspectiveId: Long): Result<String>
+    suspend fun reportPerspective(perspectiveId: Long): Result<Unit>
 }

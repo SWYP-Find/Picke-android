@@ -72,7 +72,7 @@ data class MyTier(
 
 data class MyPageInfoBoard(
     val profile: MyProfile,
-    val philosopher: MyPhilosopher,
+    val philosopher: MyPhilosopher?,
     val tier: MyTier
 )
 

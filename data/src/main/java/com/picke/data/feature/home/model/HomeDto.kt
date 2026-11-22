@@ -1,217 +1,141 @@
 package com.picke.data.feature.home.model
 
-import com.picke.domain.feature.home.model.ContentDomainType
-import com.picke.domain.feature.home.model.ContentOption
+import com.picke.data.common.error.mapItemOrNull
+import com.picke.data.common.error.requireField
+import com.picke.domain.feature.home.model.HomeBestBattleBoard
 import com.picke.domain.feature.home.model.HomeBoard
-import com.picke.domain.feature.home.model.HomeContent
-import com.picke.domain.feature.pollquiz.model.PollQuizOptionStatBoard
-import com.picke.domain.feature.home.model.TodayPick
+import com.picke.domain.feature.home.model.HomeEditorPickBoard
+import com.picke.domain.feature.home.model.HomeNewBattleBoard
+import com.picke.domain.feature.home.model.HomeTrendingBattleBoard
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HomeResponseDto(
-    val newNotice: Boolean?,
-    val editorPicks: List<EditorPickDto>?,
-    val trendingBattles: List<TrendingBattleDto>?,
-    val bestBattles: List<BestBattleDto>?,
-    val todayQuizzes: List<TodayQuizDto>?,
-    val todayVotes: List<TodayVoteDto>?,
-    val newBattles: List<NewBattleDto>?
+    val newNotice: Boolean,
+    val editorPicks: List<EditorPickDto>,
+    val trendingBattles: List<TrendingBattleDto>,
+    val bestBattles: List<BestBattleDto>,
+    val newBattles: List<NewBattleDto>
 )
 
+@Serializable
 data class TagDto(
-    val tagId: Long?,
-    val name: String?,
-    val type: String?
+    val tagId: Long,
+    val name: String,
+    val type: String
 )
 
+@Serializable
 data class EditorPickDto(
-    val battleId: Long?,
+    val battleId: Long,
     val thumbnailUrl: String?,
     val optionATitle: String?,
     val optionBTitle: String?,
-    val title: String?,
+    val title: String,
     val summary: String?,
-    val tags: List<TagDto>?,
-    val viewCount: Int?
+    val tags: List<TagDto>,
+    val viewCount: Int,
+    val audioDuration: Int
 )
 
+@Serializable
 data class TrendingBattleDto(
-    val battleId: Long?,
+    val badgeLabel: String,
+    val battleId: Long,
     val thumbnailUrl: String?,
-    val title: String?,
-    val tags: List<TagDto>?,
-    val audioDuration: Int?,
-    val viewCount: Int?
+    val title: String,
+    val tags: List<TagDto>,
+    val audioDuration: Int,
+    val viewCount: Int
 )
 
+@Serializable
 data class BestBattleDto(
-    val battleId: Long?,
+    val badgeLabel: String,
+    val battleId: Long,
     val philosopherA: String?,
     val philosopherB: String?,
-    val title: String?,
-    val tags: List<TagDto>?,
-    val audioDuration: Int?,
-    val viewCount: Int?
+    val title: String,
+    val tags: List<TagDto>,
+    val audioDuration: Int,
+    val viewCount: Int
 )
 
-data class TodayQuizDto(
-    val battleId: Long?,
-    val title: String?,
-    val summary: String?,
-    val participantsCount: Int?,
-    val itemA: String?,
-    val itemADesc: String?,
-    val isCorrectA: Boolean?,
-    val itemB: String?,
-    val itemBDesc: String?,
-    val isCorrectB: Boolean?
-)
-
-data class TodayVoteDto(
-    val battleId: Long?,
-    val titlePrefix: String?,
-    val titleSuffix: String?,
-    val summary: String?,
-    val participantsCount: Int?,
-    val options: List<OptionDto>?
-)
-
-data class OptionDto(
-    val title: String?
-)
-
+@Serializable
 data class NewBattleDto(
-    val battleId: Long?,
+    val battleId: Long,
     val thumbnailUrl: String?,
-    val title: String?,
+    val title: String,
     val summary: String?,
-    val optionATitle: String?,
     val philosopherA: String?,
+    val optionATitle: String?,
     val philosopherAImageUrl: String?,
-    val optionBTitle: String?,
     val philosopherB: String?,
+    val optionBTitle: String?,
     val philosopherBImageUrl: String?,
-    val tags: List<TagDto>?,
-    val audioDuration: Int?,
-    val viewCount: Int?
+    val tags: List<TagDto>,
+    val audioDuration: Int,
+    val viewCount: Int
 )
 
-fun HomeResponseDto.toDomainModel() = HomeBoard(
-    editorPicks = editorPicks?.map { it.toDomainModel() } ?: emptyList(),
-    trendingBattles = trendingBattles?.map { it.toDomainModel() } ?: emptyList(),
-    bestBattles = bestBattles?.map { it.toDomainModel() } ?: emptyList(),
-    todayPicks = (todayQuizzes?.map { it.toTodayPickDomainModel() } ?: emptyList()) +
-        (todayVotes?.map { it.toTodayPickDomainModel() } ?: emptyList()),
-    newBattles = newBattles?.map { it.toDomainModel() } ?: emptyList()
-)
-
-fun EditorPickDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
-    type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
-    options = listOf(
-        ContentOption(text = this.optionATitle ?: "", philosopherName = null, imageUrl = null),
-        ContentOption(text = this.optionBTitle ?: "", philosopherName = null, imageUrl = null)
+fun HomeResponseDto.toDomainModel(): HomeBoard =
+    HomeBoard(
+        newNotice = newNotice,
+        editorPicks = editorPicks.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+        trendingBattles = trendingBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+        bestBattles = bestBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+        newBattles = newBattles.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } }
     )
-)
 
-fun TrendingBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
-    type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
-    options = emptyList()
-)
-
-fun NewBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
-    type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    thumbnailUrl = this.thumbnailUrl ?: "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
-    options = listOf(
-        ContentOption(
-            text = this.optionATitle ?: "",
-            philosopherName = this.philosopherA ?: "",
-            imageUrl = this.philosopherAImageUrl
-        ),
-        ContentOption(
-            text = this.optionBTitle ?: "",
-            philosopherName = this.philosopherB ?: "",
-            imageUrl = this.philosopherBImageUrl
-        )
+private fun EditorPickDto.toDomainModel(): HomeEditorPickBoard =
+    HomeEditorPickBoard(
+        battleId = battleId,
+        thumbnailUrl = thumbnailUrl.requireField("EditorPickDto.thumbnailUrl"),
+        optionATitle = optionATitle.requireField("EditorPickDto.optionATitle"),
+        optionBTitle = optionBTitle.requireField("EditorPickDto.optionBTitle"),
+        title = title,
+        summary = summary.requireField("EditorPickDto.summary"),
+        tags = tags.map { it.name },
+        viewCount = viewCount,
+        audioDuration = audioDuration
     )
-)
 
-fun TodayQuizDto.toTodayPickDomainModel() = TodayPick.QuizPick(
-    contentId = this.battleId?.toString() ?: "",
-    title = this.title ?: "",
-    summary = this.summary ?: "",
-    participantsCount = this.participantsCount ?: 0,
-    selectedOptionId = null,
-    options = listOf(
-        PollQuizOptionStatBoard(
-            optionId = 1L,
-            title = this.itemA ?: "",
-            isCorrect = this.isCorrectA ?: false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = this.itemADesc ?: "",
-        ),
-        PollQuizOptionStatBoard(
-            optionId = 2L,
-            title = this.itemB ?: "",
-            isCorrect = this.isCorrectB ?: false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = this.itemBDesc ?: "",
-        )
+private fun TrendingBattleDto.toDomainModel(): HomeTrendingBattleBoard =
+    HomeTrendingBattleBoard(
+        badgeLabel = badgeLabel,
+        battleId = battleId,
+        thumbnailUrl = thumbnailUrl.requireField("TrendingBattleDto.thumbnailUrl"),
+        title = title,
+        tags = tags.map { it.name },
+        audioDuration = audioDuration,
+        viewCount = viewCount
     )
-)
 
-fun TodayVoteDto.toTodayPickDomainModel() = TodayPick.VotePick(
-    contentId = this.battleId?.toString() ?: "",
-    // 전체 문장이 필요할 때를 대비해 합쳐줍니다.
-    title = "${this.titlePrefix ?: ""} ${this.titleSuffix ?: ""}".trim(),
-    titlePrefix = this.titlePrefix ?: "",
-    titleSuffix = this.titleSuffix ?: "",
-    summary = this.summary ?: "",
-    participantsCount = this.participantsCount ?: 0,
-    selectedOptionId = null,
-    options = this.options?.mapIndexed { index, option ->
-        PollQuizOptionStatBoard(
-            optionId = (index + 1).toLong(),
-            title = option.title ?: "",
-            isCorrect = false,
-            voteCount = 0,
-            ratio = 0f,
-            stance = "",
-        )
-    } ?: emptyList()
-)
-
-fun BestBattleDto.toDomainModel() = HomeContent(
-    contentId = this.battleId?.toString() ?: "",
-    type = ContentDomainType.BATTLE,
-    title = this.title ?: "",
-    summary = "",
-    thumbnailUrl = "",
-    viewCount = this.viewCount ?: 0,
-    audioDuration = this.audioDuration ?: 0,
-    tags = this.tags?.mapNotNull { it.name } ?: emptyList(),
-    options = listOf(
-        ContentOption(text = "", philosopherName = this.philosopherA ?: "", imageUrl = null),
-        ContentOption(text = "", philosopherName = this.philosopherB ?: "", imageUrl = null)
+private fun BestBattleDto.toDomainModel(): HomeBestBattleBoard =
+    HomeBestBattleBoard(
+        badgeLabel = badgeLabel,
+        battleId = battleId,
+        philosopherA = philosopherA.requireField("BestBattleDto.philosopherA"),
+        philosopherB = philosopherB.requireField("BestBattleDto.philosopherB"),
+        title = title,
+        tags = tags.map { it.name },
+        audioDuration = audioDuration,
+        viewCount = viewCount
     )
-)
+
+private fun NewBattleDto.toDomainModel(): HomeNewBattleBoard =
+    HomeNewBattleBoard(
+        battleId = battleId,
+        thumbnailUrl = thumbnailUrl,
+        title = title,
+        summary = summary.requireField("NewBattleDto.summary"),
+        philosopherA = philosopherA.requireField("NewBattleDto.philosopherA"),
+        optionATitle = optionATitle.requireField("NewBattleDto.optionATitle"),
+        philosopherAImageUrl = philosopherAImageUrl,
+        philosopherB = philosopherB.requireField("NewBattleDto.philosopherB"),
+        optionBTitle = optionBTitle.requireField("NewBattleDto.optionBTitle"),
+        philosopherBImageUrl = philosopherBImageUrl,
+        tags = tags.map { it.name },
+        audioDuration = audioDuration,
+        viewCount = viewCount
+    )

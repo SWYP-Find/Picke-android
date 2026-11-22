@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.component.ProfileImageKind
 import com.picke.presentation.ui.theme.PickeTheme
+import com.picke.presentation.ui.theme.tokens.ComponentNumberTokens
 import com.picke.presentation.ui.vote.model.BattleOptionUiModel
 import com.picke.presentation.util.DummyData
 
@@ -29,7 +30,8 @@ fun VoteOptionCard(
     option: BattleOptionUiModel,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isImageVisible: Boolean = true
 ) {
     val borderColor =
         if (isSelected) PickeTheme.colors.secondary500 else PickeTheme.colors.borderBeigeDisabled
@@ -50,12 +52,14 @@ fun VoteOptionCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        ProfileImage(
-            model = option.imageUrl,
-            modifier = Modifier.size(40.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        if (isImageVisible) {
+            ProfileImage(
+                imageUrl = option.imageUrl,
+                size = ComponentNumberTokens.avatarMd,
+                kind = ProfileImageKind.PHILOSOPHER
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         Text(
             text = option.title,
             style = PickeTheme.typography.headingSm,
@@ -80,6 +84,19 @@ fun VoteOptionCardPreview() {
             option = DummyData.dummyBattleDetailList.first().battleInfo.options.first(),
             isSelected = true,
             onClick = { }
+        )
+    }
+}
+
+@Preview(name = "이미지 없음", showBackground = true)
+@Composable
+private fun VoteOptionCardNoImagePreview() {
+    PickeTheme {
+        VoteOptionCard(
+            option = DummyData.dummyBattleDetailList.first().battleInfo.options.first(),
+            isSelected = false,
+            onClick = {},
+            isImageVisible = false
         )
     }
 }

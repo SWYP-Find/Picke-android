@@ -1,19 +1,24 @@
 package com.picke.data.feature.todaybattle.model
 
+import com.picke.data.common.error.mapItemOrNull
+import com.picke.data.common.error.requireField
 import com.picke.domain.feature.todaybattle.model.TodayBattleBoard
 import com.picke.domain.feature.todaybattle.model.TodayBattleItem
 import com.picke.domain.feature.todaybattle.model.TodayBattleOption
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TodayBattleResponseDto(
     val items: List<TodayBattleItemDto>,
     val totalCount: Int
 )
 
+@Serializable
 data class TodayBattleItemDto(
     val battleId: Long,
     val title: String,
-    val summary: String,
-    val thumbnailUrl: String,
+    val summary: String?,
+    val thumbnailUrl: String?,
     val viewCount: Int,
     val participantsCount: Long,
     val audioDuration: Int,
@@ -21,49 +26,46 @@ data class TodayBattleItemDto(
     val options: List<TodayBattleOptionDto>
 )
 
+@Serializable
 data class TodayBattleTagDto(
     val tagId: Long,
     val name: String,
     val type: String
 )
 
+@Serializable
 data class TodayBattleOptionDto(
     val optionId: Long,
     val title: String,
-    val representative: String,
-    val stance: String,
+    val representative: String?,
+    val stance: String?,
     val imageUrl: String?
 )
 
-// DTO -> Domain Model
-fun TodayBattleResponseDto.toDomainModel(): TodayBattleBoard{
-    return TodayBattleBoard(
-        items = this.items.map { it.toDomainModel() },
-        totalCount = this.totalCount
+fun TodayBattleResponseDto.toDomainModel(): TodayBattleBoard =
+    TodayBattleBoard(
+        items = items.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+        totalCount = totalCount
     )
-}
 
-fun TodayBattleItemDto.toDomainModel(): TodayBattleItem {
-    return TodayBattleItem(
-        battleId = this.battleId.toString(),
-        title = this.title,
-        summary = this.summary,
-        thumbnailUrl = this.thumbnailUrl ?: "",
-        type = "",
-        viewCount = this.viewCount,
-        participantsCount = this.participantsCount,
-        audioDuration = this.audioDuration,
-        tags = this.tags.map { it.name },
-        options = this.options.map { it.toDomainModel() }
+private fun TodayBattleItemDto.toDomainModel(): TodayBattleItem =
+    TodayBattleItem(
+        battleId = battleId.toString(),
+        title = title,
+        summary = summary.requireField("TodayBattleItemDto.summary"),
+        thumbnailUrl = thumbnailUrl.requireField("TodayBattleItemDto.thumbnailUrl"),
+        viewCount = viewCount,
+        participantsCount = participantsCount,
+        audioDuration = audioDuration,
+        tags = tags.map { it.name },
+        options = options.map { it.toDomainModel() }
     )
-}
 
-fun TodayBattleOptionDto.toDomainModel(): TodayBattleOption {
-    return TodayBattleOption(
-        optionId = this.optionId.toString(),
-        title = this.title,
-        representative = this.representative ?: "",
-        stance = this.stance,
-        imageUrl = this.imageUrl
+private fun TodayBattleOptionDto.toDomainModel(): TodayBattleOption =
+    TodayBattleOption(
+        optionId = optionId.toString(),
+        title = title,
+        representative = representative.requireField("TodayBattleOptionDto.representative"),
+        stance = stance.requireField("TodayBattleOptionDto.stance"),
+        imageUrl = imageUrl
     )
-}

@@ -9,6 +9,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import com.picke.presentation.deeplink.DeepLinkEvent
 import com.picke.presentation.deeplink.DeepLinkHandler
+import com.picke.presentation.navigation.AppNavigation
 import com.picke.presentation.notification.FCMService
 import com.picke.presentation.ui.splash.SplashViewModel
 import com.picke.presentation.ui.splash.model.SplashUiState

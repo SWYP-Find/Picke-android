@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.picke.presentation.ui.component.SkeletonLine
+import com.picke.presentation.ui.component.PickeSkeletonLine
 import com.picke.presentation.ui.theme.PickeTheme
 
 // PointHistoryItem과 동일한 padding 값을 그대로 써서
@@ -53,14 +53,14 @@ private fun PointHistoryItemSkeleton() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(horizontalAlignment = Alignment.Start) {
-                SkeletonLine(width = 120.dp, height = 16.dp)
+                PickeSkeletonLine(width = 120.dp, height = 16.dp)
                 Spacer(modifier = Modifier.height(6.dp))
-                SkeletonLine(width = 70.dp, height = 12.dp)
+                PickeSkeletonLine(width = 70.dp, height = 12.dp)
             }
             Column(horizontalAlignment = Alignment.End) {
-                SkeletonLine(width = 50.dp, height = 16.dp)
+                PickeSkeletonLine(width = 50.dp, height = 16.dp)
                 Spacer(modifier = Modifier.height(6.dp))
-                SkeletonLine(width = 40.dp, height = 12.dp)
+                PickeSkeletonLine(width = 40.dp, height = 12.dp)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.picke.presentation.ui.my.content
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,11 +25,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,9 +40,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.domain.feature.mypage.model.MyContentActivityItem
 import com.picke.presentation.R
-import com.picke.presentation.ui.component.CustomTabBar
-import com.picke.presentation.ui.component.CustomTopAppBar
+import com.picke.presentation.ui.component.PickeIconCount
+import com.picke.presentation.ui.component.PickeTabBar
+import com.picke.presentation.ui.component.PickeTopAppBar
 import com.picke.presentation.ui.component.ProfileImage
+import com.picke.presentation.ui.my.content.model.ContentActivityUiEvent
 import com.picke.presentation.ui.theme.PickeTheme
 import com.picke.presentation.util.toRelativeTimeText
 import kotlinx.coroutines.launch
@@ -53,14 +58,27 @@ fun ContentActivityScreen(
 ) {
     val tabs = listOf("내 댓글·관점", "좋아요")
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val loadFailedMessage = stringResource(R.string.toast_load_failed)
 
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                ContentActivityUiEvent.ShowLoadFailedToast ->
+                    Toast.makeText(context, loadFailedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     Scaffold(
+        modifier = modifier,
         containerColor = PickeTheme.colors.backgroundBeige,
         topBar = {
-            CustomTopAppBar(
+            PickeTopAppBar(
                 title = stringResource(R.string.my_menu_content),
                 centerTitle = true,
                 showLogo = false,
@@ -75,16 +93,16 @@ fun ContentActivityScreen(
                 .fillMaxSize()
         ) {
             // 탭바
-            CustomTabBar(
+            PickeTabBar(
                 tabs = tabs,
                 selectedTab = tabs[pagerState.currentPage],
-                isScrollable = false,
                 onTabSelected = { selectedTab ->
                     val targetPage = tabs.indexOf(selectedTab)
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(targetPage)
                     }
-                }
+                },
+                isScrollable = false
             )
 
             if (uiState.isLoading) {
@@ -184,8 +202,8 @@ fun ContentActivityCard(
         ) {
             // 프로필 이미지
             ProfileImage(
-                model = item.author.characterImageUrl,
-                modifier = Modifier.size(36.dp),
+                imageUrl = item.author.characterImageUrl,
+                size = 36.dp
             )
 
             Spacer(modifier = Modifier.width(10.dp))
@@ -242,17 +260,10 @@ fun ContentActivityCard(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_heart_plus),
-                contentDescription = "좋아요",
-                modifier = Modifier.size(16.dp),
-                tint = PickeTheme.colors.textMuted
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = item.likeCount.toString(),
-                style = PickeTheme.typography.bodySmMedium,
-                color = PickeTheme.colors.textMuted
+            PickeIconCount(
+                iconRes = R.drawable.ic_heart_plus,
+                contentDescription = stringResource(R.string.comment_like),
+                count = item.likeCount
             )
         }
     }

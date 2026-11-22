@@ -14,7 +14,7 @@ fun ClassResultFeedbackBoard.toFeedbackItems(): List<ClassResultFeedbackItemUiMo
     listOfNotNull(
         strength?.toFeedbackItem(R.string.class_result_strength),
         nextFocus?.toFeedbackItem(R.string.class_result_next_focus),
-        ClassResultFeedbackItemUiModel(R.string.class_result_next_question, nextQuestion)
+        nextQuestion?.let { ClassResultFeedbackItemUiModel(R.string.class_result_next_question, it) }
     )
 
 private fun ClassResultFeedbackPointBoard.toFeedbackItem(@StringRes titleRes: Int) =

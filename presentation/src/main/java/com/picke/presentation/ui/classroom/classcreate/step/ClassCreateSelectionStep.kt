@@ -61,9 +61,14 @@ internal fun ClassCreateSelectionStep(
     onEditConditionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isAiQuestion = uiState.method == ClassCreateMethod.AI_TOPIC
-    val resultText = if (uiState.isTopicGenerating) {
-        stringResource(R.string.class_create_topic_generating)
+    val isAiQuestion = uiState.isAiMethod
+    val loadingTextRes = if (isAiQuestion) {
+        R.string.class_create_topic_generating
+    } else {
+        R.string.class_create_result_count_loading
+    }
+    val resultText = if (uiState.isSelectionLoading) {
+        stringResource(loadingTextRes)
     } else {
         stringResource(R.string.class_create_result_count, uiState.battles.size)
     }
@@ -93,7 +98,7 @@ internal fun ClassCreateSelectionStep(
                 )
             }
 
-            if (uiState.isTopicGenerating) {
+            if (uiState.isSelectionLoading) {
                 repeat(TOPIC_SKELETON_COUNT) {
                     ClassTopicSkeleton()
                 }
@@ -266,6 +271,24 @@ private fun ClassCreateGeneratingSelectionStepPreview() {
                 step = ClassCreateStep.SELECTION,
                 method = ClassCreateMethod.AI_TOPIC,
                 topic = "범죄",
+                isRequesting = true
+            ),
+            onBattleSelect = {},
+            onBattlePreviewClick = {},
+            onEditConditionClick = {},
+            modifier = Modifier.padding(SpacingTokens.s16)
+        )
+    }
+}
+
+@Preview(name = "추천 배틀 불러오는 중", showBackground = true)
+@Composable
+private fun ClassCreateLoadingSelectionStepPreview() {
+    PickeTheme {
+        ClassCreateSelectionStep(
+            uiState = ClassCreateUiState(
+                step = ClassCreateStep.SELECTION,
+                method = ClassCreateMethod.CONTENT,
                 isRequesting = true
             ),
             onBattleSelect = {},

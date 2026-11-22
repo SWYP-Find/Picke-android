@@ -22,6 +22,9 @@ data class ClassResultUiState(
     internal val isInsightRetryEnabled: Boolean
         get() = insight?.isRetryVisible == true && !isRequesting
 
+    internal val isReportRetryEnabled: Boolean
+        get() = report?.isRetryVisible == true && !isRequesting
+
     internal val isTabVisible: Boolean
         get() = hasSummaryTab && hasReportTab
 

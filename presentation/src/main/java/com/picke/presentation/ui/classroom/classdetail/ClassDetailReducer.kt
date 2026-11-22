@@ -39,6 +39,8 @@ internal fun reduce(state: ClassDetailUiState, action: ClassDetailUiAction): Cla
         )
 
         ClassDetailUiAction.LeaveDialogDismiss -> state.copy(isLeaveDialogVisible = false)
+
+        ClassDetailUiAction.ClassChangedReceive -> state.copy(isClassChanged = true)
     }
 
 internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): ClassDetailUiState {
@@ -54,8 +56,6 @@ internal fun reduce(state: ClassDetailUiState, mutation: ClassDetailMutation): C
         )
 
         ClassDetailMutation.ClassDetailLoadFailed -> state.copy(isLoading = false)
-
-        ClassDetailMutation.ClassChanged -> state.copy(isClassChanged = true)
     }
 
     return if (mutation is ClassDetailMutation.RequestFinished) reduced.copy(isRequesting = false) else reduced

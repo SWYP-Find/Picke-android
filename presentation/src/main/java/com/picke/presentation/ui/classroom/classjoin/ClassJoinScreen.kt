@@ -183,8 +183,10 @@ private fun ClassJoinStep.nextButtonRes(): Int = when (this) {
 @StringRes
 private fun ClassJoinDialog.messageRes(): Int = when (this) {
     ClassJoinDialog.INVALID_CODE -> R.string.class_join_dialog_invalid_code
+    ClassJoinDialog.MEMBER_REMOVED -> R.string.class_join_dialog_member_removed
     ClassJoinDialog.CLASS_FULL -> R.string.class_join_dialog_class_full
     ClassJoinDialog.CLASS_CLOSED -> R.string.class_join_dialog_class_closed
+    ClassJoinDialog.TICKET_ENDED -> R.string.class_join_dialog_ticket_ended
     ClassJoinDialog.CLASS_DELETED -> R.string.class_join_dialog_class_deleted
     ClassJoinDialog.ALREADY_JOINED -> R.string.class_join_dialog_already_joined
 }

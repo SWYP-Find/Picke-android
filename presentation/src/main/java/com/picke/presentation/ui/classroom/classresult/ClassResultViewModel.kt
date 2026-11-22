@@ -59,6 +59,9 @@ class ClassResultViewModel @Inject constructor(
             ClassResultUiAction.InsightRetryClick ->
                 if (state.isInsightRetryEnabled) retryInsight(state.classId)
 
+            ClassResultUiAction.ReportRetryClick ->
+                if (state.isReportRetryEnabled) retryReport(state.classId)
+
             ClassResultUiAction.MyOpinionClick ->
                 sendEvent(ClassResultUiEvent.NavigateToMyOpinion(state.classId))
         }
@@ -138,6 +141,21 @@ class ClassResultViewModel @Inject constructor(
                 .onSuccess { insight ->
                     _uiState.update {
                         reduce(it, ClassResultMutation.InsightRetried(insight.toUiModel()))
+                    }
+                }
+                .onFailure {
+                    _uiState.update { reduce(it, ClassResultMutation.RequestFailed) }
+                    sendEvent(ClassResultUiEvent.ShowActionFailedToast)
+                }
+        }
+    }
+
+    private fun retryReport(classId: Long) {
+        viewModelScope.launch {
+            classroomUseCases.retryClassResultMyReportUseCase(classId)
+                .onSuccess { report ->
+                    _uiState.update {
+                        reduce(it, ClassResultMutation.ReportRetried(report.toUiModel()))
                     }
                 }
                 .onFailure {

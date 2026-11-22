@@ -418,10 +418,9 @@ fun BattleContent(
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(SpacingTokens.s8)) {
                             item.tags.forEach { tag ->
-                                // TODO: 토큰 동기화 - color/element/beige
                                 Surface(
                                     shape = RoundedCornerShape(RadiusTokens.default),
-                                    color = PickeTheme.colors.beige600
+                                    color = PickeTheme.colors.colorElementBeige
                                 ) {
                                     Box(
                                         modifier = Modifier
@@ -455,13 +454,12 @@ fun BattleContent(
                     )
                 }
 
-                // TODO: 토큰 동기화 - color/border/gray-dark
                 Surface(
                     shape = RoundedCornerShape(RadiusTokens.default),
                     color = Color.Transparent,
                     border = BorderStroke(
                         width = ComponentNumberTokens.borderWidthRegular,
-                        color = PickeTheme.colors.gray300
+                        color = PickeTheme.colors.colorBorderGrayDark
                     )
                 ) {
                     Row(
@@ -521,10 +519,9 @@ fun BattleContent(
                     color = PickeTheme.colors.secondary200
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        // TODO: 토큰 동기화 - color/text/basic
                         Text(
                             text = stringResource(R.string.class_battle_versus),
-                            color = PickeTheme.colors.textDefault,
+                            color = PickeTheme.colors.colorTextBasic,
                             style = PickeTheme.typography.bodySmSemiBold
                         )
                     }

@@ -60,7 +60,8 @@ data class ClassTopicOptionDto(
     val rationale: String?,
     val philosopher: String,
     val philosopherName: String,
-    val philosopherImageKey: String
+    val philosopherImageKey: String,
+    val philosopherImageUrl: String?
 )
 
 fun ClassTopicDraftResponseDto.toDomainModel() = ClassTopicDraftBoard(
@@ -99,5 +100,6 @@ fun ClassTopicOptionDto.toDomainModel() = ClassTopicOptionBoard(
     rationale = rationale.requireField("ClassTopicOptionDto.rationale"),
     philosopher = philosopher,
     philosopherName = philosopherName,
-    philosopherImageKey = philosopherImageKey
+    philosopherImageKey = philosopherImageKey,
+    philosopherImageUrl = philosopherImageUrl
 )

@@ -53,11 +53,11 @@ fun ChatBubble(
     text: String,
     speakerName: String?,
     avatarUrl: String?,
-    @DrawableRes defaultAvatarRes: Int,
     isLeft: Boolean,
     showAvatarAndName: Boolean,
     modifier: Modifier = Modifier,
     avatarKind: ProfileImageKind = ProfileImageKind.PHILOSOPHER,
+    @DrawableRes defaultAvatarRes: Int? = null,
     isPlaying: Boolean = false,
     isDimmed: Boolean = false,
     nameBadge: String? = null,
@@ -159,7 +159,7 @@ fun ChatBubble(
 @Composable
 private fun ChatBubbleAvatar(
     avatarUrl: String?,
-    @DrawableRes defaultAvatarRes: Int,
+    @DrawableRes defaultAvatarRes: Int?,
     kind: ProfileImageKind,
     isVisible: Boolean,
     modifier: Modifier = Modifier
@@ -248,18 +248,18 @@ private fun ChatBubbleLeftPreview() {
                 text = "모든 사물은 그에 걸맞은 목적과 형상을 가지고 있습니다.",
                 speakerName = "플라톤",
                 avatarUrl = null,
-                defaultAvatarRes = R.drawable.illust_mengzi,
                 isLeft = true,
                 showAvatarAndName = true,
+                defaultAvatarRes = R.drawable.illust_mengzi,
                 isPlaying = true
             )
             ChatBubble(
                 text = "사물의 본질을 왜곡하는 것은 진리를 모독하는 행위입니다.",
                 speakerName = "플라톤",
                 avatarUrl = null,
-                defaultAvatarRes = R.drawable.illust_mengzi,
                 isLeft = true,
                 showAvatarAndName = false,
+                defaultAvatarRes = R.drawable.illust_mengzi,
                 isDimmed = true
             )
         }
@@ -274,10 +274,10 @@ private fun ChatBubbleNameBadgePreview() {
             text = "모든 사물은 그에 걸맞은 목적과 형상을 가지고 있습니다.",
             speakerName = "플라톤",
             avatarUrl = null,
-            defaultAvatarRes = R.drawable.illust_mengzi,
             isLeft = true,
             showAvatarAndName = true,
             modifier = Modifier.padding(SpacingTokens.s16),
+            defaultAvatarRes = R.drawable.illust_mengzi,
             nameBadge = "AI"
         )
     }
@@ -291,7 +291,6 @@ private fun ChatBubbleRightPreview() {
             text = "하지만 사물은 그저 그곳에 존재할 뿐입니다.",
             speakerName = "사르트르",
             avatarUrl = null,
-            defaultAvatarRes = R.drawable.illust_mengzi,
             isLeft = false,
             showAvatarAndName = true,
             modifier = Modifier.padding(SpacingTokens.s16)

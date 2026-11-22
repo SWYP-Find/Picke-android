@@ -7,6 +7,7 @@ data class ClassDebateUiState(
     val debate: ClassDebateUiModel = ClassDebateUiModel(),
     val input: String = "",
     val replyRequestKey: String? = null,
+    val replyRejectionMessage: String? = null,
     val isRequesting: Boolean = false,
     val isFinalVoteDialogVisible: Boolean = false
 ) {
@@ -29,10 +30,7 @@ data class ClassDebateUiState(
         get() = debate.canReply && !isRequesting
 
     val isSendEnabled: Boolean
-        get() = input.isNotBlank() && isInputEnabled
-
-    internal val isReplyLengthEnough: Boolean
-        get() = input.trim().length >= debate.replyMinLength
+        get() = input.trim().length >= debate.replyMinLength && isInputEnabled
 
     internal fun isReplyLengthWithinMax(text: String): Boolean =
         debate.replyMaxLength <= 0 || text.length <= debate.replyMaxLength

@@ -3,6 +3,7 @@ package com.picke.presentation.ui.perspective
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.picke.domain.common.exception.ApiErrorException
 import com.picke.domain.common.model.BattleTarget
 import com.picke.domain.feature.classroom.usecase.ClassroomUseCases
 import com.picke.domain.feature.perspective.usecase.PerspectiveUseCases
@@ -10,6 +11,7 @@ import com.picke.domain.feature.perspective.usecase.ReportPerspectiveResult
 import com.picke.domain.feature.vote.usecase.VoteUseCases
 import com.picke.presentation.analytics.AnalyticsTracker
 import com.picke.presentation.navigation.AppRoute
+import com.picke.presentation.ui.classroom.model.ClassErrorCode
 import com.picke.presentation.ui.perspective.model.PerspectiveClassSettingUiModel
 import com.picke.presentation.ui.perspective.model.PerspectiveSort
 import com.picke.presentation.ui.perspective.model.PerspectiveUiEvent
@@ -263,7 +265,15 @@ class PerspectiveViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { sendEvent(PerspectiveUiEvent.ShowActionFailedToast) }
+                .onFailure { exception ->
+                    val event =
+                        if ((exception as? ApiErrorException)?.code == ClassErrorCode.CLASS_409_PERSPECTIVE_REQUIRED) {
+                            PerspectiveUiEvent.ShowPerspectiveRequiredToast
+                        } else {
+                            PerspectiveUiEvent.ShowActionFailedToast
+                        }
+                    sendEvent(event)
+                }
         }
     }
 

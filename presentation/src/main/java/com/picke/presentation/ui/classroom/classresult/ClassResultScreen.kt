@@ -165,6 +165,8 @@ private fun ClassResultContent(
                                 report = report,
                                 receivedLikeCount = uiState.receivedLikeCount,
                                 deadline = uiState.deadline,
+                                isReportRetryVisible = uiState.isReportRetryEnabled,
+                                onReportRetryClick = { onAction(ClassResultUiAction.ReportRetryClick) },
                                 onMyOpinionClick = { onAction(ClassResultUiAction.MyOpinionClick) }
                             )
                         }
@@ -292,6 +294,8 @@ private fun ClassResultReportSection(
     report: ClassResultReportUiModel,
     receivedLikeCount: Int?,
     deadline: LocalDateTime?,
+    isReportRetryVisible: Boolean,
+    onReportRetryClick: () -> Unit,
     onMyOpinionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -325,6 +329,8 @@ private fun ClassResultReportSection(
             ClassResultFeedbackCard(
                 report = report,
                 deadline = deadline,
+                isRetryVisible = isReportRetryVisible,
+                onRetryClick = onReportRetryClick,
                 onMyOpinionClick = onMyOpinionClick
             )
         }

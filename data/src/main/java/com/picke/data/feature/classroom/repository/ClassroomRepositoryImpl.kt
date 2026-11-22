@@ -297,4 +297,12 @@ class ClassroomRepositoryImpl @Inject constructor(
             .toResult("클래스 인사이트를 다시 만들지 못했습니다.")
             .map { it.toDomainModel() }
     }
+
+    override suspend fun retryClassResultMyReport(
+        classId: Long
+    ): Result<ClassResultMyReportBoard> = apiCall {
+        classroomApi.retryClassResultMyReport(classId)
+            .toResult("내 AI 피드백을 다시 만들지 못했습니다.")
+            .map { it.toDomainModel() }
+    }
 }

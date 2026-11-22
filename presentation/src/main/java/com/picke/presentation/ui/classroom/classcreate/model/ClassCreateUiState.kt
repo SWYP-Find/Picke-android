@@ -47,11 +47,11 @@ data class ClassCreateUiState(
             ClassCreateStep.SELECTION -> selectedBattle != null
         }
 
-    val isTopicRequired: Boolean
+    val isAiMethod: Boolean
         get() = method == ClassCreateMethod.AI_TOPIC
 
-    val isTopicGenerating: Boolean
-        get() = step == ClassCreateStep.SELECTION && isTopicRequired && isRequesting
+    val isSelectionLoading: Boolean
+        get() = step == ClassCreateStep.SELECTION && isRequesting
 
     internal val isMethodChanged: Boolean
         get() = step == ClassCreateStep.METHOD && conditionMethod != method
@@ -60,7 +60,7 @@ data class ClassCreateUiState(
         get() = step == ClassCreateStep.SELECTION && battles.isEmpty()
 
     internal val isTopicTooShort: Boolean
-        get() = step == ClassCreateStep.CONDITION && isTopicRequired && topic.trim().length < MIN_AI_TOPIC_LENGTH
+        get() = step == ClassCreateStep.CONDITION && isAiMethod && topic.trim().length < MIN_AI_TOPIC_LENGTH
 
     internal val nextStep: ClassCreateStep?
         get() = ClassCreateStep.entries.getOrNull(step.ordinal + 1)

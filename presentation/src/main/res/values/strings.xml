@@ -111,6 +111,7 @@
     <string name="ticket_register_dialog_invalid_code">코드 번호를 다시 확인해주세요!</string>
     <string name="ticket_register_dialog_register_failed">코드 등록이 완료되지 않았습니다\n네트워크 확인 후 한 번 더 시도해주세요</string>
     <string name="ticket_register_dialog_expired">해당 이용권은 등록기간이 만료되었습니다</string>
+    <string name="ticket_register_dialog_locked">코드를 5번 잘못 입력했습니다\n1시간 후에 다시 시도해주세요</string>
     <string name="ticket_register_dialog_confirm">확인</string>
 
     <!-- 이용권 등록 완료 -->
@@ -259,6 +260,7 @@
     <string name="class_create_edit_condition">조건 수정</string>
     <string name="class_create_result_count">추천 결과 %1$d개</string>
     <string name="class_create_topic_generating">AI가 질문을 만들고 있어요</string>
+    <string name="class_create_result_count_loading">추천 결과 -개</string>
     <string name="class_create_recommend_empty">조건에 맞는 추천 배틀이 없어요!</string>
     <string name="class_create_select_battle">배틀 선택하기</string>
     <string name="class_create_select_question">질문 선택하기</string>
@@ -323,7 +325,7 @@
     <string name="class_share_go_to_class">클래스로 이동하기</string>
     <string name="class_share_copy_code">참여 코드 복사</string>
     <string name="class_share_code_copied">참여 코드를 복사했어요</string>
-    <string name="class_share_code_message">[픽케] \'%1$s\' 클래스에 초대합니다.\n참여 코드: %2$s\n픽케 앱 클래스 탭에서 참여 코드를 입력해 주세요.</string>
+    <string name="class_share_code_message">쉽고 재밌는 배틀 앱, 픽케 클래스에 초대합니다. 접속하려면 다음 링크를 클릭하세요.\n링크: %1$s\n클래스명: %2$s\n참여 코드: %3$s</string>
     <string name="class_share_sheet_title">[픽케] \'%1$s\' 클래스 초대</string>
 
     <!-- 클래스 - 참여 -->
@@ -335,8 +337,10 @@
     <string name="class_join_name_duplicated">이미 사용 중인 이름이에요.</string>
     <string name="class_join_name_count">%1$d/%2$d</string>
     <string name="class_join_dialog_invalid_code">코드와 일치하는 클래스를 찾지 못했어요\n참여 코드를 한 번 더 확인해 주세요</string>
+    <string name="class_join_dialog_member_removed">다시 참여할 수 없는 클래스예요\n운영자에게 확인해 주세요</string>
     <string name="class_join_dialog_class_full">해당 클래스의 참여 인원이 모두 찼어요\n모임 주최자에게 확인해 주세요</string>
     <string name="class_join_dialog_class_closed">참여가 마감된 클래스예요\n다른 코드를 입력해 주세요</string>
+    <string name="class_join_dialog_ticket_ended">이용 기간이 끝난 클래스예요\n다른 코드를 입력해 주세요</string>
     <string name="class_join_dialog_class_deleted">더 이상 이용할 수 없는 클래스예요\n이 클래스는 삭제되어 입장할 수 없어요</string>
     <string name="class_join_dialog_already_joined">이미 참여 중인 클래스예요</string>
 
@@ -405,9 +409,8 @@
     <string name="class_debate_intro_opponent">반대 입장의 %1$s</string>
     <string name="class_debate_intro_start_format_gwa">%1$s과 %2$d라운드 토론을 시작해보세요.</string>
     <string name="class_debate_intro_start_format_wa">%1$s와 %2$d라운드 토론을 시작해보세요.</string>
-    <string name="class_debate_input_placeholder">내용을 입력하세요</string>
+    <string name="class_debate_input_placeholder">%1$d자 이상 내용을 입력하세요</string>
     <string name="class_debate_send">보내기</string>
-    <string name="class_debate_reply_too_short">%1$d자 이상 입력해주세요</string>
     <string name="class_debate_generating">생각을 정리하고 있어요</string>
     <string name="class_debate_failed">응답을 준비하지 못했어요. 다시 시도해 주세요</string>
     <string name="class_retry">다시 시도</string>
@@ -418,6 +421,7 @@
 
     <!-- 클래스 - 댓글 -->
     <string name="class_comment_required">의견을 남겨야 리포트를 볼 수 있어요.</string>
+    <string name="class_comment_delete_blocked">의견이 필수인 클래스라 삭제할 수 없어요. 내용을 수정해 주세요.</string>
 
     <!-- 클래스 - 결과 -->
     <string name="class_result_summary_tab">클래스 요약</string>
@@ -451,6 +455,8 @@
     <string name="class_result_count_placeholder">-</string>
     <string name="class_result_ai_feedback">AI 피드백</string>
     <string name="class_result_report_not_eligible">참여를 완료하면 AI 피드백을 받을 수 있어요</string>
+    <string name="class_result_report_failed_title">리포트를 불러오지 못했어요.</string>
+    <string name="class_result_report_failed_message">일시적인 오류로 분석 결과를 생성하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
     <string name="class_result_report_limited">판단의 이유를 살펴볼 글이 아직 충분하지 않아요</string>
     <string name="class_result_report_partial">이번 피드백은 일부 발언을 기준으로 작성했어요</string>
     <string name="class_result_judgment_basis">내 판단의 기준</string>

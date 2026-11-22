@@ -24,13 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picke.presentation.R
+import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailBattleCard
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailInfoRow
 import com.picke.presentation.ui.classroom.classdetail.component.ClassDetailSkeleton
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailInfoUiModel
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiAction
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiEvent
 import com.picke.presentation.ui.classroom.classdetail.model.ClassDetailUiState
-import com.picke.presentation.ui.classroom.component.ClassBattleCard
 import com.picke.presentation.ui.classroom.component.ClassManageSheet
 import com.picke.presentation.ui.classroom.component.rememberClassDeadlineText
 import com.picke.presentation.ui.classroom.model.ClassBattleUiModel
@@ -50,6 +50,10 @@ import java.time.LocalDateTime
 
 @Composable
 fun ClassDetailScreen(
+    hasClassChangedResult: Boolean,
+    onClassChangedResultConsumed: () -> Unit,
+    hasClassBattleProgressedResult: Boolean,
+    onClassBattleProgressedResultConsumed: () -> Unit,
     onBackClick: () -> Unit,
     onClassChanged: () -> Unit,
     onMemberClick: (classId: Long) -> Unit,
@@ -75,6 +79,20 @@ fun ClassDetailScreen(
     val actionFailedMessage = stringResource(R.string.toast_action_failed)
 
     BackHandler { viewModel.onAction(ClassDetailUiAction.BackClick) }
+
+    LaunchedEffect(hasClassChangedResult) {
+        if (hasClassChangedResult) {
+            onClassChangedResultConsumed()
+            viewModel.onAction(ClassDetailUiAction.ClassChangedReceive)
+        }
+    }
+
+    LaunchedEffect(hasClassBattleProgressedResult) {
+        if (hasClassBattleProgressedResult) {
+            onClassBattleProgressedResultConsumed()
+            viewModel.onAction(ClassDetailUiAction.ClassBattleProgressedReceive)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -173,7 +191,7 @@ private fun ClassDetailContent(
                     )
 
                     ClassDetailInfoSection(
-                        memberCount = classInfo.memberCount,
+                        activeMemberCount = classInfo.activeMemberCount,
                         deadline = classInfo.deadline,
                         isOperator = classInfo.isOperator,
                         onMemberClick = { onAction(ClassDetailUiAction.MemberClick) },
@@ -260,7 +278,7 @@ private fun ClassDetailHeaderSection(
 
 @Composable
 private fun ClassDetailInfoSection(
-    memberCount: Int,
+    activeMemberCount: Int,
     deadline: LocalDateTime?,
     isOperator: Boolean,
     onMemberClick: () -> Unit,
@@ -286,7 +304,7 @@ private fun ClassDetailInfoSection(
     ) {
         ClassDetailInfoRow(
             title = stringResource(R.string.class_detail_member),
-            description = stringResource(R.string.class_detail_member_count, memberCount),
+            description = stringResource(R.string.class_detail_member_count, activeMemberCount),
             actionText = stringResource(R.string.my_class_view),
             onActionClick = onMemberClick
         )
@@ -318,7 +336,7 @@ private fun ClassDetailBattleSection(
             color = PickeTheme.colors.textMuted,
             style = PickeTheme.typography.bodySmSemiBold
         )
-        ClassBattleCard(battle = battle, onClick = onBattleClick)
+        ClassDetailBattleCard(battle = battle, onClick = onBattleClick)
     }
 }
 
@@ -375,7 +393,7 @@ private fun ClassDetailContentPreview(isOperator: Boolean) {
                 isOperator = isOperator,
                 isInProgress = classItem.isInProgress,
                 title = classItem.title,
-                memberCount = classItem.memberCount,
+                activeMemberCount = classItem.activeMemberCount,
                 deadline = classItem.deadline
             ),
             battle = DummyData.dummyClassBattles.first()

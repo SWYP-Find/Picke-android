@@ -61,10 +61,10 @@ fun ScenarioChatBubble(
         text = script.displayText,
         speakerName = script.speakerName,
         avatarUrl = script.profileImageUrl,
-        defaultAvatarRes = R.drawable.illust_mengzi,
         isLeft = script.speakerType == SpeakerType.A,
         showAvatarAndName = showAvatarAndName,
         modifier = modifier,
+        defaultAvatarRes = R.drawable.illust_mengzi,
         isPlaying = isActive,
         isDimmed = !isActive,
         onClick = onClick

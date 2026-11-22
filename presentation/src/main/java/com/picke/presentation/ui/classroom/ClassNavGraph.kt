@@ -1,5 +1,7 @@
 package com.picke.presentation.ui.classroom
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -96,16 +98,25 @@ fun NavGraphBuilder.classGraph(
         ClassVoteScreen(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToDebate = { classId ->
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, true
+                )
                 navController.navigate(AppRoute.ClassDebate.createRoute(classId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
                 }
             },
             onNavigateToScenario = { classId, battleId ->
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, true
+                )
                 navController.navigate(AppRoute.ClassScenario.createRoute(classId, battleId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
                 }
             },
             onNavigateToPerspective = { classId, battleId ->
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, true
+                )
                 navController.navigate(AppRoute.ClassPerspective.createRoute(classId, battleId)) {
                     popUpTo(AppRoute.ClassVote.route) { inclusive = true }
                 }
@@ -117,6 +128,9 @@ fun NavGraphBuilder.classGraph(
         ClassDebateScreen(
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNavigateToFinalVote = { classId ->
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, true
+                )
                 navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
                     popUpTo(AppRoute.ClassDebate.route) { inclusive = true }
                 }
@@ -136,6 +150,9 @@ fun NavGraphBuilder.classGraph(
             battleId = battleId.toString(),
             onBackClick = dropUnlessResumed { navController.popBackStack() },
             onNextClick = {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, true
+                )
                 navController.navigate(AppRoute.ClassVote.createRoute(classId, VoteType.POST)) {
                     popUpTo(AppRoute.ClassScenario.route) { inclusive = true }
                 }
@@ -166,11 +183,19 @@ fun NavGraphBuilder.classGraph(
     }
 
     composable(AppRoute.MyClass.route) { backStackEntry ->
+        val hasClassChangedResult by backStackEntry.savedStateHandle
+            .getStateFlow(AppRoute.RESULT_CLASS_CHANGED, false)
+            .collectAsStateWithLifecycle()
+
         TabScreen(
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
             MyClassScreen(
+                hasClassChangedResult = hasClassChangedResult,
+                onClassChangedResultConsumed = {
+                    backStackEntry.savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
+                },
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassClick = { classId ->
                     navController.navigate(AppRoute.ClassDetail.createRoute(classId))
@@ -187,11 +212,26 @@ fun NavGraphBuilder.classGraph(
     }
 
     composable(route = AppRoute.ClassDetail.route, arguments = classIdArguments) { backStackEntry ->
+        val hasClassChangedResult by backStackEntry.savedStateHandle
+            .getStateFlow(AppRoute.RESULT_CLASS_CHANGED, false)
+            .collectAsStateWithLifecycle()
+        val hasClassBattleProgressedResult by backStackEntry.savedStateHandle
+            .getStateFlow(AppRoute.RESULT_CLASS_BATTLE_PROGRESSED, false)
+            .collectAsStateWithLifecycle()
+
         TabScreen(
             backStackEntry = backStackEntry,
             onTabClick = onTabClick
         ) { contentModifier ->
             ClassDetailScreen(
+                hasClassChangedResult = hasClassChangedResult,
+                onClassChangedResultConsumed = {
+                    backStackEntry.savedStateHandle[AppRoute.RESULT_CLASS_CHANGED] = false
+                },
+                hasClassBattleProgressedResult = hasClassBattleProgressedResult,
+                onClassBattleProgressedResultConsumed = {
+                    backStackEntry.savedStateHandle[AppRoute.RESULT_CLASS_BATTLE_PROGRESSED] = false
+                },
                 onBackClick = dropUnlessResumed { navController.popBackStack() },
                 onClassChanged = dropUnlessResumed {
                     navController.previousBackStackEntry?.savedStateHandle?.set(

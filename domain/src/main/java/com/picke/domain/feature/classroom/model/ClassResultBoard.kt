@@ -89,7 +89,9 @@ data class ClassResultInsightBoard(
     val insightText: String?,
     val coverage: String?,
     val excludedCount: Int,
-    val evidence: List<ClassResultInsightEvidenceBoard>
+    val evidence: List<ClassResultInsightEvidenceBoard>,
+    val bestComment: String?,
+    val mostDebatedComment: String?
 )
 
 data class ClassResultInsightEvidenceBoard(

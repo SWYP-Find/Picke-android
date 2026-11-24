@@ -275,13 +275,14 @@ private fun ClassResultSummarySection(
             ClassResultStanceCard(stances = summary.stances)
         }
 
-        if (insight != null && insight.isOpinionVisible) {
+        val bestComment = insight?.bestComment
+        if (insight != null && bestComment != null) {
             ClassTitledBlock(
                 title = stringResource(R.string.class_result_opinions),
                 titleStyle = titleStyle
             ) {
                 ClassResultOpinionCard(
-                    bestComment = insight.bestComment,
+                    bestComment = bestComment,
                     mostDebatedComment = insight.mostDebatedComment
                 )
             }

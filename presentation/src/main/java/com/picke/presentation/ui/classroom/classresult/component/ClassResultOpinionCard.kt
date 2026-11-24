@@ -24,7 +24,7 @@ import com.picke.presentation.util.DummyData
 @Composable
 fun ClassResultOpinionCard(
     bestComment: String,
-    mostDebatedComment: String,
+    mostDebatedComment: String?,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(RadiusTokens.default)
@@ -43,14 +43,17 @@ fun ClassResultOpinionCard(
             label = stringResource(R.string.class_result_best_comment),
             comment = bestComment
         )
-        HorizontalDivider(
-            thickness = ComponentNumberTokens.borderWidthRegular,
-            color = PickeTheme.colors.cardBaseBorderDefault
-        )
-        ClassResultOpinionItem(
-            label = stringResource(R.string.class_result_most_debated_comment),
-            comment = mostDebatedComment
-        )
+
+        if (mostDebatedComment != null) {
+            HorizontalDivider(
+                thickness = ComponentNumberTokens.borderWidthRegular,
+                color = PickeTheme.colors.cardBaseBorderDefault
+            )
+            ClassResultOpinionItem(
+                label = stringResource(R.string.class_result_most_debated_comment),
+                comment = mostDebatedComment
+            )
+        }
     }
 }
 
@@ -83,8 +86,21 @@ private fun ClassResultOpinionCardPreview() {
 
     PickeTheme {
         ClassResultOpinionCard(
-            bestComment = insight.bestComment,
+            bestComment = insight.bestComment ?: "",
             mostDebatedComment = insight.mostDebatedComment
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ClassResultOpinionCardBestOnlyPreview() {
+    val insight = DummyData.dummyClassResultInsight
+
+    PickeTheme {
+        ClassResultOpinionCard(
+            bestComment = insight.bestComment ?: "",
+            mostDebatedComment = null
         )
     }
 }

@@ -116,7 +116,9 @@ data class ClassResultInsightResponseDto(
     val insightText: String?,
     val coverage: String?,
     val excludedCount: Int,
-    val evidence: List<ClassResultInsightEvidenceDto>
+    val evidence: List<ClassResultInsightEvidenceDto>,
+    val bestComment: String?,
+    val mostDebatedComment: String?
 )
 
 @Serializable
@@ -243,7 +245,9 @@ fun ClassResultInsightResponseDto.toDomainModel() = ClassResultInsightBoard(
     },
     coverage = coverage,
     excludedCount = excludedCount,
-    evidence = evidence.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } }
+    evidence = evidence.mapNotNull { item -> mapItemOrNull { item.toDomainModel() } },
+    bestComment = bestComment,
+    mostDebatedComment = mostDebatedComment
 )
 
 fun ClassResultInsightEvidenceDto.toDomainModel() = ClassResultInsightEvidenceBoard(
